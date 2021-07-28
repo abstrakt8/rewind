@@ -1,11 +1,7 @@
-import { Playbar } from '@rewind/ui';
+import { FeatureReplayViewer } from "@rewind/feature-replay-viewer";
 
 export function App() {
-  return (
-    <div className={'bg-red-500'}>
-      <Playbar />
-    </div>
-  );
+  return <FeatureReplayViewer></FeatureReplayViewer>;
 }
 
 export default App;

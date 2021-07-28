@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@rewind/feature-replay-viewer": ["libs/feature-replay-viewer/src/index.ts"],
       "@rewind/ui": ["libs/ui/src/index.ts"]
     }
   },

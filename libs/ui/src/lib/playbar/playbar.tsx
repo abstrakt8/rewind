@@ -41,41 +41,56 @@ function EventLine(props: { d: Dimensions }) {
 
 const widthStyle = (w: number) => ({ width: percentage(w) });
 
+function Shade(props: { width: number; color: number }) {
+  const { width, color } = props;
+  const c = "bg-gray-" + color * 100;
+  return (
+    <div
+      className={"absolute h-full transition-transform  ease-out w-full origin-left " + c}
+      style={{ transform: `scaleX(${width})`, left: 0 }}
+    />
+  );
+}
+
 export function Playbar(props: PlaybarProps) {
   const { onClick } = props;
-  const loadedPercent = 0.31432345;
+  const loadedPercentage = 0.31432345;
   const radius = 0.001;
   const heights = 0.727;
   const ref = useRef(null);
-  const mouse = useMouse(ref, {
-    enterDelay: 100,
-    leaveDelay: 100,
-  });
-
+  const mouse = useMouse(ref, {});
   useCallback(() => {
     console.log(`mouse at ${mouse.x} ${mouse.y}`);
   }, [mouse.x, mouse.y]);
 
-  const mousePercentage = Math.max(0, (mouse.x ?? 0) / (mouse.elementWidth ?? 1));
+  const mousePercentage = mouse.x !== null ? Math.max(0, (mouse.x ?? 0) / (mouse.elementWidth ?? 1)) : null;
 
   const handleClick = useCallback(() => {
-    if (onClick) onClick(mousePercentage);
+    if (onClick) onClick(mousePercentage ?? 0); // Should not happen to be null
     console.log(`mouse at ${mousePercentage} `);
   }, [onClick, mousePercentage]);
 
-  let primaryP, secondaryP;
-  if (mousePercentage > loadedPercent) {
-    secondaryP = mousePercentage;
-    primaryP = loadedPercent;
+  let darkP, lightP;
+  if (mousePercentage === null) {
+    darkP = loadedPercentage;
+    lightP = loadedPercentage;
+  } else if (mousePercentage < loadedPercentage) {
+    darkP = mousePercentage;
+    lightP = loadedPercentage;
   } else {
-    secondaryP = loadedPercent;
-    primaryP = mousePercentage;
+    lightP = mousePercentage;
+    darkP = loadedPercentage;
   }
   return (
-    <div className="h-8 bg-gray-300 relative cursor-pointer rounded-lg overflow-hidden" ref={ref} onClick={handleClick}>
+    <div
+      className="h-full bg-gray-300 relative cursor-pointer rounded-lg overflow-hidden"
+      ref={ref}
+      onClick={handleClick}
+    >
       {/*loaded*/}
-      <div className={"absolute h-full bg-gray-400"} style={{ ...widthStyle(secondaryP) }} />
-      <div className={"absolute h-full bg-gray-500"} style={{ ...widthStyle(primaryP) }} />
+      {/*<div className={"absolute h-full bg-gray-500"} style={{ ...widthStyle(primaryP) }} />*/}
+      <Shade width={lightP} color={4} />
+      <Shade width={darkP} color={5} />
       {/*<LineBar x={loadedPercent} />*/}
       <EventLine d={{ width: 0.001, height: heights, x: 0.3, y: 0.5 }} />
       <EventLine d={{ width: 0.001, height: heights, x: 0.5, y: 0.5 }} />

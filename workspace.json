@@ -1,6 +1,27 @@
 {
   "version": 2,
   "projects": {
+    "feature-replay-viewer": {
+      "root": "libs/feature-replay-viewer",
+      "sourceRoot": "libs/feature-replay-viewer/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/feature-replay-viewer/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/feature-replay-viewer"],
+          "options": {
+            "jestConfig": "libs/feature-replay-viewer/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "ui": {
       "root": "libs/ui",
       "sourceRoot": "libs/ui/src",

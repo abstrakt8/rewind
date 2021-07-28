@@ -1,0 +1,5 @@
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 6em;
+}
