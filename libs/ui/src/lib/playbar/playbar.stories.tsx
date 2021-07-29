@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { Story, Meta } from '@storybook/react';
-import { Playbar, PlaybarProps } from '../libs/ui/src';
-
+import { Story, Meta } from "@storybook/react";
+import { Playbar, PlaybarProps } from "./playbar";
 
 export default {
   component: Playbar,
-  title: 'Example/Playbar'
+  title: "Playbar",
+  argTypes: {
+    onClick: { action: "onClick executed!" },
+  },
 } as Meta;
 
 const Template: Story<PlaybarProps> = (args) => <Playbar {...args} />;
