@@ -27,6 +27,9 @@
     ]
   },
   "projects": {
+    "api": {
+      "tags": []
+    },
     "feature-replay-viewer": {
       "tags": []
     },
