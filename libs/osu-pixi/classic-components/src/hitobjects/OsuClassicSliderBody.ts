@@ -1,16 +1,14 @@
 import { Sprite } from "@pixi/sprite";
-import { Disposable } from "../DrawableHitObject";
 import {
   applyPropertiesToDisplayObject,
   DisplayObjectTransformationProcess,
   evaluateTransformationsToProperties,
 } from "../utils/Pixi";
 import { SliderTextureManager } from "../managers/SliderTextureManager";
-import { Easing, Position } from "@rewind/osu/math";
+import { Easing, Position, RGB } from "@rewind/osu/math";
 import { fadeInT, fadeOutT } from "../utils/Transformations";
 import { PrepareSetting } from "../utils/Preparable";
 import { Container } from "pixi.js";
-import { RGB } from "@rewind/osu/math";
 import { AnimationTimeSetting, ModHiddenSetting } from "../DrawableSettings";
 import { OsuClassicConstants } from "./OsuClassicConstants";
 
@@ -41,7 +39,7 @@ const defaultSliderBodySetting: SliderBodySettings = {
 /**
  * This needs to be improved because I can't draw more than 100 sliders on the screen...
  */
-export class OsuClassicSliderBody implements PrepareSetting<SliderBodySettings>, Disposable {
+export class OsuClassicSliderBody implements PrepareSetting<SliderBodySettings> {
   container: Container;
   sprite: Sprite;
   settings: SliderBodySettings;
@@ -115,9 +113,5 @@ export class OsuClassicSliderBody implements PrepareSetting<SliderBodySettings>,
         radius,
         sprite: this.sprite,
       });
-  }
-
-  dispose(): void {
-    this.sprite.texture.destroy(true);
   }
 }
