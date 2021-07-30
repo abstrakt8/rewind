@@ -1,5 +1,5 @@
 import { OsuAction, ReplayFrame } from "./Replay";
-import { Position, Vec2 } from "osu-math";
+import { Position, Vec2 } from "@rewind/osu/math";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { Slider } from "../hitobjects/Slider";
 import { Spinner } from "../hitobjects/Spinner";
@@ -58,7 +58,7 @@ function determineTracking(
   cursorPosition: Position,
   time: number,
   pressingSince: PressingSinceTimings,
-  headHitTime?: number
+  headHitTime?: number,
 ): boolean {
   const keyIsBeingPressed = pressingSince.findIndex((x) => x !== NOT_PRESSING) >= 0;
   // Zeroth condition
@@ -309,7 +309,7 @@ export class NextFrameEvaluator {
 
   constructor(
     private readonly hitObjectsBySpawnTime: OsuHitObject[],
-    private readonly settings: OsuStdJudgmentSettings
+    private readonly settings: OsuStdJudgmentSettings,
   ) {
     this.replayState = getDefaultReplayState();
     this.hitObjectById = normalizeHitObjects(hitObjectsBySpawnTime);
@@ -565,7 +565,7 @@ export class NextFrameEvaluator {
         this.cursorPosition, //  TODO: tbh interpolate
         this.currentTime, // TODO:
         this.pressingSince,
-        headHitTime
+        headHitTime,
       );
       this.replayState.sliderBodyState.set(id, { isTracking });
     }

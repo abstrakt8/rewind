@@ -1,4 +1,4 @@
-import { Position } from "osu-math";
+import { Position } from "@rewind/osu/math";
 
 export interface HasPosition {
   position: Position;

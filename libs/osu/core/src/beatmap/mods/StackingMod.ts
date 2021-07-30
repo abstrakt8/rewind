@@ -1,5 +1,5 @@
 import { HitCircle } from "../../hitobjects/HitCircle";
-import { Position, Vec2 } from "osu-math";
+import { Position, Vec2 } from "@rewind/osu/math";
 import { Slider } from "../../hitobjects/Slider";
 import { OsuHitObject } from "../../hitobjects";
 import produce from "immer";
@@ -163,7 +163,7 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
 export function modifyStackingPosition(
   beatmapVersion: number,
   hitObjects: OsuHitObject[],
-  stackLeniency: number
+  stackLeniency: number,
 ): OsuHitObject[] {
   const heights = (() => {
     if (beatmapVersion >= 6) {

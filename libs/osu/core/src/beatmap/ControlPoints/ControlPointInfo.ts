@@ -4,7 +4,7 @@ import { ControlPoint } from "./ControlPoint";
 import { EffectControlPoint } from "./EffectControlPoint";
 import { SampleControlPoint } from "./SampleControlPoint";
 import { ControlPointGroup } from "./ControlPointGroup";
-import { floatEqual } from "osu-math";
+import { floatEqual } from "@rewind/osu/math";
 import { SortedList } from "../../utils/SortedList";
 
 export class ControlPointInfo {
@@ -24,7 +24,7 @@ export class ControlPointInfo {
     return this.binarySearchWithFallback(
       this.samplePoints.list,
       time,
-      this.samplePoints.length > 0 ? this.samplePoints.list[0] : SampleControlPoint.DEFAULT
+      this.samplePoints.length > 0 ? this.samplePoints.list[0] : SampleControlPoint.DEFAULT,
     );
   }
 
@@ -96,7 +96,7 @@ export class ControlPointInfo {
     return this.binarySearchWithFallback(
       this.timingPoints.list,
       time,
-      this.timingPoints.length > 0 ? this.timingPoints.get(0) : TimingControlPoint.DEFAULT
+      this.timingPoints.length > 0 ? this.timingPoints.get(0) : TimingControlPoint.DEFAULT,
     );
   }
 

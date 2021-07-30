@@ -2,7 +2,7 @@ import { BeatmapDifficulty } from "../BeatmapDifficulty";
 import { HitCircle } from "../../hitobjects/HitCircle";
 import { BeatmapDifficultyAdjuster, HitObjectsAdjuster } from "./Mods";
 import produce from "immer";
-import { Position } from "osu-math";
+import { Position } from "@rewind/osu/math";
 import { Slider } from "../../hitobjects/Slider";
 import { OsuHitObject } from "../../hitobjects";
 

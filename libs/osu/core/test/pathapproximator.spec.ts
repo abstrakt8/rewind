@@ -1,4 +1,4 @@
-import { Vec2 } from "osu-math";
+import { Vec2 } from "@rewind/osu/math";
 import { PathApproximator } from "../src/hitobjects/slider/PathApproximator";
 
 /**

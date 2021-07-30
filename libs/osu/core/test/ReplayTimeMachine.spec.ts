@@ -4,7 +4,7 @@ import {
   parseReplayFromFS,
   realReplayPath,
   TEST_MAPS,
-} from "./util";
+} from "./util.spec";
 import { BucketedReplayStateTimeMachine, osuStableAccuracy } from "../src";
 
 describe("OsuStd! ReplayTimeMachine - The Sun, The Moon, The Stars", function () {

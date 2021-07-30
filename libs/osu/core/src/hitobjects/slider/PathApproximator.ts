@@ -1,5 +1,5 @@
-import { Vec2 } from "osu-math";
-import { floatEqual } from "osu-math";
+import { Vec2 } from "@rewind/osu/math";
+import { floatEqual } from "@rewind/osu/math";
 
 // https://github.com/ppy/osu-framework/blob/f9d44b1414e30ad507894ef7eaaf5d1b0118be82/osu.Framework/Utils/PathApproximator.cs
 
@@ -364,7 +364,7 @@ export class PathApproximator {
     output: Vec2[],
     subdivisionBuffer1: Vec2[],
     subdivisionBuffer2: Vec2[],
-    count: number
+    count: number,
   ): void {
     const l = subdivisionBuffer2;
     const r = subdivisionBuffer1;
@@ -405,15 +405,15 @@ export class PathApproximator {
           (2 * vec2.x +
             (-vec1.x + vec3.x) * t +
             (2 * vec1.x - 5 * vec2.x + 4 * vec3.x - vec4.x) * t2 +
-            (-vec1.x + 3 * vec2.x - 3 * vec3.x + vec4.x) * t3)
+            (-vec1.x + 3 * vec2.x - 3 * vec3.x + vec4.x) * t3),
       ),
       Math.fround(
         0.5 *
           (2 * vec2.y +
             (-vec1.y + vec3.y) * t +
             (2 * vec1.y - 5 * vec2.y + 4 * vec3.y - vec4.y) * t2 +
-            (-vec1.y + 3 * vec2.y - 3 * vec3.y + vec4.y) * t3)
-      )
+            (-vec1.y + 3 * vec2.y - 3 * vec3.y + vec4.y) * t3),
+      ),
     );
   }
 }

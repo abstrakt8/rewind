@@ -1,4 +1,4 @@
-import { Position } from "osu-math";
+import { Position } from "@rewind/osu/math";
 import { immerable } from "immer";
 import { OsuHitObjectTypes } from "./OsuHitObjectTypes";
 import { HasHitTime, HasId, HasPosition, HasSpawnTime } from "./Properties";

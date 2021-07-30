@@ -1,5 +1,5 @@
 import { Blueprint } from "../blueprint/Blueprint";
-import { clamp, floatEqual, Position, Vec2 } from "osu-math";
+import { clamp, floatEqual, Position, Vec2 } from "@rewind/osu/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 import { PathType } from "../hitobjects/slider/PathType";
 import { TimeSignatures } from "../beatmap/TimeSignatures";
@@ -145,7 +145,7 @@ function convertPoints(
   points: string[],
   endPoint: string | null,
   first: boolean,
-  offset: Position
+  offset: Position,
 ): PathControlPoint[] {
   let type: PathType = convertPathType(points[0]);
   const readOffset = first ? 1 : 0;

@@ -1,5 +1,5 @@
 // import produce from "immer";
-// import { Position } from "osu-math";
+// import { Position } from "@rewind/osu/math";
 // import { ComboInfo, JudgementTypes } from "./ReplayState";
 //
 //

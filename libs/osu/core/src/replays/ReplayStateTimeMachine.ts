@@ -6,7 +6,7 @@ import {
   ReplayState,
 } from "./ReplayState";
 import { ReplayFrame } from "./Replay";
-import { Vec2 } from "osu-math";
+import { Vec2 } from "@rewind/osu/math";
 import { OsuHitObject } from "../hitobjects";
 
 export interface ReplayStateTimeMachine {
@@ -35,7 +35,7 @@ export class BucketedReplayStateTimeMachine implements ReplayStateTimeMachine {
     replay: ReplayFrame[],
     private readonly hitObjects: OsuHitObject[],
     private readonly settings: OsuStdJudgmentSettings,
-    bucketSize?: number
+    bucketSize?: number,
   ) {
     // Add a dummy replay frame at the beginning.
     this.frames = [{ time: -727_727, position: new Vec2(0, 0), actions: [] }, ...replay];

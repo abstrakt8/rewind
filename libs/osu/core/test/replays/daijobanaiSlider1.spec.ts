@@ -1,5 +1,4 @@
-import { describe } from "mocha";
-import { defaultStableSettings, evaluateWholeReplay, parseReplayFromFS, replayPath, TEST_MAPS } from "../util";
+import { defaultStableSettings, evaluateWholeReplay, parseReplayFromFS, replayPath, TEST_MAPS } from "../util.spec";
 import {
   CheckPointState,
   HitCircleMissReason,
@@ -11,13 +10,14 @@ import {
   ReplayState,
   Slider,
 } from "../../src";
-import { expect } from "chai";
 
 function expectHitCircleToBeNotAMiss(hitCircleState?: HitCircleState) {
-  expect(hitCircleState).to.be.not.undefined;
+  expect(hitCircleState).toBeDefined();
   const type = (hitCircleState as HitCircleState).type;
-  expect(type).to.be.not.eq(HitObjectJudgementType.Miss);
+  expect(type).not.toBe(HitObjectJudgementType.Miss);
 }
+
+const before = beforeEach;
 
 describe("Daijobanai [Slider 1]", function () {
   let evaluator: NextFrameEvaluator;
@@ -44,12 +44,12 @@ describe("Daijobanai [Slider 1]", function () {
       const hitCircleState = state.hitCircleState.get("0/HEAD") as HitCircleState;
       // hitTime is 1684 and offset was -14, so 1684-14=1670
       const expectedState: HitCircleState = { type: HitObjectJudgementType.Great, judgementTime: 1670 };
-      expect(hitCircleState).to.deep.eq(expectedState);
+      expect(hitCircleState).toEqual(expectedState);
       console.log(hitCircleState);
     });
     it("legacy slider tick must be hit", function () {
       const sliderTickState = state.checkPointState.get("0/0") as CheckPointState;
-      expect(sliderTickState.hit).to.be.true;
+      expect(sliderTickState.hit).toBe(true);
     });
     // This gives a "300" as a judgment and a combo of 2
   });
@@ -57,7 +57,7 @@ describe("Daijobanai [Slider 1]", function () {
   describe("SliderHeadMissedButTrackingWtf.osr", function () {
     before(function () {
       replay = parseReplayFromFS(
-        replayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadMissedButTrackingWtf.osr")
+        replayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadMissedButTrackingWtf.osr"),
       );
       state = evaluateWholeReplay(evaluator, replay);
       console.log("Read and evaluated SliderHeadMissedBut", replay.length);
@@ -70,11 +70,11 @@ describe("Daijobanai [Slider 1]", function () {
         type: HitObjectJudgementType.Miss,
         missReason: HitCircleMissReason.TIME_EXPIRED,
       };
-      expect(hitCircleState).to.deep.eq(expectedState);
+      expect(hitCircleState).toEqual(expectedState);
     });
     it("legacy slider tick must be hit", function () {
       const sliderTickState = state.checkPointState.get("0/0") as CheckPointState;
-      expect(sliderTickState.hit).to.be.true;
+      expect(sliderTickState.hit).toBe(true);
     });
     // This gives a "50" as a judgment and a combo of 1
   });
@@ -86,11 +86,11 @@ describe("Daijobanai [Slider 1]", function () {
     });
     it("hit circle hit", function () {
       const hitCircleState = state.hitCircleState.get("0/HEAD") as HitCircleState;
-      expect(hitCircleState.judgementTime).to.be.eq(1684 - 57);
+      expect(hitCircleState.judgementTime).toBe(1684 - 57);
     });
     it("legacy slider tick hit", function () {
       const sliderTickState = state.checkPointState.get("0/0") as CheckPointState;
-      expect(sliderTickState.hit).to.be.true;
+      expect(sliderTickState.hit).toBe(true);
     });
   });
   describe("SliderHeadTooLate.osr", function () {
@@ -102,11 +102,11 @@ describe("Daijobanai [Slider 1]", function () {
     it("hit circle hit", function () {
       const hitCircleState = state.hitCircleState.get("0/HEAD") as HitCircleState;
       expectHitCircleToBeNotAMiss(hitCircleState);
-      expect(hitCircleState.judgementTime).to.be.eq(1684 + 33);
+      expect(hitCircleState.judgementTime).toBe(1684 + 33);
     });
     it("legacy slider tick hit", function () {
       const sliderTickState = state.checkPointState.get("0/0") as CheckPointState;
-      expect(sliderTickState.hit).to.be.true;
+      expect(sliderTickState.hit).toBe(true);
     });
   });
   describe("SliderEndMissed.osr", function () {
@@ -122,7 +122,7 @@ describe("Daijobanai [Slider 1]", function () {
     it("legacy slider tick missed", function () {
       const sliderTickState = state.checkPointState.get("0/0") as CheckPointState;
       console.log(hitObjects[0] as Slider);
-      expect(sliderTickState.hit).to.be.false;
+      expect(sliderTickState.hit).toBe(false);
     });
     // This gives a "100" as a judgment and a combo of 1
   });

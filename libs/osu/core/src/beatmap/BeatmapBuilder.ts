@@ -21,7 +21,7 @@ import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
 import { OsuHitObject } from "../hitobjects";
 import { StaticBeatmap } from "./StaticBeatmap";
 import { Spinner } from "../hitobjects/Spinner";
-import { difficultyRange } from "osu-math";
+import { difficultyRange } from "@rewind/osu/math";
 
 // Minimum preempt time at AR=10
 const DEFAULT_FADE_IN = 400;
@@ -39,7 +39,7 @@ function createHitCircle(
   id: string,
   hitCircleSettings: HitCircleSettings,
   controlPointInfo: ControlPointInfo,
-  beatmapDifficulty: BeatmapDifficulty
+  beatmapDifficulty: BeatmapDifficulty,
 ): HitCircle {
   const hitCircle = new HitCircle();
   hitCircle.id = id;
@@ -73,7 +73,7 @@ function createSliderCheckPoints(slider: Slider): SliderCheckPoint[] {
     slider.tickDistance,
     slider.path.distance,
     slider.spanCount,
-    slider.legacyLastTickOffset
+    slider.legacyLastTickOffset,
   )) {
     const id = `${slider.id}/${checkpointIndex++}`;
     checkPoints.push(createSliderCheckPoint(slider, id, e));
@@ -85,7 +85,7 @@ function createSlider(
   index: number,
   sliderSettings: SliderSettings,
   controlPointInfo: ControlPointInfo,
-  difficulty: BeatmapDifficulty
+  difficulty: BeatmapDifficulty,
 ): Slider {
   const approachDuration = approachDurationFromAR(difficulty.approachRate);
   const scale = circleScaleFromCS(difficulty.circleSize);
@@ -115,7 +115,7 @@ function createSpinner(
   id: string,
   settings: SpinnerSettings,
   controlPointInfo: ControlPointInfo,
-  difficulty: BeatmapDifficulty
+  difficulty: BeatmapDifficulty,
 ) {
   const spinner = new Spinner();
   spinner.id = id;
@@ -127,7 +127,7 @@ function createStaticHitObject(
   index: number,
   hitObjectSetting: HitObjectSettings,
   controlPointInfo: ControlPointInfo,
-  beatmapDifficulty: BeatmapDifficulty
+  beatmapDifficulty: BeatmapDifficulty,
 ): OsuHitObject {
   switch (hitObjectSetting.type) {
     case HitObjectSettingsType.HIT_CIRCLE:
@@ -188,7 +188,7 @@ export class BeatmapBuilder {
     }
 
     let hitObjects: OsuHitObject[] = bluePrint.hitObjectSettings.map((setting, index) =>
-      createStaticHitObject(index, setting, bluePrint.controlPointInfo, finalDifficulty)
+      createStaticHitObject(index, setting, bluePrint.controlPointInfo, finalDifficulty),
     );
 
     hitObjects = assignComboIndex(bluePrint.hitObjectSettings, hitObjects);

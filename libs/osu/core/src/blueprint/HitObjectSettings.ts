@@ -1,6 +1,6 @@
 // https://osu.ppy.sh/wiki/en/osu%21_File_Formats/Osu_%28file_format%29#type
 import { PathType } from "../hitobjects/slider/PathType";
-import { Position } from "osu-math";
+import { Position } from "@rewind/osu/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 
 export enum HitObjectSettingsType {

@@ -1,7 +1,7 @@
 // Important points on the slider. Depending on if they were "hit" or not, we will have a different judgement on the
 // slider.
 import { Slider } from "./Slider";
-import { Position, Vec2 } from "osu-math";
+import { Position, Vec2 } from "@rewind/osu/math";
 import { HasHitTime, HasId, HasPosition } from "./Properties";
 
 export enum SliderCheckPointType {

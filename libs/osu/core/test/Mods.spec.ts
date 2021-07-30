@@ -1,7 +1,4 @@
-import { describe } from "mocha";
-import { HardRockMod } from "../src/beatmap/mods/HardRockMod";
-import { DEFAULT_BEATMAP_DIFFICULTY } from "../src";
-import { expect } from "chai";
+import { HardRockMod, DEFAULT_BEATMAP_DIFFICULTY } from "@rewind/osu/core";
 
 describe("HardRock", function () {
   const mod = new HardRockMod();
@@ -23,7 +20,7 @@ describe("HardRock", function () {
         circleSize: 5.2,
       };
       const actual = mod.difficultyApplier(original);
-      expect(actual).to.be.deep.equal(expected);
+      expect(actual).toEqual(expected);
     });
   });
 });

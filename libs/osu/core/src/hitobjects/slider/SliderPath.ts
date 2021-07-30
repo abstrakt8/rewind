@@ -1,7 +1,7 @@
 import { PathControlPoint } from "./PathControlPoint";
 import { PathType } from "./PathType";
-import { Position, Vec2 } from "osu-math";
-import { floatEqual } from "osu-math";
+import { Position, Vec2 } from "@rewind/osu/math";
+import { floatEqual } from "@rewind/osu/math";
 import { PathApproximator } from "./PathApproximator";
 import { immerable } from "immer";
 

@@ -9,13 +9,13 @@ import {
   OsuStdJudgmentSettings,
   ReplayState,
   Slider,
-} from "../src";
-import fs from "fs";
-import { Blueprint } from "../src/blueprint/Blueprint";
-import path from "path";
-import nodeOsr from "node-osr";
+  Blueprint,
+} from "@rewind/osu/core";
+import * as fs from "fs";
+import * as path from "path";
+import { readSync } from "node-osr";
 import { normalizeHitObjects } from "../src/utils";
-import { hitWindowsForOD } from "osu-math";
+import { hitWindowsForOD } from "@rewind/osu/math";
 
 // This makes the whole testing module node.js only
 
@@ -44,7 +44,7 @@ export function replayPath(name: string): string {
 }
 
 export function parseReplayFromFS(replayFile: string) {
-  const r = nodeOsr.readSync(replayFile);
+  const r = readSync(replayFile);
   return fromRawToReplay(r.replay_data);
 }
 
@@ -55,13 +55,13 @@ export const TEST_MAPS = {
   VIOLET_PERFUME: osuMapPath("SHK - Violet Perfume (ktgster) [Insane].osu"),
   GERA_GERA: osuMapPath("ZUTOMAYO - Kan Saete Kuyashiiwa (Nathan) [geragera].osu"),
   SUN_MOON_STAR: realMapPath(
-    "933630 Aether Realm - The Sun, The Moon, The Star/Aether Realm - The Sun, The Moon, The Star (ItsWinter) [Mourning Those Things I've Long Left Behind].osu"
+    "933630 Aether Realm - The Sun, The Moon, The Star/Aether Realm - The Sun, The Moon, The Star (ItsWinter) [Mourning Those Things I've Long Left Behind].osu",
   ),
 };
 
 export const TEST_REPLAYS = {
   SUN_MOON_STAR_VARVALIAN: realReplayPath(
-    "Varvalian - Aether Realm - The Sun, The Moon, The Star [Mourning Those Things I've Long Left Behind] (2019-05-15) Osu.osr"
+    "Varvalian - Aether Realm - The Sun, The Moon, The Star [Mourning Those Things I've Long Left Behind] (2019-05-15) Osu.osr",
   ),
 };
 
@@ -69,7 +69,7 @@ export const TEST_REPLAYS = {
 export function osuClassicScoreScreenJudgementCount(
   state: ReplayState,
   hitObjects: OsuHitObject[],
-  osuLazer?: boolean
+  osuLazer?: boolean,
 ) {
   const count = [0, 0, 0, 0];
   const dict = normalizeHitObjects(hitObjects);

@@ -1,5 +1,5 @@
 import { PathType } from "./PathType";
-import { Position } from "osu-math";
+import { Position } from "@rewind/osu/math";
 
 export type PathControlPoint = {
   // The type of path segment starting at this control point.

@@ -1,5 +1,5 @@
 import { fromRawToReplay, OsuAction, ReplayFrame } from "@rewind/osu/core";
-import { parseReplayFromFS, TEST_REPLAYS } from "./util";
+import { parseReplayFromFS, TEST_REPLAYS } from "./util.spec";
 
 // w, x, y, z
 // w time since last action
