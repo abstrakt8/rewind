@@ -3,7 +3,6 @@ import { Loader, ILoaderResource } from "@pixi/loaders";
 import { Texture } from "pixi.js";
 import axios from "axios";
 import { SkinConfig, SkinTextures } from "@rewind/osu/skin";
-import urljoin = require("url-join");
 
 // Asks from osu-express
 export interface SkinManager {
@@ -29,6 +28,8 @@ async function startLoading(loader: Loader, skinName: string): Promise<boolean> 
     loader.load();
   });
 }
+
+const urljoin = (...s: string[]) => s.join("/");
 
 export class OsuExpressSkinManager implements SkinManager {
   osuExpressUrl: string;

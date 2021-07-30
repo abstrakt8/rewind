@@ -8,9 +8,16 @@ import { useInterval } from "../utils/useInterval";
 import { formatReplayTime } from "../utils/time";
 import { ReplayViewerApp } from "../app/ReplayViewerApp";
 import { usePerformanceMonitor } from "../utils/usePerformanceMonitor";
+import { DEFAULT_VIEW_SETTINGS, ViewSettings } from "../ViewSettings";
+import { OsuExpressManagers, useOsuExpressManagers } from "../contexts/OsuExpressContext";
 
 /* eslint-disable-next-line */
-export interface FeatureReplayViewerProps {}
+export interface FeatureReplayViewerProps {
+  bluePrintId: string;
+  replayId?: string;
+  skinId: string;
+  // replays: OsuReplay[];
+}
 
 function SettingsTitle(props: { title: string }) {
   return <h1 className={"uppercase text-gray-400 text-sm"}>{props.title}</h1>;
@@ -74,8 +81,19 @@ const useGameClock = () => {
   return { gameClock, currentTime, isPlaying, toggleIsPlaying };
 };
 
+const useLocalSettings = () => {
+  const [settings, setSettings] = useState<ViewSettings>(DEFAULT_VIEW_SETTINGS);
+
+  // const [modHiddenEnabled, setModHiddenEnabled] = useState(true);
+
+  return {
+    settings,
+    toggleHidden: () => setSettings((prevState) => ({ ...prevState, modHidden: !prevState.modHidden })),
+  };
+};
+
 export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
-  const [modHiddenEnabled, setModHiddenEnabled] = useState(true);
+  const { bluePrintId, replayId, skinId } = props;
   // Times
   const { gameClock, currentTime, isPlaying, toggleIsPlaying } = useGameClock();
   const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
@@ -88,6 +106,22 @@ export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
   const performanceMonitor = usePerformanceMonitor({});
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  const { settings, toggleHidden } = useLocalSettings();
+  const managers = useOsuExpressManagers();
+  const { blueprintManager, replayManager, skinManager } = managers as OsuExpressManagers;
+
+  useEffect(() => {
+    if (!gameApp.current || !skinId) return;
+    (async function () {
+      const skin = await skinManager.loadSkin(skinId);
+      gameApp.current?.applySkin(skin);
+    })();
+  }, [skinId, gameApp, skinManager]);
+
+  useEffect(() => {
+    gameApp.current?.applySettings(settings);
+  }, [gameApp, settings]);
+
   useEffect(() => {
     if (canvas.current) {
       const app = new PIXI.Application({ view: canvas.current, antialias: true });
@@ -96,9 +130,27 @@ export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
     if (containerRef.current) {
       containerRef.current?.appendChild(performanceMonitor.dom);
     }
-  }, [gameClock]);
+  }, [gameClock, containerRef, gameApp, canvas, performanceMonitor]);
 
-  console.log("timHMS", timeHMS);
+  useEffect(() => {
+    if (!bluePrintId || !gameApp.current) {
+      return;
+    }
+    (async function () {
+      console.log(`Loading beatmapId=${bluePrintId}`);
+      const beatmap = await blueprintManager.loadBlueprint(bluePrintId);
+      gameApp.current?.applyBeatmapScenario(beatmap, []);
+      gameApp.current?.initializeTicker();
+    })();
+  }, [bluePrintId, gameApp, blueprintManager]);
+
+  const handleSeekTo = useCallback(
+    (percentage) => {
+      const t = percentage * maxTime;
+      gameClock.current.seekTo(t);
+    },
+    [maxTime, gameClock],
+  );
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
@@ -115,14 +167,14 @@ export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
             <span className={"text-gray-500 text-xs"}>.{timeMS}</span>
           </span>
           <div className={"flex-1"}>
-            <Playbar loadedPercentage={loadedPercentage} />
+            <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} />
           </div>
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
-          <button className={"w-10 -mb-1"} onClick={() => setModHiddenEnabled(!modHiddenEnabled)}>
+          <button className={"w-10 -mb-1"} onClick={toggleHidden}>
             <img
               src={modHidden}
               alt={"ModHidden"}
-              className={`filter ${modHiddenEnabled ? "grayscale-0" : "grayscale"} `}
+              className={`filter ${settings.modHidden ? "grayscale-0" : "grayscale"} `}
             />
           </button>
           <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>1x</button>

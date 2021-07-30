@@ -24,8 +24,8 @@ export class OsuExpressReplayManager implements ReplayManager {
   }
 
   async loadReplay(replayName: string): Promise<OsuReplay> {
-    // const url = urljoin(this.osuExpressUrl, "api", "replays", "exported", replayName);
-    const url = "";
+    const url = [this.osuExpressUrl, "api", "replays", "exported", replayName].join("/");
+    // const url = "";
     const res = (await axios
       .get(url)
       .then((value) => value.data)
