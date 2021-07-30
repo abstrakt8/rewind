@@ -37,10 +37,7 @@
       "tags": [],
       "implicitDependencies": ["feature-replay-viewer"]
     },
-    "osu-osu-skin-local": {
-      "tags": []
-    },
-    "osu-skin-local": {
+    "osu-skin": {
       "tags": []
     },
     "ui": {

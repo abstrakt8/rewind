@@ -129,22 +129,22 @@
         }
       }
     },
-    "osu-skin-local": {
-      "root": "libs/osu/skin-local",
-      "sourceRoot": "libs/osu/skin-local/src",
+    "osu-skin": {
+      "root": "libs/osu/skin",
+      "sourceRoot": "libs/osu/skin/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/osu/skin-local/**/*.ts"]
+            "lintFilePatterns": ["libs/osu/skin/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu/skin-local"],
+          "outputs": ["coverage/libs/osu/skin"],
           "options": {
-            "jestConfig": "libs/osu/skin-local/jest.config.js",
+            "jestConfig": "libs/osu/skin/jest.config.js",
             "passWithNoTests": true
           }
         }
