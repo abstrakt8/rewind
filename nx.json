@@ -37,6 +37,9 @@
       "tags": [],
       "implicitDependencies": ["feature-replay-viewer"]
     },
+    "osu-core": {
+      "tags": []
+    },
     "osu-local-db-reader": {
       "tags": []
     },

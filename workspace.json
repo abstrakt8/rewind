@@ -129,6 +129,27 @@
         }
       }
     },
+    "osu-core": {
+      "root": "libs/osu/core",
+      "sourceRoot": "libs/osu/core/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/osu/core/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/osu/core"],
+          "options": {
+            "jestConfig": "libs/osu/core/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "osu-local-db-reader": {
       "root": "libs/osu-local/db-reader",
       "sourceRoot": "libs/osu-local/db-reader/src",
