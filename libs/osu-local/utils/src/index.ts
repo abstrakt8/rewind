@@ -1,3 +1,3 @@
-export * from "./lib/dates";
-export * from "./lib/files";
-export * from "./lib/stable";
+export * from "./dates";
+export * from "./files";
+export * from "./stable";
