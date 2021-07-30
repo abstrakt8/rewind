@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Playbar } from "@rewind/ui";
 import modHidden from "../../assets/mod_hidden.cfc32448.png";
 import styled from "styled-components";
+import Playbar from "./playbar";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {}
@@ -68,7 +68,7 @@ export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
             <span className={"text-gray-500 text-xs"}>.027</span>
           </span>
           <div className={"flex-1"}>
-            <Playbar></Playbar>
+            <Playbar />
           </div>
           <span className={"self-center select-all"}>4:32</span>
           <button className={"w-10 -mb-1"} onClick={() => setModHiddenEnabled(!modHiddenEnabled)}>

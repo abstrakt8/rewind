@@ -55,13 +55,6 @@
     "osu-skin": {
       "tags": []
     },
-    "ui": {
-      "tags": []
-    },
-    "ui-e2e": {
-      "tags": [],
-      "implicitDependencies": ["ui"]
-    },
     "web": {
       "tags": []
     },
