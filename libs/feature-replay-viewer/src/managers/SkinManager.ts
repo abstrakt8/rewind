@@ -2,7 +2,7 @@ import { Skin, SkinTexturesByKey } from "../skins/Skin";
 import { Loader, ILoaderResource } from "@pixi/loaders";
 import { Texture } from "pixi.js";
 import axios from "axios";
-import { SkinConfig, SkinTextures } from "osu-skin";
+import { SkinConfig, SkinTextures } from "@rewind/osu/skin";
 import urljoin = require("url-join");
 
 // Asks from osu-express

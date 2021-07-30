@@ -1,9 +1,9 @@
-import { OsuClassicHitCircleAreaSettings } from "osu-canvas";
-import { HitCircle } from "osu-lib";
+import { OsuClassicHitCircleAreaSettings } from "@rewind/osu-pixi/classic-components";
+import { HitCircle } from "@rewind/osu/core";
 import { Skin } from "../skins/Skin";
-import { SkinTextures } from "osu-skin";
-import { OsuClassicApproachCircleSettings } from "osu-canvas";
-import { HitResult } from "osu-canvas";
+import { SkinTextures } from "@rewind/osu/skin";
+import { OsuClassicApproachCircleSettings } from "@rewind/osu-pixi/classic-components";
+import { HitResult } from "@rewind/osu-pixi/classic-components";
 
 export function settingsHitCircleArea(s: {
   hitCircle: HitCircle;

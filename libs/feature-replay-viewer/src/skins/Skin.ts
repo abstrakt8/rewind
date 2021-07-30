@@ -1,7 +1,7 @@
-import { rgbToInt } from "osu-math";
+import { rgbToInt } from "@rewind/osu/math";
 import { Texture } from "@pixi/core";
-import { getComboFontKeys, getDefaultSkinConfig, HIT_CIRCLE_FONT, SkinTextures } from "osu-skin";
-import { SkinConfig } from "osu-skin";
+import { getComboFontKeys, getDefaultSkinConfig, HIT_CIRCLE_FONT, SkinTextures } from "@rewind/osu/skin";
+import { SkinConfig } from "@rewind/osu/skin";
 
 export type SkinTexturesByKey = Partial<Record<SkinTextures, Texture[]>>;
 

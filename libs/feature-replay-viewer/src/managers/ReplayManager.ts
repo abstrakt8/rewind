@@ -1,6 +1,6 @@
 import axios from "axios";
-import { fromRawToReplay, RawReplayData } from "osu-lib";
-import { ReplayFrame } from "osu-lib";
+import { fromRawToReplay, RawReplayData } from "@rewind/osu/core";
+import { ReplayFrame } from "@rewind/osu/core";
 import urljoin = require("url-join");
 
 export type OsuReplay = {

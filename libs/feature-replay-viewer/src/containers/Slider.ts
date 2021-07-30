@@ -1,7 +1,7 @@
 import { Skin } from "../skins/Skin";
-import { SliderBodySettings } from "osu-canvas";
-import { Slider } from "osu-lib";
-import { RGB } from "osu-math";
+import { SliderBodySettings } from "@rewind/osu-pixi/classic-components";
+import { Slider } from "@rewind/osu/core";
+import { RGB } from "@rewind/osu/math";
 
 export function sliderBodySetting(s: {
   skin: Skin;

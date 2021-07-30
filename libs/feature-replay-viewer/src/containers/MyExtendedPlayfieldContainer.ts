@@ -1,7 +1,7 @@
 import { Container, Sprite, Texture } from "pixi.js";
-import { OsuClassicNumber } from "osu-canvas/lib/drawables/classic/OsuClassicNumber";
+import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { Skin } from "../skins/Skin";
-import { ReplayStateTimeMachine } from "osu-lib";
+import { ReplayStateTimeMachine } from "@rewind/osu/core";
 
 // Default field size
 export const OSU_PLAYFIELD_BASE_X = 512;
@@ -67,7 +67,7 @@ export class MyExtendedPlayfieldContainer {
     // Set it to the center
     this.playfield.position.set(
       (widthInPx - OSU_PLAYFIELD_BASE_X * scaling) / 2,
-      (heightInPx - OSU_PLAYFIELD_BASE_Y * scaling) / 2
+      (heightInPx - OSU_PLAYFIELD_BASE_Y * scaling) / 2,
     );
   }
 

@@ -1,4 +1,4 @@
-import { Position, Vec2 } from "osu-math";
+import { Position, Vec2 } from "@rewind/osu/math";
 
 // Maybe this is slow because of atan2() calculation
 export function sliderRepeatAngle(curve: Position[], isRepeatAtEnd: boolean): number {

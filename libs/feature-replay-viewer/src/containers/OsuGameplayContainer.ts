@@ -8,7 +8,7 @@ import {
   Slider,
   SliderCheckPoint,
   SliderCheckPointType,
-} from "osu-lib";
+} from "@rewind/osu/core";
 import {
   OsuClassicApproachCircle,
   OsuClassicCursor,
@@ -17,13 +17,13 @@ import {
   OsuClassicSliderBody,
   PlayfieldBorder,
   SliderTextureManager,
-} from "osu-canvas";
+} from "@rewind/osu-pixi/classic-components";
 import { Skin } from "../skins/Skin";
 import { settingsApproachCircle, settingsHitCircleArea } from "./HitCircle";
 import { sliderBodySetting } from "./Slider";
-import { SkinTextures } from "osu-skin";
+import { SkinTextures } from "@rewind/osu/skin";
 import { findIndexInReplayAtTime, findPositionInReplayAtTime } from "../utils/Replay";
-import { OsuClassicSliderRepeat } from "osu-canvas/lib/drawables/classic/OsuClassicSliderRepeat";
+import { OsuClassicSliderRepeat } from "@rewind/osu-pixi/classic-components";
 import { sliderRepeatAngle } from "../utils/Sliders";
 import { DEFAULT_VIEW_SETTINGS, ViewSettings } from "../ViewSettings";
 
@@ -202,7 +202,8 @@ export class OsuGameplayContainer {
     }
     removeIds.forEach((id) => {
       const slider = this.sliderBodyPool.get(id) as OsuClassicSliderBody;
-      slider.dispose();
+      // TODO: Dispose
+      // slider.dispose();
       this.sliderBodyPool.delete(id);
     });
     this.sliderBodyProcessed.clear();

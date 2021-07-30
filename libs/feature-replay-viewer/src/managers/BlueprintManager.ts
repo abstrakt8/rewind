@@ -1,5 +1,5 @@
-import { OsuBlueprintParser } from "osu-lib";
-import { Blueprint } from "osu-lib";
+import { OsuBlueprintParser } from "@rewind/osu/core";
+import { Blueprint } from "@rewind/osu/core";
 import axios from "axios";
 
 export interface BlueprintManager {

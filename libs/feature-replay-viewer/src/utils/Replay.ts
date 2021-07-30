@@ -1,5 +1,5 @@
-import { OsuAction, ReplayFrame } from "osu-lib";
-import { Position, Vec2 } from "osu-math";
+import { OsuAction, ReplayFrame } from "@rewind/osu/core";
+import { Position, Vec2 } from "@rewind/osu/math";
 
 export function findIndexInReplayAtTime(replay: ReplayFrame[], time: number): number {
   // TODO: Optimize with binary search

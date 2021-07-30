@@ -3,10 +3,12 @@ export { ExtendedPlayfieldContainer } from "./playfield/ExtendedPlayfieldContain
 
 export * from "./hitobjects/OsuClassicHitCircleArea";
 export * from "./hitobjects/OsuClassicApproachCircle";
-export * from "./hitobjects/OsuClassicApproachCircle";
 export * from "./hitobjects/OsuClassicSliderBody";
+export * from "./hitobjects/OsuClassicSliderRepeat";
 export * from "./hitobjects/OsuClassicSliderBall";
+// export * from "./hitobjects/OsuClassicSliderTick";
 export * from "./hitobjects/OsuClassicCursor";
+export * from "./hitobjects/OsuClassicNumber";
 export * from "./DrawableSettings";
 
 export * from "./managers/SliderTextureManager";
