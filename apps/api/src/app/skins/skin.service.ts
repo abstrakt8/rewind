@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { SkinFolderReader } from "@rewind/osu/skin-local";
+import { SkinFolderReader } from "@rewind/osu-local/skin-reader";
 import { Skin } from "./skin.model";
 
 @Injectable()
