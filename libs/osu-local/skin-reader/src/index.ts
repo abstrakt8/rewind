@@ -1,2 +1,2 @@
-export * from "./lib/SkinReader";
-export * from "./lib/SkinFolderReader";
+export * from "./SkinReader";
+export * from "./SkinFolderReader";
