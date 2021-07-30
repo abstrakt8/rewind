@@ -129,6 +129,27 @@
         }
       }
     },
+    "osu-skin-local": {
+      "root": "libs/osu/skin-local",
+      "sourceRoot": "libs/osu/skin-local/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/osu/skin-local/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/osu/skin-local"],
+          "options": {
+            "jestConfig": "libs/osu/skin-local/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "ui": {
       "root": "libs/ui",
       "sourceRoot": "libs/ui/src",

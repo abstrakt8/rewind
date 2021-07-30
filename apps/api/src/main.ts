@@ -14,6 +14,7 @@ async function bootstrap() {
   const globalPrefix = "api";
   app.setGlobalPrefix(globalPrefix);
   app.useStaticAssets("E:\\osu!\\Skins", { prefix: "/static/skins" });
+  app.useStaticAssets("E:\\osu!\\Songs", { prefix: "/static/songs" });
   app.useStaticAssets("E:\\osu!\\Replays", { prefix: "/static/replays" });
   app.useStaticAssets("E:\\osu!\\Data\\r", { prefix: "/static/replays" });
   const port = process.env.PORT || 7271;
