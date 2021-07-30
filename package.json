@@ -41,6 +41,7 @@
     "document-register-element": "1.13.1",
     "graphql": "^15.5.1",
     "graphql-tools": "^8.0.0",
+    "pixi.js": "^6.0.4",
     "postcss": "^8.3.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",

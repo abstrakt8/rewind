@@ -19,11 +19,12 @@
       "@rewind/osu-local/db-reader": ["libs/osu-local/db-reader/src/index.ts"],
       "@rewind/osu-local/skin-reader": ["libs/osu-local/skin-reader/src/index.ts"],
       "@rewind/osu-local/utils": ["libs/osu-local/utils/src/index.ts"],
+      "@rewind/osu-pixi/classic-components": ["libs/osu-pixi/classic-components/src/index.ts"],
       "@rewind/osu/core": ["libs/osu/core/src/index.ts"],
       "@rewind/osu/math": ["libs/osu/math/src/index.ts"],
       "@rewind/osu/skin": ["libs/osu/skin/src/index.ts"],
       "@rewind/ui": ["libs/ui/src/index.ts"],
-      "node-osr" : ["libs/@types/node-osr/index.d.ts"]
+      "node-osr": ["libs/@types/node-osr/index.d.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

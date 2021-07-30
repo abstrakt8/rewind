@@ -234,6 +234,27 @@
         }
       }
     },
+    "osu-pixi-classic-components": {
+      "root": "libs/osu-pixi/classic-components",
+      "sourceRoot": "libs/osu-pixi/classic-components/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/osu-pixi/classic-components/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/osu-pixi/classic-components"],
+          "options": {
+            "jestConfig": "libs/osu-pixi/classic-components/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "osu-skin": {
       "root": "libs/osu/skin",
       "sourceRoot": "libs/osu/skin/src",

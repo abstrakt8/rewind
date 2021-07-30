@@ -8,7 +8,10 @@
 
 `osu-local` on the other hand contains node.js libraries that focus on retrieving the osu! data.
 
+`osu-pixi` contains libraries that deal with the rendering of the game with PixiJS.
+
 ## Generating a new library
 
 * `osu`: `@nrwl/workspace:library`
 * `osu-local`: `nrwl/nodejs:library`
+* `osu-pixi`: `@nrwl/workspace:library`
