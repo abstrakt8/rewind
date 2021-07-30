@@ -16,6 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@rewind/feature-replay-viewer": ["libs/feature-replay-viewer/src/index.ts"],
+      "@rewind/osu-local/skin-reader": ["libs/osu-local/skin-reader/src/index.ts"],
+      "@rewind/osu-local/utils": ["libs/osu-local/utils/src/index.ts"],
       "@rewind/osu/skin": ["libs/osu/skin/src/index.ts"],
       "@rewind/ui": ["libs/ui/src/index.ts"]
     }
