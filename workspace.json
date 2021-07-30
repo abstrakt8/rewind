@@ -171,6 +171,27 @@
         }
       }
     },
+    "osu-math": {
+      "root": "libs/osu/math",
+      "sourceRoot": "libs/osu/math/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/osu/math/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/osu/math"],
+          "options": {
+            "jestConfig": "libs/osu/math/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "osu-skin": {
       "root": "libs/osu/skin",
       "sourceRoot": "libs/osu/skin/src",
