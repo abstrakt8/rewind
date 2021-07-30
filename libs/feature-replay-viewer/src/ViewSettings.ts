@@ -27,7 +27,6 @@ export interface ViewSettings {
   osuCursor: OsuCursorSetting;
   analysisCursor: AnalysisCursorSetting;
   skinId: string;
-
   // playbackSpeed: number;
 }
 

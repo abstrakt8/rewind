@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import modHidden from "../../assets/mod_hidden.cfc32448.png";
+import * as PIXI from "pixi.js";
 import styled from "styled-components";
 import Playbar from "./playbar";
+import { PerformanceGameClock } from "../clocks/PerformanceGameClock";
+import { useInterval } from "../utils/useInterval";
+import { formatReplayTime } from "../utils/time";
+import { ReplayViewerApp } from "../app/ReplayViewerApp";
+import { usePerformanceMonitor } from "../utils/usePerformanceMonitor";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {}
@@ -49,28 +55,69 @@ const SidebarBox = (props: { children: React.ReactNode }) => {
   return <div className={"bg-gray-700 rounded px-1 py-2 flex flex-col items-center gap-2 px-4"}>{props.children}</div>;
 };
 
+const useGameClock = () => {
+  const gameClock = useRef(new PerformanceGameClock());
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const toggleIsPlaying = useCallback(() => {
+    if (gameClock.current.isPlaying) gameClock.current.pause();
+    else gameClock.current.start();
+  }, []);
+  useEffect(() => {
+    gameClock.current.start();
+  }, []);
+  useInterval(() => {
+    setCurrentTime(gameClock.current.getCurrentTime());
+    setIsPlaying(gameClock.current.isPlaying);
+  }, 16);
+
+  return { gameClock, currentTime, isPlaying, toggleIsPlaying };
+};
+
 export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
-  const [isPlaying, setPlaying] = useState(true);
   const [modHiddenEnabled, setModHiddenEnabled] = useState(true);
+  // Times
+  const { gameClock, currentTime, isPlaying, toggleIsPlaying } = useGameClock();
+  const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
+  const maxTime = 5 * 60 * 1000;
+  const maxTimeHMS = formatReplayTime(maxTime);
+  const loadedPercentage = currentTime / maxTime;
+  // Canvas / Game
+  const canvas = useRef<HTMLCanvasElement | null>(null);
+  const gameApp = useRef<ReplayViewerApp | null>(null);
+  const performanceMonitor = usePerformanceMonitor({});
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (canvas.current) {
+      const app = new PIXI.Application({ view: canvas.current, antialias: true });
+      gameApp.current = new ReplayViewerApp({ clock: gameClock.current, app, performanceMonitor });
+    }
+    if (containerRef.current) {
+      containerRef.current?.appendChild(performanceMonitor.dom);
+    }
+  }, [gameClock]);
+
+  console.log("timHMS", timeHMS);
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
       <div className={"flex flex-col gap-4 flex-1 h-full"}>
-        <div className={"flex-1 overflow-auto rounded"}>
-          <canvas className={"w-full h-full bg-black"} />
+        <div className={"flex-1 overflow-auto rounded relative"} ref={containerRef}>
+          <canvas className={"w-full h-full bg-black"} ref={canvas} />
         </div>
         <div className={"flex flex-row gap-4 flex-none bg-gray-700  p-4 rounded align-middle"}>
-          <button className={"transition-colors hover:text-gray-400"}>
+          <button className={"transition-colors hover:text-gray-400"} onClick={toggleIsPlaying}>
             {isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <span className={"self-center select-all"}>
-            <span className={""}>2:03</span>
-            <span className={"text-gray-500 text-xs"}>.027</span>
+            <span className={""}>{timeHMS}</span>
+            <span className={"text-gray-500 text-xs"}>.{timeMS}</span>
           </span>
           <div className={"flex-1"}>
-            <Playbar />
+            <Playbar loadedPercentage={loadedPercentage} />
           </div>
-          <span className={"self-center select-all"}>4:32</span>
+          <span className={"self-center select-all"}>{maxTimeHMS}</span>
           <button className={"w-10 -mb-1"} onClick={() => setModHiddenEnabled(!modHiddenEnabled)}>
             <img
               src={modHidden}

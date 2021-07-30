@@ -1,9 +1,9 @@
-import { GameClock } from "./clocks/GameClock";
+import { GameClock } from "../clocks/GameClock";
 import { ExtendedPlayfieldContainer, PlayfieldBorder } from "@rewind/osu-pixi/classic-components";
 import * as PIXI from "pixi.js";
 import { IApplicationOptions } from "pixi.js";
 import { Container } from "@pixi/display";
-import { PerformanceGameClock } from "./clocks/PerformanceGameClock";
+import { PerformanceGameClock } from "../clocks/PerformanceGameClock";
 
 // TODO: Maybe move this
 export abstract class TestApp extends PIXI.Application {

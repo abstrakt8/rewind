@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
-import { GameClock } from "./clocks/GameClock";
+import { GameClock } from "../clocks/GameClock";
 import { BasicSliderTextureRenderer, PlayfieldBorder, SliderTextureManager } from "@rewind/osu-pixi/classic-components";
-import { OsuReplay } from "./managers/ReplayManager";
+import { OsuReplay } from "../managers/ReplayManager";
 import {
   BeatmapBuilder,
   Blueprint,
@@ -10,12 +10,12 @@ import {
   NoteLockStyle,
   StaticBeatmap,
 } from "@rewind/osu/core";
-import { OsuGameplayContainer } from "./containers/OsuGameplayContainer";
-import { PerformanceMonitor } from "./utils/PerformanceMonitor";
-import { Skin } from "./skins/Skin";
-import { ViewSettings } from "./ViewSettings";
+import { OsuGameplayContainer } from "../containers/OsuGameplayContainer";
+import { PerformanceMonitor } from "../utils/PerformanceMonitor";
+import { Skin } from "../skins/Skin";
+import { ViewSettings } from "../ViewSettings";
 import { hitWindowsForOD } from "@rewind/osu/math";
-import { MyExtendedPlayfieldContainer } from "./containers/MyExtendedPlayfieldContainer";
+import { MyExtendedPlayfieldContainer } from "../containers/MyExtendedPlayfieldContainer";
 
 /**
  * One beatmap / replay that can be viewed.

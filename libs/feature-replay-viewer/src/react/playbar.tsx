@@ -5,6 +5,7 @@ import useMouse from "@react-hook/mouse-position";
 
 /* eslint-disable-next-line */
 export interface PlaybarProps {
+  loadedPercentage: number;
   onClick?: (x: number) => unknown;
 }
 
@@ -54,8 +55,7 @@ function Shade(props: { width: number; color: number }) {
 }
 
 export function Playbar(props: PlaybarProps) {
-  const { onClick } = props;
-  const loadedPercentage = 0.31432345;
+  const { onClick, loadedPercentage } = props;
   const radius = 0.001;
   const heights = 0.727;
   const ref = useRef(null);

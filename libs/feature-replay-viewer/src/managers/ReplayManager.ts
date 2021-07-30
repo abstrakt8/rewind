@@ -1,7 +1,6 @@
 import axios from "axios";
 import { fromRawToReplay, RawReplayData } from "@rewind/osu/core";
 import { ReplayFrame } from "@rewind/osu/core";
-import urljoin = require("url-join");
 
 export type OsuReplay = {
   gameVersion: number;
@@ -25,7 +24,8 @@ export class OsuExpressReplayManager implements ReplayManager {
   }
 
   async loadReplay(replayName: string): Promise<OsuReplay> {
-    const url = urljoin(this.osuExpressUrl, "api", "replays", "exported", replayName);
+    // const url = urljoin(this.osuExpressUrl, "api", "replays", "exported", replayName);
+    const url = "";
     const res = (await axios
       .get(url)
       .then((value) => value.data)

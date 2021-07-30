@@ -5,5 +5,6 @@ export interface GameClock {
   pause: () => void;
   seekTo: (time: number) => void;
 
+  currentSpeed: number;
   setSpeed(speed: number): void;
 }

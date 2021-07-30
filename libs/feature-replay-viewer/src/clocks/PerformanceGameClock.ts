@@ -41,4 +41,8 @@ export class PerformanceGameClock implements GameClock {
     this.playbackRate = speed;
     if (wasPlaying) this.start();
   }
+
+  get currentSpeed(): number {
+    return this.playbackRate;
+  }
 }
