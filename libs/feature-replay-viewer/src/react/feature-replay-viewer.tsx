@@ -10,12 +10,14 @@ import { ReplayViewerApp } from "../app/ReplayViewerApp";
 import { usePerformanceMonitor } from "../utils/usePerformanceMonitor";
 import { DEFAULT_VIEW_SETTINGS, ViewSettings } from "../ViewSettings";
 import { OsuExpressManagers, useOsuExpressManagers } from "../contexts/OsuExpressContext";
+import { useMobXContext } from "../contexts/MobXContext";
+import { observer } from "mobx-react-lite";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
-  bluePrintId: string;
-  replayId?: string;
-  skinId: string;
+  // bluePrintId: string;
+  // replayId?: string;
+  // skinId: string;
   // replays: OsuReplay[];
 }
 
@@ -63,94 +65,79 @@ const SidebarBox = (props: { children: React.ReactNode }) => {
 };
 
 const useGameClock = () => {
-  const gameClock = useRef(new PerformanceGameClock());
+  const { gameClock } = useMobXContext();
   const [currentTime, setCurrentTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const toggleIsPlaying = useCallback(() => {
-    if (gameClock.current.isPlaying) gameClock.current.pause();
-    else gameClock.current.start();
-  }, []);
-  useEffect(() => {
-    gameClock.current.start();
-  }, []);
+
   useInterval(() => {
-    setCurrentTime(gameClock.current.getCurrentTime());
-    setIsPlaying(gameClock.current.isPlaying);
+    setCurrentTime(gameClock.getCurrentTime());
   }, 16);
 
-  return { gameClock, currentTime, isPlaying, toggleIsPlaying };
+  return { gameClock, currentTime };
 };
 
-const useLocalSettings = () => {
-  const [settings, setSettings] = useState<ViewSettings>(DEFAULT_VIEW_SETTINGS);
-
-  // const [modHiddenEnabled, setModHiddenEnabled] = useState(true);
-
-  return {
-    settings,
-    toggleHidden: () => setSettings((prevState) => ({ ...prevState, modHidden: !prevState.modHidden })),
-  };
+const EfficientPlaybar = () => {
+  const { gameClock, currentTime } = useGameClock();
+  const maxTime = 5 * 60 * 1000;
+  const loadedPercentage = currentTime / maxTime;
+  const handleSeekTo = useCallback(
+    (percentage) => {
+      const t = percentage * maxTime;
+      gameClock.seekTo(t);
+    },
+    [maxTime, gameClock],
+  );
+  return <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} />;
 };
 
-export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
-  const { bluePrintId, replayId, skinId } = props;
-  // Times
-  const { gameClock, currentTime, isPlaying, toggleIsPlaying } = useGameClock();
+export const CurrentTime = () => {
+  const { currentTime } = useGameClock();
   const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
+
+  return (
+    <span className={"self-center select-all"}>
+      <span className={""}>{timeHMS}</span>
+      <span className={"text-gray-500 text-xs"}>.{timeMS}</span>
+    </span>
+  );
+};
+
+export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) => {
+  // Times
+  // const { isPlaying, toggleIsPlaying } = useGameClock();
+
+  // const isPlaying = true;
+  // const toggleIsPlaying = () => {};
+  // const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
   const maxTime = 5 * 60 * 1000;
   const maxTimeHMS = formatReplayTime(maxTime);
-  const loadedPercentage = currentTime / maxTime;
   // Canvas / Game
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const gameApp = useRef<ReplayViewerApp | null>(null);
   const performanceMonitor = usePerformanceMonitor({});
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const { settings, toggleHidden } = useLocalSettings();
-  const managers = useOsuExpressManagers();
-  const { blueprintManager, replayManager, skinManager } = managers as OsuExpressManagers;
-
+  const { scenario, renderSettings, gameClock } = useMobXContext();
+  //
+  console.log("Rendered now");
   useEffect(() => {
-    if (!gameApp.current || !skinId) return;
-    (async function () {
-      const skin = await skinManager.loadSkin(skinId);
-      gameApp.current?.applySkin(skin);
-    })();
-  }, [skinId, gameApp, skinManager]);
-
-  useEffect(() => {
-    gameApp.current?.applySettings(settings);
-  }, [gameApp, settings]);
-
-  useEffect(() => {
+    console.log("here agian LOL");
     if (canvas.current) {
-      const app = new PIXI.Application({ view: canvas.current, antialias: true });
-      gameApp.current = new ReplayViewerApp({ clock: gameClock.current, app, performanceMonitor });
+      gameApp.current = new ReplayViewerApp({
+        clock: gameClock,
+        view: canvas.current,
+        performanceMonitor,
+        scenario,
+        renderSettings,
+      });
     }
     if (containerRef.current) {
       containerRef.current?.appendChild(performanceMonitor.dom);
     }
-  }, [gameClock, containerRef, gameApp, canvas, performanceMonitor]);
-
-  useEffect(() => {
-    if (!bluePrintId || !gameApp.current) {
-      return;
-    }
-    (async function () {
-      console.log(`Loading beatmapId=${bluePrintId}`);
-      const beatmap = await blueprintManager.loadBlueprint(bluePrintId);
-      gameApp.current?.applyBeatmapScenario(beatmap, []);
-      gameApp.current?.initializeTicker();
-    })();
-  }, [bluePrintId, gameApp, blueprintManager]);
-
-  const handleSeekTo = useCallback(
-    (percentage) => {
-      const t = percentage * maxTime;
-      gameClock.current.seekTo(t);
-    },
-    [maxTime, gameClock],
-  );
+  }, [canvas, scenario, renderSettings, containerRef, gameApp, gameClock, performanceMonitor]);
+  const toggleGameClock = useCallback(() => {
+    if (gameClock.isPlaying) gameClock.pause();
+    else gameClock.start();
+  }, [gameClock, gameClock.isPlaying]);
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
@@ -158,23 +145,20 @@ export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
         <div className={"flex-1 overflow-auto rounded relative"} ref={containerRef}>
           <canvas className={"w-full h-full bg-black"} ref={canvas} />
         </div>
-        <div className={"flex flex-row gap-4 flex-none bg-gray-700  p-4 rounded align-middle"}>
-          <button className={"transition-colors hover:text-gray-400"} onClick={toggleIsPlaying}>
-            {isPlaying ? <PauseIcon /> : <PlayIcon />}
+        <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
+          <button className={"transition-colors hover:text-gray-400"} onClick={toggleGameClock}>
+            {gameClock.isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
-          <span className={"self-center select-all"}>
-            <span className={""}>{timeHMS}</span>
-            <span className={"text-gray-500 text-xs"}>.{timeMS}</span>
-          </span>
+          <CurrentTime />
           <div className={"flex-1"}>
-            <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} />
+            <EfficientPlaybar />
           </div>
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
-          <button className={"w-10 -mb-1"} onClick={toggleHidden}>
+          <button className={"w-10 -mb-1"} onClick={() => renderSettings.toggleModHidden()}>
             <img
               src={modHidden}
               alt={"ModHidden"}
-              className={`filter ${settings.modHidden ? "grayscale-0" : "grayscale"} `}
+              className={`filter ${renderSettings.modHidden ? "grayscale-0" : "grayscale"} `}
             />
           </button>
           <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>1x</button>
@@ -220,9 +204,10 @@ export function FeatureReplayViewer(props: FeatureReplayViewerProps) {
             <span className={"font-mono bg-gray-800 px-2"}>f</span>
           </ShortcutHelper>
         </SidebarBox>
+        <SidebarBox>Hmm</SidebarBox>
       </div>
     </div>
   );
-}
+});
 
 export default FeatureReplayViewer;

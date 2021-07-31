@@ -1,4 +1,4 @@
-import { Skin, SkinTexturesByKey } from "../skins/Skin";
+import { Skin, SkinTexturesByKey } from "./Skin";
 import { Loader, ILoaderResource } from "@pixi/loaders";
 import { Texture } from "pixi.js";
 import axios from "axios";
@@ -88,6 +88,6 @@ export class OsuExpressSkinManager implements SkinManager {
       textures[file.key]?.push(loader.resources[file.name].texture as Texture);
     });
 
-    return new Skin(config, textures);
+    return (this.skins[folderPath] = new Skin(config, textures));
   }
 }

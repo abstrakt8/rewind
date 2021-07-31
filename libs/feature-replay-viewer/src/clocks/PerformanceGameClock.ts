@@ -1,4 +1,5 @@
 import { GameClock } from "./GameClock";
+import { makeAutoObservable } from "mobx";
 
 /**
  * A simple clock implementation that uses the JS `performance.now()`
@@ -9,6 +10,10 @@ export class PerformanceGameClock implements GameClock {
 
   public playbackRate = 1;
   public isPlaying = false;
+
+  constructor() {
+    makeAutoObservable(this);
+  }
 
   start() {
     this._lastStartTime = performance.now();

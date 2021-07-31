@@ -22,7 +22,7 @@ export class MyExtendedPlayfieldContainer {
   backgroundSprite: Sprite;
   playfield: Container;
   foregroundHUD: Container;
-  skin: Skin;
+  skin: Skin; // TODO
 
   replayTimeMachine?: ReplayStateTimeMachine;
 

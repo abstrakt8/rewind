@@ -26,33 +26,51 @@ import { findIndexInReplayAtTime, findPositionInReplayAtTime } from "../utils/Re
 import { OsuClassicSliderRepeat } from "@rewind/osu-pixi/classic-components";
 import { sliderRepeatAngle } from "../utils/Sliders";
 import { DEFAULT_VIEW_SETTINGS, ViewSettings } from "../ViewSettings";
+import { RenderSettings } from "../stores/RenderSettings";
+import { Scenario } from "../stores/Scenario";
 
 export class OsuGameplayContainer {
-  viewSettings: ViewSettings;
-
   container: Container;
   playfieldBorder: PlayfieldBorder;
   hitObjectContainer: Container;
   approachCircles: Container;
   cursorContainer: Container;
 
-  skin: Skin = Skin.EMPTY;
-  hitObjects: OsuHitObject[] = [];
-  replayFrames: ReplayFrame[] = []; // no frames also means no cursor
-  replayTimeMachine?: ReplayStateTimeMachine;
-
   sliderBodyProcessed = new Set<string>();
   sliderBodyPool = new Map<string, OsuClassicSliderBody>();
   private replayState?: ReplayState;
 
-  constructor(playfieldBorder: PlayfieldBorder, private readonly sliderTextureManager: SliderTextureManager) {
-    this.viewSettings = DEFAULT_VIEW_SETTINGS;
+  constructor(
+    private readonly sliderTextureManager: SliderTextureManager,
+    private readonly renderSettings: RenderSettings,
+    private readonly scenario: Scenario,
+  ) {
     this.container = new Container();
-    this.playfieldBorder = playfieldBorder;
+    this.playfieldBorder = new PlayfieldBorder();
     this.hitObjectContainer = new Container();
     this.approachCircles = new Container();
     this.cursorContainer = new Container();
-    this.container.addChild(playfieldBorder, this.hitObjectContainer, this.approachCircles, this.cursorContainer);
+    this.container.addChild(this.playfieldBorder, this.hitObjectContainer, this.approachCircles, this.cursorContainer);
+  }
+
+  private get hitObjects(): OsuHitObject[] {
+    return this.scenario.beatmap?.hitObjects ?? [];
+  }
+
+  private get modHidden() {
+    return this.renderSettings.modHidden;
+  }
+
+  private get skin() {
+    return this.renderSettings.skin;
+  }
+
+  private get replayTimeMachine() {
+    return this.scenario.replayStateTimeMachine;
+  }
+
+  private get replayFrames() {
+    return this.scenario.replay?.frames ?? [];
   }
 
   // TODO: CACHING
@@ -62,10 +80,6 @@ export class OsuGameplayContainer {
 
   private getOsuClassicApproachCircle(id: string) {
     return new OsuClassicApproachCircle({});
-  }
-
-  private get modHidden() {
-    return this.viewSettings.modHidden;
   }
 
   private prepareHitCircle(gameTime: number, hitCircle: HitCircle) {
@@ -242,13 +256,14 @@ export class OsuGameplayContainer {
   prepareCursor(time: number) {
     this.cursorContainer.removeChildren();
 
-    if (this.viewSettings.osuCursor.enabled) {
+    if (this.renderSettings.osuCursor.enabled) {
       this.prepareOsuCursor(time);
     }
   }
 
   prepare(time: number) {
     if (this.skin === Skin.EMPTY) return;
+    // console.log("prepare time", time, this.hitObjects.length);
 
     if (this.replayTimeMachine !== undefined) {
       this.replayState = this.replayTimeMachine.replayStateAt(time);

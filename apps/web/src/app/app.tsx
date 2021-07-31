@@ -1,5 +1,7 @@
 import { FeatureReplayViewer } from "@rewind/feature-replay-viewer";
 import { OsuExpressProvider } from "../../../../libs/feature-replay-viewer/src/contexts/OsuExpressContext";
+import { useMobXContext } from "../../../../libs/feature-replay-viewer/src/contexts/MobXContext";
+import { useEffect } from "react";
 
 type Replay = {
   id: string;
@@ -24,7 +26,7 @@ const sunMoonId =
   "933630 Aether Realm - The Sun, The Moon, The Star/Aether Realm - The Sun, The Moon, The Star (ItsWinter) [Mourning Those Things I've Long Left Behind].osu";
 const sunMoonReplayId =
   "Varvalian - Aether Realm - The Sun, The Moon, The Star [Mourning Those Things I've Long Left Behind] (2019-05-15) Osu.osr";
-const chosenId = sunMoonId;
+const chosenBlueprintId = centipedeId;
 
 const ALL_BEATMAPS: Record<string, Beatmap> = {
   [akatsukiId]: {
@@ -58,6 +60,7 @@ const aristaSkinId = "- Aristia(Edit)+trail";
 const rafisSkinId = "Rafis 2018-03-26 HDDT";
 const millhioreLiteId = "Millhiore Lite"; // -> buggy because we don't have default skin
 const kasugaMirai = "Kasuga Mirai";
+const chosenSkinId = kasugaMirai;
 
 const ALL_SKINS: Record<string, LSkin> = {
   [aristaSkinId]: {
@@ -70,7 +73,13 @@ const ALL_SKINS: Record<string, LSkin> = {
 };
 
 export function App() {
-  return <FeatureReplayViewer bluePrintId={akatsukiId} skinId={kasugaMirai} />;
+  const { scenario, renderSettings } = useMobXContext();
+  useEffect(() => {
+    Promise.all([renderSettings.changeSkin(chosenSkinId), scenario.loadScenario(chosenBlueprintId)]).then(() => {
+      console.log(`Finished loading ${chosenBlueprintId} with skin ${chosenSkinId}`);
+    });
+  }, [scenario, chosenBlueprintId, chosenSkinId]);
+  return <FeatureReplayViewer />;
 }
 
 export default App;

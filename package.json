@@ -29,6 +29,7 @@
   },
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.4.1",
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/graphql": "^8.0.2",
@@ -45,6 +46,8 @@
     "document-register-element": "1.13.1",
     "graphql": "^15.5.1",
     "graphql-tools": "^8.0.0",
+    "mobx": "^6.3.2",
+    "mobx-react-lite": "^3.2.0",
     "parse-ms": "^3.0.0",
     "pixi.js": "^6.0.4",
     "postcss": "^8.3.6",

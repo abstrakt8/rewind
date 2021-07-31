@@ -1,15 +1,15 @@
-interface CursorSetting {
+export interface CursorSetting {
   scale: number;
   enabled: boolean;
   scaleWithCS: boolean;
 }
 
-interface OsuCursorSetting extends CursorSetting {
+export interface OsuCursorSetting extends CursorSetting {
   showTrail: boolean;
   // Maybe there will be a smooth cursor trail
 }
 
-interface AnalysisCursorSetting extends CursorSetting {
+export interface AnalysisCursorSetting extends CursorSetting {
   colorKey1: number;
   colorKey2: number;
   colorBothKeys: number;
@@ -26,7 +26,6 @@ export interface ViewSettings {
   modHidden: boolean;
   osuCursor: OsuCursorSetting;
   analysisCursor: AnalysisCursorSetting;
-  skinId: string;
   // playbackSpeed: number;
 }
 
@@ -51,5 +50,4 @@ export const DEFAULT_VIEW_SETTINGS: ViewSettings = {
     colorKey1: 0xaffede,
     colorKey2: 0xdeadbe,
   },
-  skinId: "DefaultSkin",
 };

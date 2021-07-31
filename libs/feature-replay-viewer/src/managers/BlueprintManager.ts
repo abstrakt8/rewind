@@ -14,7 +14,7 @@ export class OsuExpressBlueprintManager implements BlueprintManager {
 
   // TODO: Ofc with caching some point in time
   async loadBlueprint(beatmapFolderAndFile: string): Promise<Blueprint> {
-    const url = `${this.osuExpressUrl}/${beatmapFolderAndFile}`;
+    const url = `${this.osuExpressUrl}/static/songs/${beatmapFolderAndFile}`;
     const name = `beatmaps/${beatmapFolderAndFile}/osu`;
     const osuFile = (await axios
       .get(url)

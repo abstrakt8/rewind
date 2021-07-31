@@ -2,7 +2,7 @@
  * This whole application is designed to work with an osu-express app in the background.
  */
 import React, { createContext, useContext } from "react";
-import { OsuExpressSkinManager, SkinManager } from "../managers/SkinManager";
+import { OsuExpressSkinManager, SkinManager } from "../skins/SkinManager";
 import { OsuExpressReplayManager, ReplayManager } from "../managers/ReplayManager";
 import { BlueprintManager, OsuExpressBlueprintManager } from "../managers/BlueprintManager";
 
