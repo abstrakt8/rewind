@@ -26,6 +26,11 @@ export class PerformanceGameClock implements GameClock {
     this._lastStartTime = -1;
   }
 
+  togglePlaying() {
+    if (this.isPlaying) this.pause();
+    else this.start();
+  }
+
   private timePassedSinceStart() {
     return (performance.now() - this._lastStartTime) * this.playbackRate;
   }
