@@ -1,20 +1,12 @@
 import { Container } from "@pixi/display";
-import {
-  HitCircle,
-  OsuHitObject,
-  ReplayFrame,
-  ReplayState,
-  ReplayStateTimeMachine,
-  Slider,
-  SliderCheckPoint,
-  SliderCheckPointType,
-} from "@rewind/osu/core";
+import { HitCircle, OsuHitObject, ReplayState, Slider, SliderCheckPoint, SliderCheckPointType } from "@rewind/osu/core";
 import {
   OsuClassicApproachCircle,
   OsuClassicCursor,
   OsuClassicHitCircleArea,
   OsuClassicSliderBall,
   OsuClassicSliderBody,
+  OsuClassicSliderRepeat,
   PlayfieldBorder,
   SliderTextureManager,
 } from "@rewind/osu-pixi/classic-components";
@@ -23,11 +15,8 @@ import { settingsApproachCircle, settingsHitCircleArea } from "./HitCircle";
 import { sliderBodySetting } from "./Slider";
 import { SkinTextures } from "@rewind/osu/skin";
 import { findIndexInReplayAtTime, findPositionInReplayAtTime } from "../utils/Replay";
-import { OsuClassicSliderRepeat } from "@rewind/osu-pixi/classic-components";
 import { sliderRepeatAngle } from "../utils/Sliders";
-import { DEFAULT_VIEW_SETTINGS, ViewSettings } from "../ViewSettings";
-import { RenderSettings } from "../stores/RenderSettings";
-import { Scenario } from "../stores/Scenario";
+import { ReplayViewerContext } from "./ReplayViewerContext";
 
 export class OsuGameplayContainer {
   container: Container;
@@ -42,8 +31,7 @@ export class OsuGameplayContainer {
 
   constructor(
     private readonly sliderTextureManager: SliderTextureManager,
-    private readonly renderSettings: RenderSettings,
-    private readonly scenario: Scenario,
+    private readonly context: ReplayViewerContext,
   ) {
     this.container = new Container();
     this.playfieldBorder = new PlayfieldBorder();
@@ -54,23 +42,27 @@ export class OsuGameplayContainer {
   }
 
   private get hitObjects(): OsuHitObject[] {
-    return this.scenario.beatmap?.hitObjects ?? [];
+    return this.context.hitObjects;
+  }
+
+  private get view() {
+    return this.context.view;
   }
 
   private get modHidden() {
-    return this.renderSettings.modHidden;
+    return this.view.modHidden;
   }
 
   private get skin() {
-    return this.renderSettings.skin;
+    return this.context.skin;
   }
 
   private get replayTimeMachine() {
-    return this.scenario.replayStateTimeMachine;
+    return this.context.replayTimeMachine;
   }
 
   private get replayFrames() {
-    return this.scenario.replay?.frames ?? [];
+    return this.context.replay?.frames ?? [];
   }
 
   // TODO: CACHING
@@ -223,6 +215,7 @@ export class OsuGameplayContainer {
     this.sliderBodyProcessed.clear();
   }
 
+  // SO SLOW LOL
   prepareOsuCursor(time: number) {
     const cursor = new OsuClassicCursor();
     const hideCursorTrail = false;
@@ -256,7 +249,7 @@ export class OsuGameplayContainer {
   prepareCursor(time: number) {
     this.cursorContainer.removeChildren();
 
-    if (this.renderSettings.osuCursor.enabled) {
+    if (this.view.osuCursor.enabled) {
       this.prepareOsuCursor(time);
     }
   }

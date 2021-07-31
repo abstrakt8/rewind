@@ -2,6 +2,9 @@ import { Container, Sprite, Texture } from "pixi.js";
 import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { Skin } from "../skins/Skin";
 import { ReplayStateTimeMachine } from "@rewind/osu/core";
+import { RenderSettings } from "../stores/RenderSettings";
+import { Scenario } from "../stores/Scenario";
+import { ReplayViewerContext } from "./ReplayViewerContext";
 
 // Default field size
 export const OSU_PLAYFIELD_BASE_X = 512;
@@ -20,27 +23,29 @@ export class MyExtendedPlayfieldContainer {
 
   container: Container;
   backgroundSprite: Sprite;
-  playfield: Container;
   foregroundHUD: Container;
-  skin: Skin; // TODO
-
-  replayTimeMachine?: ReplayStateTimeMachine;
 
   // TODO: StatsContainer or similar
 
-  constructor(playfield: Container) {
+  constructor(private readonly playfield: Container, private readonly context: ReplayViewerContext) {
     this.container = new Container();
     this.foregroundHUD = new Container();
     // Texture will be given later
     this.backgroundSprite = new Sprite();
     this.backgroundSprite.anchor.set(0.5, 0.5);
 
-    this.playfield = playfield;
-    this.skin = Skin.EMPTY;
+    // this.skin = Skin.EMPTY;
 
     this.container.addChild(this.backgroundSprite);
     this.container.addChild(this.playfield);
     this.container.addChild(this.foregroundHUD);
+  }
+
+  get replayTimeMachine() {
+    return this.context.replayTimeMachine;
+  }
+  private get skin(): Skin {
+    return this.context.skin;
   }
 
   /**

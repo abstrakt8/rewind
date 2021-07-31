@@ -32,8 +32,15 @@ export class Scenario {
     private readonly renderSettings: RenderSettings,
     private readonly gameClock: GameClock,
   ) {
-    makeAutoObservable(this);
-    // makeObservable(this, { loadScenario: action, state: observable });
+    // makeAutoObservable(this);
+    makeObservable(this, {
+      loadScenario: action,
+      state: observable,
+      replay: observable,
+      blueprint: observable,
+      beatmap: observable,
+      // replayStateTimeMachine intentionally not observable (too many calls)
+    });
 
     this.state = "NONE_LOADED";
   }
@@ -56,17 +63,23 @@ export class Scenario {
       const mods: any[] = [];
       // TODO: Depending on replay we gonna turn on / off by default
       const modHidden = false;
-      this.renderSettings.modHidden = modHidden;
+      this.renderSettings.viewSettings.modHidden = modHidden;
 
       this.gameClock.seekTo(0);
       this.gameClock.pause();
 
       this.beatmap = new BeatmapBuilder().buildBeatmap(this.blueprint, mods);
       if (this.replay) {
-        this.replayStateTimeMachine = new BucketedReplayStateTimeMachine(this.replay.frames, this.beatmap.hitObjects, {
-          hitWindows: hitWindowsForOD(this.beatmap.difficulty.overallDifficulty),
-          noteLockStyle: NoteLockStyle.STABLE,
-        });
+        console.log("Replay frames number: " + this.replay.frames.length);
+        this.replayStateTimeMachine = new BucketedReplayStateTimeMachine(
+          this.replay.frames,
+          this.beatmap.hitObjects,
+          {
+            hitWindows: hitWindowsForOD(this.beatmap.difficulty.overallDifficulty),
+            noteLockStyle: NoteLockStyle.STABLE,
+          },
+          1000,
+        );
       }
       console.log("Loaded blue print", blueprintId, replayId);
     });

@@ -29,7 +29,7 @@ export interface ViewSettings {
   // playbackSpeed: number;
 }
 
-export const DEFAULT_VIEW_SETTINGS: ViewSettings = {
+export const defaultViewSettings: () => ViewSettings = () => ({
   playfieldBorder: {
     thickness: 2,
     enabled: true,
@@ -50,4 +50,4 @@ export const DEFAULT_VIEW_SETTINGS: ViewSettings = {
     colorKey1: 0xaffede,
     colorKey2: 0xdeadbe,
   },
-};
+});

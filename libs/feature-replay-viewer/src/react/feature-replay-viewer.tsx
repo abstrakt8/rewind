@@ -1,17 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import modHidden from "../../assets/mod_hidden.cfc32448.png";
-import * as PIXI from "pixi.js";
 import styled from "styled-components";
 import Playbar from "./playbar";
-import { PerformanceGameClock } from "../clocks/PerformanceGameClock";
 import { useInterval } from "../utils/useInterval";
 import { formatReplayTime } from "../utils/time";
 import { ReplayViewerApp } from "../app/ReplayViewerApp";
 import { usePerformanceMonitor } from "../utils/usePerformanceMonitor";
-import { DEFAULT_VIEW_SETTINGS, ViewSettings } from "../ViewSettings";
-import { OsuExpressManagers, useOsuExpressManagers } from "../contexts/OsuExpressContext";
 import { useMobXContext } from "../contexts/MobXContext";
 import { observer } from "mobx-react-lite";
+import { autorun, toJS } from "mobx";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -70,14 +67,15 @@ const useGameClock = () => {
 
   useInterval(() => {
     setCurrentTime(gameClock.getCurrentTime());
-  }, 16);
+  }, 128);
 
   return { gameClock, currentTime };
 };
 
+const maxTime = 20 * 60 * 1000;
+
 const EfficientPlaybar = () => {
   const { gameClock, currentTime } = useGameClock();
-  const maxTime = 5 * 60 * 1000;
   const loadedPercentage = currentTime / maxTime;
   const handleSeekTo = useCallback(
     (percentage) => {
@@ -108,7 +106,6 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
   // const isPlaying = true;
   // const toggleIsPlaying = () => {};
   // const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
-  const maxTime = 5 * 60 * 1000;
   const maxTimeHMS = formatReplayTime(maxTime);
   // Canvas / Game
   const canvas = useRef<HTMLCanvasElement | null>(null);
@@ -126,8 +123,24 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
         clock: gameClock,
         view: canvas.current,
         performanceMonitor,
-        scenario,
-        renderSettings,
+      });
+      autorun(() => {
+        if (gameApp.current) {
+          gameApp.current.context.view = toJS(renderSettings.viewSettings);
+          gameApp.current.context.skin = toJS(renderSettings.skin);
+        }
+      });
+      autorun(() => {
+        const a = gameApp.current;
+        if (a) {
+          console.log("Updating the app");
+          // Basically toJS gives a deep clone without observations
+
+          a.context.replay = toJS(scenario.replay);
+          a.context.hitObjects = toJS(scenario.beatmap?.hitObjects ?? []);
+          // TODO: This should not be observable
+          a.context.replayTimeMachine = toJS(scenario.replayStateTimeMachine);
+        }
       });
     }
     if (containerRef.current) {
@@ -158,7 +171,7 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
             <img
               src={modHidden}
               alt={"ModHidden"}
-              className={`filter ${renderSettings.modHidden ? "grayscale-0" : "grayscale"} `}
+              className={`filter ${renderSettings.viewSettings.modHidden ? "grayscale-0" : "grayscale"} `}
             />
           </button>
           <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>1x</button>
