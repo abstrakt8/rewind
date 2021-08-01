@@ -98,13 +98,13 @@ export class MyExtendedPlayfieldContainer {
       const textures = this.skin.getComboNumberTextures();
       const overlap = this.skin.config.fonts.comboOverlap;
       comboNumber.prepare({ number: replayState.currentCombo, textures, overlap });
-      comboNumber.position.set(200, 500);
+      comboNumber.position.set(100, this.heightInPx - 50);
       this.foregroundHUD.addChild(comboNumber);
     }
     // hit error
     {
       this.hitErrorBar.prepare({ hitWindow50: 100, hitWindow100: 60, hitWindow300: 20 });
-      this.hitErrorBar.container.position.set(this.widthInPx / 2, this.heightInPx - 10);
+      this.hitErrorBar.container.position.set(this.widthInPx / 2, this.heightInPx - 30);
       this.hitErrorBar.container.scale.set(1.4);
       this.foregroundHUD.addChild(this.hitErrorBar.container);
     }

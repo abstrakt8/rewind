@@ -1,4 +1,4 @@
-import { Container, Graphics } from "pixi.js";
+import { Container, Graphics, Sprite, Texture } from "pixi.js";
 import { rgbToInt } from "@rewind/osu/math";
 
 // fixed width
@@ -12,40 +12,44 @@ export interface AnalysisHitErrorBarSettings {
 const color300 = rgbToInt([50, 188, 231]);
 const color100 = rgbToInt([87, 227, 19]);
 const color50 = rgbToInt([218, 174, 70]);
-const height = 5;
+const barHeight = 5;
+const totalHeight = 15;
+
+function coloredSprite(color: number) {
+  const sprite = new Sprite(Texture.WHITE);
+  sprite.tint = color;
+  sprite.anchor.set(0.5);
+
+  return sprite;
+}
 
 export class AnalysisHitErrorBar {
   container: Container;
-  bg50: Graphics;
-  bg100: Graphics;
-  bg300: Graphics;
+  bg50: Sprite;
+  bg100: Sprite;
+  bg300: Sprite;
+  center: Sprite;
 
   constructor() {
     this.container = new Container();
-    this.bg50 = new Graphics();
-    this.bg100 = new Graphics();
-    this.bg300 = new Graphics();
+    this.bg50 = coloredSprite(color50);
+    this.bg100 = coloredSprite(color100);
+    this.bg300 = coloredSprite(color300);
+    this.center = coloredSprite(0xffffff);
 
-    this.container.addChild(this.bg50, this.bg100, this.bg300);
+    this.bg50.height = this.bg100.height = this.bg300.height = barHeight;
+    this.center.height = totalHeight;
+    this.center.width = 1;
+    this.center.position.set(-0.5);
+
+    this.container.addChild(this.bg50, this.bg100, this.bg300, this.center);
   }
 
   prepare(setting: AnalysisHitErrorBarSettings) {
     const { hitWindow50, hitWindow100, hitWindow300 } = setting;
 
-    this.bg50.clear();
-    this.bg100.clear();
-    this.bg300.clear();
-
-    this.bg50.beginFill(color50);
-    this.bg50.drawRect(-hitWindow50, 0, hitWindow50 * 2, height);
-    this.bg50.endFill();
-
-    this.bg100.beginFill(color100);
-    this.bg100.drawRect(-hitWindow100, 0, hitWindow100 * 2, height);
-    this.bg100.endFill();
-
-    this.bg300.beginFill(color300);
-    this.bg300.drawRect(-hitWindow300, 0, hitWindow300 * 2, height);
-    this.bg300.endFill();
+    this.bg50.width = hitWindow50 * 2;
+    this.bg100.width = hitWindow100 * 2;
+    this.bg300.width = hitWindow300 * 2;
   }
 }
