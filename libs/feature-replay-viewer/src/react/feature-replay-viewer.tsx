@@ -177,10 +177,12 @@ function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown
 
   return (
     <Switch
+      // doesn't really work
+      tabIndex={-1}
       checked={enabled}
       onChange={setEnabled}
       className={`relative inline-flex items-center h-6 rounded-full w-11`}
-      style={{ backgroundColor: enabled ? color ?? "blue" : "#dddddd" }}
+      style={{ backgroundColor: enabled ? color ?? "#4272b3" : "#dddddd" }}
     >
       <span
         className={`${
@@ -290,7 +292,10 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
           <SettingsTitle title={"replay analysis"} />
           <ReplaySettingsBox>
             <div>Analysis cursor</div>
-            <MyToggle enabled={false} setEnabled={() => {}} />
+            <MyToggle
+              enabled={renderSettings.viewSettings.analysisCursor.enabled}
+              setEnabled={() => renderSettings.toggleAnalysisCursor()}
+            />
             {/*<input type={"checkbox"} />*/}
             {/*<div>*/}
             {/*  Draw misses <input type={"checkbox"} />*/}

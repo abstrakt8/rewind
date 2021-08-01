@@ -36,6 +36,10 @@ export class RenderSettings {
     this.viewSettings.modHidden = !this.viewSettings.modHidden;
   }
 
+  toggleAnalysisCursor(): void {
+    this.viewSettings.analysisCursor.enabled = !this.viewSettings.analysisCursor.enabled;
+  }
+
   async changeSkin(skinId: string): Promise<void> {
     this.skin = await this.skinStore.loadSkin(skinId);
   }
