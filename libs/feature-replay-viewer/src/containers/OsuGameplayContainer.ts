@@ -128,6 +128,7 @@ export class OsuGameplayContainer {
           : hitTime - slider.startTime + slider.head.approachDuration * first_end_circle_preempt_adjust;
 
       const rotationAngle = rotationAngels[isAtEnd];
+      isAtEnd = 1 - isAtEnd;
 
       if (gameTime < r.hitTime - approachDuration || r.hitTime + approachDuration < gameTime) return;
       const repeat = new OsuClassicSliderRepeat();
@@ -148,9 +149,6 @@ export class OsuGameplayContainer {
         rotationAngle,
       });
       this.hitObjectContainer.addChild(repeat.sprite);
-
-      // Toggle
-      isAtEnd = 1 - isAtEnd;
     });
   }
 

@@ -1,4 +1,4 @@
-import { action, makeAutoObservable, makeObservable, observable, runInAction } from "mobx";
+import { action, autorun, makeAutoObservable, makeObservable, observable, runInAction, toJS } from "mobx";
 import { ReplayStore } from "./ReplayStore";
 import { BlueprintStore } from "./BlueprintStore";
 import {
@@ -16,6 +16,10 @@ import { hitWindowsForOD } from "@rewind/osu/math";
 import { OsuReplay } from "../managers/ReplayManager";
 import { RenderSettings } from "./RenderSettings";
 import { GameClock } from "../clocks/GameClock";
+import { ReplayViewerContext } from "../containers/ReplayViewerContext";
+import { Skin } from "../skins/Skin";
+import { defaultViewSettings } from "../ViewSettings";
+import { normalizeHitObjects } from "../../../osu/core/src/utils";
 
 /**
  * The scenario determines the input of what should be rendered on the stage.
@@ -27,9 +31,11 @@ export class Scenario {
   blueprint?: Blueprint;
   replay?: OsuReplay;
   beatmap?: StaticBeatmap;
+  replayEvents: ReplayAnalysisEvent[] = [];
+
   // NOT OBSERVABLE
   replayStateTimeMachine?: ReplayStateTimeMachine;
-  replayEvents: ReplayAnalysisEvent[] = [];
+  replayViewerContext: ReplayViewerContext;
 
   constructor(
     private readonly blueprintStore: BlueprintStore,
@@ -46,6 +52,28 @@ export class Scenario {
       beatmap: observable,
       replayEvents: observable,
       // replayStateTimeMachine intentionally not observable (too many calls)
+    });
+
+    this.replayViewerContext = {
+      view: defaultViewSettings(),
+      // TODO: Would be better if there was a beatmap
+      hitObjects: [],
+      hitObjectsById: {},
+      // hitObjectsById: {},
+      skin: Skin.EMPTY,
+    } as ReplayViewerContext;
+
+    autorun(() => {
+      this.replayViewerContext.view = toJS(renderSettings.viewSettings);
+      this.replayViewerContext.skin = toJS(renderSettings.skin);
+    });
+    autorun(() => {
+      // Basically toJS gives a deep clone without observations
+      this.replayViewerContext.replay = toJS(this.replay);
+      this.replayViewerContext.hitObjects = toJS(this.beatmap?.hitObjects ?? []);
+      this.replayViewerContext.hitObjectsById = normalizeHitObjects(this.replayViewerContext.hitObjects);
+      // TODO: This should not be observable
+      this.replayViewerContext.replayTimeMachine = this.replayStateTimeMachine;
     });
 
     this.state = "NONE_LOADED";

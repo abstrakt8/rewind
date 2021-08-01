@@ -1,9 +1,7 @@
 import { Container, Sprite, Texture } from "pixi.js";
 import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { Skin } from "../skins/Skin";
-import { ReplayStateTimeMachine } from "@rewind/osu/core";
-import { RenderSettings } from "../stores/RenderSettings";
-import { Scenario } from "../stores/Scenario";
+import { HitCircle, HitObjectJudgementType } from "@rewind/osu/core";
 import { ReplayViewerContext } from "./ReplayViewerContext";
 import { AnalysisHitErrorBar } from "./HitErrorBar";
 
@@ -103,9 +101,31 @@ export class MyExtendedPlayfieldContainer {
     }
     // hit error
     {
-      this.hitErrorBar.prepare({ hitWindow50: 100, hitWindow100: 60, hitWindow300: 20 });
+      // TODO: optimize
+      const hits = [];
+      if (replayState) {
+        for (const [id, s] of replayState.hitCircleState.entries()) {
+          const hitCircle = this.context.hitObjectsById[id] as HitCircle;
+          const offset = s.judgementTime - hitCircle.hitTime;
+          const timeAgo = time - s.judgementTime;
+          if (timeAgo >= 0 && timeAgo < 3000)
+            hits.push({ offset, timeAgo, miss: s.type === HitObjectJudgementType.Miss });
+        }
+      }
+
+      // todo: beatmap
+      this.hitErrorBar.prepare({
+        hitWindow50: 100,
+        hitWindow100: 60,
+        hitWindow300: 20,
+        hits,
+        // hits: [
+        //   { timeAgo: 100, offset: -2 },
+        //   { timeAgo: 2, offset: +10 },
+        // ],
+      });
       this.hitErrorBar.container.position.set(this.widthInPx / 2, this.heightInPx - 30);
-      this.hitErrorBar.container.scale.set(1.4);
+      this.hitErrorBar.container.scale.set(2.0);
       this.foregroundHUD.addChild(this.hitErrorBar.container);
     }
   }

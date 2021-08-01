@@ -215,24 +215,7 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
         clock: gameClock,
         view: canvas.current,
         performanceMonitor,
-      });
-      autorun(() => {
-        if (gameApp.current) {
-          gameApp.current.context.view = toJS(renderSettings.viewSettings);
-          gameApp.current.context.skin = toJS(renderSettings.skin);
-        }
-      });
-      autorun(() => {
-        const a = gameApp.current;
-        if (a) {
-          console.log("Updating the app");
-          // Basically toJS gives a deep clone without observations
-
-          a.context.replay = toJS(scenario.replay);
-          a.context.hitObjects = toJS(scenario.beatmap?.hitObjects ?? []);
-          // TODO: This should not be observable
-          a.context.replayTimeMachine = scenario.replayStateTimeMachine;
-        }
+        context: scenario.replayViewerContext,
       });
     }
     if (containerRef.current) {

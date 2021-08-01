@@ -5,13 +5,12 @@ import { OsuGameplayContainer } from "../containers/OsuGameplayContainer";
 import { PerformanceMonitor } from "../utils/PerformanceMonitor";
 import { MyExtendedPlayfieldContainer } from "../containers/MyExtendedPlayfieldContainer";
 import { ReplayViewerContext } from "../containers/ReplayViewerContext";
-import { defaultViewSettings } from "../ViewSettings";
-import { Skin } from "../skins/Skin";
 
 interface ReplayViewerAppSettings {
   view: HTMLCanvasElement;
   // MobX domain elements
   clock: GameClock;
+  context: ReplayViewerContext;
 
   // Maybe construct performance monitor inside if not given?
   performanceMonitor?: PerformanceMonitor;
@@ -43,19 +42,14 @@ export class ReplayViewerApp {
   private osuSliderResolution = 2.25;
 
   private performanceMonitor?: PerformanceMonitor;
-  public context: ReplayViewerContext;
+  private readonly context: ReplayViewerContext;
 
   constructor(settings: ReplayViewerAppSettings) {
     this.app = new PIXI.Application({ view: settings.view, antialias: true });
     this.clock = settings.clock;
     this.performanceMonitor = settings.performanceMonitor;
 
-    // this.beatmap = new StaticBeatmap([], DEFAULT_BEATMAP_DIFFICULTY);
-    this.context = {
-      view: defaultViewSettings(),
-      hitObjects: [],
-      skin: Skin.EMPTY,
-    };
+    this.context = settings.context;
 
     // Containers
     this.sliderTextureManager = new SliderTextureManager(
