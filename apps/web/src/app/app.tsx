@@ -20,6 +20,8 @@ type LSkin = {
 
 const akatsukiId = "351280 HoneyWorks - Akatsuki Zukuyo/HoneyWorks - Akatsuki Zukuyo ([C u r i]) [Taeyang's Extra].osu";
 const akatsukiReplayId = "RyuK - HoneyWorks - Akatsuki Zukuyo [Taeyang's Extra] (2019-06-08) Osu.osr";
+const hibanaId = "671199 DECO_27 - HIBANA feat Hatsune Miku/DECO27 - HIBANA feat. Hatsune Miku (Pho) [Lock On].osu";
+const hibanaReplayId = "hallowatcher - DECO27 - HIBANA feat. Hatsune Miku [Lock On] (2020-02-09) Osu.osr";
 const centipedeId =
   "150945 Knife Party - Centipede/Knife Party - Centipede (Sugoi-_-Desu) [This isn't a map, just a simple visualisation].osu";
 const sunMoonId =
@@ -60,10 +62,19 @@ const rafisSkinId = "Rafis 2018-03-26 HDDT";
 const millhioreLiteId = "Millhiore Lite"; // -> buggy because we don't have default skin
 const kasugaMirai = "Kasuga Mirai";
 
-const chosenBlueprintId = sunMoonId;
-const chosenReplayId = sunMoonReplayId;
+// only opssible if mods are included
+// const chosenBlueprintId = hibanaId;
+// const chosenReplayId = hibanaReplayId;
+
 // const chosenBlueprintId = centipedeId;
 // const chosenReplayId = undefined;
+
+// const chosenBlueprintId = akatsukiId;
+// const chosenReplayId = akatsukiReplayId;
+
+const chosenBlueprintId = akatsukiId;
+const chosenReplayId = undefined;
+
 const chosenSkinId = kasugaMirai;
 // const chosenSkinId = kasugaMirai;
 

@@ -5,6 +5,7 @@ import { ReplayStateTimeMachine } from "@rewind/osu/core";
 import { RenderSettings } from "../stores/RenderSettings";
 import { Scenario } from "../stores/Scenario";
 import { ReplayViewerContext } from "./ReplayViewerContext";
+import { AnalysisHitErrorBar } from "./HitErrorBar";
 
 // Default field size
 export const OSU_PLAYFIELD_BASE_X = 512;
@@ -26,24 +27,25 @@ export class MyExtendedPlayfieldContainer {
   foregroundHUD: Container;
 
   // TODO: StatsContainer or similar
+  hitErrorBar: AnalysisHitErrorBar;
 
   constructor(private readonly playfield: Container, private readonly context: ReplayViewerContext) {
     this.container = new Container();
     this.foregroundHUD = new Container();
+    this.hitErrorBar = new AnalysisHitErrorBar();
     // Texture will be given later
     this.backgroundSprite = new Sprite();
     this.backgroundSprite.anchor.set(0.5, 0.5);
 
     // this.skin = Skin.EMPTY;
 
-    this.container.addChild(this.backgroundSprite);
-    this.container.addChild(this.playfield);
-    this.container.addChild(this.foregroundHUD);
+    this.container.addChild(this.backgroundSprite, this.playfield, this.foregroundHUD);
   }
 
   get replayTimeMachine() {
     return this.context.replayTimeMachine;
   }
+
   private get skin(): Skin {
     return this.context.skin;
   }
@@ -86,22 +88,29 @@ export class MyExtendedPlayfieldContainer {
     this.backgroundSprite.alpha = alpha;
   }
 
-  applyHud(currentCombo: number) {
+  applyHud(time: number) {
     this.foregroundHUD.removeChildren();
-    {
+    // combo
+    const replayState = this.replayTimeMachine?.replayStateAt(time);
+
+    if (replayState) {
       const comboNumber = new OsuClassicNumber();
       const textures = this.skin.getComboNumberTextures();
       const overlap = this.skin.config.fonts.comboOverlap;
-      comboNumber.prepare({ number: currentCombo, textures, overlap });
+      comboNumber.prepare({ number: replayState.currentCombo, textures, overlap });
       comboNumber.position.set(200, 500);
       this.foregroundHUD.addChild(comboNumber);
+    }
+    // hit error
+    {
+      this.hitErrorBar.prepare({ hitWindow50: 100, hitWindow100: 60, hitWindow300: 20 });
+      this.hitErrorBar.container.position.set(this.widthInPx / 2, this.heightInPx - 10);
+      this.hitErrorBar.container.scale.set(1.4);
+      this.foregroundHUD.addChild(this.hitErrorBar.container);
     }
   }
 
   prepare(time: number) {
-    const replayState = this.replayTimeMachine?.replayStateAt(time);
-    if (replayState !== undefined) {
-      this.applyHud(replayState.currentCombo);
-    }
+    this.applyHud(time);
   }
 }
