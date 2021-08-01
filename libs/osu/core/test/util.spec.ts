@@ -1,7 +1,7 @@
 import {
   BeatmapBuilder,
   fromRawToReplay,
-  getDefaultReplayState,
+  defaultReplayState,
   NextFrameEvaluator,
   NoteLockStyle,
   OsuBlueprintParser,
@@ -91,7 +91,7 @@ export function osuClassicScoreScreenJudgementCount(
 }
 
 export function evaluateWholeReplay(evaluator: NextFrameEvaluator, replay: any[]) {
-  const state = getDefaultReplayState();
+  const state = defaultReplayState();
   for (const frame of replay) {
     evaluator.evaluateNextFrameMutated(state, frame);
   }

@@ -21,6 +21,8 @@ export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
   scale = 1;
   position: Position = { x: 0, y: 0 };
 
+  sliderId?: string;
+
   get radius(): number {
     return HitCircle.OBJECT_RADIUS * this.scale;
   }

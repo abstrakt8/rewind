@@ -39,6 +39,7 @@ export * from "./parsers/OsuBlueprintParser";
 export * from "./replays/RawReplayData";
 export * from "./replays/Replay";
 export * from "./replays/ReplayState";
+export * from "./replays/ReplayEvent";
 export * from "./replays/ReplayStateTimeMachine";
 
 export { OsuHitObjectTypes } from "./hitobjects/OsuHitObjectTypes";

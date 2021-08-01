@@ -4,9 +4,16 @@ import { useCallback, useRef } from "react";
 import useMouse from "@react-hook/mouse-position";
 
 /* eslint-disable-next-line */
+
+export interface PlaybarEvent {
+  color: string;
+  position: number; // number between 0 and 1
+}
+
 export interface PlaybarProps {
   loadedPercentage: number;
   onClick?: (x: number) => unknown;
+  events: PlaybarEvent[];
 }
 
 const percentage = (w: number) => w * 100 + "%";
@@ -36,12 +43,24 @@ function LineBar(props: { x: number }) {
   return <div className={"absolute bg-gray-700"} style={cssDimensions({ width: 0.001, height: 1, x: x, y: 0.5 })} />;
 }
 
-function EventLine(props: { d: Dimensions }) {
-  const { d } = props;
-  return <div className={"absolute bg-red-600 rounded z-10"} style={cssDimensions(d)} />;
-}
-
+const eventLineWidth = 0.001;
+// const eventLineWidth = 0.1;
 const widthStyle = (w: number) => ({ width: percentage(w) });
+
+function EventLine(props: PlaybarEvent) {
+  const { color, position } = props;
+  return (
+    <div
+      className={"absolute h-full z-10 w-full "}
+      style={{
+        width: percentage(eventLineWidth),
+        left: percentage(position),
+        backgroundColor: color,
+        transform: `translate(-50%)`,
+      }}
+    />
+  );
+}
 
 function Shade(props: { width: number; color: number }) {
   const { width, color } = props;
@@ -55,7 +74,7 @@ function Shade(props: { width: number; color: number }) {
 }
 
 export function Playbar(props: PlaybarProps) {
-  const { onClick, loadedPercentage } = props;
+  const { onClick, loadedPercentage, events } = props;
   const radius = 0.001;
   const heights = 0.727;
   const ref = useRef(null);
@@ -93,9 +112,12 @@ export function Playbar(props: PlaybarProps) {
       <Shade width={lightP} color={4} />
       <Shade width={darkP} color={5} />
       {/*<LineBar x={loadedPercent} />*/}
-      <EventLine d={{ width: 0.001, height: heights, x: 0.3, y: 0.5 }} />
-      <EventLine d={{ width: 0.001, height: heights, x: 0.5, y: 0.5 }} />
-      <EventLine d={{ width: 0.001, height: heights, x: 0.8, y: 0.5 }} />
+      {events.map((e, id) => (
+        <EventLine color={e.color} position={e.position} key={id} />
+      ))}
+      {/*<EventLine d={{ width: 0.001, height: heights, x: 0.3, y: 0.5 }} />*/}
+      {/*<EventLine d={{ width: 0.001, height: heights, x: 0.5, y: 0.5 }} />*/}
+      {/*<EventLine d={{ width: 0.001, height: heights, x: 0.8, y: 0.5 }} />*/}
     </div>
   );
 }

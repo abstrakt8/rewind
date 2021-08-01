@@ -20,6 +20,7 @@ module.exports = async ({ config, mode }) => {
   const svgRuleIndex = config.module.rules.findIndex((rule) => {
     const { test } = rule;
 
+    // @rewind: very important to have test?.
     return test?.toString().startsWith("/\\.(svg|ico");
   });
   config.module.rules[svgRuleIndex].test = /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani|pdf)(\?.*)?$/;
@@ -73,7 +74,7 @@ module.exports = async ({ config, mode }) => {
           ],
         },
       ],
-    }
+    },
   );
 
   return config;

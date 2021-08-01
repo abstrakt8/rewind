@@ -5,8 +5,11 @@ import {
   BeatmapBuilder,
   Blueprint,
   BucketedReplayStateTimeMachine,
+  defaultReplayState,
   NoteLockStyle,
+  ReplayAnalysisEvent,
   ReplayStateTimeMachine,
+  retrieveEvents,
   StaticBeatmap,
 } from "@rewind/osu/core";
 import { hitWindowsForOD } from "@rewind/osu/math";
@@ -24,7 +27,9 @@ export class Scenario {
   blueprint?: Blueprint;
   replay?: OsuReplay;
   beatmap?: StaticBeatmap;
+  // NOT OBSERVABLE
   replayStateTimeMachine?: ReplayStateTimeMachine;
+  replayEvents: ReplayAnalysisEvent[] = [];
 
   constructor(
     private readonly blueprintStore: BlueprintStore,
@@ -39,18 +44,25 @@ export class Scenario {
       replay: observable,
       blueprint: observable,
       beatmap: observable,
+      replayEvents: observable,
       // replayStateTimeMachine intentionally not observable (too many calls)
     });
 
     this.state = "NONE_LOADED";
   }
 
+  setState(s: string) {
+    this.state = s;
+  }
+
   async loadScenario(blueprintId: string, replayId?: string) {
-    this.state = "PENDING";
+    console.log("API loading started");
+    this.setState("Loading from API...");
     [this.blueprint, this.replay] = await Promise.all([
       this.blueprintStore.loadBlueprint(blueprintId),
       replayId ? this.replayStore.loadReplay(replayId) : undefined,
     ]);
+    console.log("API loading done");
 
     runInAction(() => {
       if (!this.blueprint) {
@@ -58,7 +70,6 @@ export class Scenario {
         this.state = "ERROR";
         return;
       }
-      this.state = "LOADED";
       // TODO: depending on replay
       const mods: any[] = [];
       // TODO: Depending on replay we gonna turn on / off by default
@@ -68,9 +79,11 @@ export class Scenario {
       this.gameClock.seekTo(0);
       this.gameClock.pause();
 
+      this.setState("Building beatmap...");
       this.beatmap = new BeatmapBuilder().buildBeatmap(this.blueprint, mods);
       if (this.replay) {
-        console.log("Replay frames number: " + this.replay.frames.length);
+        console.log("Replay frames number: " + this.replay.frames.length + " started calculating events...");
+        this.setState("Calculating replay events");
         this.replayStateTimeMachine = new BucketedReplayStateTimeMachine(
           this.replay.frames,
           this.beatmap.hitObjects,
@@ -80,6 +93,10 @@ export class Scenario {
           },
           1000,
         );
+        // This implicitly also calculates all states for each bucket
+        const finalState = this.replayStateTimeMachine.replayStateAt(1e9);
+        this.replayEvents = retrieveEvents(finalState, this.beatmap.hitObjects);
+        this.setState("Done calculating events");
       }
       console.log("Loaded blue print", blueprintId, replayId);
     });

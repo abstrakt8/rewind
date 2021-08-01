@@ -1,6 +1,6 @@
 import {
   cloneReplayState,
-  getDefaultReplayState,
+  defaultReplayState,
   NextFrameEvaluator,
   OsuStdJudgmentSettings,
   ReplayState,
@@ -40,7 +40,7 @@ export class BucketedReplayStateTimeMachine implements ReplayStateTimeMachine {
     // Add a dummy replay frame at the beginning.
     this.frames = [{ time: -727_727, position: new Vec2(0, 0), actions: [] }, ...replay];
     this.bucketSize = bucketSize ?? Math.ceil(Math.sqrt(this.frames.length));
-    this.currentReplayState = this.storedReplayState[0] = getDefaultReplayState();
+    this.currentReplayState = this.storedReplayState[0] = defaultReplayState();
     this.evaluator = new NextFrameEvaluator(hitObjects, settings);
   }
 

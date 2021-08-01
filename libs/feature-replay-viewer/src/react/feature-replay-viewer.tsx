@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import modHidden from "../../assets/mod_hidden.cfc32448.png";
 import styled from "styled-components";
-import Playbar from "./playbar";
+import Playbar, { PlaybarEvent } from "./playbar";
 import { useInterval } from "../utils/useInterval";
 import { formatReplayTime } from "../utils/time";
 import { ReplayViewerApp } from "../app/ReplayViewerApp";
@@ -10,6 +10,8 @@ import { useMobXContext } from "../contexts/MobXContext";
 import { observer } from "mobx-react-lite";
 import { autorun, toJS } from "mobx";
 import { useHotkeys } from "react-hotkeys-hook";
+import { ReplayAnalysisEvent, ReplayAnalysisEventType } from "@rewind/osu/core";
+import { Switch } from "@headlessui/react";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -23,6 +25,14 @@ function SettingsTitle(props: { title: string }) {
   return <h1 className={"uppercase text-gray-400 text-sm"}>{props.title}</h1>;
 }
 
+const PlaybarEventsBox = styled.div`
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  grid-column-gap: 0.5em;
+  grid-row-gap: 1em;
+  align-items: center;
+  justify-content: space-between;
+`;
 const ReplaySettingsBox = styled.div`
   display: grid;
   grid-template-columns: 1fr min-content;
@@ -76,9 +86,51 @@ const useGameClock = () => {
 };
 
 const maxTime = 20 * 60 * 1000;
+const PlaybarColors = {
+  MISS: "#ff0000",
+  SLIDER_BREAK: "hsl(351,100%,70%)",
+  OK: "#00ff00",
+  MEH: "#ffa500",
+};
 
-const EfficientPlaybar = () => {
+type pbSettingType = "showMisses" | "showSliderBreaks" | "show100s" | "show50s";
+
+type PlaybarSettings = Record<pbSettingType, boolean>;
+// interface PlaybarSettings {
+//   showMisses: boolean;
+//   showSliderBreaks: boolean;
+//   show100s: boolean;
+//   show50s: boolean;
+// }
+
+function mapToPlaybarEvents(replayEvents: ReplayAnalysisEvent[], settings: PlaybarSettings): PlaybarEvent[] {
+  const { showSliderBreaks, show100s, show50s, showMisses } = settings;
+  const events: PlaybarEvent[] = [];
+  replayEvents.forEach((e) => {
+    const position = e.time / maxTime;
+    switch (e.type) {
+      case ReplayAnalysisEventType.MISS:
+        if (showMisses) events.push({ color: PlaybarColors.MISS, position });
+        break;
+      case ReplayAnalysisEventType.MEH:
+        if (show50s) events.push({ color: PlaybarColors.MEH, position });
+        break;
+      case ReplayAnalysisEventType.OK:
+        if (show100s) events.push({ color: PlaybarColors.OK, position });
+        break;
+      case ReplayAnalysisEventType.SLIDER_INNER_CHECKPOINT_MISS:
+      case ReplayAnalysisEventType.SLIDER_HEAD_MISS:
+        if (showSliderBreaks) events.push({ color: PlaybarColors.SLIDER_BREAK, position });
+        break;
+    }
+  });
+  return events;
+}
+
+const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
+  const { settings } = props;
   const { gameClock, currentTime } = useGameClock();
+  const { scenario } = useMobXContext();
   const loadedPercentage = currentTime / maxTime;
   const handleSeekTo = useCallback(
     (percentage) => {
@@ -87,8 +139,9 @@ const EfficientPlaybar = () => {
     },
     [maxTime, gameClock],
   );
-  return <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} />;
-};
+  const events = useMemo(() => mapToPlaybarEvents(scenario.replayEvents, settings), [settings, scenario.replayEvents]);
+  return <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} events={events} />;
+});
 
 export const CurrentTime = () => {
   const { currentTime } = useGameClock();
@@ -102,7 +155,7 @@ export const CurrentTime = () => {
   );
 };
 
-const speedsAllowed = [0.01, 0.25, 0.5, 1.0, 1.5, 2.0];
+const speedsAllowed = [0.01, 0.5, 1.0, 1.5, 2.0];
 // TODO: FLOATING POINT EQUALITY ALERT
 const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
 const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length - 1, speedIndex(speed) + 1)];
@@ -119,13 +172,25 @@ export const useShortcuts = () => {
   useHotkeys("f", () => renderSettings.toggleModHidden());
 };
 
-export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) => {
-  // Times
-  // const { isPlaying, toggleIsPlaying } = useGameClock();
+function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown }) {
+  const { enabled, setEnabled } = props;
 
-  // const isPlaying = true;
-  // const toggleIsPlaying = () => {};
-  // const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
+  return (
+    <Switch
+      checked={enabled}
+      onChange={setEnabled}
+      className={`${enabled ? "bg-blue-600" : "bg-gray-200"} relative inline-flex items-center h-6 rounded-full w-11`}
+    >
+      <span
+        className={`${
+          enabled ? "translate-x-6" : "translate-x-1"
+        } inline-block w-4 h-4 transform bg-white rounded-full`}
+      />
+    </Switch>
+  );
+}
+
+export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) => {
   const maxTimeHMS = formatReplayTime(maxTime);
   // Canvas / Game
   const canvas = useRef<HTMLCanvasElement | null>(null);
@@ -134,6 +199,12 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const { scenario, renderSettings, gameClock } = useMobXContext();
+  const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
+    show50s: false,
+    show100s: false,
+    showMisses: true,
+    showSliderBreaks: true,
+  });
 
   useShortcuts();
   //
@@ -159,7 +230,7 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
           a.context.replay = toJS(scenario.replay);
           a.context.hitObjects = toJS(scenario.beatmap?.hitObjects ?? []);
           // TODO: This should not be observable
-          a.context.replayTimeMachine = toJS(scenario.replayStateTimeMachine);
+          a.context.replayTimeMachine = scenario.replayStateTimeMachine;
         }
       });
     }
@@ -167,10 +238,9 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
       containerRef.current?.appendChild(performanceMonitor.dom);
     }
   }, [canvas, scenario, renderSettings, containerRef, gameApp, gameClock, performanceMonitor]);
-  const toggleGameClock = useCallback(() => {
-    if (gameClock.isPlaying) gameClock.pause();
-    else gameClock.start();
-  }, [gameClock, gameClock.isPlaying]);
+
+  const handleTogglePbSetting = (who: pbSettingType) => (value: boolean) =>
+    setPbSetting((prevState) => ({ ...prevState, [who]: value }));
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
@@ -179,12 +249,12 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
           <canvas className={"w-full h-full bg-black"} ref={canvas} />
         </div>
         <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
-          <button className={"transition-colors hover:text-gray-400"} onClick={toggleGameClock}>
+          <button className={"transition-colors hover:text-gray-400"} onClick={() => gameClock.togglePlaying()}>
             {gameClock.isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <CurrentTime />
           <div className={"flex-1"}>
-            <EfficientPlaybar />
+            <EfficientPlaybar settings={pbSetting} />
           </div>
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
           <button className={"w-10 -mb-1"} onClick={() => renderSettings.toggleModHidden()}>
@@ -199,15 +269,23 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
       </div>
       <div className={"flex flex-col gap-4 flex-none w-52 h-full overflow-y-auto"}>
         <SidebarBox>
+          <SettingsTitle title={"Playbar Events"} />
+          <PlaybarEventsBox>
+            {/*TODO: Colors should correspond to the events */}
+            <div>Misses</div>
+            <MyToggle enabled={pbSetting["showMisses"]} setEnabled={handleTogglePbSetting("showMisses")} />
+            <div>Slider breaks</div>
+            <MyToggle enabled={pbSetting["showSliderBreaks"]} setEnabled={handleTogglePbSetting("showSliderBreaks")} />
+            <div>50s</div>
+            <MyToggle enabled={pbSetting["show50s"]} setEnabled={handleTogglePbSetting("show50s")} />
+            <div>100s</div>
+            <MyToggle enabled={pbSetting["show100s"]} setEnabled={handleTogglePbSetting("show100s")} />
+          </PlaybarEventsBox>
+        </SidebarBox>
+        <SidebarBox>
           <SettingsTitle title={"replay analysis"} />
           <ReplaySettingsBox>
             <div>Analysis cursor</div>
-            <input type={"checkbox"} />
-            <div>Draw misses</div>
-            <input type={"checkbox"} />
-            <div>Draw 50s</div>
-            <input type={"checkbox"} />
-            <div>Draw Sliderbreaks</div>
             <input type={"checkbox"} />
             {/*<div>*/}
             {/*  Draw misses <input type={"checkbox"} />*/}
@@ -237,7 +315,7 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
             <span className={"font-mono bg-gray-800 px-2"}>f</span>
           </ShortcutHelper>
         </SidebarBox>
-        <SidebarBox>Hmm</SidebarBox>
+        <SidebarBox>{scenario.state}</SidebarBox>
       </div>
     </div>
   );

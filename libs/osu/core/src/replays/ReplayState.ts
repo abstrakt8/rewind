@@ -271,7 +271,7 @@ function sliderJudgementBasedOnCheckpoints(totalCheckpoints: number, hitCheckpoi
 // SliderCheckPoint at its hitTime
 // Spinner at endTime
 // HitCircle at when it was hit / missed (dynamic)
-export const getDefaultReplayState = (): ReplayState => ({
+export const defaultReplayState = (): ReplayState => ({
   currentTime: 0,
   cursorPosition: Vec2.Zero,
   hitCircleState: new Map<string, HitCircleState>(),
@@ -311,7 +311,7 @@ export class NextFrameEvaluator {
     private readonly hitObjectsBySpawnTime: OsuHitObject[],
     private readonly settings: OsuStdJudgmentSettings,
   ) {
-    this.replayState = getDefaultReplayState();
+    this.replayState = defaultReplayState();
     this.hitObjectById = normalizeHitObjects(hitObjectsBySpawnTime);
   }
 

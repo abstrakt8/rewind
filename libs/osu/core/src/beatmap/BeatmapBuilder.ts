@@ -93,15 +93,18 @@ function createSlider(
   const timingPoint: TimingControlPoint = controlPointInfo.timingPointAt(hitTime);
   const difficultyPoint = controlPointInfo.difficultyPointAt(hitTime);
   const scoringDistance = Slider.BASE_SCORING_DISTANCE * difficulty.sliderMultiplier * difficultyPoint.speedMultiplier;
+  const sliderId = index.toString();
+
   const head = new HitCircle();
   head.id = `${index.toString()}/HEAD`;
   head.position = sliderSettings.position;
   head.hitTime = sliderSettings.time;
   head.approachDuration = approachDuration;
   head.scale = scale;
+  head.sliderId = sliderId;
 
   const slider = new Slider(head);
-  slider.id = index.toString();
+  slider.id = sliderId;
   slider.repeatCount = sliderSettings.repeatCount;
   slider.legacyLastTickOffset = sliderSettings.legacyLastTickOffset;
   slider.velocity = scoringDistance / timingPoint.beatLength;
