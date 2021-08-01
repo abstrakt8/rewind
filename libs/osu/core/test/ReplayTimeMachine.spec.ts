@@ -3,17 +3,13 @@ import {
   osuClassicScoreScreenJudgementCount,
   parseReplayFromFS,
   realReplayPath,
-  TEST_MAPS,
+  TEST_MAPS, TEST_REPLAYS,
 } from "./util.spec";
 import { BucketedReplayStateTimeMachine, osuStableAccuracy } from "../src";
 
 describe("OsuStd! ReplayTimeMachine - The Sun, The Moon, The Stars", function () {
   const { hitObjects, settings, evaluator, hitWindows } = defaultStableSettings(TEST_MAPS.SUN_MOON_STAR);
-  const frames = parseReplayFromFS(
-    realReplayPath(
-      "Varvalian - Aether Realm - The Sun, The Moon, The Star [Mourning Those Things I've Long Left Behind] (2019-05-15) Osu.osr",
-    ),
-  );
+  const frames = parseReplayFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
 
   console.log("Starting SunMoonStar");
   console.log(`HitObjects: ${hitObjects.length} Frames: ${frames.length}`);

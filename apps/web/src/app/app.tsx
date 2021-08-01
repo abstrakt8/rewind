@@ -1,6 +1,5 @@
 import { FeatureReplayViewer } from "@rewind/feature-replay-viewer";
-import { OsuExpressProvider } from "../../../../libs/feature-replay-viewer/src/contexts/OsuExpressContext";
-import { useMobXContext } from "../../../../libs/feature-replay-viewer/src/contexts/MobXContext";
+import { useMobXContext } from "libs/feature-replay-viewer/src/contexts/MobXContext";
 import { useEffect } from "react";
 
 type Replay = {
@@ -69,8 +68,11 @@ const kasugaMirai = "Kasuga Mirai";
 // const chosenBlueprintId = centipedeId;
 // const chosenReplayId = undefined;
 
-const chosenBlueprintId = akatsukiId;
-const chosenReplayId = akatsukiReplayId;
+const chosenBlueprintId = sunMoonId;
+const chosenReplayId = sunMoonReplayId;
+
+// const chosenBlueprintId = akatsukiId;
+// const chosenReplayId = akatsukiReplayId;
 
 // const chosenBlueprintId = akatsukiId;
 // const chosenReplayId = undefined;

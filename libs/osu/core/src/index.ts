@@ -6,12 +6,12 @@ export * from "./beatmap/ControlPoints/ControlPoint";
 export * from "./beatmap/ControlPoints/ControlPointGroup";
 export * from "./beatmap/ControlPoints/DifficultyControlPoint";
 export * from "./beatmap/ControlPoints/TimingControlPoint";
-export * from "./beatmap/mods/HardRockMod";
-export * from "./beatmap/mods/Mods";
-export * from "./beatmap/mods/StackingMod";
+export * from "./mods/HardRockMod";
+export * from "./mods/Mods";
+export * from "./mods/StackingMod";
 export * from "./beatmap/BeatmapBuilder";
 export * from "./beatmap/BeatmapDifficulty";
-export * from "./beatmap/StaticBeatmap";
+export * from "./beatmap/Beatmap";
 
 // blueprints
 export * from "./blueprint/Blueprint";

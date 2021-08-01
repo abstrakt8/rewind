@@ -11,18 +11,20 @@ import { Position } from "@rewind/osu/math";
 
 describe("Test *.osu blue print parsing", function () {
   describe("Map: ZUTOMAYO - Kan Saete Kuyashiiwa (Nathan) [geragera].osu", function () {
-    const bm = parseBlueprintFromFS(osuMapPath("ZUTOMAYO - Kan Saete Kuyashiiwa (Nathan) [geragera].osu"));
+    const bm = parseBlueprintFromFS(TEST_MAPS.GERA_GERA);
     // console.log(bm);
     it("should parse the meta data correctly", function () {
-      expect(bm.blueprintInfo.metadata).toContain({
-        artist: "ZUTOMAYO",
-        artistUnicode: "ずっと真夜中でいいのに。",
-        title: "Kan Saete Kuyashiiwa",
-        titleUnicode: "勘冴えて悔しいわ",
-        tags: "zutto mayonaka de ii no ni. acane sukinathan scubdomino luscent 404_aimnotfound",
-        audioFile: "audio.mp3",
-        // previewTime: 0
-      });
+      expect(bm.blueprintInfo.metadata).toEqual(
+        expect.objectContaining({
+          artist: "ZUTOMAYO",
+          artistUnicode: "ずっと真夜中でいいのに。",
+          title: "Kan Saete Kuyashiiwa",
+          titleUnicode: "勘冴えて悔しいわ",
+          tags: "zutto mayonaka de ii no ni. acane sukinathan scubdomino luscent 404_aimnotfound",
+          audioFile: "audio.mp3",
+          // previewTime: 0
+        }),
+      );
     });
     it("should parse the beatmap version correctly", function () {
       expect(bm.blueprintInfo.beatmapVersion).toBe(14);
@@ -31,10 +33,9 @@ describe("Test *.osu blue print parsing", function () {
       expect(bm.hitObjectSettings).toBeTruthy();
     });
     it("should parse blueprint default difficulty correctly", function () {
-      // TODO: ??? Why using `bm` uses another one ??? seems like caching issue.
-      const xd = parseBlueprintFromFS(osuMapPath("ZUTOMAYO - Kan Saete Kuyashiiwa (Nathan) [geragera].osu"));
-      console.log(xd.defaultDifficulty);
-      expect(xd.defaultDifficulty).toContain({
+      const bm = parseBlueprintFromFS(TEST_MAPS.GERA_GERA);
+      console.log(bm.defaultDifficulty);
+      expect(bm.defaultDifficulty).toEqual({
         drainRate: 5,
         circleSize: 4,
         overallDifficulty: 9,
@@ -118,7 +119,7 @@ describe("HitObjectSettingsParsing", function () {
 
 describe("Parsing one slider", function () {
   it("should parse the one slider correctly", function () {
-    const bluePrint = parseBlueprintFromFS(osuMapPath("Perfume - Daijobanai (eiri-) [Slider 1].osu"));
+    const bluePrint = parseBlueprintFromFS(TEST_MAPS.ONE_SLIDER);
     expect(bluePrint.hitObjectSettings.length).toBe(1);
     console.log(bluePrint.hitObjectSettings[0]);
   });

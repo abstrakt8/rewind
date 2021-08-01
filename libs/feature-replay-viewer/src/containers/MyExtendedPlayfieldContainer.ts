@@ -1,9 +1,10 @@
 import { Container, Sprite, Texture } from "pixi.js";
 import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { Skin } from "../skins/Skin";
-import { HitCircle, HitObjectJudgementType } from "@rewind/osu/core";
+import { HitObjectJudgementType } from "@rewind/osu/core";
 import { ReplayViewerContext } from "./ReplayViewerContext";
 import { AnalysisHitErrorBar } from "./HitErrorBar";
+import { hitWindowsForOD } from "@rewind/osu/math";
 
 // Default field size
 export const OSU_PLAYFIELD_BASE_X = 512;
@@ -105,7 +106,7 @@ export class MyExtendedPlayfieldContainer {
       const hits = [];
       if (replayState) {
         for (const [id, s] of replayState.hitCircleState.entries()) {
-          const hitCircle = this.context.hitObjectsById[id] as HitCircle;
+          const hitCircle = this.context.beatmap.getHitCircle(id);
           const offset = s.judgementTime - hitCircle.hitTime;
           const timeAgo = time - s.judgementTime;
           if (timeAgo >= 0 && timeAgo < 3000)
@@ -113,11 +114,13 @@ export class MyExtendedPlayfieldContainer {
         }
       }
 
-      // todo: beatmap
+      const [hitWindow300, hitWindow100, hitWindow50] = hitWindowsForOD(
+        this.context.beatmap.difficulty.overallDifficulty,
+      );
       this.hitErrorBar.prepare({
-        hitWindow50: 100,
-        hitWindow100: 60,
-        hitWindow300: 20,
+        hitWindow50,
+        hitWindow100,
+        hitWindow300,
         hits,
         // hits: [
         //   { timeAgo: 100, offset: -2 },

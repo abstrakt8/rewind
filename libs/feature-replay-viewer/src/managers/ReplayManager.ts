@@ -2,6 +2,7 @@ import axios from "axios";
 import { fromRawToReplay, RawReplayData } from "@rewind/osu/core";
 import { ReplayFrame } from "@rewind/osu/core";
 
+// TODO: Rename this to replay or something
 export type OsuReplay = {
   gameVersion: number;
   mods: number;

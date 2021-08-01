@@ -1,16 +1,16 @@
-import { action, autorun, makeAutoObservable, makeObservable, observable, runInAction, toJS } from "mobx";
+import { action, autorun, makeObservable, observable, runInAction, toJS } from "mobx";
 import { ReplayStore } from "./ReplayStore";
 import { BlueprintStore } from "./BlueprintStore";
 import {
-  BeatmapBuilder,
+  Beatmap,
   Blueprint,
   BucketedReplayStateTimeMachine,
-  defaultReplayState,
+  buildBeatmap,
   NoteLockStyle,
+  OsuClassicMods,
   ReplayAnalysisEvent,
   ReplayStateTimeMachine,
   retrieveEvents,
-  StaticBeatmap,
 } from "@rewind/osu/core";
 import { hitWindowsForOD } from "@rewind/osu/math";
 import { OsuReplay } from "../managers/ReplayManager";
@@ -19,7 +19,6 @@ import { GameClock } from "../clocks/GameClock";
 import { ReplayViewerContext } from "../containers/ReplayViewerContext";
 import { Skin } from "../skins/Skin";
 import { defaultViewSettings } from "../ViewSettings";
-import { normalizeHitObjects } from "../../../osu/core/src/utils";
 
 /**
  * The scenario determines the input of what should be rendered on the stage.
@@ -30,7 +29,7 @@ export class Scenario {
 
   blueprint?: Blueprint;
   replay?: OsuReplay;
-  beatmap?: StaticBeatmap;
+  beatmap?: Beatmap;
   replayEvents: ReplayAnalysisEvent[] = [];
 
   // NOT OBSERVABLE
@@ -56,10 +55,7 @@ export class Scenario {
 
     this.replayViewerContext = {
       view: defaultViewSettings(),
-      // TODO: Would be better if there was a beatmap
-      hitObjects: [],
-      hitObjectsById: {},
-      // hitObjectsById: {},
+      beatmap: Beatmap.EMPTY_BEATMAP,
       skin: Skin.EMPTY,
     } as ReplayViewerContext;
 
@@ -70,8 +66,7 @@ export class Scenario {
     autorun(() => {
       // Basically toJS gives a deep clone without observations
       this.replayViewerContext.replay = toJS(this.replay);
-      this.replayViewerContext.hitObjects = toJS(this.beatmap?.hitObjects ?? []);
-      this.replayViewerContext.hitObjectsById = normalizeHitObjects(this.replayViewerContext.hitObjects);
+      this.replayViewerContext.beatmap = toJS(this.beatmap ?? Beatmap.EMPTY_BEATMAP);
       // TODO: This should not be observable
       this.replayViewerContext.replayTimeMachine = this.replayStateTimeMachine;
     });
@@ -99,7 +94,7 @@ export class Scenario {
         return;
       }
       // TODO: depending on replay
-      const mods: any[] = [];
+      const mods: OsuClassicMods[] = [];
       // TODO: Depending on replay we gonna turn on / off by default
       const modHidden = false;
       this.renderSettings.viewSettings.modHidden = modHidden;
@@ -108,7 +103,7 @@ export class Scenario {
       this.gameClock.pause();
 
       this.setState("Building beatmap...");
-      this.beatmap = new BeatmapBuilder().buildBeatmap(this.blueprint, mods);
+      this.beatmap = buildBeatmap(this.blueprint, { addStacking: true, mods });
       if (this.replay) {
         console.log("Replay frames number: " + this.replay.frames.length + " started calculating events...");
         this.setState("Calculating replay events");

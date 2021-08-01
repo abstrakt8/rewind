@@ -42,7 +42,7 @@ export class OsuGameplayContainer {
   }
 
   private get hitObjects(): OsuHitObject[] {
-    return this.context.hitObjects;
+    return this.context.beatmap.hitObjects;
   }
 
   private get view() {

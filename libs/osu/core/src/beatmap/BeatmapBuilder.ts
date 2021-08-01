@@ -9,9 +9,9 @@ import {
 } from "../blueprint/HitObjectSettings";
 import { ControlPointInfo } from "./ControlPoints/ControlPointInfo";
 import { HitCircle } from "../hitobjects/HitCircle";
-import { BeatmapDifficultyAdjuster, HitObjectsAdjuster } from "./mods/Mods";
+import { BeatmapDifficultyAdjuster, ModSettings, OsuClassicMods } from "../mods/Mods";
 import produce from "immer";
-import { modifyStackingPosition } from "./mods/StackingMod";
+import { modifyStackingPosition } from "../mods/StackingMod";
 import { generateSliderCheckpoints } from "../hitobjects/slider/SliderCheckPointGenerator";
 import { SliderCheckPointDescriptor } from "../hitobjects/slider/SliderCheckPointDescriptor";
 import { SliderPath } from "../hitobjects/slider/SliderPath";
@@ -19,7 +19,7 @@ import { TimingControlPoint } from "./ControlPoints/TimingControlPoint";
 import { Slider } from "../hitobjects/Slider";
 import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
 import { OsuHitObject } from "../hitobjects";
-import { StaticBeatmap } from "./StaticBeatmap";
+import { Beatmap } from "./Beatmap";
 import { Spinner } from "../hitobjects/Spinner";
 import { difficultyRange } from "@rewind/osu/math";
 
@@ -172,41 +172,57 @@ function assignComboIndex(bluePrintSettings: HitObjectSettings[], hitObjects: Os
   });
 }
 
-export class BeatmapBuilder {
-  constructor(private readonly addStacking = true) {}
+interface BeatmapBuilderOptions {
+  addStacking: boolean;
+  mods: OsuClassicMods[];
+}
 
-  // Several stages
-  // 1. First process the beatmap difficulty to its final stage
-  // 2. Create instances of the hitobjects along with their ids
-  // 3. Assign their indices
-  // 4. Mods
-  buildBeatmap(bluePrint: Blueprint, mods: (BeatmapDifficultyAdjuster & HitObjectsAdjuster)[] = []): StaticBeatmap {
-    const { beatmapVersion, stackLeniency } = bluePrint.blueprintInfo;
-    // Pretty sure this can be done with some one liner, but w/e
-    let finalDifficulty = bluePrint.defaultDifficulty;
-    for (const mod of mods) {
-      if (mod.difficultyApplier !== undefined) {
-        finalDifficulty = mod.difficultyApplier(finalDifficulty);
-      }
+const defaultBeatmapBuilderOptions: BeatmapBuilderOptions = {
+  addStacking: true,
+  mods: [],
+};
+
+// There should only be one, otherwise ...
+function findDifficultyApplier(mods: OsuClassicMods[]): BeatmapDifficultyAdjuster {
+  for (const m of mods) {
+    if (ModSettings[m].difficultyAdjuster) {
+      return ModSettings[m].difficultyAdjuster;
     }
-
-    let hitObjects: OsuHitObject[] = bluePrint.hitObjectSettings.map((setting, index) =>
-      createStaticHitObject(index, setting, bluePrint.controlPointInfo, finalDifficulty),
-    );
-
-    hitObjects = assignComboIndex(bluePrint.hitObjectSettings, hitObjects);
-
-    // ComboInfo
-    for (const mod of mods) {
-      if (mod.adjustHitObjects !== undefined) {
-        hitObjects = mod.adjustHitObjects(hitObjects);
-      }
-    }
-
-    if (this.addStacking) {
-      hitObjects = modifyStackingPosition(beatmapVersion, hitObjects, stackLeniency);
-    }
-
-    return new StaticBeatmap(hitObjects, finalDifficulty);
   }
+  return (d: BeatmapDifficulty) => d; // The identity function
+}
+
+/**
+ * Builds the beatmap from the given blue print and options.
+ *
+ * It DOES not perform a check on the given subset of mods. So if you enter half time and double time at the same time,
+ * then this might return bad results.
+ *
+ * @param {Blueprint} bluePrint
+ * @param {Object} options
+ * @param {boolean} options.addStacking
+ */
+export function buildBeatmap(bluePrint: Blueprint, options?: Partial<BeatmapBuilderOptions>): Beatmap {
+  const { beatmapVersion, stackLeniency } = bluePrint.blueprintInfo;
+  const { mods, addStacking } = { ...defaultBeatmapBuilderOptions, ...options };
+
+  const finalDifficulty = findDifficultyApplier(mods)(bluePrint.defaultDifficulty);
+
+  let hitObjects: OsuHitObject[] = bluePrint.hitObjectSettings.map((setting, index) =>
+    createStaticHitObject(index, setting, bluePrint.controlPointInfo, finalDifficulty),
+  );
+
+  hitObjects = assignComboIndex(bluePrint.hitObjectSettings, hitObjects);
+
+  // Adjusts hit objects such as flipping in the vertical direction in HardRock.
+  for (const mod of mods) {
+    const adjuster = ModSettings[mod].hitObjectsAdjuster;
+    if (adjuster !== undefined) hitObjects = adjuster(hitObjects);
+  }
+
+  if (addStacking) {
+    hitObjects = modifyStackingPosition(beatmapVersion, hitObjects, stackLeniency);
+  }
+
+  return new Beatmap(hitObjects, finalDifficulty, mods);
 }

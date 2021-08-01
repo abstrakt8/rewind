@@ -1,14 +1,11 @@
-import { BeatmapBuilder, HitCircle, Slider, SliderCheckPointType } from "@rewind/osu/core";
+import { buildBeatmap, HitCircle, Slider, SliderCheckPointType } from "@rewind/osu/core";
 import { osuMapPath, parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
 
 describe("BeatmapBuilder", function () {
   describe("Simple short slider", function () {
-    const bluePrint = parseBlueprintFromFS(osuMapPath("Perfume - Daijobanai (eiri-) [Slider 1].osu"));
-
-    const beatmapBuilder = new BeatmapBuilder(false);
-
     describe("should build when no mods", function () {
-      const hitObjects = beatmapBuilder.buildBeatmap(bluePrint, []).hitObjects;
+      const bluePrint = parseBlueprintFromFS(TEST_MAPS.ONE_SLIDER);
+      const hitObjects = buildBeatmap(bluePrint, { addStacking: false, mods: [] }).hitObjects;
       it("should have one slider ", function () {
         expect(hitObjects.length).toBe(1);
         const slider = hitObjects[0] as Slider;
@@ -35,8 +32,7 @@ describe("BeatmapBuilder", function () {
   });
   describe("Simple slider with repeat", function () {
     const bluePrint = parseBlueprintFromFS(TEST_MAPS.SLIDER_WITH_ONE_REPEAT);
-    const beatmapBuilder = new BeatmapBuilder(false);
-    const beatmap = beatmapBuilder.buildBeatmap(bluePrint, []);
+    const beatmap = buildBeatmap(bluePrint, { addStacking: false });
 
     const hitObject = beatmap.hitObjects[0];
 
@@ -51,8 +47,7 @@ describe("BeatmapBuilder", function () {
   });
   describe("Short kick slider", function () {
     const bluePrint = parseBlueprintFromFS(TEST_MAPS.SHORT_KICK_SLIDER);
-    const beatmapBuilder = new BeatmapBuilder(false);
-    const beatmap = beatmapBuilder.buildBeatmap(bluePrint, []);
+    const beatmap = buildBeatmap(bluePrint, { addStacking: false });
 
     const kickSlider = beatmap.hitObjects[0] as Slider;
     console.log(`KickSlider time interval : [${kickSlider.startTime},${kickSlider.endTime}]`);
@@ -70,8 +65,7 @@ describe("BeatmapBuilder", function () {
 
   describe("Violet Perfume / Map with only HitCircles", function () {
     const bluePrint = parseBlueprintFromFS(TEST_MAPS.VIOLET_PERFUME);
-    const beatmapBuilder = new BeatmapBuilder(true);
-    const beatmap = beatmapBuilder.buildBeatmap(bluePrint, []);
+    const beatmap = buildBeatmap(bluePrint);
     // This map only consists of hit circles
     const hitCircles = beatmap.hitObjects as HitCircle[];
     it("should build correctly", function () {
@@ -100,8 +94,7 @@ describe("BeatmapBuilder", function () {
 
   describe("Gera Gera / Tech map", function () {
     const bluePrint = parseBlueprintFromFS(TEST_MAPS.GERA_GERA);
-    const beatmapBuilder = new BeatmapBuilder(false);
-    const beatmap = beatmapBuilder.buildBeatmap(bluePrint, []);
+    const beatmap = buildBeatmap(bluePrint, { addStacking: false });
     it("should build correctly", function () {
       expect(beatmap).toBeDefined();
       console.log(beatmap);

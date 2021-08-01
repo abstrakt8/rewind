@@ -12,7 +12,7 @@ export function useInterval(callback: () => void, delay: number | null) {
   useEffect(() => {
     // Don't schedule if no delay is specified.
     if (delay === null) {
-      return;
+      return () => {};
     }
 
     const id = setInterval(() => savedCallback.current(), delay);

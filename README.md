@@ -15,3 +15,11 @@
 * `osu`: `@nrwl/workspace:library`
 * `osu-local`: `nrwl/nodejs:library`
 * `osu-pixi`: `@nrwl/workspace:library`
+
+# Testing
+
+Set environment variable appropriately, e.g.:
+
+```
+REWIND_OSU_TEST_DIR=E:\RewindTests\osu!
+```

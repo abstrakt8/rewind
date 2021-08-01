@@ -1,7 +1,8 @@
 import {
-  BeatmapBuilder,
-  fromRawToReplay,
+  Blueprint,
+  buildBeatmap,
   defaultReplayState,
+  fromRawToReplay,
   NextFrameEvaluator,
   NoteLockStyle,
   OsuBlueprintParser,
@@ -9,7 +10,6 @@ import {
   OsuStdJudgmentSettings,
   ReplayState,
   Slider,
-  Blueprint,
 } from "@rewind/osu/core";
 import * as fs from "fs";
 import * as path from "path";
@@ -28,19 +28,21 @@ export function parseBlueprintFromFS(name: string): Blueprint {
 // TODO: Replace those with the others
 // Or use enviornment variables
 export function realMapPath(name: string) {
-  return path.join("..", "..", "resources", "osu!", "Songs", name);
+  return path.join(process.env.ABC, "..", "..", "resources", "osu!", "Songs", name);
 }
 
 export function realReplayPath(name: string) {
   return path.join("..", "..", "resources", "osu!", "Replays", name);
 }
 
+const rewindTestOsuDir = process.env.REWIND_TEST_OSU_DIR || "";
+
 export function osuMapPath(name: string): string {
-  return path.join("resources", "maps", name);
+  return path.join(rewindTestOsuDir, "Songs", name);
 }
 
 export function replayPath(name: string): string {
-  return path.join("resources", "replays", name);
+  return path.join(rewindTestOsuDir, "Replays", name);
 }
 
 export function parseReplayFromFS(replayFile: string) {
@@ -49,18 +51,22 @@ export function parseReplayFromFS(replayFile: string) {
 }
 
 export const TEST_MAPS = {
-  ONE_SLIDER: osuMapPath("Perfume - Daijobanai (eiri-) [Slider 1].osu"),
-  SLIDER_WITH_ONE_REPEAT: osuMapPath("Perfume - Daijobanai (eiri-) [Slider (Repeat = 1)].osu"),
-  SHORT_KICK_SLIDER: osuMapPath("Perfume - Daijobanai (eiri-) [Short kick slider].osu"),
-  VIOLET_PERFUME: osuMapPath("SHK - Violet Perfume (ktgster) [Insane].osu"),
-  GERA_GERA: osuMapPath("ZUTOMAYO - Kan Saete Kuyashiiwa (Nathan) [geragera].osu"),
-  SUN_MOON_STAR: realMapPath(
+  ONE_SLIDER: osuMapPath("967347 Perfume - Daijobanai/Perfume - Daijobanai (eiri-) [Slider 1].osu"),
+  SLIDER_WITH_ONE_REPEAT: osuMapPath(
+    "967347 Perfume - Daijobanai/Perfume - Daijobanai (eiri-) [Slider (Repeat = 1)].osu",
+  ),
+  SHORT_KICK_SLIDER: osuMapPath("967347 Perfume - Daijobanai/Perfume - Daijobanai (eiri-) [Short kick slider].osu"),
+  VIOLET_PERFUME: osuMapPath("1010865 SHK - Violet Perfume [no video]/SHK - Violet Perfume (ktgster) [Insane].osu"),
+  GERA_GERA: osuMapPath(
+    "1001507 ZUTOMAYO - Kan Saete Kuyashiiwa/ZUTOMAYO - Kan Saete Kuyashiiwa (Nathan) [geragera].osu",
+  ),
+  SUN_MOON_STAR: osuMapPath(
     "933630 Aether Realm - The Sun, The Moon, The Star/Aether Realm - The Sun, The Moon, The Star (ItsWinter) [Mourning Those Things I've Long Left Behind].osu",
   ),
 };
 
 export const TEST_REPLAYS = {
-  SUN_MOON_STAR_VARVALIAN: realReplayPath(
+  SUN_MOON_STAR_VARVALIAN: replayPath(
     "Varvalian - Aether Realm - The Sun, The Moon, The Star [Mourning Those Things I've Long Left Behind] (2019-05-15) Osu.osr",
   ),
 };
@@ -100,8 +106,7 @@ export function evaluateWholeReplay(evaluator: NextFrameEvaluator, replay: any[]
 
 export function defaultStableSettings(mapFile: string) {
   const blueprint = parseBlueprintFromFS(mapFile);
-  const beatmapBuilder = new BeatmapBuilder(true);
-  const beatmap = beatmapBuilder.buildBeatmap(blueprint, []);
+  const beatmap = buildBeatmap(blueprint);
   const hitObjects = beatmap.hitObjects;
   const hitWindows = hitWindowsForOD(blueprint.defaultDifficulty.overallDifficulty);
 

@@ -28,12 +28,18 @@ export const lazerHitWindowsForOD = (od: number): HitWindows => {
 // [-5, 5] is HitWindow of 300
 // [-10, -5) and (+5, 10] is HitWindow of 100
 
-export const hitWindowsForOD = (od: number, lazer?: boolean): HitWindows => {
-  if (lazer) {
-    return lazerHitWindowsForOD(od);
+/**
+ * Returns the hit windows in the following order:
+ * Hit300, Hit100, Hit50, HitMiss
+ * @param overallDifficulty
+ * @param lazerStyle
+ */
+export const hitWindowsForOD = (overallDifficulty: number, lazerStyle?: boolean): HitWindows => {
+  if (lazerStyle) {
+    return lazerHitWindowsForOD(overallDifficulty);
   }
   // https://github.com/ppy/osu/issues/11311
-  return lazerHitWindowsForOD(od).map((w) => w - 1);
+  return lazerHitWindowsForOD(overallDifficulty).map((w) => w - 1);
 };
 
 // -1 if there is none

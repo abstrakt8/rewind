@@ -1,10 +1,10 @@
-import { HitCircle } from "../../hitobjects/HitCircle";
+import { HitCircle } from "../hitobjects/HitCircle";
 import { Position, Vec2 } from "@rewind/osu/math";
-import { Slider } from "../../hitobjects/Slider";
-import { OsuHitObject } from "../../hitobjects";
+import { Slider } from "../hitobjects/Slider";
+import { OsuHitObject } from "../hitobjects";
 import produce from "immer";
-import { Spinner } from "../../hitobjects/Spinner";
-import { OsuHitObjectTypes } from "../../hitobjects/OsuHitObjectTypes";
+import { Spinner } from "../hitobjects/Spinner";
+import { OsuHitObjectTypes } from "../hitobjects/OsuHitObjectTypes";
 
 function stackOffset(stackHeight: number, scale: number): Position {
   const value = stackHeight * scale * -6.4;

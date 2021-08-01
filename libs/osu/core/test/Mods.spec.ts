@@ -1,8 +1,7 @@
-import { HardRockMod, DEFAULT_BEATMAP_DIFFICULTY } from "@rewind/osu/core";
+import { DEFAULT_BEATMAP_DIFFICULTY } from "../src/beatmap/BeatmapDifficulty";
+import { HardRockMod } from "../src/mods/HardRockMod";
 
 describe("HardRock", function () {
-  const mod = new HardRockMod();
-
   describe("BeatmapDifficulty adjusting", function () {
     it("should adjust to 10 max", function () {
       const original = {
@@ -19,7 +18,7 @@ describe("HardRock", function () {
         overallDifficulty: 10,
         circleSize: 5.2,
       };
-      const actual = mod.difficultyApplier(original);
+      const actual = HardRockMod.difficultyAdjuster(original);
       expect(actual).toEqual(expected);
     });
   });

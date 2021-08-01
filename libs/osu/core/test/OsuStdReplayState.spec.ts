@@ -2,7 +2,6 @@ import {
   defaultStableSettings,
   evaluateWholeReplay,
   osuClassicScoreScreenJudgementCount,
-  osuMapPath,
   parseReplayFromFS,
   replayPath,
   TEST_MAPS,
@@ -10,8 +9,6 @@ import {
 import { HitCircleMissReason, HitCircleState, HitObjectJudgementType, ReplayState } from "../src/replays/ReplayState";
 import { BucketedReplayStateTimeMachine } from "../src/replays/ReplayStateTimeMachine";
 import { Slider } from "../src/hitobjects/Slider";
-
-const testVioletPerfume = osuMapPath("SHK - Violet Perfume (ktgster) [Insane].osu");
 
 /**
  * Info on [Slider 1]
@@ -87,7 +84,7 @@ describe("Daijobanai [Short kick slider]", function () {
 });
 
 describe("OsuStd! ReplayState - Violet Perfume (no sliders/spinners)", function () {
-  const { hitObjects, settings, evaluator, hitWindows } = defaultStableSettings(testVioletPerfume);
+  const { hitObjects, settings, evaluator, hitWindows } = defaultStableSettings(TEST_MAPS.VIOLET_PERFUME);
   const replay = parseReplayFromFS(replayPath("abstrakt - SHK - Violet Perfume [Insane] (2021-03-27) Osu.osr"));
   console.log(hitWindows);
 

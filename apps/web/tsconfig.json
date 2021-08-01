@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+//    "strict": true, // Either we do it in both libraries or not at all, but this seems very very strict
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
