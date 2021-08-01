@@ -14,7 +14,7 @@ export const OSU_PLAYFIELD_BASE_Y = 384;
  Contains elements in the following order (far to near):
  - Background: image or maybe story board in the future
  - Playfield: where the action happens
- - Stats UI: additional overlay for example Accuracy, UR, PP. Maybe we need a stats UI behind playfield layer
+ - Foreground HUD: additional overlay for example Accuracy, UR, PP. Maybe we need a stats UI behind playfield layer
  because some elements like the UR bar get drawn behind the hit objects .
  */
 export class MyExtendedPlayfieldContainer {
@@ -22,21 +22,21 @@ export class MyExtendedPlayfieldContainer {
   heightInPx = 0;
 
   container: Container;
+
   backgroundSprite: Sprite;
+  backgroundUrl: string;
+  // playfield: Container
   foregroundHUD: Container;
 
-  // TODO: StatsContainer or similar
   hitErrorBar: AnalysisHitErrorBar;
 
   constructor(private readonly playfield: Container, private readonly context: ReplayViewerContext) {
     this.container = new Container();
     this.foregroundHUD = new Container();
     this.hitErrorBar = new AnalysisHitErrorBar();
-    // Texture will be given later
     this.backgroundSprite = new Sprite();
     this.backgroundSprite.anchor.set(0.5, 0.5);
-
-    // this.skin = Skin.EMPTY;
+    this.backgroundUrl = "";
 
     this.container.addChild(this.backgroundSprite, this.playfield, this.foregroundHUD);
   }
@@ -133,7 +133,16 @@ export class MyExtendedPlayfieldContainer {
     }
   }
 
+  applyBeatmapBackground() {
+    const { backgroundDim } = this.context.view;
+    const backgroundUrl = "";
+    if (this.backgroundUrl !== backgroundUrl) {
+      // Do something
+    }
+  }
+
   prepare(time: number) {
+    this.applyBeatmapBackground();
     this.applyHud(time);
   }
 }

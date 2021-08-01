@@ -14,7 +14,7 @@ import { Skin } from "../skins/Skin";
 import { settingsApproachCircle, settingsHitCircleArea } from "./HitCircle";
 import { sliderBodySetting } from "./Slider";
 import { SkinTextures } from "@rewind/osu/skin";
-import { findIndexInReplayAtTime, findPositionInReplayAtTime } from "../utils/Replay";
+import { findIndexInReplayAtTime, interpolateReplayPosition } from "../utils/Replay";
 import { sliderRepeatAngle } from "../utils/Sliders";
 import { ReplayViewerContext } from "./ReplayViewerContext";
 
@@ -213,30 +213,27 @@ export class OsuGameplayContainer {
     this.sliderBodyProcessed.clear();
   }
 
-  // SO SLOW LOL
   prepareOsuCursor(time: number) {
     const cursor = new OsuClassicCursor();
-    const hideCursorTrail = false;
+    const { showTrail, scaleWithCS, scale } = this.context.view.osuCursor;
 
-    const position = findPositionInReplayAtTime(this.replayFrames, time);
-    if (position === null)
-      // we are either before the beginning or after the end of the replay
-      return;
-
-    // Could be optimized with a single call with the one above
     const pi = findIndexInReplayAtTime(this.replayFrames, time);
+    // we are either before the beginning or after the end of the replay
+    if (pi === -1 || pi + 1 >= this.replayFrames.length) return;
+
+    // console.log(pi);
+    const position = interpolateReplayPosition(this.replayFrames[pi], this.replayFrames[pi + 1], time);
     const trailPositions = [];
-    if (!hideCursorTrail) {
+    if (showTrail) {
       for (let i = 1; i <= 5 && pi - i >= 0; i++) {
         trailPositions.push(this.replayFrames[pi - i].position);
       }
     }
-    const cursorScale = 1.0; // get from settings
 
     cursor.prepare({
       position,
       trailPositions,
-      cursorScale,
+      cursorScale: scale,
       cursorTexture: this.skin.getTexture(SkinTextures.CURSOR),
       cursorTrailTexture: this.skin.getTexture(SkinTextures.CURSOR_TRAIL),
     });
@@ -244,11 +241,16 @@ export class OsuGameplayContainer {
     this.cursorContainer.addChild(cursor.container);
   }
 
+  prepareAnalysisCursor(time: number) {}
+
   prepareCursor(time: number) {
     this.cursorContainer.removeChildren();
 
     if (this.view.osuCursor.enabled) {
       this.prepareOsuCursor(time);
+    }
+    if (this.view.analysisCursor.enabled) {
+      this.prepareAnalysisCursor(time);
     }
   }
 

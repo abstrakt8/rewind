@@ -66,6 +66,7 @@ export class Scenario {
     autorun(() => {
       // Basically toJS gives a deep clone without observations
       this.replayViewerContext.replay = toJS(this.replay);
+      this.replayViewerContext.blueprint = toJS(this.blueprint);
       this.replayViewerContext.beatmap = toJS(this.beatmap ?? Beatmap.EMPTY_BEATMAP);
       // TODO: This should not be observable
       this.replayViewerContext.replayTimeMachine = this.replayStateTimeMachine;
