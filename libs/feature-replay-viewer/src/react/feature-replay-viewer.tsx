@@ -180,7 +180,7 @@ function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown
       checked={enabled}
       onChange={setEnabled}
       className={`relative inline-flex items-center h-6 rounded-full w-11`}
-      style={color ? { backgroundColor: enabled ? color ?? "blue" : "#dddddd" } : {}}
+      style={{ backgroundColor: enabled ? color ?? "blue" : "#dddddd" }}
     >
       <span
         className={`${
@@ -233,7 +233,11 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
           <canvas className={"w-full h-full bg-black"} ref={canvas} />
         </div>
         <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
-          <button className={"transition-colors hover:text-gray-400"} onClick={() => gameClock.togglePlaying()}>
+          <button
+            className={"transition-colors hover:text-gray-400"}
+            tabIndex={-1}
+            onClick={() => gameClock.togglePlaying()}
+          >
             {gameClock.isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <CurrentTime />
@@ -286,7 +290,8 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
           <SettingsTitle title={"replay analysis"} />
           <ReplaySettingsBox>
             <div>Analysis cursor</div>
-            <input type={"checkbox"} />
+            <MyToggle enabled={false} setEnabled={() => {}} />
+            {/*<input type={"checkbox"} />*/}
             {/*<div>*/}
             {/*  Draw misses <input type={"checkbox"} />*/}
             {/*</div>*/}

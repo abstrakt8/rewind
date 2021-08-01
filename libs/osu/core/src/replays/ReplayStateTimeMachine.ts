@@ -57,6 +57,9 @@ export class BucketedReplayStateTimeMachine implements ReplayStateTimeMachine {
   replayStateAt(time: number): ReplayState {
     const highestCachedIndex = this.getHighestCachedIndex(time);
 
+    // TODO: Just check if we had normal forward behavior or not, this can drastically improve performance
+    // If not, we need to reset something such as the derived data.
+
     // Either we have to travel back anyways or there is a future index available for that time.
     if (this.currentIndex < highestCachedIndex || time < this.frames[this.currentIndex].time) {
       this.currentIndex = highestCachedIndex;
