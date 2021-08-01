@@ -44,7 +44,7 @@ export const defaultViewSettings: () => ViewSettings = () => ({
   },
   analysisCursor: {
     scale: 0.8,
-    enabled: false,
+    enabled: true,
     scaleWithCS: true,
     colorBothKeys: 0x333456,
     colorKey1: 0xaffede,

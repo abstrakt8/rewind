@@ -43,38 +43,44 @@ const colorScheme = [
 
 interface Settings {
   points: AnalysisPoint[];
+  smoothedPosition: Position;
 }
 
 const defaultSettings: Settings = {
   points: [],
+  smoothedPosition: { x: 0, y: 0 },
 };
 
 export class AnalysisCursor {
   container: Container;
   analysisPoints: AnalysisCross[];
   trail: Graphics;
+  circle: Graphics; // small circle at the smoothed position
 
   constructor() {
     this.container = new Container();
     this.analysisPoints = [];
     this.container.addChild((this.trail = new Graphics()));
     for (let i = 0; i < numberOfFrames; i++) {
-      this.container.addChild((this.analysisPoints[i] = new AnalysisCross()));
+      this.container.addChild((this.analysisPoints[numberOfFrames - i - 1] = new AnalysisCross()));
     }
+    this.container.addChild((this.circle = new Graphics()));
+    this.circle.beginFill(0xdeadbe, 1.0);
+    this.circle.drawCircle(0, 0, 2);
+    this.circle.endFill();
   }
 
   prepare(settings: Partial<Settings>): void {
-    const { points } = { ...defaultSettings, ...settings };
+    const { points, smoothedPosition } = { ...defaultSettings, ...settings };
     // Trail
     this.trail.clear();
     this.trail.moveTo(0, 0);
     const numberOfFrames = points.length;
-    const firstPos = points[0].position;
     for (let i = 0; i < numberOfFrames; i++) {
       const { color, interesting, position } = points[i];
       const f = (numberOfFrames - i) / numberOfFrames;
       const baseAlpha = 1 - applyEasing(1 - f, Easing.OUT);
-      const offset = Vec2.sub(position, firstPos);
+      const offset = Vec2.sub(position, smoothedPosition);
 
       this.trail.lineStyle(1, 0x5d6463, baseAlpha);
       this.trail.lineTo(offset.x, offset.y);

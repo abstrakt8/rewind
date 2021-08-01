@@ -1,5 +1,13 @@
 import { Container } from "@pixi/display";
-import { HitCircle, OsuHitObject, ReplayState, Slider, SliderCheckPoint, SliderCheckPointType } from "@rewind/osu/core";
+import {
+  HitCircle,
+  OsuAction,
+  OsuHitObject,
+  ReplayState,
+  Slider,
+  SliderCheckPoint,
+  SliderCheckPointType,
+} from "@rewind/osu/core";
 import {
   OsuClassicApproachCircle,
   OsuClassicCursor,
@@ -17,6 +25,7 @@ import { SkinTextures } from "@rewind/osu/skin";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../utils/Replay";
 import { sliderRepeatAngle } from "../utils/Sliders";
 import { ReplayViewerContext } from "./ReplayViewerContext";
+import { AnalysisCursor } from "../components/AnalysisCursor";
 
 export class OsuGameplayContainer {
   container: Container;
@@ -241,7 +250,54 @@ export class OsuGameplayContainer {
     this.cursorContainer.addChild(cursor.container);
   }
 
-  prepareAnalysisCursor(time: number) {}
+  prepareAnalysisCursor(time: number) {
+    const cursor = new AnalysisCursor();
+    const pi = findIndexInReplayAtTime(this.replayFrames, time);
+    // we are either before the beginning or after the end of the replay
+    if (pi === -1 || pi + 1 >= this.replayFrames.length) return;
+    const position = interpolateReplayPosition(this.replayFrames[pi], this.replayFrames[pi + 1], time);
+
+    const interesting = [];
+    const masks: number[] = [];
+    // the interesting rule can be changed...
+
+    const points = [];
+    const trailCount = 25;
+    for (let i = trailCount - 1; i >= 0; i--) {
+      masks[i] = 0;
+      if (pi - i >= 0) {
+        const r = this.replayFrames[pi - i];
+        if (r.actions.includes(OsuAction.leftButton)) masks[i] |= 1;
+        if (r.actions.includes(OsuAction.rightButton)) masks[i] |= 2;
+        if (i + 1 === trailCount) continue;
+
+        // i has a bit that i + 1 does not have (bit=press)
+        if ((masks[i] ^ masks[i + 1]) & masks[i]) {
+          interesting[i] = true;
+        }
+      }
+    }
+    const colorScheme = [
+      0x5d6463, // none gray
+      0xffa500, // left (orange)
+      0x00ff00, // right (green)
+      // 0xfa0cd9, // right (pink)
+      0x3cbdc1, // both (cyan)
+    ];
+    for (let i = 0; i < trailCount && pi - i >= 0; i++) {
+      const j = pi - i;
+      const maskDelta = (masks[i] ^ masks[i + 1]) & masks[i]; //
+      points.push({
+        interesting: interesting[i],
+        color: colorScheme[maskDelta],
+        position: this.replayFrames[j].position,
+      });
+    }
+    cursor.prepare({ points, smoothedPosition: position });
+    cursor.container.position.set(position.x, position.y);
+
+    this.cursorContainer.addChild(cursor.container);
+  }
 
   prepareCursor(time: number) {
     this.cursorContainer.removeChildren();
