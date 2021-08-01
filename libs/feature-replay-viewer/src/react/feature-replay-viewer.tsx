@@ -172,14 +172,15 @@ export const useShortcuts = () => {
   useHotkeys("f", () => renderSettings.toggleModHidden());
 };
 
-function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown }) {
-  const { enabled, setEnabled } = props;
+function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown; color?: string }) {
+  const { enabled, setEnabled, color } = props;
 
   return (
     <Switch
       checked={enabled}
       onChange={setEnabled}
-      className={`${enabled ? "bg-blue-600" : "bg-gray-200"} relative inline-flex items-center h-6 rounded-full w-11`}
+      className={`relative inline-flex items-center h-6 rounded-full w-11`}
+      style={color ? { backgroundColor: enabled ? color ?? "blue" : "#dddddd" } : {}}
     >
       <span
         className={`${
@@ -273,13 +274,29 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
           <PlaybarEventsBox>
             {/*TODO: Colors should correspond to the events */}
             <div>Misses</div>
-            <MyToggle enabled={pbSetting["showMisses"]} setEnabled={handleTogglePbSetting("showMisses")} />
+            <MyToggle
+              enabled={pbSetting["showMisses"]}
+              setEnabled={handleTogglePbSetting("showMisses")}
+              color={PlaybarColors.MISS}
+            />
             <div>Slider breaks</div>
-            <MyToggle enabled={pbSetting["showSliderBreaks"]} setEnabled={handleTogglePbSetting("showSliderBreaks")} />
+            <MyToggle
+              enabled={pbSetting["showSliderBreaks"]}
+              setEnabled={handleTogglePbSetting("showSliderBreaks")}
+              color={PlaybarColors.SLIDER_BREAK}
+            />
             <div>50s</div>
-            <MyToggle enabled={pbSetting["show50s"]} setEnabled={handleTogglePbSetting("show50s")} />
+            <MyToggle
+              enabled={pbSetting["show50s"]}
+              setEnabled={handleTogglePbSetting("show50s")}
+              color={PlaybarColors.MEH}
+            />
             <div>100s</div>
-            <MyToggle enabled={pbSetting["show100s"]} setEnabled={handleTogglePbSetting("show100s")} />
+            <MyToggle
+              enabled={pbSetting["show100s"]}
+              setEnabled={handleTogglePbSetting("show100s")}
+              color={PlaybarColors.OK}
+            />
           </PlaybarEventsBox>
         </SidebarBox>
         <SidebarBox>
