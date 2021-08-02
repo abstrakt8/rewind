@@ -16,14 +16,18 @@ export class PerformanceGameClock implements GameClock {
   }
 
   start() {
-    this._lastStartTime = performance.now();
-    this.isPlaying = true;
+    if (!this.isPlaying) {
+      this._lastStartTime = performance.now();
+      this.isPlaying = true;
+    }
   }
 
   pause() {
-    this.isPlaying = false;
-    this.elapsed += this.timePassedSinceStart();
-    this._lastStartTime = -1;
+    if (this.isPlaying) {
+      this.isPlaying = false;
+      this.elapsed += this.timePassedSinceStart();
+      this._lastStartTime = -1;
+    }
   }
 
   togglePlaying() {
@@ -41,7 +45,9 @@ export class PerformanceGameClock implements GameClock {
 
   seekTo(time: number) {
     this.elapsed = time;
-    if (this.isPlaying) this.start();
+    if (this.isPlaying) {
+      this._lastStartTime = performance.now();
+    }
   }
 
   setSpeed(speed: number): void {

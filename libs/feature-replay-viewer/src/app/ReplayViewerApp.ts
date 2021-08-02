@@ -50,6 +50,7 @@ export class ReplayViewerApp {
     this.performanceMonitor = settings.performanceMonitor;
 
     this.context = settings.context;
+    console.log("Clock", settings.clock.getCurrentTime());
 
     // Containers
     this.sliderTextureManager = new SliderTextureManager(

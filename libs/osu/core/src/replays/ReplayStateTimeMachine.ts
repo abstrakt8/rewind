@@ -18,6 +18,7 @@ export interface ReplayStateTimeMachine {
  * Stores replays at the indices [0, sqrt n, 2 *sqrt n, ..., sqrt n * sqrt n] and the others are inferred.
  *
  * TODO: We could do caching like described in method 4 of https://gamedev.stackexchange.com/questions/6080/how-to-design-a-replay-system/8372#8372
+ * TODO: Should we Object.freeze(...) the cached ones in order to prevent accidental mutations?
  */
 export class BucketedReplayStateTimeMachine implements ReplayStateTimeMachine {
   // 0 stands for initial state
@@ -40,7 +41,8 @@ export class BucketedReplayStateTimeMachine implements ReplayStateTimeMachine {
     // Add a dummy replay frame at the beginning.
     this.frames = [{ time: -727_727, position: new Vec2(0, 0), actions: [] }, ...replay];
     this.bucketSize = bucketSize ?? Math.ceil(Math.sqrt(this.frames.length));
-    this.currentReplayState = this.storedReplayState[0] = defaultReplayState();
+    this.storedReplayState[0] = defaultReplayState();
+    this.currentReplayState = cloneReplayState(this.storedReplayState[0]);
     this.evaluator = new NextFrameEvaluator(hitObjects, settings);
   }
 
