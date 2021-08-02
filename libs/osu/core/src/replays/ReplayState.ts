@@ -425,7 +425,7 @@ export class NextFrameEvaluator {
     }
     const judgement = sliderJudgementBasedOnCheckpoints(totalCheckpoints, hitCheckpoints);
     this.replayState.sliderJudgement.set(id, judgement);
-    this.judgeHitObject(judgement);
+    this.judgeHitObject(judgement, true);
 
     this.replayState.aliveSliderIds.delete(id);
     this.replayState.nextCheckPointIndex.delete(id);
@@ -599,12 +599,16 @@ export class NextFrameEvaluator {
   }
 
   private judgeLastTick(hit: boolean) {
-    // SmallHitTick -> Does not affect combo, Numeric result 10
+    // Only increases, does not set to 0
+    if (hit) {
+      this.comboChange(true);
+    }
     // TODO: Add numeric result to score depending on hit or not
   }
 
-  private judgeHitObject(type: HitObjectJudgementType) {
-    this.comboChange(type !== HitObjectJudgementType.Miss);
+  private judgeHitObject(type: HitObjectJudgementType, isSlider?: boolean) {
+    // Sliders don't get combo
+    if (!isSlider) this.comboChange(type !== HitObjectJudgementType.Miss);
     // TODO: Add numeric result to score
   }
 
