@@ -77,7 +77,7 @@ const chosenReplayId = sunMoonReplayId;
 // const chosenBlueprintId = akatsukiId;
 // const chosenReplayId = undefined;
 
-const chosenSkinId = kasugaMirai;
+const chosenSkinId = aristaSkinId;
 // const chosenSkinId = kasugaMirai;
 
 const ALL_SKINS: Record<string, LSkin> = {

@@ -51,6 +51,7 @@ export class OsuClassicJudgement implements PrepareSetting<OsuClassicJudgementsS
 
   constructor() {
     this.sprite = new Sprite();
+    this.sprite.anchor.set(0.5, 0.5);
     this.settings = defaultSettings;
   }
 
@@ -63,7 +64,7 @@ export class OsuClassicJudgement implements PrepareSetting<OsuClassicJudgementsS
       },
       scale: {
         startValue: scale * 0.9,
-        transformations: [{ time: [0, 500], func: scaleToT(1.0, Easing.OUT_ELASTIC) }],
+        transformations: [{ time: [0, 500], func: scaleToT(scale * 1.0, Easing.OUT_ELASTIC) }],
       },
       position: {
         startValue: position,

@@ -1,6 +1,7 @@
 import { Container } from "@pixi/display";
 import {
   HitCircle,
+  HitObjectJudgementType,
   OsuAction,
   OsuHitObject,
   ReplayState,
@@ -26,10 +27,25 @@ import { findIndexInReplayAtTime, interpolateReplayPosition } from "../utils/Rep
 import { sliderRepeatAngle } from "../utils/Sliders";
 import { ReplayViewerContext } from "./ReplayViewerContext";
 import { AnalysisCursor } from "../components/AnalysisCursor";
+import { OsuClassicJudgement } from "../../../osu-pixi/classic-components/src/hitobjects/OsuClassicJudgements";
+import { circleSizeToScale } from "@rewind/osu/math";
 
+/*
+            {
+                playfieldBorder = new PlayfieldBorder { RelativeSizeAxes = Axes.Both },
+                spinnerProxies = new ProxyContainer { RelativeSizeAxes = Axes.Both },
+                followPoints = new FollowPointRenderer { RelativeSizeAxes = Axes.Both },
+                judgementLayer = new JudgementContainer<DrawableOsuJudgement> { RelativeSizeAxes = Axes.Both },
+                HitObjectContainer,
+                judgementAboveHitObjectLayer = new Container { RelativeSizeAxes = Axes.Both },
+                approachCircles = new ProxyContainer { RelativeSizeAxes = Axes.Both },
+                }
+
+ */
 export class OsuGameplayContainer {
   container: Container;
   playfieldBorder: PlayfieldBorder;
+  judgementLayer: Container;
   hitObjectContainer: Container;
   approachCircles: Container;
   cursorContainer: Container;
@@ -45,9 +61,16 @@ export class OsuGameplayContainer {
     this.container = new Container();
     this.playfieldBorder = new PlayfieldBorder();
     this.hitObjectContainer = new Container();
+    this.judgementLayer = new Container();
     this.approachCircles = new Container();
     this.cursorContainer = new Container();
-    this.container.addChild(this.playfieldBorder, this.hitObjectContainer, this.approachCircles, this.cursorContainer);
+    this.container.addChild(
+      this.playfieldBorder,
+      this.judgementLayer,
+      this.hitObjectContainer,
+      this.approachCircles,
+      this.cursorContainer,
+    );
   }
 
   private get hitObjects(): OsuHitObject[] {
@@ -310,6 +333,42 @@ export class OsuGameplayContainer {
     }
   }
 
+  private texturesForJudgement(t: HitObjectJudgementType, lastInComboSet?: boolean) {
+    switch (t) {
+      case HitObjectJudgementType.Great:
+        return lastInComboSet ? SkinTextures.HIT_300K : SkinTextures.HIT_300;
+      case HitObjectJudgementType.Ok:
+        return lastInComboSet ? SkinTextures.HIT_100K : SkinTextures.HIT_100;
+      case HitObjectJudgementType.Meh:
+        return SkinTextures.HIT_50;
+      case HitObjectJudgementType.Miss:
+        return SkinTextures.HIT_0;
+    }
+  }
+
+  prepareJudgements(time: number) {
+    this.judgementLayer.removeChildren();
+    if (!this.replayState) return;
+    for (const [id, s] of this.replayState.hitCircleState.entries()) {
+      const hitCircle = this.context.beatmap.getHitCircle(id);
+      if (hitCircle.sliderId) continue;
+      // TODO check against next one
+      const lastInComboSet = false;
+      const textures = this.skin.getTextures(this.texturesForJudgement(s.type, lastInComboSet));
+      const timeAgo = time - s.judgementTime;
+      // TODO: Great should not be skipped
+      if (!(timeAgo >= 0 && timeAgo < 3000) || s.type === HitObjectJudgementType.Great) continue;
+      const judgement = new OsuClassicJudgement();
+      // TODO: This is actually not correct
+      const animationFrameRate = this.skin.config.general.animationFrameRate;
+      // animationFraem
+      const scale = circleSizeToScale(this.context.beatmap.difficulty.circleSize);
+      judgement.prepare({ time: timeAgo, position: hitCircle.position, scale, animationFrameRate, textures });
+      this.judgementLayer.addChild(judgement.sprite);
+    }
+    // todo: spinners
+  }
+
   prepare(time: number) {
     if (this.skin === Skin.EMPTY) return;
     // console.log("prepare time", time, this.hitObjects.length);
@@ -332,5 +391,7 @@ export class OsuGameplayContainer {
     this.processSliders();
 
     this.prepareCursor(time);
+
+    this.prepareJudgements(time);
   }
 }

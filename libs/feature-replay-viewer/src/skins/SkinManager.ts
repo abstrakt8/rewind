@@ -54,7 +54,9 @@ export class OsuExpressSkinManager implements SkinManager {
     const skinStaticUrl = urljoin(this.osuExpressUrl, "static", "skins", folderPath);
 
     // We could also put some GET parameters
-    const res = await axios.get(skinInfoUrl).then((value) => value.data);
+    const res = await axios
+      .get(skinInfoUrl, { data: { animatedIfExists: 1, hdIfExists: 1 } })
+      .then((value) => value.data);
 
     // Yeah ...
     const config = res.config as SkinConfig;
