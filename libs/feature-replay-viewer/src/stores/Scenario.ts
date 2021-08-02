@@ -6,6 +6,7 @@ import {
   Blueprint,
   BucketedReplayStateTimeMachine,
   buildBeatmap,
+  HitObjectJudgement,
   NoteLockStyle,
   OsuClassicMods,
   ReplayAnalysisEvent,
@@ -57,6 +58,7 @@ export class Scenario {
       view: defaultViewSettings(),
       beatmap: Beatmap.EMPTY_BEATMAP,
       skin: Skin.EMPTY,
+      judgements: [],
     } as ReplayViewerContext;
 
     autorun(() => {
@@ -69,6 +71,9 @@ export class Scenario {
       this.replayViewerContext.blueprint = toJS(this.blueprint);
       this.replayViewerContext.beatmap = toJS(this.beatmap ?? Beatmap.EMPTY_BEATMAP);
       // TODO: This should not be observable
+      this.replayViewerContext.judgements = this.replayEvents.filter(
+        (f) => f.type === "HitObjectJudgement",
+      ) as HitObjectJudgement[];
       this.replayViewerContext.replayTimeMachine = this.replayStateTimeMachine;
     });
 

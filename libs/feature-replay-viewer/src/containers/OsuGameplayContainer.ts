@@ -1,7 +1,7 @@
 import { Container } from "@pixi/display";
 import {
   HitCircle,
-  HitObjectJudgementType,
+  HitObjectVerdict,
   OsuAction,
   OsuHitObject,
   ReplayState,
@@ -333,40 +333,40 @@ export class OsuGameplayContainer {
     }
   }
 
-  private texturesForJudgement(t: HitObjectJudgementType, lastInComboSet?: boolean) {
+  private static texturesForJudgement(t: HitObjectVerdict, lastInComboSet?: boolean) {
     switch (t) {
-      case HitObjectJudgementType.Great:
+      case "GREAT":
         return lastInComboSet ? SkinTextures.HIT_300K : SkinTextures.HIT_300;
-      case HitObjectJudgementType.Ok:
+      case "OK":
         return lastInComboSet ? SkinTextures.HIT_100K : SkinTextures.HIT_100;
-      case HitObjectJudgementType.Meh:
+      case "MEH":
         return SkinTextures.HIT_50;
-      case HitObjectJudgementType.Miss:
+      case "MISS":
         return SkinTextures.HIT_0;
     }
   }
 
   prepareJudgements(time: number) {
     this.judgementLayer.removeChildren();
-    if (!this.replayState) return;
-    for (const [id, s] of this.replayState.hitCircleState.entries()) {
-      const hitCircle = this.context.beatmap.getHitCircle(id);
-      if (hitCircle.sliderId) continue;
-      // TODO check against next one
+    if (!this.context.judgements) return;
+    for (const j of this.context.judgements) {
       const lastInComboSet = false;
-      const textures = this.skin.getTextures(this.texturesForJudgement(s.type, lastInComboSet));
-      const timeAgo = time - s.judgementTime;
-      // TODO: Great should not be skipped
-      if (!(timeAgo >= 0 && timeAgo < 3000) || s.type === HitObjectJudgementType.Great) continue;
-      const judgement = new OsuClassicJudgement();
-      // TODO: This is actually not correct
+      const textures = this.skin.getTextures(OsuGameplayContainer.texturesForJudgement(j.verdict, lastInComboSet));
       const animationFrameRate = this.skin.config.general.animationFrameRate;
-      // animationFraem
+      const judgement = new OsuClassicJudgement();
       const scale = circleSizeToScale(this.context.beatmap.difficulty.circleSize);
-      judgement.prepare({ time: timeAgo, position: hitCircle.position, scale, animationFrameRate, textures });
+      const timeAgo = time - j.time;
+
+      // TODO: Should be configurable, technically speaking does not reflect osu!stable (it resembles lazer)
+      // However, in this replay analysis tool this is more useful (?)
+      const sliderHeadJudgementSkip = false;
+      if (sliderHeadJudgementSkip && j.isSliderHead) continue;
+      if (!(timeAgo >= 0 && timeAgo < 3000) || j.verdict === "GREAT") continue;
+      judgement.prepare({ time: timeAgo, position: j.position, scale, animationFrameRate, textures });
+      judgement.sprite.zIndex = -timeAgo;
       this.judgementLayer.addChild(judgement.sprite);
     }
-    // todo: spinners
+    this.judgementLayer.sortChildren();
   }
 
   prepare(time: number) {

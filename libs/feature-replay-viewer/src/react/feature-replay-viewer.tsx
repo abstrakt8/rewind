@@ -8,7 +8,6 @@ import { ReplayViewerApp } from "../app/ReplayViewerApp";
 import { usePerformanceMonitor } from "../utils/usePerformanceMonitor";
 import { useMobXContext } from "../contexts/MobXContext";
 import { observer } from "mobx-react-lite";
-import { autorun, toJS } from "mobx";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ReplayAnalysisEvent, ReplayAnalysisEventType } from "@rewind/osu/core";
 import { Switch } from "@headlessui/react";
@@ -93,34 +92,34 @@ const PlaybarColors = {
   MEH: "#ffa500",
 };
 
-type pbSettingType = "showMisses" | "showSliderBreaks" | "show100s" | "show50s";
+type PlaybarFilter = "showMisses" | "showSliderBreaks" | "show100s" | "show50s";
 
-type PlaybarSettings = Record<pbSettingType, boolean>;
-// interface PlaybarSettings {
-//   showMisses: boolean;
-//   showSliderBreaks: boolean;
-//   show100s: boolean;
-//   show50s: boolean;
-// }
+type PlaybarSettings = Record<PlaybarFilter, boolean>;
 
 function mapToPlaybarEvents(replayEvents: ReplayAnalysisEvent[], settings: PlaybarSettings): PlaybarEvent[] {
   const { showSliderBreaks, show100s, show50s, showMisses } = settings;
   const events: PlaybarEvent[] = [];
+  // TODO: Refactor -> maybe filter afterwards
   replayEvents.forEach((e) => {
     const position = e.time / maxTime;
     switch (e.type) {
-      case ReplayAnalysisEventType.MISS:
-        if (showMisses) events.push({ color: PlaybarColors.MISS, position });
+      case "HitObjectJudgement":
+        // TODO: for lazer style, this needs some rework
+        if (e.isSliderHead) {
+          if (e.verdict === "MISS" && showSliderBreaks) events.push({ color: PlaybarColors.SLIDER_BREAK, position });
+          return;
+        } else {
+          if (e.verdict === "MISS" && showMisses) events.push({ color: PlaybarColors.MISS, position });
+          if (e.verdict === "MEH" && show50s) events.push({ color: PlaybarColors.MEH, position });
+          if (e.verdict === "OK" && show100s) events.push({ color: PlaybarColors.OK, position });
+        }
+        // if(e.verdict === "GREAT" && show300s) events.push(); // Not sure if this will ever be implemented
         break;
-      case ReplayAnalysisEventType.MEH:
-        if (show50s) events.push({ color: PlaybarColors.MEH, position });
+      case "CheckpointJudgement":
+        if (showSliderBreaks && !e.hit && !e.isLastTick) events.push({ color: PlaybarColors.SLIDER_BREAK, position });
         break;
-      case ReplayAnalysisEventType.OK:
-        if (show100s) events.push({ color: PlaybarColors.OK, position });
-        break;
-      case ReplayAnalysisEventType.SLIDER_INNER_CHECKPOINT_MISS:
-      case ReplayAnalysisEventType.SLIDER_HEAD_MISS:
-        if (showSliderBreaks) events.push({ color: PlaybarColors.SLIDER_BREAK, position });
+      case "UnnecessaryClick":
+        // TODO
         break;
     }
   });
@@ -225,7 +224,7 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
     }
   }, [canvas, scenario, renderSettings, containerRef, gameApp, gameClock, performanceMonitor]);
 
-  const handleTogglePbSetting = (who: pbSettingType) => (value: boolean) =>
+  const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
     setPbSetting((prevState) => ({ ...prevState, [who]: value }));
 
   return (
