@@ -1,5 +1,5 @@
-import { fromRawToReplay, OsuAction, ReplayFrame } from "@rewind/osu/core";
 import { parseReplayFromFS, TEST_REPLAYS } from "./util.spec";
+import { fromRawToReplay, OsuAction, ReplayFrame } from "../src";
 
 // w, x, y, z
 // w time since last action
@@ -10,7 +10,7 @@ describe("Parsing rawReplayData (from node-osr)", function () {
     // From RyuK +HDDT Akatsuki Zukuyo replay
     const raw = "0|256|-500|0,-1|256|-500|0,-1171|257.0417|124.7764|1";
     const actual = fromRawToReplay(raw);
-    expect(actual).toBe([]);
+    expect(actual).toStrictEqual([]);
     // assert.deepStrictEqual(actual, []);
     console.log(actual);
   });
@@ -23,7 +23,7 @@ describe("Parsing rawReplayData (from node-osr)", function () {
       actions: [OsuAction.leftButton],
     };
     const actual = fromRawToReplay(raw);
-    expect(actual).toBe([f1]);
+    expect(actual).toEqual([f1]);
   });
 });
 
@@ -33,7 +33,7 @@ describe("Parsing SunMoonStar", function () {
   it("should not have duplicated frames", function () {
     const seen: Record<number, boolean> = {};
     for (const frame of r) {
-      // expect(frame.time in seen, `Duplicated at time=${frame.time}`).to.be.false;
+      expect(frame.time in seen).toBeFalsy();
       seen[frame.time] = true;
     }
   });

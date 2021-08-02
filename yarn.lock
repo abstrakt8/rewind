@@ -4303,6 +4303,9 @@
     "@types/node" "*"
     form-data "^3.0.0"
 
+"@types/node-osr@file:./libs/@types/node-osr":
+  version "0.0.0"
+
 "@types/node@*", "@types/node@^16.4.7":
   version "16.4.7"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.4.7.tgz#f7afa78769d4b477f5092d7c3468e2e8653d779c"
@@ -10173,6 +10176,11 @@ inline-style-parser@0.1.1:
   resolved "https://registry.yarnpkg.com/inline-style-parser/-/inline-style-parser-0.1.1.tgz#ec8a3b429274e9c0a1f1c4ffa9453a7fef72cea1"
   integrity sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==
 
+int64-buffer@^0.1.9:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/int64-buffer/-/int64-buffer-0.1.10.tgz#277b228a87d95ad777d07c13832022406a473423"
+  integrity sha1-J3siiofZWtd30HwTgyAiQGpHNCM=
+
 internal-ip@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/internal-ip/-/internal-ip-4.3.0.tgz#845452baad9d2ca3b69c635a137acb9a0dad0907"
@@ -11553,6 +11561,11 @@ lazy-universal-dotenv@^3.0.1:
     dotenv "^8.0.0"
     dotenv-expand "^5.1.0"
 
+leb@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/leb/-/leb-0.3.0.tgz#32bee9fad168328d6aea8522d833f4180eed1da3"
+  integrity sha1-Mr7p+tFoMo1q6oUi2DP0GA7tHaM=
+
 less-loader@5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-5.0.0.tgz#498dde3a6c6c4f887458ee9ed3f086a12ad1b466"
@@ -11860,6 +11873,11 @@ lz-string@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
+
+lzma@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/lzma/-/lzma-2.3.2.tgz#3783b24858b9c0e747a0df3cbf1fb5fcaa92c441"
+  integrity sha1-N4OySFi5wOdHoN88vx+1/KqSxEE=
 
 magic-string@0.25.7, magic-string@^0.25.2:
   version "0.25.7"
@@ -12512,6 +12530,15 @@ node-modules-regexp@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
+
+node-osr@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/node-osr/-/node-osr-1.2.1.tgz#d818cb80474c96fb9e554a4db53c16f80b21b4e9"
+  integrity sha512-BKTE4Nx4Mim9/Q5i8mdTxw7Cp8ljtLg93EFMUvP7xsfxgruqA50MKyPj9a9SM6utyl1+HFpdmtvaAf3cp3G1mg==
+  dependencies:
+    int64-buffer "^0.1.9"
+    leb "^0.3.0"
+    lzma "^2.3.2"
 
 node-releases@^1.1.61, node-releases@^1.1.71:
   version "1.1.73"

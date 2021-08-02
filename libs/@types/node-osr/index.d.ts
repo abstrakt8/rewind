@@ -1,3 +1,7 @@
+// Type definitions for node-osr
+// Project: Node OSR Reader
+// Definitions by: abstrakt
+
 export class Replay {
   gameMode: number;
   gameVersion: number;

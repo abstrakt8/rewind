@@ -1,21 +1,21 @@
-import {
-  Blueprint,
-  buildBeatmap,
-  defaultReplayState,
-  fromRawToReplay,
-  NextFrameEvaluator,
-  NoteLockStyle,
-  OsuBlueprintParser,
-  OsuHitObject,
-  OsuStdJudgmentSettings,
-  ReplayState,
-  Slider,
-} from "@rewind/osu/core";
 import * as fs from "fs";
 import * as path from "path";
 import { readSync } from "node-osr";
 import { normalizeHitObjects } from "../src/utils";
 import { hitWindowsForOD } from "@rewind/osu/math";
+import {
+  OsuBlueprintParser,
+  Blueprint,
+  fromRawToReplay,
+  ReplayState,
+  OsuHitObject,
+  Slider,
+  defaultReplayState,
+  NextFrameEvaluator,
+  buildBeatmap,
+  OsuStdJudgmentSettings,
+  NoteLockStyle,
+} from "../src";
 
 // This makes the whole testing module node.js only
 
@@ -23,16 +23,6 @@ export function parseBlueprintFromFS(name: string): Blueprint {
   const data = fs.readFileSync(name);
   const parser = new OsuBlueprintParser(data.toString());
   return parser.parse();
-}
-
-// TODO: Replace those with the others
-// Or use enviornment variables
-export function realMapPath(name: string) {
-  return path.join(process.env.ABC, "..", "..", "resources", "osu!", "Songs", name);
-}
-
-export function realReplayPath(name: string) {
-  return path.join("..", "..", "resources", "osu!", "Replays", name);
 }
 
 const rewindTestOsuDir = process.env.REWIND_TEST_OSU_DIR || "";
