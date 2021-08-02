@@ -349,24 +349,26 @@ export class OsuGameplayContainer {
   prepareJudgements(time: number) {
     this.judgementLayer.removeChildren();
     if (!this.context.judgements) return;
+    // TODO: Order might not be correct
     for (const j of this.context.judgements) {
+      const timeAgo = time - j.time;
+      if (!(timeAgo >= 0 && timeAgo < 3000) || j.verdict === "GREAT") continue;
+
       const lastInComboSet = false;
       const textures = this.skin.getTextures(OsuGameplayContainer.texturesForJudgement(j.verdict, lastInComboSet));
       const animationFrameRate = this.skin.config.general.animationFrameRate;
       const judgement = new OsuClassicJudgement();
       const scale = circleSizeToScale(this.context.beatmap.difficulty.circleSize);
-      const timeAgo = time - j.time;
 
-      // TODO: Should be configurable, technically speaking does not reflect osu!stable (it resembles lazer)
+      // TODO: Should be configurable, technically speaking sliderHeadJudgementSkip=false does not reflect osu!stable (it resembles lazer)
       // However, in this replay analysis tool this is more useful (?)
-      const sliderHeadJudgementSkip = false;
+      const sliderHeadJudgementSkip = true;
       if (sliderHeadJudgementSkip && j.isSliderHead) continue;
-      if (!(timeAgo >= 0 && timeAgo < 3000) || j.verdict === "GREAT") continue;
       judgement.prepare({ time: timeAgo, position: j.position, scale, animationFrameRate, textures });
-      judgement.sprite.zIndex = -timeAgo;
+      // judgement.sprite.zIndex = -timeAgo;
       this.judgementLayer.addChild(judgement.sprite);
     }
-    this.judgementLayer.sortChildren();
+    // this.judgementLayer.sortChildren();
   }
 
   prepare(time: number) {

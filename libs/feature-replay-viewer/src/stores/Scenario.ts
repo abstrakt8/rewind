@@ -71,9 +71,10 @@ export class Scenario {
       this.replayViewerContext.blueprint = toJS(this.blueprint);
       this.replayViewerContext.beatmap = toJS(this.beatmap ?? Beatmap.EMPTY_BEATMAP);
       // TODO: This should not be observable
-      this.replayViewerContext.judgements = this.replayEvents.filter(
+      this.replayViewerContext.judgements = toJS(this.replayEvents).filter(
         (f) => f.type === "HitObjectJudgement",
       ) as HitObjectJudgement[];
+      console.log("judgements : " + this.replayViewerContext.judgements.length);
       this.replayViewerContext.replayTimeMachine = this.replayStateTimeMachine;
     });
 
