@@ -2,8 +2,8 @@ import {
   defaultStableSettings,
   osuClassicScoreScreenJudgementCount,
   parseReplayFromFS,
-  realReplayPath,
-  TEST_MAPS, TEST_REPLAYS,
+  TEST_MAPS,
+  TEST_REPLAYS,
 } from "./util.spec";
 import { BucketedReplayStateTimeMachine, osuStableAccuracy } from "../src";
 
@@ -82,7 +82,7 @@ describe("OsuStd! ReplayTimeMachine - The Sun, The Moon, The Stars", function ()
   evaluateForTime(timeInMs(1, 52, 0));
   evaluateForTime(timeInMs(8, 52, 0));
   evaluateForTime(timeInMs(17, 52, 0));
-  console.log("Hmm");
+  expect(true).toBeTruthy();
 });
 
 // TODO: Create testcase

@@ -24,7 +24,6 @@
       "@rewind/osu/math": ["libs/osu/math/src/index.ts"],
       "@rewind/osu/skin": ["libs/osu/skin/src/index.ts"],
       "@rewind/ui": ["libs/ui/src/index.ts"],
-//      "node-osr": ["libs/@types/node-osr"]
     }
   },
   "exclude": ["node_modules", "tmp"]
