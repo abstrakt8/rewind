@@ -143,3 +143,11 @@ describe("Parsing kick slider", function () {
     expect(bluePrint.controlPointInfo.timingPoints.length).toBe(1);
   });
 });
+
+test("Parsing TSTMTS", function () {
+  const bluePrint = parseBlueprintFromFS(TEST_MAPS.SUN_MOON_STAR);
+  const numberOfHitObjects = bluePrint.hitObjectSettings.length;
+  expect(numberOfHitObjects).toBeGreaterThan(0);
+  // ~250ms parsing
+  console.log("Sun Moon Star hitobjects: " + numberOfHitObjects);
+});
