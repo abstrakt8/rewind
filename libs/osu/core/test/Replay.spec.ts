@@ -30,6 +30,12 @@ describe("Parsing rawReplayData (from node-osr)", function () {
 describe("Parsing SunMoonStar", function () {
   const r = parseReplayFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
 
+  // .osr 336KB
+  // OsrReplay 1.5MB
+  // ReplayFrames 5.2MB
+  // Parsing + Read took exactly 1s
+  console.log(JSON.stringify(r).length);
+
   it("should not have duplicated frames", function () {
     const seen: Record<number, boolean> = {};
     for (const frame of r) {

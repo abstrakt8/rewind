@@ -43,6 +43,9 @@
     "osu-local-db-reader": {
       "tags": []
     },
+    "osu-local-osr-reader": {
+      "tags": []
+    },
     "osu-local-skin-reader": {
       "tags": []
     },
