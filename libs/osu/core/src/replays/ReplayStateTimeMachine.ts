@@ -2,12 +2,13 @@ import {
   cloneReplayState,
   defaultReplayState,
   NextFrameEvaluator,
-  OsuStdJudgmentSettings,
+  NextFrameEvaluatorOptions,
   ReplayState,
 } from "./ReplayState";
 import { ReplayFrame } from "./Replay";
 import { Vec2 } from "@rewind/osu/math";
-import { OsuHitObject } from "../hitobjects";
+import { Beatmap } from "../beatmap/Beatmap";
+import { GameplayInfo } from "./GameplayInfo";
 
 export interface ReplayStateTimeMachine {
   replayStateAt(time: number): ReplayState;
@@ -32,18 +33,18 @@ export class BucketedReplayStateTimeMachine implements ReplayStateTimeMachine {
   evaluator: NextFrameEvaluator;
 
   constructor(
-    // TODO: hm... should be partial replay
-    replay: ReplayFrame[],
-    private readonly hitObjects: OsuHitObject[],
-    private readonly settings: OsuStdJudgmentSettings,
+    initialKnownFrames: ReplayFrame[],
+    private readonly beatmap: Beatmap,
+    // private readonly hitObjects: OsuHitObject[],
+    private readonly settings: NextFrameEvaluatorOptions,
     bucketSize?: number,
   ) {
     // Add a dummy replay frame at the beginning.
-    this.frames = [{ time: -727_727, position: new Vec2(0, 0), actions: [] }, ...replay];
+    this.frames = [{ time: -727_727, position: new Vec2(0, 0), actions: [] }, ...initialKnownFrames];
     this.bucketSize = bucketSize ?? Math.ceil(Math.sqrt(this.frames.length));
     this.storedReplayState[0] = defaultReplayState();
     this.currentReplayState = cloneReplayState(this.storedReplayState[0]);
-    this.evaluator = new NextFrameEvaluator(hitObjects, settings);
+    this.evaluator = new NextFrameEvaluator(beatmap, settings);
   }
 
   private getHighestCachedIndex(time: number): number {

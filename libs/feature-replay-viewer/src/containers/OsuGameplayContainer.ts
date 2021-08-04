@@ -1,7 +1,7 @@
 import { Container } from "@pixi/display";
 import {
   HitCircle,
-  HitObjectVerdict,
+  MainHitObjectVerdict,
   OsuAction,
   OsuHitObject,
   ReplayState,
@@ -332,7 +332,7 @@ export class OsuGameplayContainer {
     }
   }
 
-  private static texturesForJudgement(t: HitObjectVerdict, lastInComboSet?: boolean) {
+  private static texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {
     switch (t) {
       case "GREAT":
         return lastInComboSet ? SkinTextures.HIT_300K : SkinTextures.HIT_300;

@@ -1,9 +1,10 @@
 import { Position } from "@rewind/osu/math";
 import { normalizeHitObjects } from "../utils";
-import { HitObjectJudgementType, ReplayState } from "./ReplayState";
+import { ReplayState } from "./ReplayState";
 import { OsuHitObject } from "../hitobjects";
 import { Slider } from "../hitobjects/Slider";
 import { HitCircle } from "../hitobjects/HitCircle";
+import { MainHitObjectVerdict } from "./Verdicts";
 
 /**
  * ReplayAnalysisEvents are point of interests for the user.
@@ -20,7 +21,7 @@ interface DisplayBase {
 }
 
 // TODO: Export
-export type HitObjectVerdict = "GREAT" | "OK" | "MEH" | "MISS";
+type HitObjectVerdict = MainHitObjectVerdict;
 // Those events are to be displayed on the screen
 
 export interface HitObjectJudgement extends DisplayBase {
@@ -46,19 +47,6 @@ export interface UnnecessaryClick extends DisplayBase {
 
 export type ReplayAnalysisEvent = HitObjectJudgement | CheckpointJudgement | UnnecessaryClick;
 
-function mapJudgement(t: HitObjectJudgementType): HitObjectVerdict {
-  switch (t) {
-    case HitObjectJudgementType.Ok:
-      return "OK";
-    case HitObjectJudgementType.Meh:
-      return "MEH";
-    case HitObjectJudgementType.Great:
-      return "GREAT";
-    case HitObjectJudgementType.Miss:
-      return "MISS";
-  }
-}
-
 // This is osu!stable style and is also only recommended for offline processing.
 // In the future, where something like online replay streaming is implemented, this implementation will ofc be too slow.
 export function retrieveEvents(replayState: ReplayState, hitObjects: OsuHitObject[]) {
@@ -69,7 +57,7 @@ export function retrieveEvents(replayState: ReplayState, hitObjects: OsuHitObjec
   for (const [id, state] of replayState.hitCircleState.entries()) {
     const hitCircle = dict[id] as HitCircle;
     const isSliderHead = hitCircle.sliderId !== undefined;
-    const verdict = mapJudgement(state.type);
+    const verdict = state.type;
     events.push({
       type: "HitObjectJudgement",
       time: state.judgementTime,
@@ -80,10 +68,9 @@ export function retrieveEvents(replayState: ReplayState, hitObjects: OsuHitObjec
     });
   }
 
-  for (const [id, judgement] of replayState.sliderJudgement.entries()) {
+  for (const [id, verdict] of replayState.sliderJudgement.entries()) {
     // Slider judgement events
     const slider = dict[id] as Slider;
-    const verdict = mapJudgement(judgement);
     const position = slider.endPosition;
     events.push({ time: slider.endTime, hitObjectId: id, position, verdict, type: "HitObjectJudgement" });
 

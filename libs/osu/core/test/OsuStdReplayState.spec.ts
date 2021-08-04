@@ -6,7 +6,7 @@ import {
   replayPath,
   TEST_MAPS,
 } from "./util.spec";
-import { HitCircleMissReason, HitCircleState, HitObjectJudgementType, ReplayState } from "../src/replays/ReplayState";
+import { HitCircleMissReason, HitCircleState, ReplayState } from "../src/replays/ReplayState";
 import { BucketedReplayStateTimeMachine } from "../src/replays/ReplayStateTimeMachine";
 import { Slider } from "../src/hitobjects/Slider";
 
@@ -29,7 +29,7 @@ describe("Daijobanai [Slider (Repeat = 1)]", function () {
     );
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must be hit", function () {
-      expect(state.hitCircleState.get(sliderHeadId)?.type).not.toBe(HitObjectJudgementType.Miss);
+      expect(state.hitCircleState.get(sliderHeadId)?.type).not.toBe("MISS");
     });
     it("repeat and last tick must be hit", function () {
       expect(state.checkPointState.get(repeatId)?.hit).toBe(true);
@@ -56,7 +56,7 @@ describe("Daijobanai [Short kick slider]", function () {
     const replay = parseReplayFromFS(replayPath("- Perfume - Daijobanai [Short kick slider] (2021-07-16) Perfect.osr"));
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must be hit", function () {
-      expect(state.hitCircleState.get(sliderHeadId)?.type).not.toBe(HitObjectJudgementType.Miss);
+      expect(state.hitCircleState.get(sliderHeadId)?.type).not.toBe("MISS");
     });
     it("last tick must be missed", function () {
       expect(state.checkPointState.get(lastTickId)?.hit).toBe(true);
@@ -73,7 +73,7 @@ describe("Daijobanai [Short kick slider]", function () {
       const expectedState: HitCircleState = {
         judgementTime: 1715.25,
         missReason: HitCircleMissReason.SLIDER_FINISHED_FASTER,
-        type: HitObjectJudgementType.Miss,
+        type: "MISS",
       };
       expect(actualState).toEqual(expectedState);
     });
@@ -84,7 +84,7 @@ describe("Daijobanai [Short kick slider]", function () {
 });
 
 describe("OsuStd! ReplayState - Violet Perfume (no sliders/spinners)", function () {
-  const { hitObjects, settings, evaluator, hitWindows } = defaultStableSettings(TEST_MAPS.VIOLET_PERFUME);
+  const { hitObjects, settings, evaluator, beatmap, hitWindows } = defaultStableSettings(TEST_MAPS.VIOLET_PERFUME);
   const replay = parseReplayFromFS(replayPath("abstrakt - SHK - Violet Perfume [Insane] (2021-03-27) Osu.osr"));
   console.log(hitWindows);
 
@@ -101,7 +101,7 @@ describe("OsuStd! ReplayState - Violet Perfume (no sliders/spinners)", function 
   });
 
   describe("OsuReplayState TimeMachine", function () {
-    const timeMachine = new BucketedReplayStateTimeMachine(replay, hitObjects, settings);
+    const timeMachine = new BucketedReplayStateTimeMachine(replay, beatmap, settings);
 
     // Not 100% sure, only checked with VLC
     it("at t=5s should be [23, 0, 0, 0]", function () {

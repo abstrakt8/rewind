@@ -3,7 +3,7 @@ import {
   CheckPointState,
   HitCircleMissReason,
   HitCircleState,
-  HitObjectJudgementType,
+  MainHitObjectVerdict,
   NextFrameEvaluator,
   OsuHitObject,
   ReplayFrame,
@@ -14,7 +14,7 @@ import {
 function expectHitCircleToBeNotAMiss(hitCircleState?: HitCircleState) {
   expect(hitCircleState).toBeDefined();
   const type = (hitCircleState as HitCircleState).type;
-  expect(type).not.toBe(HitObjectJudgementType.Miss);
+  expect(type).not.toBe("MISS" as MainHitObjectVerdict);
 }
 
 const before = beforeEach;
@@ -43,7 +43,7 @@ describe("Daijobanai [Slider 1]", function () {
       console.log("it hitcircle must be hit correctly perfect");
       const hitCircleState = state.hitCircleState.get("0/HEAD") as HitCircleState;
       // hitTime is 1684 and offset was -14, so 1684-14=1670
-      const expectedState: HitCircleState = { type: HitObjectJudgementType.Great, judgementTime: 1670 };
+      const expectedState: HitCircleState = { type: "GREAT", judgementTime: 1670 };
       expect(hitCircleState).toEqual(expectedState);
       console.log(hitCircleState);
     });
@@ -67,7 +67,7 @@ describe("Daijobanai [Slider 1]", function () {
       const hitCircleState = state.hitCircleState.get("0/HEAD") as HitCircleState;
       const expectedState: HitCircleState = {
         judgementTime: 1804, // 1803 or 1804 TODO: ???
-        type: HitObjectJudgementType.Miss,
+        type: "MISS",
         missReason: HitCircleMissReason.TIME_EXPIRED,
       };
       expect(hitCircleState).toEqual(expectedState);

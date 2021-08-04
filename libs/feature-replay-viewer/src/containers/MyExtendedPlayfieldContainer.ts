@@ -1,10 +1,10 @@
 import { Container, Sprite, Texture } from "pixi.js";
 import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { Skin } from "../skins/Skin";
-import { HitObjectJudgementType } from "@rewind/osu/core";
 import { ReplayViewerContext } from "./ReplayViewerContext";
 import { AnalysisHitErrorBar } from "./HitErrorBar";
 import { hitWindowsForOD } from "@rewind/osu/math";
+import { GameplayInfoEvaluator } from "@rewind/osu/core";
 
 // Default field size
 export const OSU_PLAYFIELD_BASE_X = 512;
@@ -91,12 +91,13 @@ export class MyExtendedPlayfieldContainer {
     this.foregroundHUD.removeChildren();
     // combo
     const replayState = this.replayTimeMachine?.replayStateAt(time);
+    const gameplayInfo = new GameplayInfoEvaluator(this.context.beatmap, {}).evaluateReplayState(replayState);
 
     if (replayState) {
       const comboNumber = new OsuClassicNumber();
       const textures = this.skin.getComboNumberTextures();
       const overlap = this.skin.config.fonts.comboOverlap;
-      comboNumber.prepare({ number: replayState.currentCombo, textures, overlap });
+      comboNumber.prepare({ number: gameplayInfo.currentCombo, textures, overlap });
       comboNumber.position.set(100, this.heightInPx - 50);
       this.foregroundHUD.addChild(comboNumber);
     }
@@ -109,8 +110,7 @@ export class MyExtendedPlayfieldContainer {
           const hitCircle = this.context.beatmap.getHitCircle(id);
           const offset = s.judgementTime - hitCircle.hitTime;
           const timeAgo = time - s.judgementTime;
-          if (timeAgo >= 0 && timeAgo < 3000)
-            hits.push({ offset, timeAgo, miss: s.type === HitObjectJudgementType.Miss });
+          if (timeAgo >= 0 && timeAgo < 3000) hits.push({ offset, timeAgo, miss: s.type === "MISS" });
         }
       }
 

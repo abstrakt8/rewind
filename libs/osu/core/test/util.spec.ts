@@ -13,7 +13,7 @@ import {
   defaultReplayState,
   NextFrameEvaluator,
   buildBeatmap,
-  OsuStdJudgmentSettings,
+  NextFrameEvaluatorOptions,
   NoteLockStyle,
 } from "../src";
 
@@ -100,14 +100,15 @@ export function defaultStableSettings(mapFile: string) {
   const hitObjects = beatmap.hitObjects;
   const hitWindows = hitWindowsForOD(blueprint.defaultDifficulty.overallDifficulty);
 
-  const settings: OsuStdJudgmentSettings = {
+  const settings: NextFrameEvaluatorOptions = {
     hitWindows,
     noteLockStyle: NoteLockStyle.STABLE,
   };
 
-  const evaluator = new NextFrameEvaluator(hitObjects, settings);
+  const evaluator = new NextFrameEvaluator(beatmap, settings);
 
   return {
+    beatmap,
     hitObjects,
     settings,
     evaluator,

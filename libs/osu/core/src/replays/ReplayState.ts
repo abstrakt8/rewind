@@ -3,12 +3,14 @@ import { Position, Vec2 } from "@rewind/osu/math";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { Slider } from "../hitobjects/Slider";
 import { Spinner } from "../hitobjects/Spinner";
-import { AllHitObjects, OsuHitObject } from "../hitobjects";
-import { normalizeHitObjects } from "../utils";
+import { Beatmap } from "../beatmap/Beatmap";
+import { MainHitObjectVerdict } from "./Verdicts";
 
 // Maybe rename this to GamePlay since a replay is a very concrete term for something recorded
 
 // For each circle:
+
+type HitObjectVerdict = MainHitObjectVerdict;
 
 // If the OD or NoteLocking method changes, it must still be recalculated
 export enum NoteLockStyle {
@@ -17,8 +19,8 @@ export enum NoteLockStyle {
   LAZER,
 }
 
-export type OsuStdJudgmentSettings = {
-  // hitWindows[0] Great, hitWindows[1] Ok, hitWindows[2] Meh, hitWindows[3] Miss
+export type NextFrameEvaluatorOptions = {
+  // TODO: Maybe say : lazerHitWindowStyle? -> then the hitwindows are increased by +1
   hitWindows: number[];
   noteLockStyle: NoteLockStyle;
 };
@@ -110,12 +112,6 @@ export const newPressingSince = (pressingSince: PressingSinceTimings, osuActions
   return newPressingSince;
 };
 
-// Might be miss, might be mashing
-type UnnecessaryClick = {
-  time: number;
-  supposed?: number; // undefined if there was no HitCircle around to be hit
-};
-
 export enum HitCircleMissReason {
   TIME_EXPIRED = "TIME_EXPIRED",
   // There is no HIT_TOO_LATE because TIME_EXPIRED is the corresponding case
@@ -132,7 +128,7 @@ export enum HitCircleMissReason {
 export type HitCircleState = {
   // Is the only that has a judgement time not being equal the hit object hitTime/startTime/endTime.
   judgementTime: number;
-} & ({ type: HitObjectJudgementType } | { type: HitObjectJudgementType.Miss; missReason: HitCircleMissReason });
+} & ({ type: MainHitObjectVerdict } | { type: "MISS"; missReason: HitCircleMissReason });
 
 // The reason we don't need to save position like in HitCircleState is that THERE is only one position and that
 // is the position of the frame right after the check point time.
@@ -149,6 +145,7 @@ export type SpinnerState = {
   // Maybe also current RPM that can be shown
 };
 
+// TODO: GameplayState
 export interface ReplayState {
   // currentTime might be not really needed, but serves as an "id"
   currentTime: number;
@@ -158,9 +155,10 @@ export interface ReplayState {
   sliderBodyState: Map<string, SliderBodyState>;
   checkPointState: Map<string, CheckPointState>;
   // A summary of how well the slider was played
-  sliderJudgement: Map<string, HitObjectJudgementType>;
+  sliderJudgement: Map<string, MainHitObjectVerdict>;
   spinnerState: Map<string, SpinnerState>;
 
+  // TODO: Remove
   currentCombo: number;
   maxCombo: number;
 
@@ -168,6 +166,7 @@ export interface ReplayState {
 
   // Stores the ids of the objects that have been judged in the order of judgement.
   // This can be used to easily derive the combo,maxCombo,accuracy,number of 300/100/50/misses, score
+  // This is only useful for knowing the order
   judgedObjects: Array<string>;
 
   // Rest are used for optimizations
@@ -216,24 +215,25 @@ export function cloneReplayState(replayState: ReplayState): ReplayState {
     maxCombo: maxCombo,
     nextCheckPointIndex: nextCheckPointIndex,
     sliderBodyState: new Map<string, SliderBodyState>(sliderBodyState),
-    sliderJudgement: new Map<string, HitObjectJudgementType>(sliderJudgement),
+    sliderJudgement: new Map<string, MainHitObjectVerdict>(sliderJudgement),
     spinnerState: new Map<string, SpinnerState>(spinnerState),
     pressingSince: [...pressingSince],
   };
 }
 
-export enum HitObjectJudgementType {
-  Great,
-  Ok,
-  Meh,
-  Miss,
-}
+// type HitObjectJudgementType = HitObjectVerdict;
+// export enum HitObjectJudgementType {
+//   Great,
+//   Ok,
+//   Meh,
+//   Miss,
+// }
 
-function sliderJudgementBasedOnCheckpoints(totalCheckpoints: number, hitCheckpoints: number): HitObjectJudgementType {
-  if (hitCheckpoints === totalCheckpoints) return HitObjectJudgementType.Great;
-  if (hitCheckpoints === 0) return HitObjectJudgementType.Miss;
-  if (hitCheckpoints * 2 >= totalCheckpoints) return HitObjectJudgementType.Ok;
-  return HitObjectJudgementType.Meh;
+function sliderJudgementBasedOnCheckpoints(totalCheckpoints: number, hitCheckpoints: number): MainHitObjectVerdict {
+  if (hitCheckpoints === totalCheckpoints) return "GREAT";
+  if (hitCheckpoints === 0) return "MISS";
+  if (hitCheckpoints * 2 >= totalCheckpoints) return "OK";
+  return "MEH";
 }
 
 // Slider is evaluated at endTime (=sliderStart + duration)
@@ -247,7 +247,7 @@ export const defaultReplayState = (): ReplayState => ({
   sliderBodyState: new Map<string, SliderBodyState>(),
   checkPointState: new Map<string, CheckPointState>(),
   spinnerState: new Map<string, SpinnerState>(),
-  sliderJudgement: new Map<string, HitObjectJudgementType>(),
+  sliderJudgement: new Map<string, MainHitObjectVerdict>(),
 
   // TODO: Move outside
   currentCombo: 0,
@@ -266,25 +266,24 @@ export const defaultReplayState = (): ReplayState => ({
   pressingSince: [NOT_PRESSING, NOT_PRESSING],
 });
 
+const HitObjectVerdicts = {
+  GREAT: 0,
+  OK: 1,
+  MEH: 2,
+  MISS: 3,
+} as const;
+
 // This will be VERY buggy for 2B maps since we make a big assumption that there are no overlaps between the
 // different hit objects.
 export class NextFrameEvaluator {
-  // Calculated before hand
-  private hitObjectById: Record<string, AllHitObjects>;
-
   // Not really relevant to be cloned (since can be derived or are just helper data)
   private timeSupposedToClick?: number; // This can be undefined if no circles are alive.
   private nextTimeSupposedToClick?: number; // This can be undefined if no circles are alive.
-  private clickWasUseful = false; // Maybe clickInfo with {clicking since; useful}
 
-  replayState: ReplayState;
+  private replayState: ReplayState;
 
-  constructor(
-    private readonly hitObjectsBySpawnTime: OsuHitObject[],
-    private readonly settings: OsuStdJudgmentSettings,
-  ) {
+  constructor(private readonly beatmap: Beatmap, private readonly settings: NextFrameEvaluatorOptions) {
     this.replayState = defaultReplayState();
-    this.hitObjectById = normalizeHitObjects(hitObjectsBySpawnTime);
   }
 
   private get currentTime() {
@@ -303,18 +302,21 @@ export class NextFrameEvaluator {
     return this.replayState.judgedObjects;
   }
 
+  private get hitObjectsBySpawnTime() {
+    return this.beatmap.hitObjects;
+  }
+
   // Checks whether the user has pressed in this frame
   private get hasFreshClickThisFrame(): boolean {
     return this.replayState.pressingSince.includes(this.currentTime);
   }
 
-  // TODO: Maybe use `Beatmap`
   private getHitCircle(id: string): HitCircle {
-    return this.hitObjectById[id] as HitCircle;
+    return this.beatmap.getHitCircle(id);
   }
 
   private getSlider(id: string): Slider {
-    return this.hitObjectById[id] as Slider;
+    return this.beatmap.getSlider(id);
   }
 
   /**
@@ -390,7 +392,7 @@ export class NextFrameEvaluator {
     if (!this.replayState.hitCircleState.has(slider.head.id)) {
       this.finishHitCircle(slider.head.id, {
         judgementTime: slider.endTime,
-        type: HitObjectJudgementType.Miss,
+        type: "MISS",
         missReason: HitCircleMissReason.SLIDER_FINISHED_FASTER,
       });
     }
@@ -399,7 +401,7 @@ export class NextFrameEvaluator {
     const totalCheckpoints = slider.checkPoints.length + 1;
     let hitCheckpoints = 0;
 
-    if (this.replayState.hitCircleState.get(slider.head.id)?.type !== HitObjectJudgementType.Miss) hitCheckpoints++;
+    if (this.replayState.hitCircleState.get(slider.head.id)?.type !== "MISS") hitCheckpoints++;
 
     for (const c of slider.checkPoints) {
       hitCheckpoints += this.replayState.checkPointState.get(c.id)?.hit ? 1 : 0;
@@ -417,9 +419,15 @@ export class NextFrameEvaluator {
     this.replayState.aliveHitCircleIds.delete(this.getSlider(id).head.id);
   }
 
-  private isWithinHitWindow(delta: number, judgementType: HitObjectJudgementType): boolean {
-    const { hitWindows } = this.settings;
-    return Math.abs(delta) <= hitWindows[judgementType]; // In Lazer there should be different hitWindows given.
+  private get hitWindows() {
+    return this.settings.hitWindows;
+  }
+  private hitWindow(verdict: HitObjectVerdict) {
+    return this.hitWindows[HitObjectVerdicts[verdict]];
+  }
+
+  private isWithinHitWindow(delta: number, judgementType: MainHitObjectVerdict): boolean {
+    return Math.abs(delta) <= this.hitWindow(judgementType);
   }
 
   handleHitCircle(id: string): void {
@@ -430,13 +438,13 @@ export class NextFrameEvaluator {
     const timeDelta = currentTime - supposedHitTime;
 
     // If we can't even do a Meh anymore, then judge it as a miss.
-    const earliestDeadTime = hitCircle.hitTime + hitWindows[HitObjectJudgementType.Meh] + 1;
+    const earliestDeadTime = hitCircle.hitTime + this.hitWindow("MEH") + 1;
     if (earliestDeadTime <= currentTime) {
       // Let's say currentTime from the replay is at 25ms and actually the circle would die anyways at 20ms, so we say that
       // it died at 20ms.
       this.finishHitCircle(id, {
         judgementTime: earliestDeadTime,
-        type: HitObjectJudgementType.Miss,
+        type: "MISS",
         missReason: HitCircleMissReason.TIME_EXPIRED,
       });
       return;
@@ -447,7 +455,7 @@ export class NextFrameEvaluator {
     }
 
     // It should not be possible to click two hit circles at the same time
-    if (this.clickWasUseful) {
+    if (this.replayState.clickWasUseful) {
       return;
     }
 
@@ -488,7 +496,7 @@ export class NextFrameEvaluator {
       return;
     }
 
-    const jtypes = [HitObjectJudgementType.Great, HitObjectJudgementType.Ok, HitObjectJudgementType.Meh];
+    const jtypes = ["GREAT", "OK", "MEH"] as HitObjectVerdict[];
     for (let i = 0; i < jtypes.length; i++) {
       // SUCCESS the player has hit the circle in terms of space and time!
       if (this.isWithinHitWindow(timeDelta, jtypes[i])) {
@@ -496,17 +504,17 @@ export class NextFrameEvaluator {
           judgementTime: this.currentTime,
           type: jtypes[i],
         });
-        this.clickWasUseful = true;
+        this.replayState.clickWasUseful = true;
         // TODO: Force other notes to miss in Lazer note lock style
         return;
       }
     }
     // Technically speaking this can only be too early, since the too late case would be caught above.
-    if (this.isWithinHitWindow(timeDelta, HitObjectJudgementType.Miss)) {
+    if (this.isWithinHitWindow(timeDelta, "MISS")) {
       if (timeDelta > 0) console.error("? How can HitCircleMiss hit be late");
       this.finishHitCircle(id, {
         judgementTime: this.currentTime,
-        type: HitObjectJudgementType.Miss,
+        type: "MISS",
         missReason: HitCircleMissReason.HIT_TOO_EARLY,
       });
 
@@ -529,7 +537,7 @@ export class NextFrameEvaluator {
 
   private headHitTime(headId: string): number | undefined {
     const j = this.replayState.hitCircleState.get(headId);
-    if (!j || j.type === HitObjectJudgementType.Miss) return undefined;
+    if (!j || j.type === "MISS") return undefined;
     return j.judgementTime;
   }
 
@@ -590,9 +598,9 @@ export class NextFrameEvaluator {
     // TODO: Add numeric result to score depending on hit or not
   }
 
-  private judgeHitObject(type: HitObjectJudgementType, isSlider?: boolean) {
+  private judgeHitObject(type: MainHitObjectVerdict, isSlider?: boolean) {
     // Sliders don't get combo
-    if (!isSlider) this.comboChange(type !== HitObjectJudgementType.Miss);
+    if (!isSlider) this.comboChange(type !== "MISS");
     // TODO: Add numeric result to score
   }
 

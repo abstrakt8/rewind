@@ -116,7 +116,7 @@ export class Scenario {
         this.setState("Calculating replay events");
         this.replayStateTimeMachine = new BucketedReplayStateTimeMachine(
           this.replay.frames,
-          this.beatmap.hitObjects,
+          this.beatmap,
           {
             hitWindows: hitWindowsForOD(this.beatmap.difficulty.overallDifficulty),
             noteLockStyle: NoteLockStyle.STABLE,

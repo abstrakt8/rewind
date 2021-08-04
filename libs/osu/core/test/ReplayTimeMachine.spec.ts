@@ -6,17 +6,17 @@ import {
   TEST_REPLAYS,
 } from "./util.spec";
 import { BucketedReplayStateTimeMachine } from "../src";
-import { osuStableAccuracy } from "../src/replays/ReplayFrameStatistics";
+import { osuStableAccuracy } from "../src/replays/GameplayInfo";
 
 describe("OsuStd! ReplayTimeMachine - The Sun, The Moon, The Stars", function () {
-  const { hitObjects, settings, evaluator, hitWindows } = defaultStableSettings(TEST_MAPS.SUN_MOON_STAR);
+  const { hitObjects, settings, beatmap, hitWindows } = defaultStableSettings(TEST_MAPS.SUN_MOON_STAR);
   const frames = parseReplayFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
 
   console.log("Starting SunMoonStar");
   console.log(`HitObjects: ${hitObjects.length} Frames: ${frames.length}`);
   console.log(hitWindows);
 
-  const timeMachine = new BucketedReplayStateTimeMachine(frames, hitObjects, settings);
+  const timeMachine = new BucketedReplayStateTimeMachine(frames, beatmap, settings);
   const timeInMs = (min: number, sec: number, ms: number) => ms + sec * 1000 + min * 1000 * 60;
 
   function evaluateForTime(ms: number) {

@@ -41,5 +41,5 @@ export * from "./replays/Replay";
 export * from "./replays/ReplayState";
 export * from "./replays/ReplayEvent";
 export * from "./replays/ReplayStateTimeMachine";
-
-export * from "./hitobjects/Types";
+export * from "./replays/Verdicts";
+export * from "./replays/GameplayInfo";
