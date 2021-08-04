@@ -280,6 +280,11 @@ export class NextFrameEvaluator {
   private timeSupposedToClick?: number; // This can be undefined if no circles are alive.
   private nextTimeSupposedToClick?: number; // This can be undefined if no circles are alive.
 
+  // OsuFramedReplayInputHandler.cs
+  // Used for interpolation
+  private previousTime: number;
+  private previousPosition: Position;
+
   private replayState: ReplayState;
 
   constructor(private readonly beatmap: Beatmap, private readonly settings: NextFrameEvaluatorOptions) {
@@ -370,18 +375,11 @@ export class NextFrameEvaluator {
     }
   }
 
-  private killSpinnerId(id: string) {
-    this.replayState.aliveSpinnerIds.delete(id);
-  }
-
   // This is also for SliderHeads
   private finishHitCircle(id: string, state: HitCircleState) {
     this.replayState.hitCircleState.set(id, state);
     this.replayState.aliveHitCircleIds.delete(id);
     this.judgedObjects.push(id);
-
-    // TODO: Remove
-    this.judgeHitObject(state.type);
   }
 
   // Evaluate and cleanup
@@ -410,8 +408,6 @@ export class NextFrameEvaluator {
     this.replayState.sliderJudgement.set(id, judgement);
 
     this.judgedObjects.push(slider.id);
-    // TODO: Remove
-    this.judgeHitObject(judgement, true);
 
     this.replayState.aliveSliderIds.delete(id);
     this.replayState.nextCheckPointIndex.delete(id);
@@ -422,6 +418,7 @@ export class NextFrameEvaluator {
   private get hitWindows() {
     return this.settings.hitWindows;
   }
+
   private hitWindow(verdict: HitObjectVerdict) {
     return this.hitWindows[HitObjectVerdicts[verdict]];
   }
@@ -431,7 +428,7 @@ export class NextFrameEvaluator {
   }
 
   handleHitCircle(id: string): void {
-    const { hitWindows, noteLockStyle } = this.settings;
+    const { noteLockStyle } = this.settings;
     const hitCircle = this.getHitCircle(id);
     const currentTime = this.replayState.currentTime;
     const supposedHitTime = hitCircle.hitTime;
@@ -554,8 +551,8 @@ export class NextFrameEvaluator {
       const isTracking = determineTracking(
         wasTracking,
         slider,
-        this.cursorPosition, //  TODO: tbh interpolate
-        this.currentTime, // TODO:
+        this.cursorPosition,
+        this.currentTime,
         this.pressingSince,
         headHitTime,
       );
@@ -575,36 +572,8 @@ export class NextFrameEvaluator {
     }
   }
 
-  private comboChange(hit: boolean) {
-    if (hit) {
-      this.replayState.currentCombo++;
-      this.replayState.maxCombo = Math.max(this.replayState.maxCombo, this.replayState.currentCombo);
-    } else {
-      this.replayState.currentCombo = 0;
-    }
-  }
-
-  private judgeNonLastCheckpoint(hit: boolean) {
-    // LargeTickHit -> affects combo, numeric result: 30
-    this.comboChange(hit);
-    // TODO: Add numeric result to score
-  }
-
-  private judgeLastTick(hit: boolean) {
-    // Only increases, does not set to 0
-    if (hit) {
-      this.comboChange(true);
-    }
-    // TODO: Add numeric result to score depending on hit or not
-  }
-
-  private judgeHitObject(type: MainHitObjectVerdict, isSlider?: boolean) {
-    // Sliders don't get combo
-    if (!isSlider) this.comboChange(type !== "MISS");
-    // TODO: Add numeric result to score
-  }
-
-  private handleSliderCheckPoints(): void {
+  // It's important that slider body states don't get updated before slider checkpoints are checked
+  private handleSliderCheckPoints(oldPressingSince: PressingSinceTimings): void {
     // Now we check for slider checkpoints
     // Following only slow, if 2B map and lots of sliders at the same time, so don't care.
 
@@ -629,16 +598,25 @@ export class NextFrameEvaluator {
       const index = this.replayState.nextCheckPointIndex.get(sliderIdOfEarliest) as number;
       const checkPoint = slider.checkPoints[index];
 
-      // TODO: This needs some kind of interpolation
-      const hit = this.replayState.sliderBodyState.get(slider.id)?.isTracking ?? false;
-      this.replayState.checkPointState.set(checkPoint.id, { hit });
+      const headHitTime: number | undefined = this.headHitTime(slider.head.id);
+      const wasTracking: boolean = this.replayState.sliderBodyState.get(slider.id)?.isTracking ?? false;
+      // We don't have any data for non important events so we have to predict them with interpolation
 
-      // TODO: Remove
-      if (checkPoint.type === "LAST_LEGACY_TICK") {
-        this.judgeLastTick(hit);
-      } else {
-        this.judgeNonLastCheckpoint(hit);
-      }
+      // TODO: This is based on an assumption that the gameClock does not work with sub milliseconds (?)
+      // const timeToCheck = Math.ceil(checkPoint.hitTime - 1e-10);
+      const timeToCheck = Math.ceil(checkPoint.hitTime - 1e-10);
+      const predictedPosition = this.predictedPositionAt(timeToCheck);
+
+      const isTracking = determineTracking(
+        wasTracking,
+        slider,
+        predictedPosition,
+        timeToCheck,
+        oldPressingSince,
+        headHitTime,
+      );
+      this.replayState.checkPointState.set(checkPoint.id, { hit: isTracking });
+
       this.judgedObjects.push(checkPoint.id);
 
       if (index + 1 < slider.checkPoints.length) {
@@ -648,6 +626,12 @@ export class NextFrameEvaluator {
         this.replayState.nextCheckPointIndex.delete(slider.id);
       }
     }
+  }
+
+  predictedPositionAt(time: number): Position {
+    if (this.currentTime === this.previousTime) return this.cursorPosition;
+    const f = (time - this.previousTime) / (this.currentTime - this.previousTime);
+    return Vec2.interpolate(this.previousPosition, this.cursorPosition, f);
   }
 
   // TODO: More sophisticated
@@ -663,11 +647,16 @@ export class NextFrameEvaluator {
     }
   }
 
-  evaluateNextFrameMutated(replayStateToChange: ReplayState, frame: ReplayFrame): void {
-    this.replayState = replayStateToChange;
+  evaluateNextFrameMutated(previousReplayState: ReplayState, frame: ReplayFrame): void {
+    this.previousPosition = { ...previousReplayState.cursorPosition };
+    this.previousTime = previousReplayState.currentTime;
+    this.replayState = previousReplayState;
     this.replayState.currentTime = frame.time;
     this.replayState.cursorPosition = frame.position;
     this.replayState.clickWasUseful = false;
+
+    // Need to store this for the check points ...
+    const oldPressingSince = this.replayState.pressingSince.slice();
 
     this.replayState.pressingSince = newPressingSince(this.replayState.pressingSince, frame.actions, frame.time);
     this.checkNewAliveHitObjects();
@@ -676,7 +665,7 @@ export class NextFrameEvaluator {
     this.handleHitCircles();
     this.handleSliderJudgment();
     // We first need to check the check points before updating if the slider got released at .currentTime
-    this.handleSliderCheckPoints();
+    this.handleSliderCheckPoints(oldPressingSince);
     this.updateSliderBodyTracking();
 
     this.handleSpinners();

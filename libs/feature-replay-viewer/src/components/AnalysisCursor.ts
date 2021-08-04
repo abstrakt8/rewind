@@ -85,7 +85,7 @@ export class AnalysisCursor {
       this.trail.lineStyle(1, 0x5d6463, baseAlpha);
       this.trail.lineTo(offset.x, offset.y);
       this.analysisPoints[i].prepare(color, interesting);
-      this.analysisPoints[i].alpha = (interesting ? 1 : 0.3) * baseAlpha;
+      this.analysisPoints[i].alpha = (interesting ? 1 : 0.6) * baseAlpha;
       this.analysisPoints[i].position.set(offset.x, offset.y);
     }
   }

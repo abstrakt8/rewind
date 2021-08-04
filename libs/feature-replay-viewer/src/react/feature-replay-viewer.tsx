@@ -160,14 +160,16 @@ const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
 const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length - 1, speedIndex(speed) + 1)];
 const prevSpeed = (speed: number) => speedsAllowed[Math.max(0, speedIndex(speed) - 1)];
 
+const frameJump = 16;
+
 export const useShortcuts = () => {
   const { gameClock, renderSettings } = useMobXContext();
   // https://github.com/jaywcjlove/hotkeys/#defining-shortcuts
   useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.playbackRate)));
   useHotkeys("s", () => gameClock.setSpeed(prevSpeed(gameClock.playbackRate)));
   useHotkeys("space", () => gameClock.togglePlaying());
-  useHotkeys("d", () => gameClock.seekTo(Math.min(maxTime, gameClock.getCurrentTime() + 16)));
-  useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - 16)));
+  useHotkeys("d", () => gameClock.seekTo(Math.min(maxTime, gameClock.getCurrentTime() + frameJump)));
+  useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)));
   useHotkeys("f", () => renderSettings.toggleModHidden());
 };
 

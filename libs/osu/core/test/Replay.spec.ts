@@ -1,5 +1,5 @@
-import { parseReplayFromFS, TEST_REPLAYS } from "./util.spec";
-import { fromRawToReplay, OsuAction, ReplayFrame } from "../src";
+import { parseBlueprintFromFS, parseReplayFromFS, TEST_MAPS, TEST_REPLAYS } from "./util.spec";
+import { buildBeatmap, fromRawToReplay, OsuAction, ReplayFrame } from "../src";
 
 // w, x, y, z
 // w time since last action
@@ -43,4 +43,13 @@ describe("Parsing SunMoonStar", function () {
       seen[frame.time] = true;
     }
   });
+});
+
+describe("SElf test", function () {
+  const bluePrint = parseBlueprintFromFS(TEST_MAPS.SUN_MOON_STAR);
+  const beatmap = buildBeatmap(bluePrint, { addStacking: true });
+  const replay = parseReplayFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
+
+  // 876399
+  console.log("wait");
 });

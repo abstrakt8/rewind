@@ -28,6 +28,9 @@ import { ReplayViewerContext } from "./ReplayViewerContext";
 import { AnalysisCursor } from "../components/AnalysisCursor";
 import { OsuClassicJudgement } from "../../../osu-pixi/classic-components/src/hitobjects/OsuClassicJudgements";
 import { circleSizeToScale } from "@rewind/osu/math";
+import { Graphics } from "pixi.js";
+
+const DEBUG = false;
 
 /*
             {
@@ -140,8 +143,19 @@ export class OsuGameplayContainer {
     this.hitObjectContainer.addChild(body.container);
   }
 
-  private prepareSliderTail(gameTime: number, slider: Slider) {
-    /* TODO */
+  private prepareSliderTail(gameTime: number, slider: Slider) {}
+
+  // Only for debugging
+  private prepareSliderLastLegacyTick(gameTime: number, checkpoint: SliderCheckPoint) {
+    if (DEBUG) {
+      const delta = checkpoint.hitTime - gameTime;
+      if (!(delta >= 0 && delta < 200)) return;
+      const g = new Graphics();
+      g.beginFill(0xff0000);
+      g.drawCircle(checkpoint.position.x, checkpoint.position.y, 2);
+      g.endFill();
+      this.hitObjectContainer.addChild(g);
+    }
   }
 
   private prepareSliderTicks(gameTime: number, ticks: SliderCheckPoint[]) {}
@@ -198,6 +212,13 @@ export class OsuGameplayContainer {
     });
 
     this.hitObjectContainer.addChild(sliderBall.container);
+
+    if (DEBUG) {
+      const g = new Graphics();
+      g.lineStyle(1, 0xff0000);
+      g.drawCircle(position.x, position.y, slider.radius * 2.4);
+      this.hitObjectContainer.addChild(g);
+    }
   }
 
   // This is for experts who want to know where it is
@@ -222,6 +243,7 @@ export class OsuGameplayContainer {
     if (legacyTick) this.prepareSliderLastTick(time, legacyTick); // not sure about order of this one
     this.prepareSliderRepeats(time, repeats, slider);
     this.prepareSliderBall(time, slider);
+    this.prepareSliderLastLegacyTick(time, legacyTick);
 
     this.prepareHitCircle(time, slider.head);
   }
