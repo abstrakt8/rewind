@@ -27,7 +27,7 @@ export * from "./hitobjects/slider/PathType";
 export * from "./hitobjects/slider/SliderPath";
 export * from "./hitobjects/HitCircle";
 export * from "./hitobjects/index";
-export * from "./hitobjects/OsuHitObjectTypes";
+export * from "./hitobjects/Types";
 export * from "./hitobjects/Slider";
 export * from "./hitobjects/SliderCheckPoint";
 export * from "./hitobjects/Spinner";
@@ -42,4 +42,4 @@ export * from "./replays/ReplayState";
 export * from "./replays/ReplayEvent";
 export * from "./replays/ReplayStateTimeMachine";
 
-export { OsuHitObjectTypes } from "./hitobjects/OsuHitObjectTypes";
+export * from "./hitobjects/Types";

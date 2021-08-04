@@ -1,15 +1,11 @@
 import { Position } from "@rewind/osu/math";
 import { immerable } from "immer";
-import { OsuHitObjectTypes } from "./OsuHitObjectTypes";
+import { HitObjectType } from "./Types";
 import { HasHitTime, HasId, HasPosition, HasSpawnTime } from "./Properties";
 
 export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
   [immerable] = true;
   static OBJECT_RADIUS = 64;
-
-  get type() {
-    return OsuHitObjectTypes.HIT_CIRCLE;
-  }
 
   id = "";
   hitTime = 0;
@@ -22,6 +18,10 @@ export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
   position: Position = { x: 0, y: 0 };
 
   sliderId?: string;
+
+  get type(): HitObjectType {
+    return "HIT_CIRCLE";
+  }
 
   get radius(): number {
     return HitCircle.OBJECT_RADIUS * this.scale;

@@ -7,7 +7,6 @@ import {
   ReplayState,
   Slider,
   SliderCheckPoint,
-  SliderCheckPointType,
 } from "@rewind/osu/core";
 import {
   OsuClassicApproachCircle,
@@ -213,9 +212,9 @@ export class OsuGameplayContainer {
     const repeats: SliderCheckPoint[] = [];
     let legacyTick;
     slider.checkPoints.forEach((c) => {
-      if (c.type === SliderCheckPointType.TICK) ticks.push(c);
-      if (c.type === SliderCheckPointType.REPEAT) repeats.push(c);
-      if (c.type === SliderCheckPointType.LAST_LEGACY_TICK) legacyTick = c; // can only be one
+      if (c.type === "TICK") ticks.push(c);
+      if (c.type === "REPEAT") repeats.push(c);
+      if (c.type === "LAST_LEGACY_TICK") legacyTick = c; // can only be one
     });
 
     this.prepareSliderTail(time, slider);

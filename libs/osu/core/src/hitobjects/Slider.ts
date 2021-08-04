@@ -3,7 +3,7 @@ import { Position, Vec2 } from "@rewind/osu/math";
 import { HitCircle } from "./HitCircle";
 import { SliderCheckPoint } from "./SliderCheckPoint";
 import { HasId } from "./Properties";
-import { OsuHitObjectTypes } from "./OsuHitObjectTypes";
+import { HitObjectType } from "./Types";
 
 export class Slider implements HasId {
   // scoring distance with a speed-adjusted beat length of 1 second (i.e. the speed slider balls
@@ -26,8 +26,8 @@ export class Slider implements HasId {
     this.head = hitCircle;
   }
 
-  get type() {
-    return OsuHitObjectTypes.SLIDER;
+  get type(): HitObjectType {
+    return "SLIDER";
   }
 
   get spawnTime(): number {

@@ -3,9 +3,10 @@ import { Position, Vec2 } from "@rewind/osu/math";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { Slider } from "../hitobjects/Slider";
 import { Spinner } from "../hitobjects/Spinner";
-import { OsuHitObject } from "../hitobjects";
-import { SliderCheckPointType } from "../hitobjects/SliderCheckPoint";
+import { AllHitObjects, OsuHitObject } from "../hitobjects";
 import { normalizeHitObjects } from "../utils";
+
+// Maybe rename this to GamePlay since a replay is a very concrete term for something recorded
 
 // For each circle:
 
@@ -143,9 +144,9 @@ export type SliderBodyState = {
   isTracking: boolean;
 };
 
-// Current RPM
 export type SpinnerState = {
   wholeSpinCount: number;
+  // Maybe also current RPM that can be shown
 };
 
 export interface ReplayState {
@@ -164,6 +165,11 @@ export interface ReplayState {
   maxCombo: number;
 
   unnecessaryClicks: Array<UnnecessaryClick>;
+
+  // Stores the ids of the objects that have been judged in the order of judgement.
+  // This can be used to easily derive the combo,maxCombo,accuracy,number of 300/100/50/misses, score
+  judgedObjects: Array<string>;
+
   // Rest are used for optimizations
   latestHitObjectIndex: number;
   aliveHitCircleIds: Set<string>;
@@ -193,6 +199,7 @@ export function cloneReplayState(replayState: ReplayState): ReplayState {
     cursorPosition,
     latestHitObjectIndex,
     pressingSince,
+    judgedObjects,
   } = replayState;
   return {
     hitCircleState: new Map<string, HitCircleState>(hitCircleState),
@@ -204,6 +211,7 @@ export function cloneReplayState(replayState: ReplayState): ReplayState {
     currentTime: currentTime,
     cursorPosition: cursorPosition,
     latestHitObjectIndex: latestHitObjectIndex,
+    judgedObjects: [...judgedObjects],
     maxCombo: maxCombo,
     nextCheckPointIndex: nextCheckPointIndex,
     sliderBodyState: new Map<string, SliderBodyState>(sliderBodyState),
@@ -219,45 +227,6 @@ export enum HitObjectJudgementType {
   Ok,
   Meh,
   Miss,
-}
-
-// Judgement -> DisplayEvent (something that is only concerned with UI)
-
-export const JudgementScores = [300, 100, 50, 0];
-
-// The ones that are also shown
-export type JudgeEvent = {
-  id: string; // HitCircle, Slider, SliderCheckPoint,
-  time: number;
-  type: HitObjectJudgementType;
-};
-
-export interface ComboInfo {
-  maxCombo: number;
-  currentCombo: number;
-}
-
-export const getDefaultScoreOverview = (): ComboInfo => {
-  return {
-    maxCombo: 0,
-    currentCombo: 0,
-  };
-};
-
-function countJudgeEvents(judgeEvents: JudgeEvent[]) {
-  const count = [0, 0, 0, 0];
-  judgeEvents.forEach((c) => count[c.type]++);
-  return count;
-}
-
-export function osuStableAccuracy(count: number[]) {
-  let perfect = 0,
-    actual = 0;
-  for (let i = 0; i < count.length; i++) {
-    actual += JudgementScores[i] * count[i];
-    perfect += JudgementScores[HitObjectJudgementType.Great] * count[i];
-  }
-  return actual / perfect;
 }
 
 function sliderJudgementBasedOnCheckpoints(totalCheckpoints: number, hitCheckpoints: number): HitObjectJudgementType {
@@ -280,6 +249,7 @@ export const defaultReplayState = (): ReplayState => ({
   spinnerState: new Map<string, SpinnerState>(),
   sliderJudgement: new Map<string, HitObjectJudgementType>(),
 
+  // TODO: Move outside
   currentCombo: 0,
   maxCombo: 0,
 
@@ -289,6 +259,8 @@ export const defaultReplayState = (): ReplayState => ({
   aliveHitCircleIds: new Set<string>(),
   aliveSliderIds: new Set<string>(),
   aliveSpinnerIds: new Set<string>(),
+  // Also used as an optimization
+  judgedObjects: [],
   // For each slider, if it is alive, then there is an entry. The index indicates which checkpoint should be checked next.
   nextCheckPointIndex: new Map<string, number>(),
   pressingSince: [NOT_PRESSING, NOT_PRESSING],
@@ -298,7 +270,7 @@ export const defaultReplayState = (): ReplayState => ({
 // different hit objects.
 export class NextFrameEvaluator {
   // Calculated before hand
-  private hitObjectById: Record<string, OsuHitObject>;
+  private hitObjectById: Record<string, AllHitObjects>;
 
   // Not really relevant to be cloned (since can be derived or are just helper data)
   private timeSupposedToClick?: number; // This can be undefined if no circles are alive.
@@ -327,11 +299,16 @@ export class NextFrameEvaluator {
     return this.replayState.pressingSince;
   }
 
+  private get judgedObjects() {
+    return this.replayState.judgedObjects;
+  }
+
   // Checks whether the user has pressed in this frame
   private get hasFreshClickThisFrame(): boolean {
     return this.replayState.pressingSince.includes(this.currentTime);
   }
 
+  // TODO: Maybe use `Beatmap`
   private getHitCircle(id: string): HitCircle {
     return this.hitObjectById[id] as HitCircle;
   }
@@ -395,9 +372,13 @@ export class NextFrameEvaluator {
     this.replayState.aliveSpinnerIds.delete(id);
   }
 
+  // This is also for SliderHeads
   private finishHitCircle(id: string, state: HitCircleState) {
     this.replayState.hitCircleState.set(id, state);
     this.replayState.aliveHitCircleIds.delete(id);
+    this.judgedObjects.push(id);
+
+    // TODO: Remove
     this.judgeHitObject(state.type);
   }
 
@@ -425,6 +406,9 @@ export class NextFrameEvaluator {
     }
     const judgement = sliderJudgementBasedOnCheckpoints(totalCheckpoints, hitCheckpoints);
     this.replayState.sliderJudgement.set(id, judgement);
+
+    this.judgedObjects.push(slider.id);
+    // TODO: Remove
     this.judgeHitObject(judgement, true);
 
     this.replayState.aliveSliderIds.delete(id);
@@ -641,11 +625,13 @@ export class NextFrameEvaluator {
       const hit = this.replayState.sliderBodyState.get(slider.id)?.isTracking ?? false;
       this.replayState.checkPointState.set(checkPoint.id, { hit });
 
-      if (checkPoint.type === SliderCheckPointType.LAST_LEGACY_TICK) {
+      // TODO: Remove
+      if (checkPoint.type === "LAST_LEGACY_TICK") {
         this.judgeLastTick(hit);
       } else {
         this.judgeNonLastCheckpoint(hit);
       }
+      this.judgedObjects.push(checkPoint.id);
 
       if (index + 1 < slider.checkPoints.length) {
         this.replayState.nextCheckPointIndex.set(slider.id, index + 1);
@@ -658,6 +644,7 @@ export class NextFrameEvaluator {
 
   private handleSpinners(): void {
     // TODO: :^)
+    // TODO: judgedObjects.add()
   }
 
   evaluateNextFrameMutated(replayStateToChange: ReplayState, frame: ReplayFrame): void {

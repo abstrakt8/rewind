@@ -4,7 +4,6 @@ import { Slider } from "../hitobjects/Slider";
 import { OsuHitObject } from "../hitobjects";
 import produce from "immer";
 import { Spinner } from "../hitobjects/Spinner";
-import { OsuHitObjectTypes } from "../hitobjects/OsuHitObjectTypes";
 
 function stackOffset(stackHeight: number, scale: number): Position {
   const value = stackHeight * scale * -6.4;
@@ -85,7 +84,7 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
 
         if (
           Vec2.distance(stackBaseHitCircle.position, objectN.position) < STACK_DISTANCE ||
-          (stackBaseObject.type === OsuHitObjectTypes.SLIDER &&
+          (stackBaseObject.type === "SLIDER" &&
             Vec2.distance(endPosition(stackBaseHitCircle), objectN.position) < STACK_DISTANCE)
         ) {
           stackBaseIndex = n;
@@ -112,7 +111,7 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
 
     const stackThreshold = objectI.approachDuration * stackLeniency;
 
-    if (objectI.type === OsuHitObjectTypes.HIT_CIRCLE) {
+    if (objectI.type === "HIT_CIRCLE") {
       while (--n >= 0) {
         const objectN = getHitCircle(hitObjects[n]);
         if (!objectN) break;
@@ -125,10 +124,7 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
           extendedStartIndex = n;
         }
 
-        if (
-          objectN.type === OsuHitObjectTypes.SLIDER &&
-          Vec2.distance(endPosition(objectN), objectI.position) < STACK_DISTANCE
-        ) {
+        if (objectN.type === "SLIDER" && Vec2.distance(endPosition(objectN), objectI.position) < STACK_DISTANCE) {
           const offset = H(objectI) - H(objectN) + 1;
           for (let j = n + 1; j <= i; j++) {
             const objectJ = getHitCircle(hitObjects[j]);
@@ -144,7 +140,7 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
           objectI = objectN;
         }
       }
-    } else if (objectI.type === OsuHitObjectTypes.SLIDER) {
+    } else if (objectI.type === "SLIDER") {
       while (--n >= startIndex) {
         const objectN = getHitCircle(hitObjects[n]);
         if (!objectN) continue;

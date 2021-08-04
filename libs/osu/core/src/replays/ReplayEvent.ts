@@ -4,7 +4,6 @@ import { HitObjectJudgementType, ReplayState } from "./ReplayState";
 import { OsuHitObject } from "../hitobjects";
 import { Slider } from "../hitobjects/Slider";
 import { HitCircle } from "../hitobjects/HitCircle";
-import { SliderCheckPointType } from "../hitobjects/SliderCheckPoint";
 
 /**
  * ReplayAnalysisEvents are point of interests for the user.
@@ -91,7 +90,7 @@ export function retrieveEvents(replayState: ReplayState, hitObjects: OsuHitObjec
     // CheckpointEvents
     for (const point of slider.checkPoints) {
       const hit = replayState.checkPointState.get(point.id).hit;
-      const isLastTick = point.type === SliderCheckPointType.LAST_LEGACY_TICK;
+      const isLastTick = point.type === "LAST_LEGACY_TICK";
       events.push({ time: slider.endTime, position: point.position, type: "CheckpointJudgement", hit, isLastTick });
     }
   }

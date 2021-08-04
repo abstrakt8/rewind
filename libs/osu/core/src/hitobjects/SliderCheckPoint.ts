@@ -3,18 +3,13 @@
 import { Slider } from "./Slider";
 import { Position, Vec2 } from "@rewind/osu/math";
 import { HasHitTime, HasId, HasPosition } from "./Properties";
-
-export enum SliderCheckPointType {
-  TICK = "TICK",
-  REPEAT = "REPEAT",
-  LAST_LEGACY_TICK = "LAST_LEGACY_TICK",
-}
+import { SliderCheckPointType } from "./Types";
 
 export class SliderCheckPoint implements HasId, HasPosition, HasHitTime {
   constructor(private readonly slider: Slider) {}
 
   id = "";
-  type = SliderCheckPointType.TICK;
+  type: SliderCheckPointType = "TICK";
   spanIndex = 0;
   spanProgress = 0;
   spanStartTime = 0;

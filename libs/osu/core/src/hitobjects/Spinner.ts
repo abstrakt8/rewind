@@ -1,4 +1,3 @@
-import { OsuHitObjectTypes } from "./OsuHitObjectTypes";
 import { HasId, HasSpawnTime } from "./Properties";
 
 export class Spinner implements HasId, HasSpawnTime {
@@ -14,6 +13,6 @@ export class Spinner implements HasId, HasSpawnTime {
   }
 
   get type() {
-    return OsuHitObjectTypes.SPINNER;
+    return "SPINNER";
   }
 }

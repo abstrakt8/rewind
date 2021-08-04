@@ -1,5 +1,5 @@
-import { buildBeatmap, HitCircle, Slider, SliderCheckPointType } from "@rewind/osu/core";
-import { osuMapPath, parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
+import { buildBeatmap, HitCircle, Slider } from "@rewind/osu/core";
+import { parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
 
 describe("BeatmapBuilder", function () {
   describe("Simple short slider", function () {
@@ -41,8 +41,8 @@ describe("BeatmapBuilder", function () {
       const slider = hitObject as Slider;
       expect(slider.repeatCount).toBe(1);
       expect(slider.checkPoints.length).toBe(2);
-      expect(slider.checkPoints[0].type).toBe(SliderCheckPointType.REPEAT);
-      expect(slider.checkPoints[1].type).toBe(SliderCheckPointType.LAST_LEGACY_TICK);
+      expect(slider.checkPoints[0].type).toBe("REPEAT");
+      expect(slider.checkPoints[1].type).toBe("LAST_LEGACY_TICK");
     });
   });
   describe("Short kick slider", function () {
@@ -56,7 +56,7 @@ describe("BeatmapBuilder", function () {
     it("should build correctly", function () {
       expect(kickSlider.repeatCount).toBe(0);
       expect(kickSlider.checkPoints.length).toBe(1);
-      expect(kickSlider.checkPoints[0].type).toBe(SliderCheckPointType.LAST_LEGACY_TICK);
+      expect(kickSlider.checkPoints[0].type).toBe("LAST_LEGACY_TICK");
 
       // The span time interval is shorter than 34ms. Here the legacy last tick is in the center of the time interval.
       expect(kickSlider.checkPoints[0].hitTime).toBeCloseTo(1699.625, 2);

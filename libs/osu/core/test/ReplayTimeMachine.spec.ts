@@ -5,7 +5,8 @@ import {
   TEST_MAPS,
   TEST_REPLAYS,
 } from "./util.spec";
-import { BucketedReplayStateTimeMachine, osuStableAccuracy } from "../src";
+import { BucketedReplayStateTimeMachine } from "../src";
+import { osuStableAccuracy } from "../src/replays/ReplayFrameStatistics";
 
 describe("OsuStd! ReplayTimeMachine - The Sun, The Moon, The Stars", function () {
   const { hitObjects, settings, evaluator, hitWindows } = defaultStableSettings(TEST_MAPS.SUN_MOON_STAR);

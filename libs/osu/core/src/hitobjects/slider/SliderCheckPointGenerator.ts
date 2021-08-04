@@ -1,6 +1,5 @@
 import { clamp, floatEqual } from "@rewind/osu/math";
 import { SliderCheckPointDescriptor } from "./SliderCheckPointDescriptor";
-import { SliderCheckPointType } from "../SliderCheckPoint";
 
 function* generateTicks(
   spanIndex: number,
@@ -18,7 +17,7 @@ function* generateTicks(
     const pathProgress = d / length;
     const timeProgress = reversed ? 1.0 - pathProgress : pathProgress;
     yield {
-      type: SliderCheckPointType.TICK,
+      type: "TICK",
       spanIndex,
       spanStartTime,
       time: spanStartTime + timeProgress * spanDuration,
@@ -56,7 +55,7 @@ export function* generateSliderCheckpoints(
 
       if (span < spanCount - 1) {
         yield {
-          type: SliderCheckPointType.REPEAT,
+          type: "REPEAT",
           spanIndex: span,
           spanStartTime,
           time: spanStartTime + spanDuration,
@@ -76,7 +75,7 @@ export function* generateSliderCheckpoints(
   let finalProgress = (finalSpanEndTime - finalSpanStartTime) / spanDuration;
   if (spanCount % 2 === 0) finalProgress = 1.0 - finalProgress;
   yield {
-    type: SliderCheckPointType.LAST_LEGACY_TICK,
+    type: "LAST_LEGACY_TICK",
     spanIndex: finalSpanIndex,
     spanStartTime: finalSpanStartTime,
     time: finalSpanEndTime,

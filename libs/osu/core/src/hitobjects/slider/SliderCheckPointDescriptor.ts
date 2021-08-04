@@ -1,4 +1,4 @@
-import { SliderCheckPointType } from "../SliderCheckPoint";
+import { SliderCheckPointType } from "../Types";
 
 export type SliderCheckPointDescriptor = {
   type: SliderCheckPointType;
