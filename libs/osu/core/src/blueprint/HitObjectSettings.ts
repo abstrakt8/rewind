@@ -6,13 +6,6 @@ import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 
 export type HitObjectSettingsType = "HIT_CIRCLE" | "SLIDER" | "SPINNER" | "MANIA_HOLD";
 
-const HitObjectSettingBit = {
-  HIT_CIRCLE: 0,
-  SLIDER: 1,
-  SPINNER: 3,
-  MANIA_HOLD: 7,
-} as const;
-
 // In the future (osu!lazer) there might be other settings such as custom circle size, custom AR, ...
 export interface HitObjectSettings {
   type: HitObjectSettingsType;

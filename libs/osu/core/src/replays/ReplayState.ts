@@ -650,9 +650,17 @@ export class NextFrameEvaluator {
     }
   }
 
+  // TODO: More sophisticated
   private handleSpinners(): void {
-    // TODO: :^)
-    // TODO: judgedObjects.add()
+    // If 2B, there should only be one
+    const spinnerIds = this.replayState.aliveSpinnerIds.values();
+    for (const id of spinnerIds) {
+      const spinner = this.beatmap.getSpinner(id);
+      if (spinner.endTime < this.currentTime) {
+        this.replayState.aliveSpinnerIds.delete(spinner.id);
+        this.replayState.judgedObjects.push(id);
+      }
+    }
   }
 
   evaluateNextFrameMutated(replayStateToChange: ReplayState, frame: ReplayFrame): void {

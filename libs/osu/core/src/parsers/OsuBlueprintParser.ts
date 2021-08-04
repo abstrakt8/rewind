@@ -11,12 +11,7 @@ import { EffectControlPoint } from "../beatmap/ControlPoints/EffectControlPoint"
 import { SampleControlPoint } from "../beatmap/ControlPoints/SampleControlPoint";
 import { HitSampleInfo } from "../audio/HitSampleInfo";
 import { LegacySampleBank } from "../audio/LegacySampleBank";
-import {
-  HitCircleSettings,
-  HitObjectSettingsType,
-  SliderSettings,
-  SpinnerSettings,
-} from "../blueprint/HitObjectSettings";
+import { HitCircleSettings, SliderSettings, SpinnerSettings } from "../blueprint/HitObjectSettings";
 
 // Credit to osu-bpdpc
 // Something like [General]

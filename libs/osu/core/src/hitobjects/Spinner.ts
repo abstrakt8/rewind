@@ -12,6 +12,10 @@ export class Spinner implements HasId, HasSpawnTime {
     return this.startTime;
   }
 
+  get endTime(): number {
+    return this.startTime + this.duration;
+  }
+
   get type() {
     return "SPINNER";
   }
