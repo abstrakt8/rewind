@@ -65,6 +65,7 @@ export default class App {
       width: width,
       height: height,
       show: false,
+      // frame: false, // TODO: to make it look like Discord/VSCode we need custom titlebar
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: false,
