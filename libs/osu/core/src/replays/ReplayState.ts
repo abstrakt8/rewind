@@ -213,11 +213,11 @@ export function cloneReplayState(replayState: ReplayState): ReplayState {
     judgedObjects: [...judgedObjects],
     clickWasUseful: clickWasUseful,
     maxCombo: maxCombo,
-    nextCheckPointIndex: nextCheckPointIndex,
+    nextCheckPointIndex: new Map<string, number>(nextCheckPointIndex),
     sliderBodyState: new Map<string, SliderBodyState>(sliderBodyState),
     sliderJudgement: new Map<string, MainHitObjectVerdict>(sliderJudgement),
     spinnerState: new Map<string, SpinnerState>(spinnerState),
-    pressingSince: [...pressingSince],
+    pressingSince: pressingSince.slice(),
   };
 }
 
