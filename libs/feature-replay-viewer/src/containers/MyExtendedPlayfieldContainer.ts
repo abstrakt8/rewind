@@ -31,6 +31,8 @@ export class MyExtendedPlayfieldContainer {
 
   hitErrorBar: AnalysisHitErrorBar;
 
+  statsText: PIXI.Text;
+
   constructor(private readonly playfield: Container, private readonly context: ReplayViewerContext) {
     this.container = new Container();
     this.foregroundHUD = new Container();
@@ -38,6 +40,7 @@ export class MyExtendedPlayfieldContainer {
     this.backgroundSprite = new Sprite();
     this.backgroundSprite.anchor.set(0.5, 0.5);
     this.backgroundUrl = "";
+    this.statsText = new PIXI.Text("", { fill: "white", fontSize: 12 });
 
     this.container.addChild(this.backgroundSprite, this.playfield, this.foregroundHUD);
   }
@@ -126,12 +129,9 @@ export class MyExtendedPlayfieldContainer {
       const count = gameplayInfo.verdictCounts;
       const currentCombo = gameplayInfo.currentCombo;
       const maxCombo = gameplayInfo.maxComboSoFar;
-      const text = new PIXI.Text(
-        `${count[0]}x300, ${count[1]}x100, ${count[2]}x50 ${count[3]}xMisses\ncurrentCombo: ${currentCombo}, maxCombo: ${maxCombo}`,
-        { fill: "white", fontSize: 12 },
-      );
-      text.position.set(100, 100);
-      this.foregroundHUD.addChild(text);
+      this.statsText.text = `${count[0]}x300, ${count[1]}x100, ${count[2]}x50 ${count[3]}xMisses\ncurrentCombo: ${currentCombo}, maxCombo: ${maxCombo}`;
+      this.statsText.position.set(100, 100);
+      this.foregroundHUD.addChild(this.statsText);
     }
 
     // hit error
