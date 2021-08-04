@@ -194,7 +194,8 @@ export function parseOsuHitObjectSetting(line: string): HitCircleSettings | Slid
   // TODO: This has MAX_COORDINATE_VALUE for sanity check
   const position = { x: parseFloat(split[0]), y: parseFloat(split[1]) };
   // TODO: This has +offset (24ms) for beatmapVersion <= 4 (include in BeatmapBuilder)
-  const time = parseFloat(split[2]);
+  const offset = 0; //
+  const time = parseFloat(split[2]) + offset;
 
   const _type = parseInt(split[3]); // also has combo information
   const comboSkip = (_type & LegacyHitObjectType.ComboSkip) >> 4;
@@ -216,12 +217,12 @@ export function parseOsuHitObjectSetting(line: string): HitCircleSettings | Slid
     // TODO: CustomSampleBanks not supported yet
     // if (split.length > 5) readCustomSampleBanks(split[5], bankInfo);
     return {
-      type: HitObjectSettingsType.HIT_CIRCLE,
+      type: "HIT_CIRCLE",
       time,
       position,
       newCombo,
       comboSkip,
-    } as HitCircleSettings;
+    };
   }
   if (hasFlag(typeBitmask, LegacyHitObjectType.Slider)) {
     let length: number | null = null;
@@ -238,7 +239,7 @@ export function parseOsuHitObjectSetting(line: string): HitCircleSettings | Slid
     }
 
     return {
-      type: HitObjectSettingsType.SLIDER,
+      type: "SLIDER",
       time,
       position,
       repeatCount,
@@ -248,17 +249,18 @@ export function parseOsuHitObjectSetting(line: string): HitCircleSettings | Slid
       length,
       legacyLastTickOffset: DEFAULT_LEGACY_TICK_OFFSET,
       tickDistanceMultiplier: 1,
-    } as SliderSettings;
+    };
   }
   if (hasFlag(typeBitmask, LegacyHitObjectType.Spinner)) {
+    const duration = Math.max(0, parseFloat(split[5]) + offset - time);
     return {
-      type: HitObjectSettingsType.SPINNER,
+      type: "SPINNER",
       comboSkip,
       newCombo,
       time,
       position,
-      // endTime TODO
-    } as SpinnerSettings;
+      duration,
+    };
   }
   throw Error("Unknown type");
 }

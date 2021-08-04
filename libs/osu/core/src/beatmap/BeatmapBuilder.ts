@@ -123,6 +123,7 @@ function createSpinner(
   const spinner = new Spinner();
   spinner.id = id;
   spinner.startTime = settings.time;
+  spinner.duration = settings.duration;
   return spinner;
 }
 
@@ -133,11 +134,16 @@ function createStaticHitObject(
   beatmapDifficulty: BeatmapDifficulty,
 ): OsuHitObject {
   switch (hitObjectSetting.type) {
-    case HitObjectSettingsType.HIT_CIRCLE:
-      return createHitCircle(index.toString(), hitObjectSetting, controlPointInfo, beatmapDifficulty);
-    case HitObjectSettingsType.SLIDER:
+    case "HIT_CIRCLE":
+      return createHitCircle(
+        index.toString(),
+        hitObjectSetting as HitCircleSettings,
+        controlPointInfo,
+        beatmapDifficulty,
+      );
+    case "SLIDER":
       return createSlider(index, hitObjectSetting as SliderSettings, controlPointInfo, beatmapDifficulty);
-    case HitObjectSettingsType.SPINNER:
+    case "SPINNER":
       return createSpinner(index.toString(), hitObjectSetting as SpinnerSettings, controlPointInfo, beatmapDifficulty);
   }
   throw new Error("Type not recognized...");
@@ -155,7 +161,7 @@ function assignComboIndex(bluePrintSettings: HitObjectSettings[], hitObjects: Os
       const { newCombo, comboSkip, type } = bluePrintSettings[i];
       const hitObject = hitObjects[i]; // change 'const' -> 'let' for better readability
 
-      if (i === 0 || newCombo || type === HitObjectSettingsType.SPINNER) {
+      if (i === 0 || newCombo || type === "SPINNER") {
         comboSetIndex += comboSkip + 1;
         withinSetIndex = 0;
       }

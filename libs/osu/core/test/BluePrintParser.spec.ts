@@ -5,6 +5,7 @@ import {
   PathControlPoint,
   PathType,
   SliderSettings,
+  SpinnerSettings,
 } from "@rewind/osu/core";
 import { osuMapPath, parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
 import { Position } from "@rewind/osu/math";
@@ -65,7 +66,7 @@ describe("HitObjectSettingsParsing", function () {
   describe("HitCircle - Simple", function () {
     const settings = parseOsuHitObjectSetting("256,192,11000,21,2") as HitCircleSettings;
     it("should parse correctly", function () {
-      expect(settings.type).toBe(HitObjectSettingsType.HIT_CIRCLE);
+      expect(settings.type).toBe("HIT_CIRCLE");
       expect(settings.position.x).toBe(256);
       expect(settings.position.y).toBe(192);
       expect(settings.time).toBe(11000);
@@ -80,7 +81,7 @@ describe("HitObjectSettingsParsing", function () {
       const settings = parseOsuHitObjectSetting(
         "100,101,12600,6,1,B|200:200|250:200|250:200|300:150,2,310.123,2|1|2,0:0|0:0|0:2,0:0:0:0:",
       ) as SliderSettings;
-      expect(settings.type).toBe(HitObjectSettingsType.SLIDER);
+      expect(settings.type).toBe("SLIDER");
       expect(settings.position.x).toBe(100);
       expect(settings.position.y).toBe(101);
       expect(settings.time).toBe(12600);
@@ -105,7 +106,8 @@ describe("HitObjectSettingsParsing", function () {
       const settings = parseOsuHitObjectSetting(
         "100,-101,12600,6,1,C|200:200|300:412,2,310.123,2|1|2,0:0|0:0|0:2,0:0:0:0:",
       ) as SliderSettings;
-      expect(settings.type).toBe(HitObjectSettingsType.SLIDER);
+      const expectedType: HitObjectSettingsType = "SLIDER";
+      expect(settings.type).toBe(expectedType);
       expect(settings.position.x).toBe(100);
       expect(settings.position.y).toBe(-101);
       expect(settings.time).toBe(12600);
@@ -115,6 +117,16 @@ describe("HitObjectSettingsParsing", function () {
       // TODO: Sample
     });
   });
+});
+
+test("Parsing Spinner - Paranoid Lost - Beginning", function () {
+  const settings = parseOsuHitObjectSetting("256,192,10892,12,0,21460,0:0:0:0:");
+  expect(settings.type).toBe("SPINNER");
+
+  const spinnerSettings = settings as SpinnerSettings;
+  expect(spinnerSettings.position).toStrictEqual({ x: 256, y: 192 });
+  expect(spinnerSettings.time).toBe(10892);
+  expect(spinnerSettings.duration).toBe(21460 - 10892);
 });
 
 describe("Parsing one slider", function () {
