@@ -57,4 +57,9 @@ export class Skin implements ISkin {
   getComboNumberTextures(): Texture[] {
     return getComboFontKeys().map((h) => this.getTexture(h));
   }
+
+  // The textures that are used for every other numbers on the interface (except combo)
+  getScoreTextures(): Texture[] {
+    return getComboFontKeys().map((h) => this.getTexture(h));
+  }
 }

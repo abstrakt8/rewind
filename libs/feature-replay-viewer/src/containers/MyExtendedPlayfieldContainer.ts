@@ -4,7 +4,8 @@ import { Skin } from "../skins/Skin";
 import { ReplayViewerContext } from "./ReplayViewerContext";
 import { AnalysisHitErrorBar } from "./HitErrorBar";
 import { hitWindowsForOD } from "@rewind/osu/math";
-import { GameplayInfoEvaluator } from "@rewind/osu/core";
+import { GameplayInfo, GameplayInfoEvaluator } from "@rewind/osu/core";
+import * as PIXI from "pixi.js";
 
 // Default field size
 export const OSU_PLAYFIELD_BASE_X = 512;
@@ -91,7 +92,10 @@ export class MyExtendedPlayfieldContainer {
     this.foregroundHUD.removeChildren();
     // combo
     const replayState = this.replayTimeMachine?.replayStateAt(time);
-    const gameplayInfo = new GameplayInfoEvaluator(this.context.beatmap, {}).evaluateReplayState(replayState);
+    let gameplayInfo: GameplayInfo;
+
+    if (replayState)
+      gameplayInfo = new GameplayInfoEvaluator(this.context.beatmap, {}).evaluateReplayState(replayState);
 
     if (replayState) {
       const comboNumber = new OsuClassicNumber();
@@ -101,6 +105,35 @@ export class MyExtendedPlayfieldContainer {
       comboNumber.position.set(100, this.heightInPx - 50);
       this.foregroundHUD.addChild(comboNumber);
     }
+
+    // acc
+
+    if (replayState) {
+      // const text
+      const accNumber = new OsuClassicNumber();
+      const textures = this.skin.getScoreTextures();
+      const overlap = this.skin.config.fonts.scoreOverlap;
+      // TODO: Add % sign and comma
+      const number = Math.round(gameplayInfo.accuracy * 10000);
+      accNumber.prepare({ number, textures, overlap });
+      accNumber.position.set(this.widthInPx - 100, 50);
+      this.foregroundHUD.addChild(accNumber);
+    }
+
+    // verdict counts: 300, 100, 50, miss
+
+    if (replayState) {
+      const count = gameplayInfo.verdictCounts;
+      const currentCombo = gameplayInfo.currentCombo;
+      const maxCombo = gameplayInfo.maxComboSoFar;
+      const text = new PIXI.Text(
+        `${count[0]}x300, ${count[1]}x100, ${count[2]}x50 ${count[3]}xMisses\ncurrentCombo: ${currentCombo}, maxCombo: ${maxCombo}`,
+        { fill: "white", fontSize: 12 },
+      );
+      text.position.set(100, 100);
+      this.foregroundHUD.addChild(text);
+    }
+
     // hit error
     {
       // TODO: optimize

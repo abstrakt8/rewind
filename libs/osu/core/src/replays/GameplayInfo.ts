@@ -149,7 +149,7 @@ export class GameplayInfoEvaluator {
     return {
       score: 0,
       verdictCounts: counts,
-      accuracy: osuStableAccuracy(counts),
+      accuracy: osuStableAccuracy(counts) ?? 1.0,
       currentCombo: this.comboInfo.currentCombo,
       maxComboSoFar: this.comboInfo.maxComboSoFar,
     };
