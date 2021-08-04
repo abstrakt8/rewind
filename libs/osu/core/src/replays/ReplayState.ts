@@ -164,7 +164,7 @@ export interface ReplayState {
   currentCombo: number;
   maxCombo: number;
 
-  unnecessaryClicks: Array<UnnecessaryClick>;
+  clickWasUseful: boolean;
 
   // Stores the ids of the objects that have been judged in the order of judgement.
   // This can be used to easily derive the combo,maxCombo,accuracy,number of 300/100/50/misses, score
@@ -188,11 +188,11 @@ export function cloneReplayState(replayState: ReplayState): ReplayState {
     aliveSliderIds,
     aliveSpinnerIds,
     spinnerState,
-    unnecessaryClicks,
     sliderJudgement,
     sliderBodyState,
     checkPointState,
     nextCheckPointIndex,
+    clickWasUseful,
     maxCombo,
     currentCombo,
     currentTime,
@@ -212,12 +212,12 @@ export function cloneReplayState(replayState: ReplayState): ReplayState {
     cursorPosition: cursorPosition,
     latestHitObjectIndex: latestHitObjectIndex,
     judgedObjects: [...judgedObjects],
+    clickWasUseful: clickWasUseful,
     maxCombo: maxCombo,
     nextCheckPointIndex: nextCheckPointIndex,
     sliderBodyState: new Map<string, SliderBodyState>(sliderBodyState),
     sliderJudgement: new Map<string, HitObjectJudgementType>(sliderJudgement),
     spinnerState: new Map<string, SpinnerState>(spinnerState),
-    unnecessaryClicks: [...unnecessaryClicks],
     pressingSince: [...pressingSince],
   };
 }
@@ -253,7 +253,7 @@ export const defaultReplayState = (): ReplayState => ({
   currentCombo: 0,
   maxCombo: 0,
 
-  unnecessaryClicks: [] as Array<UnnecessaryClick>,
+  clickWasUseful: false,
   // Rest are used for optimizations
   latestHitObjectIndex: 0 as number,
   aliveHitCircleIds: new Set<string>(),
@@ -648,11 +648,10 @@ export class NextFrameEvaluator {
   }
 
   evaluateNextFrameMutated(replayStateToChange: ReplayState, frame: ReplayFrame): void {
-    this.clickWasUseful = false;
-
     this.replayState = replayStateToChange;
     this.replayState.currentTime = frame.time;
     this.replayState.cursorPosition = frame.position;
+    this.replayState.clickWasUseful = false;
 
     this.replayState.pressingSince = newPressingSince(this.replayState.pressingSince, frame.actions, frame.time);
     this.checkNewAliveHitObjects();
@@ -665,10 +664,5 @@ export class NextFrameEvaluator {
     this.updateSliderBodyTracking();
 
     this.handleSpinners();
-
-    // TODO: Change this rule to less strict (for example in breaks we don't care... or at the beginning of map)
-    if (this.hasFreshClickThisFrame && !this.clickWasUseful) {
-      this.replayState.unnecessaryClicks.push({ supposed: this.timeSupposedToClick, time: this.currentTime });
-    }
   }
 }
