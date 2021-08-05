@@ -95,12 +95,12 @@ export class MyExtendedPlayfieldContainer {
     this.foregroundHUD.removeChildren();
     // combo
     const replayState = this.replayTimeMachine?.replayStateAt(time);
-    let gameplayInfo: GameplayInfo;
+    let gameplayInfo: GameplayInfo | undefined;
 
     if (replayState)
       gameplayInfo = new GameplayInfoEvaluator(this.context.beatmap, {}).evaluateReplayState(replayState);
 
-    if (replayState) {
+    if (gameplayInfo) {
       const comboNumber = new OsuClassicNumber();
       const textures = this.skin.getComboNumberTextures();
       const overlap = this.skin.config.fonts.comboOverlap;
@@ -111,7 +111,7 @@ export class MyExtendedPlayfieldContainer {
 
     // acc
 
-    if (replayState) {
+    if (gameplayInfo) {
       // const text
       const accNumber = new OsuClassicNumber();
       const textures = this.skin.getScoreTextures();
@@ -125,7 +125,7 @@ export class MyExtendedPlayfieldContainer {
 
     // verdict counts: 300, 100, 50, miss
 
-    if (replayState) {
+    if (gameplayInfo) {
       const count = gameplayInfo.verdictCounts;
       const currentCombo = gameplayInfo.currentCombo;
       const maxCombo = gameplayInfo.maxComboSoFar;

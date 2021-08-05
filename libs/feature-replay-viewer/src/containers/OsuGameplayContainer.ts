@@ -221,9 +221,6 @@ export class OsuGameplayContainer {
     }
   }
 
-  // This is for experts who want to know where it is
-  private prepareSliderLastTick(gameTime: number, lastLegacyTick: SliderCheckPoint) {}
-
   private prepareSlider(time: number, slider: Slider) {
     if (time < slider.spawnTime || time > slider.endTime + 300) return;
     // Order: Body, Tail, Tick, Repeat, Ball, Head (?)
@@ -240,10 +237,9 @@ export class OsuGameplayContainer {
 
     this.prepareSliderTail(time, slider);
     this.prepareSliderTicks(time, ticks);
-    if (legacyTick) this.prepareSliderLastTick(time, legacyTick); // not sure about order of this one
+    if (legacyTick) this.prepareSliderLastLegacyTick(time, legacyTick);
     this.prepareSliderRepeats(time, repeats, slider);
     this.prepareSliderBall(time, slider);
-    this.prepareSliderLastLegacyTick(time, legacyTick);
 
     this.prepareHitCircle(time, slider.head);
   }

@@ -68,17 +68,18 @@ const kasugaMirai = "Kasuga Mirai";
 // const chosenBlueprintId = centipedeId;
 // const chosenReplayId = undefined;
 
-const chosenBlueprintId = sunMoonId;
-const chosenReplayId = sunMoonReplayId;
+// const chosenBlueprintId = sunMoonId;
+// const chosenReplayId = sunMoonReplayId;
 
-// const chosenBlueprintId = akatsukiId;
-// const chosenReplayId = akatsukiReplayId;
+const chosenBlueprintId = akatsukiId;
+const chosenReplayId = akatsukiReplayId;
 
 // const chosenBlueprintId = akatsukiId;
 // const chosenReplayId = undefined;
 
 // const chosenSkinId = aristaSkinId;
-const chosenSkinId = kasugaMirai;
+// const chosenSkinId = kasugaMirai;
+const chosenSkinId = rafisSkinId;
 
 const ALL_SKINS: Record<string, LSkin> = {
   [aristaSkinId]: {
