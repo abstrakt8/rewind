@@ -1,31 +1,85 @@
 {
   "npmScope": "rewind",
-  "affected": { "defaultBase": "master" },
-  "implicitDependencies": { "package.json": { "dependencies": "*", "devDependencies": "*" }, ".eslintrc.json": "*" },
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": { "cacheableOperations": ["build", "lint", "test", "e2e", "build-storybook"] }
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e", "build-storybook"]
+      }
     }
   },
-  "targetDependencies": { "build": [{ "target": "build", "projects": "dependencies" }] },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
   "projects": {
-    "api": { "tags": [] },
-    "desktop": { "tags": [] },
-    "desktop-frontend": { "tags": [] },
-    "desktop-frontend-e2e": { "tags": [], "implicitDependencies": ["desktop-frontend"] },
-    "feature-replay-viewer": { "tags": [] },
-    "feature-replay-viewer-e2e": { "tags": [], "implicitDependencies": ["feature-replay-viewer"] },
-    "osu-core": { "tags": [] },
-    "osu-local-db-reader": { "tags": [] },
-    "osu-local-osr-reader": { "tags": [] },
-    "osu-local-skin-reader": { "tags": [] },
-    "osu-local-utils": { "tags": [] },
-    "osu-math": { "tags": [] },
-    "osu-pixi-classic-components": { "tags": [] },
-    "osu-skin": { "tags": [] },
-    "web": { "tags": [] },
-    "web-e2e": { "tags": [], "implicitDependencies": ["web"] },
-    ".-desktop": { "tags": [] }
+    ".-desktop": {
+      "tags": []
+    },
+    "api": {
+      "tags": []
+    },
+    "desktop": {
+      "tags": []
+    },
+    "desktop-frontend": {
+      "tags": []
+    },
+    "desktop-frontend-e2e": {
+      "tags": [],
+      "implicitDependencies": ["desktop-frontend"]
+    },
+    "feature-replay-viewer": {
+      "tags": []
+    },
+    "feature-replay-viewer-e2e": {
+      "tags": [],
+      "implicitDependencies": ["feature-replay-viewer"]
+    },
+    "osu-core": {
+      "tags": []
+    },
+    "osu-local-db-reader": {
+      "tags": []
+    },
+    "osu-local-osr-reader": {
+      "tags": []
+    },
+    "osu-local-skin-reader": {
+      "tags": []
+    },
+    "osu-local-utils": {
+      "tags": []
+    },
+    "osu-math": {
+      "tags": []
+    },
+    "osu-pixi-classic-components": {
+      "tags": []
+    },
+    "osu-skin": {
+      "tags": []
+    },
+    "web": {
+      "tags": []
+    },
+    "web-e2e": {
+      "tags": [],
+      "implicitDependencies": ["web"]
+    }
   }
 }

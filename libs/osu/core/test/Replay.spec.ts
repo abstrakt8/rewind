@@ -1,5 +1,6 @@
 import { parseBlueprintFromFS, parseReplayFromFS, TEST_MAPS, TEST_REPLAYS } from "./util.spec";
 import { buildBeatmap, fromRawToReplay, OsuAction, ReplayFrame } from "../src";
+import { readSync } from "node-osr";
 
 // w, x, y, z
 // w time since last action
@@ -52,4 +53,14 @@ describe("SElf test", function () {
 
   // 876399
   console.log("wait");
+});
+
+describe("FromRawToReplay Speed test", function () {
+  console.time("readSync");
+  const a = readSync(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
+  console.timeEnd("readSync");
+
+  console.time("fromRawToReplay");
+  fromRawToReplay(a.replay_data);
+  console.timeEnd("fromRawToReplay");
 });
