@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import modHidden from "../../assets/mod_hidden.cfc32448.png";
 import styled from "styled-components";
-import Playbar, { PlaybarEvent } from "./playbar";
-import { useInterval } from "../utils/useInterval";
+import Playbar, { PlaybarEvent } from "./Playbar";
+import { useInterval } from "./hooks/useInterval";
 import { formatReplayTime } from "../utils/time";
-import { ReplayViewerApp } from "../app/ReplayViewerApp";
-import { usePerformanceMonitor } from "../utils/usePerformanceMonitor";
-import { useMobXContext } from "../contexts/MobXContext";
+import { ReplayViewerApp } from "../pixi/ReplayViewerApp";
+import { usePerformanceMonitor } from "./hooks/usePerformanceMonitor";
+import { useMobXContext } from "./contexts/MobXContext";
 import { observer } from "mobx-react-lite";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ReplayAnalysisEvent, ReplayAnalysisEventType } from "@rewind/osu/core";

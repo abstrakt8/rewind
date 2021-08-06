@@ -1,5 +1,4 @@
 import "tailwindcss/tailwind.css";
-import "./playbar.module.css";
 import { useCallback, useRef } from "react";
 import useMouse from "@react-hook/mouse-position";
 

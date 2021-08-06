@@ -1,14 +1,10 @@
-import { makeAutoObservable } from "mobx";
 import { Skin } from "../skins/Skin";
 import { OsuExpressSkinManager } from "../skins/SkinManager";
 
-class LocalSkin {}
-
-export class SkinStore {
+export class SkinService {
   skins: Record<string, Skin>;
 
   constructor() {
-    makeAutoObservable(this);
     this.skins = {};
   }
 

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Scene } from "../game/Scenario";
-import { OsuGameplayContainer } from "../containers/OsuGameplayContainer";
+import { Scene } from "../game/Scene";
+import { PlayfieldContainer } from "./PlayfieldContainer";
 import { ForegroundHUDContainer } from "./ForegroundHUDContainer";
 
 export const OSU_PLAYFIELD_BASE_X = 512;
@@ -8,7 +8,7 @@ export const OSU_PLAYFIELD_BASE_Y = 384;
 
 export class OsuSceneContainer {
   public stage: PIXI.Container;
-  private playfield: OsuGameplayContainer;
+  private playfield: PlayfieldContainer;
   private foregroundHUD: ForegroundHUDContainer;
 
   private widthInPx = 0;
@@ -16,7 +16,7 @@ export class OsuSceneContainer {
 
   constructor(private readonly renderer: PIXI.Renderer) {
     this.stage = new PIXI.Container();
-    this.playfield = new OsuGameplayContainer(renderer);
+    this.playfield = new PlayfieldContainer(renderer);
     this.foregroundHUD = new ForegroundHUDContainer();
 
     this.stage.addChild(this.playfield.container, this.foregroundHUD.container);

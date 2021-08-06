@@ -1,5 +1,5 @@
 import { FeatureReplayViewer } from "@rewind/feature-replay-viewer";
-import { useMobXContext } from "libs/feature-replay-viewer/src/contexts/MobXContext";
+import { useMobXContext } from "libs/feature-replay-viewer/src/react/contexts/MobXContext";
 import { useEffect } from "react";
 
 type Replay = {

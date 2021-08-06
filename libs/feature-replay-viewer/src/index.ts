@@ -1,1 +1,1 @@
-export * from "./react/feature-replay-viewer";
+export * from "./react/FeatureReplayViewer";

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { SceneLoader } from "../game/Scenario";
-import { OsuSceneContainer } from "../pixi/OsuSceneContainer";
+import { SceneLoader } from "../game/Scene";
+import { OsuSceneContainer } from "./OsuSceneContainer";
 
 interface ReplayViewerOptions {
   antialias: boolean;

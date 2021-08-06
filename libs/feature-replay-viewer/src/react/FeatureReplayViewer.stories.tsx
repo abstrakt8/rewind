@@ -1,6 +1,6 @@
 import "tailwindcss/tailwind.css";
 import { Story, Meta } from "@storybook/react";
-import { FeatureReplayViewer, FeatureReplayViewerProps } from "./feature-replay-viewer";
+import { FeatureReplayViewer, FeatureReplayViewerProps } from "./FeatureReplayViewer";
 
 export default {
   component: FeatureReplayViewer,

@@ -4,10 +4,10 @@ import { MainHitObjectVerdict, OsuAction } from "@rewind/osu/core";
 import { OsuClassicCursor, OsuClassicJudgement, PlayfieldBorder } from "@rewind/osu-pixi/classic-components";
 import { SkinTextures } from "@rewind/osu/skin";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../utils/Replay";
-import { AnalysisCursor } from "../components/AnalysisCursor";
+import { AnalysisCursor } from "./components/AnalysisCursor";
 import { circleSizeToScale } from "@rewind/osu/math";
-import { Scene } from "../game/Scenario";
-import { HitObjectPreparer } from "../pixi/HitObjectPreparer";
+import { Scene } from "../game/Scene";
+import { HitObjectPreparer } from "./HitObjectPreparer";
 
 const DEBUG = false;
 
@@ -23,7 +23,7 @@ const DEBUG = false;
                 }
 
  */
-export class OsuGameplayContainer {
+export class PlayfieldContainer {
   container: Container;
   playfieldBorder: PlayfieldBorder;
   judgementLayer: Container;
@@ -159,7 +159,7 @@ export class OsuGameplayContainer {
   //     if (!(timeAgo >= 0 && timeAgo < 3000) || j.verdict === "GREAT") continue;
   //
   //     const lastInComboSet = false;
-  //     const textures = this.skin.getTextures(OsuGameplayContainer.texturesForJudgement(j.verdict, lastInComboSet));
+  //     const textures = this.skin.getTextures(PlayfieldContainer.texturesForJudgement(j.verdict, lastInComboSet));
   //     const animationFrameRate = this.skin.config.general.animationFrameRate;
   //     const judgement = new OsuClassicJudgement();
   //     const scale = circleSizeToScale(this.context.beatmap.difficulty.circleSize);

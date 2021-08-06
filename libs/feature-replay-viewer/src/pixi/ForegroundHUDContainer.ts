@@ -1,8 +1,8 @@
-import { Scene } from "../game/Scenario";
+import { Scene } from "../game/Scene";
 import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { hitWindowsForOD } from "@rewind/osu/math";
 import { Container, Text } from "pixi.js";
-import { AnalysisHitErrorBar } from "../containers/HitErrorBar";
+import { AnalysisHitErrorBar } from "./components/HitErrorBar";
 
 export class ForegroundHUDContainer {
   widthInPx = 0;
