@@ -18,6 +18,7 @@ import {
 import { SkinTextures } from "@rewind/osu/skin";
 import { sliderRepeatAngle } from "../utils/Sliders";
 import { RGB, Vec2 } from "@rewind/osu/math";
+import { TemporaryObjectPool } from "./pooling/TemporaryObjectPool";
 
 const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;
 const DEBUG_PIXEL_BALL_COLOR = 0x00ff00;
@@ -28,12 +29,18 @@ export class HitObjectPreparer {
   approachCircleContainer: Container;
   spinnerProxies: Container;
   hitObjectContainer: Container;
+  graphicsPool: TemporaryObjectPool<Graphics>;
 
   constructor(renderer: Renderer) {
     this.spinnerProxies = new Container();
     this.approachCircleContainer = new Container();
     this.hitObjectContainer = new Container();
     this.sliderTextureManager = new SliderTextureManager(new BasicSliderTextureRenderer(renderer));
+    this.graphicsPool = new TemporaryObjectPool<Graphics>(
+      () => new Graphics(),
+      (g) => g.clear(),
+      { initialSize: 10 },
+    );
   }
 
   // TODO: Pooling
@@ -90,11 +97,12 @@ export class HitObjectPreparer {
   private prepareSliderLastLegacyTick(gameTime: number, checkpoint: SliderCheckPoint) {
     const delta = checkpoint.hitTime - gameTime;
     if (!(delta >= 0 && delta < 200)) return;
-    const g = new Graphics();
-    g.beginFill(0xff0000);
-    g.drawCircle(checkpoint.position.x, checkpoint.position.y, 2);
-    g.endFill();
-    this.hitObjectContainer.addChild(g);
+    const [lastTick] = this.graphicsPool.allocate(checkpoint.id + "/raw");
+    lastTick.clear();
+    lastTick.beginFill(0xff0000);
+    lastTick.drawCircle(checkpoint.position.x, checkpoint.position.y, 2);
+    lastTick.endFill();
+    this.hitObjectContainer.addChild(lastTick);
   }
 
   private prepareSliderTicks(gameTime: number, ticks: SliderCheckPoint[]) {}
@@ -154,13 +162,15 @@ export class HitObjectPreparer {
 
     if (sliderAnalysis) {
       {
-        const rawFollowCircle = new Graphics();
+        const [rawFollowCircle] = this.graphicsPool.allocate(slider.id + "/rawFollowCircle");
+        rawFollowCircle.clear();
         rawFollowCircle.lineStyle(1, DEBUG_FOLLOW_CIRCLE_COLOR);
         rawFollowCircle.drawCircle(position.x, position.y, slider.radius * 2.4);
         this.hitObjectContainer.addChild(rawFollowCircle);
       }
       {
-        const pixelBall = new Graphics();
+        const [pixelBall] = this.graphicsPool.allocate(slider.id + "/pixelBall");
+        pixelBall.clear();
         pixelBall.beginFill(DEBUG_PIXEL_BALL_COLOR);
         pixelBall.drawCircle(position.x, position.y, 1);
         pixelBall.endFill();
@@ -214,6 +224,8 @@ export class HitObjectPreparer {
       if (hitObject instanceof Slider) this.prepareSlider(scene, hitObject);
       // if (hitObject instanceof Spinner) this.prepareSpinner();
     }
+
+    this.graphicsPool.releaseUntouched();
   }
 }
 
