@@ -33,6 +33,7 @@ export class PerformanceGameClock implements GameClock {
   togglePlaying() {
     if (this.isPlaying) this.pause();
     else this.start();
+    console.log("Toggle playing?");
     return this.isPlaying;
   }
 

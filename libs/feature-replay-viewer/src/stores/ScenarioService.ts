@@ -90,14 +90,14 @@ export class ScenarioService {
       currentScenario: computed,
       changeScenario: action,
       scenarioId: observable,
-      loadScenario: observable,
+      loadScenario: action,
     });
     this.scenarios = {};
   }
 
   get currentScenario(): Scenario {
     const s = this.scenarios[this.scenarioId] ?? defaultScenario;
-    console.log("Would return", s);
+    console.log(`Would return ${this.scenarioId}: `, s);
     return this.scenarios[this.scenarioId] ?? defaultScenario;
   }
 

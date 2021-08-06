@@ -13,6 +13,7 @@ import { ReplayAnalysisEvent, ReplayAnalysisEventType } from "@rewind/osu/core";
 import { Switch } from "@headlessui/react";
 import { Scenario } from "../stores/ScenarioService";
 import { useScenarioService } from "./hooks/game";
+import { observe } from "mobx";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -168,11 +169,11 @@ export const useShortcuts = () => {
   const { gameClock } = useGameClock();
   // TODO: Connect with store -> hotkeys settings
   // https://github.com/jaywcjlove/hotkeys/#defining-shortcuts
-  useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.currentSpeed)));
-  useHotkeys("s", () => gameClock.setSpeed(prevSpeed(gameClock.currentSpeed)));
-  useHotkeys("space", () => gameClock.togglePlaying());
-  useHotkeys("d", () => gameClock.seekTo(Math.min(maxTime, gameClock.getCurrentTime() + frameJump)));
-  useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)));
+  useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.currentSpeed)), [gameClock]);
+  useHotkeys("s", () => gameClock.setSpeed(prevSpeed(gameClock.currentSpeed)), [gameClock]);
+  useHotkeys("space", () => gameClock.togglePlaying(), [gameClock]);
+  useHotkeys("d", () => gameClock.seekTo(Math.min(maxTime, gameClock.getCurrentTime() + frameJump)), [gameClock]);
+  useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)), [gameClock]);
   // useHotkeys("f", () => renderSettings.toggleModHidden());
 };
 
@@ -213,14 +214,19 @@ const GameCanvas = () => {
       gameApp = new ReplayViewerApp(canvas.current, () => scenario.getCurrentScene(), {
         maxFPS: 240,
         antialias: true,
+        performanceMonitor,
       });
     }
-    // if (containerRef.current) {
-    //   containerRef.current?.appendChild(performanceMonitor.dom);
-    // }
+    if (containerRef.current) {
+      containerRef.current?.appendChild(performanceMonitor.dom);
+    }
     return () => gameApp?.destroy();
   }, [canvas, scenario]);
-  return <canvas className={"w-full h-full bg-black"} ref={canvas} />;
+  return (
+    <div ref={containerRef} className={"overflow-auto flex-1 rounded relative"}>
+      <canvas className={"w-full h-full bg-black"} ref={canvas} />
+    </div>
+  );
 };
 
 export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) => {
@@ -245,16 +251,17 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
       <div className={"flex flex-col gap-4 flex-1 h-full"}>
-        <div className={"flex-1 overflow-auto rounded relative"}>
-          <GameCanvas />
-        </div>
+        {/*<div className={"flex-1 rounded relative"}>*/}
+        {/*TODO: Very hacky*/}
+        <GameCanvas />
+        {/*</div>*/}
         <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
           <button
             className={"transition-colors hover:text-gray-400"}
             tabIndex={-1}
             onClick={() => gameClock.togglePlaying()}
           >
-            {scenarioUI.isPlaying ? <PauseIcon /> : <PlayIcon />}
+            {gameClock.isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <CurrentTime />
           <div className={"flex-1"}>

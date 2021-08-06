@@ -1,9 +1,6 @@
 import { useCallback } from "react";
 import styles from "./app.module.css";
 
-import { ReactComponent as Logo } from "./logo.svg";
-import star from "./star.svg";
-
 export function App() {
   const a = useCallback(() => {
     window.api.send("toMain", "a");

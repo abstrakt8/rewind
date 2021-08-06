@@ -78,8 +78,8 @@ const chosenReplayId = sunMoonReplayId;
 // const chosenReplayId = undefined;
 
 // const chosenSkinId = aristaSkinId;
-// const chosenSkinId = kasugaMirai;
-const chosenSkinId = rafisSkinId;
+const chosenSkinId = kasugaMirai;
+// const chosenSkinId = rafisSkinId;
 
 const ALL_SKINS: Record<string, LSkin> = {
   [aristaSkinId]: {

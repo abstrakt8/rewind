@@ -1,10 +1,12 @@
 import * as PIXI from "pixi.js";
 import { SceneLoader } from "../game/Scene";
+import { PerformanceMonitor } from "../utils/PerformanceMonitor";
 import { OsuSceneContainer } from "./OsuSceneContainer";
 
 interface ReplayViewerOptions {
   antialias: boolean;
   maxFPS: number;
+  performanceMonitor?: PerformanceMonitor;
 }
 
 const UNLIMITED_FPS = 0;
@@ -25,9 +27,9 @@ export class ReplayViewerApp {
   constructor(
     private readonly view: HTMLCanvasElement,
     private readonly sceneLoader: SceneLoader,
-    options?: Partial<{ antialias: boolean; maxFPS: number }>,
+    options?: Partial<ReplayViewerOptions>,
   ) {
-    const { antialias, maxFPS } = { ...defaultOptions, ...options };
+    const { antialias, maxFPS, performanceMonitor } = { ...defaultOptions, ...options };
     this.app = new PIXI.Application({ view, antialias });
 
     // I think it would be better to just replace stage with this.scene at this point
@@ -42,11 +44,11 @@ export class ReplayViewerApp {
     this.app.ticker.maxFPS = maxFPS;
 
     const tickHandler = () => {
-      // this.performanceMonitor?.begin();
+      performanceMonitor?.begin();
       this.resizeCanvasToDisplaySize();
       this.scene.prepare(sceneLoader());
       this.app.renderer.render(this.app.stage);
-      // this.performanceMonitor?.end();
+      performanceMonitor?.end();
     };
     this.app.ticker.add(tickHandler);
     this.app.ticker.start();
