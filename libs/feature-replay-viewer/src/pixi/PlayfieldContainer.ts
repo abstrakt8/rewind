@@ -143,48 +143,47 @@ export class PlayfieldContainer {
     }
   }
 
-  // private static texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {
-  //   switch (t) {
-  //     case "GREAT":
-  //       return lastInComboSet ? SkinTextures.HIT_300K : SkinTextures.HIT_300;
-  //     case "OK":
-  //       return lastInComboSet ? SkinTextures.HIT_100K : SkinTextures.HIT_100;
-  //     case "MEH":
-  //       return SkinTextures.HIT_50;
-  //     case "MISS":
-  //       return SkinTextures.HIT_0;
-  //   }
-  // }
-  //
-  // prepareJudgements(time: number) {
-  //   this.judgementLayer.removeChildren();
-  //   if (!this.context.judgements) return;
-  //   // TODO: Order might not be correct
-  //   for (const j of this.context.judgements) {
-  //     const timeAgo = time - j.time;
-  //     if (!(timeAgo >= 0 && timeAgo < 3000) || j.verdict === "GREAT") continue;
-  //
-  //     const lastInComboSet = false;
-  //     const textures = this.skin.getTextures(PlayfieldContainer.texturesForJudgement(j.verdict, lastInComboSet));
-  //     const animationFrameRate = this.skin.config.general.animationFrameRate;
-  //     const judgement = new OsuClassicJudgement();
-  //     const scale = circleSizeToScale(this.context.beatmap.difficulty.circleSize);
-  //
-  //     // TODO: Should be configurable, technically speaking sliderHeadJudgementSkip=false does not reflect osu!stable (it resembles lazer)
-  //     // However, in this replay analysis tool this is more useful (?)
-  //     const sliderHeadJudgementSkip = true;
-  //     if (sliderHeadJudgementSkip && j.isSliderHead) continue;
-  //     judgement.prepare({ time: timeAgo, position: j.position, scale, animationFrameRate, textures });
-  //     // judgement.sprite.zIndex = -timeAgo;
-  //     this.judgementLayer.addChild(judgement.sprite);
-  //   }
-  //   // this.judgementLayer.sortChildren();
-  // }
+  private static texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {
+    switch (t) {
+      case "GREAT":
+        return lastInComboSet ? SkinTextures.HIT_300K : SkinTextures.HIT_300;
+      case "OK":
+        return lastInComboSet ? SkinTextures.HIT_100K : SkinTextures.HIT_100;
+      case "MEH":
+        return SkinTextures.HIT_50;
+      case "MISS":
+        return SkinTextures.HIT_0;
+    }
+  }
+
+  prepareJudgements(scene: Scene) {
+    this.judgementLayer.removeChildren();
+    const { judgements, time, skin, beatmap } = scene;
+    // TODO: Order might not be correct
+    for (const j of judgements) {
+      const timeAgo = time - j.time;
+      if (!(timeAgo >= 0 && timeAgo < 3000) || j.verdict === "GREAT") continue;
+
+      const lastInComboSet = false;
+      const textures = skin.getTextures(PlayfieldContainer.texturesForJudgement(j.verdict, lastInComboSet));
+      const animationFrameRate = skin.config.general.animationFrameRate;
+      const judgement = new OsuClassicJudgement();
+      const scale = circleSizeToScale(beatmap.difficulty.circleSize);
+
+      // TODO: Should be configurable, technically speaking sliderHeadJudgementSkip=false does not reflect osu!stable (it resembles lazer)
+      // However, in this replay analysis tool this is more useful (?)
+      const sliderHeadJudgementSkip = true;
+      if (sliderHeadJudgementSkip && j.isSliderHead) continue;
+      judgement.prepare({ time: timeAgo, position: j.position, scale, animationFrameRate, textures });
+      // judgement.sprite.zIndex = -timeAgo;
+      this.judgementLayer.addChild(judgement.sprite);
+    }
+    // this.judgementLayer.sortChildren();
+  }
 
   prepare(scene: Scene) {
     this.hitObjectPreparer.prepare(scene);
     this.prepareCursors(scene);
-    //
-    // this.prepareJudgements(time);
+    this.prepareJudgements(scene);
   }
 }
