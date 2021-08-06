@@ -20,7 +20,8 @@ import { BlueprintService } from "./BlueprintService";
 import { PerformanceGameClock } from "../clocks/PerformanceGameClock";
 import { PreferencesService } from "./PreferencesService";
 import { SkinService } from "./SkinService";
-import { action, computed, makeObservable, observable } from "mobx";
+import { action, autorun, computed, makeObservable, observable, toJS } from "mobx";
+import { ScenarioUI } from "./ScenarioUI";
 
 // A scene defines what should be drawn on the screen.
 // The scene manager is almost equivalent to the store in Redux and PixiJS is just the underlying rendering platform.
@@ -45,6 +46,15 @@ export class Scenario {
     } else {
       this.replayEvents = [];
     }
+
+    makeObservable(this, {
+      view: observable,
+      toggleHidden: action,
+    });
+  }
+
+  toggleHidden() {
+    this.view.modHidden = !this.view.modHidden;
   }
 
   getCurrentScene(): Scene {
@@ -139,7 +149,6 @@ export class ScenarioService {
 
     const scenario = new Scenario(gameClock, beatmap, skin, view, replay);
 
-    // autorun(() => {});
     return scenario;
   }
 }

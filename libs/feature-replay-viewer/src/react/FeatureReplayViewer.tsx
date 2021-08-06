@@ -167,6 +167,7 @@ const frameJump = 16;
 
 export const useShortcuts = () => {
   const { gameClock } = useGameClock();
+  const scenario = useCurrentScenario();
   // TODO: Connect with store -> hotkeys settings
   // https://github.com/jaywcjlove/hotkeys/#defining-shortcuts
   useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.currentSpeed)), [gameClock]);
@@ -174,7 +175,7 @@ export const useShortcuts = () => {
   useHotkeys("space", () => gameClock.togglePlaying(), [gameClock]);
   useHotkeys("d", () => gameClock.seekTo(Math.min(maxTime, gameClock.getCurrentTime() + frameJump)), [gameClock]);
   useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)), [gameClock]);
-  // useHotkeys("f", () => renderSettings.toggleModHidden());
+  useHotkeys("f", () => scenario.toggleHidden(), [scenario]);
 };
 
 function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown; color?: string }) {
@@ -212,7 +213,6 @@ const GameCanvas = () => {
     let gameApp: any;
     if (canvas.current) {
       gameApp = new ReplayViewerApp(canvas.current, () => scenario.getCurrentScene(), {
-        maxFPS: 240,
         antialias: true,
         performanceMonitor,
       });
@@ -240,8 +240,8 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
     showSliderBreaks: true,
   });
 
-  const { scenarioUI } = useMobXContext();
-  const { gameClock } = useGameClock();
+  const scenario = useCurrentScenario();
+  const { view, gameClock } = scenario;
 
   useShortcuts();
 
@@ -268,13 +268,13 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
             <EfficientPlaybar settings={pbSetting} />
           </div>
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
-          {/*<button className={"w-10 -mb-1"} onClick={() => renderSettings.toggleModHidden()}>*/}
-          {/*  <img*/}
-          {/*    src={modHidden}*/}
-          {/*    alt={"ModHidden"}*/}
-          {/*    className={`filter ${renderSettings.viewSettings.modHidden ? "grayscale-0" : "grayscale"} `}*/}
-          {/*  />*/}
-          {/*</button>*/}
+          <button className={"w-10 -mb-1"} onClick={() => scenario.toggleHidden()}>
+            <img
+              src={modHidden}
+              alt={"ModHidden"}
+              className={`filter ${view.modHidden ? "grayscale-0" : "grayscale"} `}
+            />
+          </button>
           <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{gameClock.currentSpeed}x</button>
         </div>
       </div>
