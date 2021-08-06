@@ -11,6 +11,8 @@ import { observer } from "mobx-react-lite";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ReplayAnalysisEvent, ReplayAnalysisEventType } from "@rewind/osu/core";
 import { Switch } from "@headlessui/react";
+import { Scenario } from "../stores/ScenarioService";
+import { useScenarioService } from "./hooks/game";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -72,7 +74,7 @@ const SidebarBox = (props: { children: React.ReactNode }) => {
 };
 
 const useGameClock = () => {
-  const { gameClock } = useMobXContext();
+  const { gameClock } = useCurrentScenario();
   const [currentTime, setCurrentTime] = useState(0);
 
   // When I originally implemented this with an update of every 16ms I get FPS drops on the canvas. It does look smoother
@@ -129,7 +131,7 @@ function mapToPlaybarEvents(replayEvents: ReplayAnalysisEvent[], settings: Playb
 const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
   const { settings } = props;
   const { gameClock, currentTime } = useGameClock();
-  const { scenario } = useMobXContext();
+  const scenario = useCurrentScenario();
   const loadedPercentage = currentTime / maxTime;
   const handleSeekTo = useCallback(
     (percentage) => {
@@ -154,7 +156,7 @@ export const CurrentTime = () => {
   );
 };
 
-const speedsAllowed = [0.01, 0.5, 1.0, 1.5, 2.0];
+const speedsAllowed = [0.01, 0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
 // TODO: FLOATING POINT EQUALITY ALERT
 const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
 const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length - 1, speedIndex(speed) + 1)];
@@ -163,15 +165,15 @@ const prevSpeed = (speed: number) => speedsAllowed[Math.max(0, speedIndex(speed)
 const frameJump = 16;
 
 export const useShortcuts = () => {
-  const { gameClock, renderSettings } = useMobXContext();
+  const { gameClock } = useGameClock();
   // TODO: Connect with store -> hotkeys settings
   // https://github.com/jaywcjlove/hotkeys/#defining-shortcuts
-  useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.playbackRate)));
-  useHotkeys("s", () => gameClock.setSpeed(prevSpeed(gameClock.playbackRate)));
+  useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.currentSpeed)));
+  useHotkeys("s", () => gameClock.setSpeed(prevSpeed(gameClock.currentSpeed)));
   useHotkeys("space", () => gameClock.togglePlaying());
   useHotkeys("d", () => gameClock.seekTo(Math.min(maxTime, gameClock.getCurrentTime() + frameJump)));
   useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)));
-  useHotkeys("f", () => renderSettings.toggleModHidden());
+  // useHotkeys("f", () => renderSettings.toggleModHidden());
 };
 
 function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown; color?: string }) {
@@ -195,28 +197,20 @@ function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown
   );
 }
 
-export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) => {
-  const maxTimeHMS = formatReplayTime(maxTime);
-  // Canvas / Game
+const useCurrentScenario = () => {
+  const scenarioService = useScenarioService();
+  return scenarioService.currentScenario;
+};
+
+const GameCanvas = () => {
   const canvas = useRef<HTMLCanvasElement | null>(null);
-  const gameApp = useRef<ReplayViewerApp | null>(null);
-  const performanceMonitor = usePerformanceMonitor({});
   const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const { scenario, renderSettings, gameClock } = useMobXContext();
-  const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
-    show50s: false,
-    show100s: false,
-    showMisses: true,
-    showSliderBreaks: true,
-  });
-  const sceneLoader = () => ({});
-
-  useShortcuts();
-  //
+  const performanceMonitor = usePerformanceMonitor({});
+  const scenario = useCurrentScenario();
   useEffect(() => {
+    let gameApp: any;
     if (canvas.current) {
-      gameApp.current = new ReplayViewerApp(canvas.current, sceneLoader, {
+      gameApp = new ReplayViewerApp(canvas.current, () => scenario.getCurrentScene(), {
         maxFPS: 240,
         antialias: true,
       });
@@ -224,8 +218,26 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
     // if (containerRef.current) {
     //   containerRef.current?.appendChild(performanceMonitor.dom);
     // }
-    return () => gameApp.current?.app.destroy();
-  }, [canvas, scenario, renderSettings, containerRef, gameApp, gameClock, performanceMonitor]);
+    return () => gameApp?.destroy();
+  }, [canvas, scenario]);
+  return <canvas className={"w-full h-full bg-black"} ref={canvas} />;
+};
+
+export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) => {
+  const maxTimeHMS = formatReplayTime(maxTime);
+  // Canvas / Game
+  //
+  const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
+    show50s: false,
+    show100s: false,
+    showMisses: true,
+    showSliderBreaks: true,
+  });
+
+  const { scenarioUI } = useMobXContext();
+  const { gameClock } = useGameClock();
+
+  useShortcuts();
 
   const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
     setPbSetting((prevState) => ({ ...prevState, [who]: value }));
@@ -233,8 +245,8 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
       <div className={"flex flex-col gap-4 flex-1 h-full"}>
-        <div className={"flex-1 overflow-auto rounded relative"} ref={containerRef}>
-          <canvas className={"w-full h-full bg-black"} ref={canvas} />
+        <div className={"flex-1 overflow-auto rounded relative"}>
+          <GameCanvas />
         </div>
         <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
           <button
@@ -242,21 +254,21 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
             tabIndex={-1}
             onClick={() => gameClock.togglePlaying()}
           >
-            {gameClock.isPlaying ? <PauseIcon /> : <PlayIcon />}
+            {scenarioUI.isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <CurrentTime />
           <div className={"flex-1"}>
             <EfficientPlaybar settings={pbSetting} />
           </div>
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
-          <button className={"w-10 -mb-1"} onClick={() => renderSettings.toggleModHidden()}>
-            <img
-              src={modHidden}
-              alt={"ModHidden"}
-              className={`filter ${renderSettings.viewSettings.modHidden ? "grayscale-0" : "grayscale"} `}
-            />
-          </button>
-          <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{gameClock.playbackRate}x</button>
+          {/*<button className={"w-10 -mb-1"} onClick={() => renderSettings.toggleModHidden()}>*/}
+          {/*  <img*/}
+          {/*    src={modHidden}*/}
+          {/*    alt={"ModHidden"}*/}
+          {/*    className={`filter ${renderSettings.viewSettings.modHidden ? "grayscale-0" : "grayscale"} `}*/}
+          {/*  />*/}
+          {/*</button>*/}
+          <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{gameClock.currentSpeed}x</button>
         </div>
       </div>
       <div className={"flex flex-col gap-4 flex-none w-52 h-full overflow-y-auto"}>
@@ -293,11 +305,11 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
         <SidebarBox>
           <SettingsTitle title={"replay analysis"} />
           <ReplaySettingsBox>
-            <div>Analysis cursor</div>
-            <MyToggle
-              enabled={renderSettings.viewSettings.analysisCursor.enabled}
-              setEnabled={() => renderSettings.toggleAnalysisCursor()}
-            />
+            {/*<div>Analysis cursor</div>*/}
+            {/*<MyToggle*/}
+            {/*  enabled={renderSettings.viewSettings.analysisCursor.enabled}*/}
+            {/*  setEnabled={() => renderSettings.toggleAnalysisCursor()}*/}
+            {/*/>*/}
             {/*<input type={"checkbox"} />*/}
             {/*<div>*/}
             {/*  Draw misses <input type={"checkbox"} />*/}
@@ -327,7 +339,7 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
             <span className={"font-mono bg-gray-800 px-2"}>f</span>
           </ShortcutHelper>
         </SidebarBox>
-        <SidebarBox>{scenario.state}</SidebarBox>
+        {/*<SidebarBox>{scenario.state}</SidebarBox>*/}
       </div>
     </div>
   );

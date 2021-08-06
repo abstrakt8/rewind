@@ -2,6 +2,7 @@ import { OsuBlueprintParser } from "@rewind/osu/core";
 import { Blueprint } from "@rewind/osu/core";
 import axios from "axios";
 
+// TODO: Rename to API methods
 export interface BlueprintManager {
   loadBlueprint(blueprintId: string): Promise<Blueprint>;
 }

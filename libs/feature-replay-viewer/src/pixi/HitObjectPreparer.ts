@@ -166,6 +166,7 @@ export class HitObjectPreparer {
     if (time < slider.spawnTime || time > slider.endTime + 300) {
       // VERY IMPORTANT, otherwise there will too many textures in the cache.
       this.sliderTextureManager.removeFromCache(slider.id);
+      return;
     }
     // Order: Body, Tail, Tick, Repeat, Ball, Head (?)
     this.prepareSliderBody(scene, slider);
@@ -203,7 +204,7 @@ export class HitObjectPreparer {
       const hitObject = hitObjects[i];
       if (hitObject instanceof HitCircle) this.prepareHitCircle(scene, hitObject);
       if (hitObject instanceof Slider) this.prepareSlider(scene, hitObject);
-      if (hitObject instanceof Spinner) this.prepareSpinner();
+      // if (hitObject instanceof Spinner) this.prepareSpinner();
     }
   }
 }

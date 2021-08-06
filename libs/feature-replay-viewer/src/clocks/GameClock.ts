@@ -3,9 +3,10 @@ export interface GameClock {
   getCurrentTime: () => number;
   start: () => void;
   pause: () => void;
-  togglePlaying: () => void;
+  togglePlaying: () => boolean;
   seekTo: (time: number) => void;
 
   currentSpeed: number;
+  isPlaying: boolean;
   setSpeed(speed: number): void;
 }

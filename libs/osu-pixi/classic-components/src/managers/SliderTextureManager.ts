@@ -22,6 +22,7 @@ export class SliderTextureManager {
 
   constructor(renderer: BasicSliderTextureRenderer) {
     this.renderer = renderer;
+    this.textures = new Map<string, Texture>();
   }
 
   getTexture(settings: SliderTextureJob): Texture {

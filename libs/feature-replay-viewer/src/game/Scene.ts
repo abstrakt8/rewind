@@ -1,6 +1,6 @@
 import { Skin } from "../skins/Skin";
 import { Beatmap, GameplayInfo, ReplayState } from "@rewind/osu/core";
-import { OsuReplay } from "../managers/ReplayManager";
+import { OsuReplay } from "../api/ReplayManager";
 import { ViewSettings } from "./ViewSettings";
 
 export interface Scene {

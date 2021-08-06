@@ -4,7 +4,7 @@ import { OsuExpressSkinManager } from "../skins/SkinManager";
 export class SkinService {
   skins: Record<string, Skin>;
 
-  constructor() {
+  constructor(private readonly url: string) {
     this.skins = {};
   }
 
@@ -17,6 +17,6 @@ export class SkinService {
   }
 
   async loadSkin(skinId: string): Promise<Skin> {
-    return (this.skins[skinId] = await new OsuExpressSkinManager("http://localhost:7271").loadSkin(skinId));
+    return (this.skins[skinId] = await new OsuExpressSkinManager(this.url).loadSkin(skinId));
   }
 }

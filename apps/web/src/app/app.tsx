@@ -92,15 +92,13 @@ const ALL_SKINS: Record<string, LSkin> = {
 };
 
 export function App() {
-  const { scenario, renderSettings } = useMobXContext();
+  const { scenarioService, preferencesService } = useMobXContext();
   useEffect(() => {
-    Promise.all([
-      renderSettings.changeSkin(chosenSkinId),
-      scenario.loadScenario(chosenBlueprintId, chosenReplayId),
-    ]).then(() => {
+    preferencesService.changePreferredSkin(chosenSkinId);
+    Promise.all([scenarioService.changeScenario(chosenBlueprintId, chosenReplayId)]).then(() => {
       console.log(`Finished loading ${chosenBlueprintId} with skin ${chosenSkinId}`);
     });
-  }, [scenario, chosenBlueprintId, chosenSkinId]);
+  }, [scenarioService, chosenBlueprintId, chosenReplayId, chosenSkinId]);
   return <FeatureReplayViewer />;
 }
 

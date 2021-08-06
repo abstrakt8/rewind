@@ -9,21 +9,24 @@ import {
   OsuClassicMods,
   ReplayAnalysisEvent,
   ReplayStateTimeMachine,
+  retrieveEvents,
 } from "@rewind/osu/core";
-import { OsuReplay } from "../managers/ReplayManager";
+import { OsuReplay } from "../api/ReplayManager";
 import { hitWindowsForOD } from "@rewind/osu/math";
 import { Skin } from "../skins/Skin";
-import { ViewSettings } from "../game/ViewSettings";
+import { defaultViewSettings, ViewSettings } from "../game/ViewSettings";
 import { ReplayService } from "./ReplayService";
 import { BlueprintService } from "./BlueprintService";
 import { PerformanceGameClock } from "../clocks/PerformanceGameClock";
-import { PreferencesStore } from "./PreferencesStore";
+import { PreferencesService } from "./PreferencesService";
 import { SkinService } from "./SkinService";
+import { action, computed, makeObservable, observable } from "mobx";
 
 // A scene defines what should be drawn on the screen.
 // The scene manager is almost equivalent to the store in Redux and PixiJS is just the underlying rendering platform.
 export class Scenario {
   public gameplayTimeMachine?: ReplayStateTimeMachine;
+  public replayEvents: ReplayAnalysisEvent[];
 
   constructor(
     public readonly gameClock: GameClock,
@@ -37,10 +40,12 @@ export class Scenario {
         hitWindows: hitWindowsForOD(beatmap.difficulty.overallDifficulty),
         noteLockStyle: NoteLockStyle.STABLE,
       });
+      const finalState = this.gameplayTimeMachine.replayStateAt(1e9);
+      this.replayEvents = retrieveEvents(finalState, beatmap.hitObjects);
+    } else {
+      this.replayEvents = [];
     }
   }
-
-  // TODO:
 
   getCurrentScene(): Scene {
     const { skin, beatmap, replay, view } = this;
@@ -62,24 +67,57 @@ export class Scenario {
   }
 }
 
+const defaultScenario: Scenario = new Scenario(
+  new PerformanceGameClock(),
+  Beatmap.EMPTY_BEATMAP,
+  Skin.EMPTY,
+  defaultViewSettings(),
+);
+
 export class ScenarioService {
+  scenarioId = 0;
+
+  // DO NOT MAKE IT OBSERVABLE
+  scenarios: Record<number, Scenario>;
+
   constructor(
     private readonly blueprintService: BlueprintService,
     private readonly replayService: ReplayService,
     private readonly skinService: SkinService,
-    private readonly preferencesStore: PreferencesStore,
-  ) {}
+    private readonly preferencesService: PreferencesService,
+  ) {
+    makeObservable(this, {
+      currentScenario: computed,
+      changeScenario: action,
+      scenarioId: observable,
+      loadScenario: observable,
+    });
+    this.scenarios = {};
+  }
+
+  get currentScenario(): Scenario {
+    const s = this.scenarios[this.scenarioId] ?? defaultScenario;
+    console.log("Would return", s);
+    return this.scenarios[this.scenarioId] ?? defaultScenario;
+  }
+
+  async changeScenario(blueprintId: string, replayId?: string) {
+    this.scenarios[this.scenarioId + 1] = await this.loadScenario(blueprintId, replayId);
+    this.scenarioId += 1;
+  }
 
   async loadScenario(blueprintId: string, replayId?: string) {
     // An error will be thrown, if one of them fails to be loaded
     const [blueprint, replay, skin] = await Promise.all([
       this.blueprintService.loadBlueprint(blueprintId),
       replayId ? this.replayService.loadReplay(replayId) : undefined,
-      this.skinService.loadSkin(this.preferencesStore.skinId),
+      this.skinService.loadSkin(this.preferencesService.skinId),
     ]);
 
+    console.log(`Loaded skin ${skin.config.general.name}`);
+
     const gameClock = new PerformanceGameClock();
-    const view = this.preferencesStore.preferredViewSettings();
+    const view = this.preferencesService.preferredViewSettings();
 
     const mods: OsuClassicMods[] = [];
     // TODO: Depending on replayMods
@@ -99,6 +137,9 @@ export class ScenarioService {
     // }
     // console.log("Loaded blue print", blueprintId, replayId);
 
-    return new Scenario(gameClock, beatmap, skin, view, replay);
+    const scenario = new Scenario(gameClock, beatmap, skin, view, replay);
+
+    // autorun(() => {});
+    return scenario;
   }
 }

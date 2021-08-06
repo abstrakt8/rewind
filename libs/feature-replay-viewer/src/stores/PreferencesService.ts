@@ -1,7 +1,7 @@
 import { defaultViewSettings } from "../game/ViewSettings";
 import { makeAutoObservable } from "mobx";
 
-export class PreferencesStore {
+export class PreferencesService {
   constructor() {
     makeAutoObservable(this);
   }
@@ -10,7 +10,11 @@ export class PreferencesStore {
     return defaultViewSettings();
   }
 
-  skinId = "boopz";
+  skinId = "- Aristia(Edit)+trail";
+
+  changePreferredSkin(skinId: string) {
+    this.skinId = skinId;
+  }
 
   // GameSettings
   maxFPS = 0; // unlimited

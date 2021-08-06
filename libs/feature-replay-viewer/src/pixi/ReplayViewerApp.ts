@@ -52,6 +52,12 @@ export class ReplayViewerApp {
     this.app.ticker.start();
   }
 
+  public destroy() {
+    console.log("Gonna destroy the app");
+    this.app.ticker.stop();
+    this.app.destroy();
+  }
+
   private resizeCanvasToDisplaySize(): boolean {
     const canvas = this.view;
     // look up the size the canvas is being displayed
