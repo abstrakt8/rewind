@@ -1,1 +1,2 @@
-export * from "./react/feature-replay-viewer";
+export * from "./react/FeatureReplayViewer";
+export * from "./react/contexts/MobXContext";

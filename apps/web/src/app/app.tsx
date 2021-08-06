@@ -1,5 +1,5 @@
 import { FeatureReplayViewer } from "@rewind/feature-replay-viewer";
-import { useMobXContext } from "libs/feature-replay-viewer/src/contexts/MobXContext";
+import { useMobXContext } from "libs/feature-replay-viewer/src/react/contexts/MobXContext";
 import { useEffect } from "react";
 
 type Replay = {
@@ -78,8 +78,8 @@ const chosenReplayId = sunMoonReplayId;
 // const chosenReplayId = undefined;
 
 // const chosenSkinId = aristaSkinId;
-// const chosenSkinId = kasugaMirai;
-const chosenSkinId = rafisSkinId;
+const chosenSkinId = kasugaMirai;
+// const chosenSkinId = rafisSkinId;
 
 const ALL_SKINS: Record<string, LSkin> = {
   [aristaSkinId]: {
@@ -92,15 +92,13 @@ const ALL_SKINS: Record<string, LSkin> = {
 };
 
 export function App() {
-  const { scenario, renderSettings } = useMobXContext();
+  const { scenarioService, preferencesService } = useMobXContext();
   useEffect(() => {
-    Promise.all([
-      renderSettings.changeSkin(chosenSkinId),
-      scenario.loadScenario(chosenBlueprintId, chosenReplayId),
-    ]).then(() => {
+    preferencesService.changePreferredSkin(chosenSkinId);
+    Promise.all([scenarioService.changeScenario(chosenBlueprintId, chosenReplayId)]).then(() => {
       console.log(`Finished loading ${chosenBlueprintId} with skin ${chosenSkinId}`);
     });
-  }, [scenario, chosenBlueprintId, chosenSkinId]);
+  }, [scenarioService, chosenBlueprintId, chosenReplayId, chosenSkinId]);
   return <FeatureReplayViewer />;
 }
 

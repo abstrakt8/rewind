@@ -1,5 +1,5 @@
 import { Story, Meta } from "@storybook/react";
-import { Playbar, PlaybarProps } from "./playbar";
+import { Playbar, PlaybarProps } from "./Playbar";
 
 export default {
   component: Playbar,

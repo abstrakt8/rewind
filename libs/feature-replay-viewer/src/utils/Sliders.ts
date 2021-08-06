@@ -1,5 +1,7 @@
 import { Position, Vec2 } from "@rewind/osu/math";
 
+// TODO: Maybe move this to osu/Math
+
 // Maybe this is slow because of atan2() calculation
 export function sliderRepeatAngle(curve: Position[], isRepeatAtEnd: boolean): number {
   if (curve.length < 2) {

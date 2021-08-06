@@ -6,6 +6,7 @@ export * from "./hitobjects/OsuClassicApproachCircle";
 export * from "./hitobjects/OsuClassicSliderBody";
 export * from "./hitobjects/OsuClassicSliderRepeat";
 export * from "./hitobjects/OsuClassicSliderBall";
+export * from "./hitobjects/OsuClassicJudgements"; // TODO: Move
 // export * from "./hitobjects/OsuClassicSliderTick";
 export * from "./hitobjects/OsuClassicCursor";
 export * from "./hitobjects/OsuClassicNumber";

@@ -1,24 +1,31 @@
-import { BlueprintStore } from "./BlueprintStore";
-import { RenderSettings } from "./RenderSettings";
-import { ReplayStore } from "./ReplayStore";
-import { Scenario } from "./Scenario";
-import { SkinStore } from "./SkinStore";
-import { PerformanceGameClock } from "../clocks/PerformanceGameClock";
+import { BlueprintService } from "./BlueprintService";
+import { PreferencesService } from "./PreferencesService";
+import { ReplayService } from "./ReplayService";
+import { ScenarioService } from "./ScenarioService";
+import { ScenarioUI } from "./ScenarioUI";
+import { SkinService } from "./SkinService";
 
 export class RootStore {
-  public readonly renderSettings: RenderSettings;
-  public readonly skinStore: SkinStore;
-  public readonly blueprintStore: BlueprintStore;
-  public readonly replayStore: ReplayStore;
-  public readonly scenario: Scenario;
-  public readonly gameClock: PerformanceGameClock;
+  public replayService: ReplayService;
+  public skinService: SkinService;
+  public blueprintService: BlueprintService;
+  public preferencesService: PreferencesService;
 
-  constructor() {
-    this.skinStore = new SkinStore();
-    this.renderSettings = new RenderSettings(this.skinStore);
-    this.blueprintStore = new BlueprintStore();
-    this.replayStore = new ReplayStore();
-    this.gameClock = new PerformanceGameClock();
-    this.scenario = new Scenario(this.blueprintStore, this.replayStore, this.renderSettings, this.gameClock);
+  public scenarioService: ScenarioService;
+  public scenarioUI: ScenarioUI;
+
+  constructor(options: { url: string }) {
+    const { url } = options;
+    this.replayService = new ReplayService(url);
+    this.skinService = new SkinService(url);
+    this.blueprintService = new BlueprintService(url);
+    this.preferencesService = new PreferencesService();
+    this.scenarioUI = new ScenarioUI();
+    this.scenarioService = new ScenarioService(
+      this.blueprintService,
+      this.replayService,
+      this.skinService,
+      this.preferencesService,
+    );
   }
 }

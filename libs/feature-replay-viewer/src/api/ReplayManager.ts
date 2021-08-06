@@ -4,8 +4,10 @@ import { ReplayFrame } from "@rewind/osu/core";
 
 // TODO: Rename this to replay or something
 export type OsuReplay = {
+  md5hash: string;
   gameVersion: number;
   mods: number;
+  player: string; // Could be useful to draw
   frames: ReplayFrame[];
 };
 
@@ -39,6 +41,8 @@ export class OsuExpressReplayManager implements ReplayManager {
       gameVersion: res.gameVersion,
       frames: fromRawToReplay(res.replay_data),
       mods: res.mods,
+      md5hash: "",
+      player: "",
     };
   }
 }

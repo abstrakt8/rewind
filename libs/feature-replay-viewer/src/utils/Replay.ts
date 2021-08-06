@@ -1,6 +1,7 @@
 import { OsuAction, ReplayFrame } from "@rewind/osu/core";
 import { Position, Vec2 } from "@rewind/osu/math";
 
+// TODO: Could be useful in osu/core
 // Finds the index of the highest time that is not greater the given one.
 // Returns -1 if not found
 export function findIndexInReplayAtTime(replay: ReplayFrame[], time: number): number {

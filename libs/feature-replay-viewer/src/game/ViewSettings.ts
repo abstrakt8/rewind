@@ -24,6 +24,9 @@ export interface ViewSettings {
   };
   backgroundDim: number;
   modHidden: boolean;
+
+  sliderAnalysis: boolean;
+
   osuCursor: OsuCursorSetting;
   analysisCursor: AnalysisCursorSetting;
   // playbackSpeed: number;
@@ -42,6 +45,7 @@ export const defaultViewSettings: () => ViewSettings = () => ({
     enabled: true,
     scaleWithCS: true,
   },
+  sliderAnalysis: false,
   analysisCursor: {
     scale: 0.8,
     enabled: false,

@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
-import { defaultViewSettings, ViewSettings } from "../ViewSettings";
+import { defaultViewSettings, ViewSettings } from "../game/ViewSettings";
 import { Skin } from "../skins/Skin";
-import { SkinStore } from "./SkinStore";
+import { SkinService } from "./SkinService";
 
 // Domain object
 // showFps = true;
@@ -27,7 +27,7 @@ export class RenderSettings {
   viewSettings: ViewSettings;
   skin = Skin.EMPTY;
 
-  constructor(private readonly skinStore: SkinStore) {
+  constructor(private readonly skinStore: SkinService) {
     makeAutoObservable(this);
     this.viewSettings = defaultViewSettings();
   }

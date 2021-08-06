@@ -19,6 +19,27 @@ export interface ISkin {
   getComboNumberTextures(): Texture[];
 }
 
+export class EmptySkin implements ISkin {
+  getComboColorForIndex(i: number): number {
+    return 0;
+  }
+
+  getComboNumberTextures(): [] {
+    return [];
+  }
+
+  getHitCircleNumberTextures(): Texture[] {
+    return [];
+  }
+
+  getTexture(key: SkinTextures) {
+    return Texture.EMPTY;
+  }
+
+  getTextures(key: SkinTextures): Texture[] {
+    return [Texture.EMPTY];
+  }
+}
 /**
  * A simple skin that can provide the basic information a beatmap needs.
  */
