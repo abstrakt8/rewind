@@ -35,9 +35,11 @@ const PlaybarEventsBox = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
-const ReplaySettingsBox = styled.div`
+
+const GenericToggleSettingsBox = styled.div`
   display: grid;
   grid-template-columns: 1fr min-content;
+  grid-row-gap: 1em;
   grid-column-gap: 1em;
   align-items: center;
   justify-content: space-between;
@@ -157,6 +159,9 @@ export const CurrentTime = () => {
   );
 };
 
+// TODO: Maybe make frameJump dynamic
+// If paused -> only +1ms
+// If
 const speedsAllowed = [0.01, 0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
 // TODO: FLOATING POINT EQUALITY ALERT
 const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
@@ -310,24 +315,25 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
           </PlaybarEventsBox>
         </SidebarBox>
         <SidebarBox>
+          <SettingsTitle title={"beatmap analysis"} />
+          <GenericToggleSettingsBox>
+            <div>Hidden</div>
+            <MyToggle enabled={scenario.view.modHidden} setEnabled={() => scenario.toggleHidden()} />
+            <div>Slider Debug</div>
+            <MyToggle enabled={scenario.view.sliderAnalysis} setEnabled={() => scenario.toggleSliderAnalysis()} />
+          </GenericToggleSettingsBox>
+        </SidebarBox>
+        <SidebarBox>
           <SettingsTitle title={"replay analysis"} />
-          <ReplaySettingsBox>
-            {/*<div>Analysis cursor</div>*/}
-            {/*<MyToggle*/}
-            {/*  enabled={renderSettings.viewSettings.analysisCursor.enabled}*/}
-            {/*  setEnabled={() => renderSettings.toggleAnalysisCursor()}*/}
-            {/*/>*/}
-            {/*<input type={"checkbox"} />*/}
-            {/*<div>*/}
-            {/*  Draw misses <input type={"checkbox"} />*/}
-            {/*</div>*/}
-            {/*<div>*/}
-            {/*  Draw 50s <input type={"checkbox"} />*/}
-            {/*</div>*/}
-            {/*<div>*/}
-            {/*  Draw 100s <input type={"checkbox"} />*/}
-            {/*</div>*/}
-          </ReplaySettingsBox>
+          <GenericToggleSettingsBox>
+            <div>Normal Cursor</div>
+            <MyToggle enabled={scenario.view.osuCursor.enabled} setEnabled={() => scenario.toggleOsuCursor()} />
+            <div>Analysis Cursor</div>
+            <MyToggle
+              enabled={scenario.view.analysisCursor.enabled}
+              setEnabled={() => scenario.toggleAnalysisCursor()}
+            />
+          </GenericToggleSettingsBox>
         </SidebarBox>
         <SidebarBox>
           <SettingsTitle title={"shortcuts"} />

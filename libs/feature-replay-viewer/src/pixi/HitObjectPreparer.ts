@@ -19,7 +19,8 @@ import { SkinTextures } from "@rewind/osu/skin";
 import { sliderRepeatAngle } from "../utils/Sliders";
 import { RGB, Vec2 } from "@rewind/osu/math";
 
-const DEBUG = true;
+const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;
+const DEBUG_PIXEL_BALL_COLOR = 0x00ff00;
 
 export class HitObjectPreparer {
   sliderTextureManager: SliderTextureManager;
@@ -49,7 +50,7 @@ export class HitObjectPreparer {
   }
 
   private prepareHitCircle(scene: Scene, hitCircle: HitCircle) {
-    const { view, skin, time: gameTime, gameplayState } = scene;
+    const { view, skin, time: gameTime } = scene;
     const { modHidden } = view;
 
     // TODO: +300?
@@ -85,17 +86,15 @@ export class HitObjectPreparer {
 
   private prepareSliderTail(gameTime: number, slider: Slider) {}
 
-  // Only for debugging
+  // Only for DEBUG option
   private prepareSliderLastLegacyTick(gameTime: number, checkpoint: SliderCheckPoint) {
-    if (DEBUG) {
-      const delta = checkpoint.hitTime - gameTime;
-      if (!(delta >= 0 && delta < 200)) return;
-      const g = new Graphics();
-      g.beginFill(0xff0000);
-      g.drawCircle(checkpoint.position.x, checkpoint.position.y, 2);
-      g.endFill();
-      this.hitObjectContainer.addChild(g);
-    }
+    const delta = checkpoint.hitTime - gameTime;
+    if (!(delta >= 0 && delta < 200)) return;
+    const g = new Graphics();
+    g.beginFill(0xff0000);
+    g.drawCircle(checkpoint.position.x, checkpoint.position.y, 2);
+    g.endFill();
+    this.hitObjectContainer.addChild(g);
   }
 
   private prepareSliderTicks(gameTime: number, ticks: SliderCheckPoint[]) {}
@@ -137,7 +136,7 @@ export class HitObjectPreparer {
     });
   }
 
-  private prepareSliderBall(gameTime: number, skin: Skin, slider: Slider) {
+  private prepareSliderBall(gameTime: number, skin: Skin, slider: Slider, sliderAnalysis: boolean) {
     if (gameTime < slider.startTime || slider.endTime < gameTime) return;
     const progress = (gameTime - slider.startTime) / slider.duration;
     const position = slider.ballPositionAt(progress);
@@ -153,16 +152,25 @@ export class HitObjectPreparer {
 
     this.hitObjectContainer.addChild(sliderBall.container);
 
-    if (DEBUG) {
-      const g = new Graphics();
-      g.lineStyle(1, 0xff0000);
-      g.drawCircle(position.x, position.y, slider.radius * 2.4);
-      this.hitObjectContainer.addChild(g);
+    if (sliderAnalysis) {
+      {
+        const rawFollowCircle = new Graphics();
+        rawFollowCircle.lineStyle(1, DEBUG_FOLLOW_CIRCLE_COLOR);
+        rawFollowCircle.drawCircle(position.x, position.y, slider.radius * 2.4);
+        this.hitObjectContainer.addChild(rawFollowCircle);
+      }
+      {
+        const pixelBall = new Graphics();
+        pixelBall.beginFill(DEBUG_PIXEL_BALL_COLOR);
+        pixelBall.drawCircle(position.x, position.y, 1);
+        pixelBall.endFill();
+        this.hitObjectContainer.addChild(pixelBall);
+      }
     }
   }
 
   private prepareSlider(scene: Scene, slider: Slider) {
-    const { time, skin } = scene;
+    const { time, skin, view } = scene;
     if (time < slider.spawnTime || time > slider.endTime + 300) {
       // VERY IMPORTANT, otherwise there will too many textures in the cache.
       this.sliderTextureManager.removeFromCache(slider.id);
@@ -182,9 +190,9 @@ export class HitObjectPreparer {
 
     this.prepareSliderTail(time, slider);
     this.prepareSliderTicks(time, ticks);
-    if (legacyTick) this.prepareSliderLastLegacyTick(time, legacyTick);
+    if (legacyTick && view.sliderAnalysis) this.prepareSliderLastLegacyTick(time, legacyTick);
     this.prepareSliderRepeats(time, skin, repeats, slider);
-    this.prepareSliderBall(time, skin, slider);
+    this.prepareSliderBall(time, skin, slider, view.sliderAnalysis);
 
     this.prepareHitCircle(scene, slider.head);
   }

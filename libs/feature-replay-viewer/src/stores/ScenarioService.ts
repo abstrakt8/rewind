@@ -23,7 +23,6 @@ import { PerformanceGameClock } from "../clocks/PerformanceGameClock";
 import { PreferencesService } from "./PreferencesService";
 import { SkinService } from "./SkinService";
 import { action, autorun, computed, makeObservable, observable, toJS } from "mobx";
-import { ScenarioUI } from "./ScenarioUI";
 
 // A scene defines what should be drawn on the screen.
 // The scene manager is almost equivalent to the store in Redux and PixiJS is just the underlying rendering platform.
@@ -55,17 +54,34 @@ export class Scenario {
 
     makeObservable(this, {
       view: observable,
-      toggleHidden: action,
+      // TODO: Are these needed?
+      // toggleHidden: action,
+      // toggleAnalysisCursor: action,
     });
     autorun(() => {
-      this._view = toJS(view);
+      this._view = toJS(this.view);
+      console.log("I'm running this");
     });
 
     this._view = toJS(view);
   }
 
+  // Beatmap analysis
   toggleHidden() {
     this.view.modHidden = !this.view.modHidden;
+  }
+
+  toggleSliderAnalysis() {
+    this.view.sliderAnalysis = !this.view.sliderAnalysis;
+  }
+
+  // Replay analysis
+
+  toggleAnalysisCursor() {
+    this.view.analysisCursor.enabled = !this.view.analysisCursor.enabled;
+  }
+  toggleOsuCursor() {
+    this.view.osuCursor.enabled = !this.view.osuCursor.enabled;
   }
 
   getCurrentScene(): Scene {
