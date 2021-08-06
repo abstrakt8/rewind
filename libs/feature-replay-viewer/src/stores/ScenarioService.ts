@@ -28,6 +28,7 @@ import { ScenarioUI } from "./ScenarioUI";
 export class Scenario {
   public gameplayTimeMachine?: ReplayStateTimeMachine;
   public replayEvents: ReplayAnalysisEvent[];
+  private _view: ViewSettings;
 
   constructor(
     public readonly gameClock: GameClock,
@@ -51,6 +52,10 @@ export class Scenario {
       view: observable,
       toggleHidden: action,
     });
+    autorun(() => {
+      this._view = toJS(view);
+    });
+    this._view = toJS(view);
   }
 
   toggleHidden() {
@@ -58,7 +63,7 @@ export class Scenario {
   }
 
   getCurrentScene(): Scene {
-    const { skin, beatmap, replay, view } = this;
+    const { skin, beatmap, replay } = this;
     const time = this.gameClock.getCurrentTime();
     const gameplayState = this.gameplayTimeMachine?.replayStateAt(time);
     const gameplayInfo = gameplayState
@@ -72,7 +77,7 @@ export class Scenario {
       replay,
       gameplayInfo,
       skin,
-      view,
+      view: this._view,
     };
   }
 }
