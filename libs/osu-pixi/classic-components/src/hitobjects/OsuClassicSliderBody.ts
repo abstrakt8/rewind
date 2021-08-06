@@ -16,12 +16,14 @@ export interface SliderBodySettings extends AnimationTimeSetting, ModHiddenSetti
   position: Position;
   duration: number;
   texture: Texture;
+  headPositionInRectangle: Position;
 }
 
 const defaultSliderBodySetting: SliderBodySettings = {
   time: 0,
   approachDuration: 450, // AR10
   position: { x: 0, y: 0 },
+  headPositionInRectangle: { x: 0, y: 0 },
   modHidden: false,
   duration: 0,
   texture: Texture.EMPTY,
@@ -91,12 +93,13 @@ export class OsuClassicSliderBody implements PrepareSetting<SliderBodySettings> 
   prepare(settings: Partial<SliderBodySettings>): void {
     this.settings = Object.freeze({ ...this.settings, ...settings });
 
-    const { time, modHidden, position, approachDuration, duration, texture } = this.settings;
+    const { time, modHidden, position, approachDuration, duration, texture, headPositionInRectangle } = this.settings;
 
     const t = OsuClassicSliderBody.transformation({ modHidden, duration, position, approachDuration });
     const props = evaluateTransformationsToProperties(t, time);
     applyPropertiesToDisplayObject(props, this.container);
     this.sprite.texture = texture;
+    this.sprite.position.set(-headPositionInRectangle.x, -headPositionInRectangle.y);
 
     // This is the most stupid caching
     // if (!this.sprite.texture.valid)

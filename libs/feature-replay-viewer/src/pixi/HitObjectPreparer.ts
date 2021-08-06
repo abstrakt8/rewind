@@ -17,7 +17,7 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import { SkinTextures } from "@rewind/osu/skin";
 import { sliderRepeatAngle } from "../utils/Sliders";
-import { RGB } from "@rewind/osu/math";
+import { RGB, Vec2 } from "@rewind/osu/math";
 
 const DEBUG = true;
 
@@ -268,6 +268,10 @@ export function sliderBodySetting(s: {
   texture: Texture;
 }): SliderBodySettings {
   const { texture, modHidden, slider, gameTime } = s;
+  const headPositionInRectangle = Vec2.scale(slider.path.boundaryBox[0], -1).add({
+    x: slider.radius,
+    y: slider.radius,
+  });
 
   return {
     modHidden,
@@ -276,5 +280,6 @@ export function sliderBodySetting(s: {
     approachDuration: slider.head.approachDuration,
     time: gameTime - slider.startTime,
     texture,
+    headPositionInRectangle,
   };
 }

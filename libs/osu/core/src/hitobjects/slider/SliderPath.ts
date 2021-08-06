@@ -18,6 +18,8 @@ export class SliderPath {
   private _invalid: boolean;
   private _cumulativeLength: number[];
   private _calculatedPath: Position[];
+  private _min: Position;
+  private _max: Position;
   private readonly _expectedDistance?: number;
 
   constructor(controlPoints: PathControlPoint[], length?: number) {
@@ -43,6 +45,7 @@ export class SliderPath {
     if (this._invalid) {
       this.calculatePath();
       this.calculateLength();
+      this.calculateBoundaryBox();
       this._invalid = false;
     }
   }
@@ -65,19 +68,26 @@ export class SliderPath {
     return PathApproximator.approximateBezier(mapToVector2(subControlPoints));
   }
 
+  get boundaryBox(): [Position, Position] {
+    this.ensureValid();
+    return [this._min, this._max];
+  }
+
   calculateBoundaryBox(): [Position, Position] {
     // Since it is osu!px , it should be no problem
     let minX = 3000,
       maxX = -3000,
       minY = 3000,
       maxY = -3000;
-    this.calculatedPath.forEach((p) => {
+    this._calculatedPath.forEach((p) => {
       minX = Math.min(minX, p.x);
       maxX = Math.max(maxX, p.x);
       minY = Math.min(minY, p.y);
       maxY = Math.max(maxY, p.y);
     });
-    return [new Vec2(minX, minY), new Vec2(maxX, maxY)];
+    this._min = new Vec2(minX, minY);
+    this._max = new Vec2(maxX, maxY);
+    return [this._min, this._max];
   }
 
   calculatePath(): void {
