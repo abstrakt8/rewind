@@ -47,9 +47,9 @@ export class Scenario {
     makeObservable(this, {
       loadScenario: action,
       state: observable,
-      replay: observable,
-      blueprint: observable,
-      beatmap: observable,
+      // replay: observable,
+      // blueprint: observable,
+      // beatmap: observable,
       replayEvents: observable,
       // replayStateTimeMachine intentionally not observable (too many calls)
     });

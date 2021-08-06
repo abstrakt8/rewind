@@ -164,6 +164,7 @@ const frameJump = 16;
 
 export const useShortcuts = () => {
   const { gameClock, renderSettings } = useMobXContext();
+  // TODO: Connect with store -> hotkeys settings
   // https://github.com/jaywcjlove/hotkeys/#defining-shortcuts
   useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.playbackRate)));
   useHotkeys("s", () => gameClock.setSpeed(prevSpeed(gameClock.playbackRate)));
@@ -209,21 +210,21 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
     showMisses: true,
     showSliderBreaks: true,
   });
+  const sceneLoader = () => ({});
 
   useShortcuts();
   //
   useEffect(() => {
     if (canvas.current) {
-      gameApp.current = new ReplayViewerApp({
-        clock: gameClock,
-        view: canvas.current,
-        performanceMonitor,
-        context: scenario.replayViewerContext,
+      gameApp.current = new ReplayViewerApp(canvas.current, sceneLoader, {
+        maxFPS: 240,
+        antialias: true,
       });
     }
-    if (containerRef.current) {
-      containerRef.current?.appendChild(performanceMonitor.dom);
-    }
+    // if (containerRef.current) {
+    //   containerRef.current?.appendChild(performanceMonitor.dom);
+    // }
+    return () => gameApp.current?.app.destroy();
   }, [canvas, scenario, renderSettings, containerRef, gameApp, gameClock, performanceMonitor]);
 
   const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
