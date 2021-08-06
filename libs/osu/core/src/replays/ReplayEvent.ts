@@ -22,6 +22,7 @@ interface DisplayBase {
 
 // TODO: Export
 type HitObjectVerdict = MainHitObjectVerdict;
+
 // Those events are to be displayed on the screen
 
 export interface HitObjectJudgement extends DisplayBase {
@@ -46,6 +47,10 @@ export interface UnnecessaryClick extends DisplayBase {
 }
 
 export type ReplayAnalysisEvent = HitObjectJudgement | CheckpointJudgement | UnnecessaryClick;
+
+// Type predicates
+export const isHitObjectJudgement = (h: ReplayAnalysisEvent): h is HitObjectJudgement =>
+  h.type === "HitObjectJudgement";
 
 // This is osu!stable style and is also only recommended for offline processing.
 // In the future, where something like online replay streaming is implemented, this implementation will ofc be too slow.

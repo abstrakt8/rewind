@@ -7,13 +7,14 @@ import { AnalysisHitErrorBar } from "./components/HitErrorBar";
 export class ForegroundHUDContainer {
   widthInPx = 0;
   heightInPx = 0;
+
   container: Container;
   stats: Text;
   hitErrorBar: AnalysisHitErrorBar;
 
   constructor() {
     this.container = new Container();
-    this.stats = new Text("", { fontSize: 12, fill: "white" });
+    this.stats = new Text("", { fontSize: 16, fill: 0xeeeeee, fontFamily: "Arial", align: "center" });
     this.hitErrorBar = new AnalysisHitErrorBar();
   }
 
@@ -58,8 +59,8 @@ export class ForegroundHUDContainer {
       const count = gameplayInfo.verdictCounts;
       const maxCombo = gameplayInfo.maxComboSoFar;
       this.stats.text = `${count[0]}x300, ${count[1]}x100, ${count[2]}x50 ${count[3]}xMisses\nMaxCombo: ${maxCombo}`;
-      this.stats.position.set(100, 100);
-      this.stats.addChild(this.stats);
+      this.stats.position.set(50, 200);
+      this.container.addChild(this.stats);
     }
 
     // hit error

@@ -1,5 +1,5 @@
 import { Skin } from "../skins/Skin";
-import { Beatmap, GameplayInfo, ReplayState } from "@rewind/osu/core";
+import { Beatmap, GameplayInfo, HitObjectJudgement, ReplayState } from "@rewind/osu/core";
 import { OsuReplay } from "../api/ReplayManager";
 import { ViewSettings } from "./ViewSettings";
 
@@ -10,6 +10,7 @@ export interface Scene {
   replay?: OsuReplay;
   gameplayState?: ReplayState;
   gameplayInfo?: GameplayInfo;
+  judgements: HitObjectJudgement[];
   view: ViewSettings;
 }
 

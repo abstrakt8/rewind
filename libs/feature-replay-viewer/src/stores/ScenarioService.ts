@@ -5,6 +5,8 @@ import {
   BucketedReplayStateTimeMachine,
   buildBeatmap,
   GameplayInfoEvaluator,
+  HitObjectJudgement,
+  isHitObjectJudgement,
   NoteLockStyle,
   OsuClassicMods,
   ReplayAnalysisEvent,
@@ -29,6 +31,7 @@ export class Scenario {
   public gameplayTimeMachine?: ReplayStateTimeMachine;
   public replayEvents: ReplayAnalysisEvent[];
   private _view: ViewSettings;
+  private judgements: HitObjectJudgement[];
 
   constructor(
     public readonly gameClock: GameClock,
@@ -44,8 +47,10 @@ export class Scenario {
       });
       const finalState = this.gameplayTimeMachine.replayStateAt(1e9);
       this.replayEvents = retrieveEvents(finalState, beatmap.hitObjects);
+      this.judgements = this.replayEvents.filter(isHitObjectJudgement);
     } else {
       this.replayEvents = [];
+      this.judgements = [];
     }
 
     makeObservable(this, {
@@ -55,6 +60,7 @@ export class Scenario {
     autorun(() => {
       this._view = toJS(view);
     });
+
     this._view = toJS(view);
   }
 
@@ -63,7 +69,7 @@ export class Scenario {
   }
 
   getCurrentScene(): Scene {
-    const { skin, beatmap, replay } = this;
+    const { skin, beatmap, replay, judgements } = this;
     const time = this.gameClock.getCurrentTime();
     const gameplayState = this.gameplayTimeMachine?.replayStateAt(time);
     const gameplayInfo = gameplayState
@@ -77,6 +83,7 @@ export class Scenario {
       replay,
       gameplayInfo,
       skin,
+      judgements,
       view: this._view,
     };
   }

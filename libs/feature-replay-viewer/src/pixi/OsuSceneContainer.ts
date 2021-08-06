@@ -35,6 +35,7 @@ export class OsuSceneContainer {
   resizeTo(widthInPx: number, heightInPx: number): void {
     this.widthInPx = widthInPx;
     this.heightInPx = heightInPx;
+    this.foregroundHUD.resizeTo(widthInPx, heightInPx);
 
     // this.backgroundSprite.position.set(this.widthInPx / 2, this.heightInPx / 2);
     const scaling = this.getPlayfieldScaling();
