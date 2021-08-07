@@ -7,7 +7,7 @@ import { LocalBlueprintService } from "../blueprints/LocalBlueprintService";
 
 // https://gabrieltanner.org/blog/nestjs-realtime-chat
 
-@WebSocketGateway()
+@WebSocketGateway({ cors: true })
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() private server: Server;
 

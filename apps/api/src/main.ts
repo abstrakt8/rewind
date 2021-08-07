@@ -12,10 +12,12 @@ import { OSU_FOLDER } from "./app/constants";
 import { ReplayWatcher } from "./app/replays/ReplayWatcher";
 import { join } from "path";
 
+const globalPrefix = "api";
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const globalPrefix = "api";
   app.setGlobalPrefix(globalPrefix);
+  app.enableCors();
 
   const osuFolder = app.get(OSU_FOLDER) as string;
   app.useStaticAssets(join(osuFolder, "Skins"), { prefix: "/static/skins" });
