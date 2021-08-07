@@ -200,7 +200,9 @@ export class HitObjectPreparer {
 
     this.prepareSliderTail(time, slider);
     this.prepareSliderTicks(time, ticks);
-    if (legacyTick && view.sliderAnalysis) this.prepareSliderLastLegacyTick(time, legacyTick);
+    if (legacyTick && view.sliderAnalysis) {
+      this.prepareSliderLastLegacyTick(time, legacyTick);
+    }
     this.prepareSliderRepeats(time, skin, repeats, slider);
     this.prepareSliderBall(time, skin, slider, view.sliderAnalysis);
 

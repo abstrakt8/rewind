@@ -12,7 +12,9 @@ export class TemporaryObjectPool<T> extends ObjectPool<T> {
   }
 
   releaseUntouched() {
-    for (const id of this.dict.keys()) {
+    // Need to copy it because also delete from it at the same time
+    const keys = Array.from(this.dict.keys());
+    for (const id of keys) {
       if (!this.touched.has(id)) {
         this.release(id);
       }

@@ -54,9 +54,12 @@ export class Scenario {
 
     makeObservable(this, {
       view: observable,
-      // TODO: Are these needed?
-      // toggleHidden: action,
-      // toggleAnalysisCursor: action,
+      // These are needed, otherwise
+      // [MobX] Since strict-mode is enabled, changing (observed) observable values without using an action is not allowed. Tried to modify: Scenario@14.view.sliderAnalysis
+      toggleHidden: action,
+      toggleAnalysisCursor: action,
+      toggleSliderAnalysis: action,
+      toggleOsuCursor: action,
     });
     autorun(() => {
       this._view = toJS(this.view);
