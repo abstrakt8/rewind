@@ -42,3 +42,5 @@ export * from "./replays/ReplayEvent";
 export * from "./replays/ReplayStateTimeMachine";
 export * from "./replays/Verdicts";
 export * from "./replays/GameplayInfo";
+
+export * from "./playfield";

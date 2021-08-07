@@ -80,6 +80,7 @@ export class Scenario {
   toggleAnalysisCursor() {
     this.view.analysisCursor.enabled = !this.view.analysisCursor.enabled;
   }
+
   toggleOsuCursor() {
     this.view.osuCursor.enabled = !this.view.osuCursor.enabled;
   }
@@ -111,6 +112,14 @@ const defaultScenario: Scenario = new Scenario(
   Skin.EMPTY,
   defaultViewSettings(),
 );
+
+function determinePlaybackSpeed(mods: OsuClassicMod[]) {
+  for (let i = 0; i < mods.length; i++) {
+    if (mods[i] === "DOUBLE_TIME" || mods[i] === "HALF_TIME") return 1.5;
+    if (mods[i] === "HALF_TIME") return 0.75;
+  }
+  return 1.0;
+}
 
 export class ScenarioService {
   scenarioId = 0;
@@ -157,11 +166,10 @@ export class ScenarioService {
     const gameClock = new PerformanceGameClock();
     const view = this.preferencesService.preferredViewSettings();
 
-    const mods: OsuClassicMod[] = [];
+    const mods: OsuClassicMod[] = replay?.mods ?? [];
     // TODO: Depending on replayMods
-    const modHidden = false;
-    const playbackSpeed = 1.0;
-
+    const modHidden = mods.indexOf("HIDDEN") !== -1;
+    const playbackSpeed = determinePlaybackSpeed(mods);
     view.modHidden = modHidden;
     gameClock.setSpeed(playbackSpeed);
 

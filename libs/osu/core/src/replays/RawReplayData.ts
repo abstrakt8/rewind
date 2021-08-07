@@ -2,7 +2,7 @@
  * The one that gets parsed from an .osr file
  * This is exactly like the one you would get from osr-node
  */
-import { OsuClassicMod } from "../mods/Mods";
+import { OsuClassicMod, OsuClassicMods } from "../mods/Mods";
 
 export class RawReplayData {
   gameMode = 0;
@@ -46,3 +46,14 @@ export const ReplayModBit: Record<OsuClassicMod, number> = {
   PERFECT: 1 << 14,
   SCORE_V2: 0,
 };
+
+export function modsFromBitmask(modMask: number): OsuClassicMod[] {
+  const list = [];
+  for (const mod of OsuClassicMods) {
+    const bit = ReplayModBit[mod];
+    if ((modMask & bit) > 0) {
+      list.push(mod);
+    }
+  }
+  return list;
+}

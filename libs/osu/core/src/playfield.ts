@@ -1,0 +1,2 @@
+export const OSU_PLAYFIELD_HEIGHT = 384;
+export const OSU_PLAYFIELD_WIDTH = 512;

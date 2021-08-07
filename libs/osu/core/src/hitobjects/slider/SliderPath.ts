@@ -40,6 +40,10 @@ export class SliderPath {
     return this._calculatedPath;
   }
 
+  makeInvalid(): void {
+    this._invalid = true;
+  }
+
   // Recalculates the helper data if needed
   ensureValid(): void {
     if (this._invalid) {

@@ -5,10 +5,11 @@ import produce from "immer";
 import { Position } from "@rewind/osu/math";
 import { Slider } from "../hitobjects/Slider";
 import { OsuHitObject } from "../hitobjects/Types";
+import { OSU_PLAYFIELD_HEIGHT } from "../playfield";
 
 function flipY(position: Position) {
   const { x, y } = position;
-  return { x, y: 368 - y };
+  return { x, y: OSU_PLAYFIELD_HEIGHT - y };
 }
 
 export class HardRockMod {
@@ -32,6 +33,7 @@ export class HardRockMod {
           l.path.controlPoints.forEach((p) => {
             p.offset.y *= -1;
           });
+          l.path.makeInvalid();
           l.checkPoints.forEach((p) => {
             p.offset.y *= -1;
           });

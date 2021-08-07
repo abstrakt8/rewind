@@ -62,14 +62,14 @@ const millhioreLiteId = "Millhiore Lite"; // -> buggy because we don't have defa
 const kasugaMirai = "Kasuga Mirai";
 
 // only opssible if mods are included
-// const chosenBlueprintId = hibanaId;
-// const chosenReplayId = hibanaReplayId;
+const chosenBlueprintId = hibanaId;
+const chosenReplayId = hibanaReplayId;
 
 // const chosenBlueprintId = centipedeId;
 // const chosenReplayId = undefined;
 
-const chosenBlueprintId = sunMoonId;
-const chosenReplayId = sunMoonReplayId;
+// const chosenBlueprintId = sunMoonId;
+// const chosenReplayId = sunMoonReplayId;
 
 // const chosenBlueprintId = akatsukiId;
 // const chosenReplayId = akatsukiReplayId;
