@@ -56,7 +56,7 @@ export class SkinFolderReader {
    * Reads the config file in the given skin folder and prepares a skin reader based on the given config.
    * @param skinFolderPath path to the folder
    */
-  async getSkinReader(skinFolderPath: string): Promise<SkinReader> {
+  static async getSkinReader(skinFolderPath: string): Promise<OsuLegacySkinReader> {
     const data = await fs.readFile(join(skinFolderPath, SKIN_CONFIG_FILENAME), { encoding: "utf-8" });
     const parser = new SkinConfigParser(data);
     const config = parser.parse();

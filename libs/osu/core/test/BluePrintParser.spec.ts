@@ -7,7 +7,7 @@ import {
   SliderSettings,
   SpinnerSettings,
 } from "@rewind/osu/core";
-import { osuMapPath, parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
+import { parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
 import { Position } from "@rewind/osu/math";
 
 describe("Test *.osu blue print parsing", function () {

@@ -426,7 +426,7 @@ export class OsuBlueprintParser {
   static LATEST_VERSION = 14;
 
   data: string;
-  section: string | null;
+  section: BlueprintSection | null;
 
   blueprint: Blueprint;
   // hitObjectParser: OsuHitObjectParser;
@@ -443,11 +443,14 @@ export class OsuBlueprintParser {
   defaultSampleBank: LegacySampleBank = LegacySampleBank.None;
 
   // TODO: Don't know if we should support stream reading because this does read the entire file into memory though.
-  constructor(data: string, version = OsuBlueprintParser.LATEST_VERSION) {
+  private sectionsToRead: readonly BlueprintSection[];
+
+  constructor(data: string, options: BlueprintParseOptions = defaultOptions) {
     this.data = data;
     this.blueprint = new Blueprint();
     this.section = null;
-    this.formatVersion = version;
+    this.formatVersion = options.formatVersion;
+    this.sectionsToRead = options.sectionsToRead;
 
     // BeatmapVersion 4 and lower had an incorrect offset (stable has this set as 24ms off)
     this.offset = this.formatVersion <= 4 ? 24 : 0;
@@ -464,9 +467,14 @@ export class OsuBlueprintParser {
       return;
     }
     if (SECTION_REGEX.test(strippedLine)) {
-      this.section = (SECTION_REGEX.exec(strippedLine) as RegExpExecArray)[1];
+      this.section = (SECTION_REGEX.exec(strippedLine) as RegExpExecArray)[1] as BlueprintSection;
       return;
     }
+
+    if (this.sectionsToRead.indexOf(this.section) === -1) {
+      return;
+    }
+
     switch (this.section) {
       case "General":
         this.handleGeneral(strippedLine);
@@ -723,4 +731,32 @@ export class OsuBlueprintParser {
     this.flushPendingPoints();
     return this.blueprint;
   }
+}
+
+export const BlueprintSections = [
+  "General",
+  "Metadata",
+  "Difficulty",
+  "HitObjects",
+  "TimingPoints",
+  "Events",
+  "Editor",
+  "Colours",
+] as const;
+export type BlueprintSection = typeof BlueprintSections[number];
+
+interface BlueprintParseOptions {
+  formatVersion: number;
+  sectionsToRead: readonly BlueprintSection[];
+}
+
+const defaultOptions: BlueprintParseOptions = {
+  formatVersion: OsuBlueprintParser.LATEST_VERSION,
+  sectionsToRead: BlueprintSections,
+};
+
+export function parseBlueprint(data: string, options?: Partial<BlueprintParseOptions>) {
+  const allOptions = Object.assign({ ...defaultOptions }, options);
+  const parser = new OsuBlueprintParser(data, allOptions);
+  return parser.parse();
 }
