@@ -1,11 +1,11 @@
 import { BeatmapDifficulty, DEFAULT_BEATMAP_DIFFICULTY } from "./BeatmapDifficulty";
-import { AllHitObjects, OsuHitObject } from "../hitobjects";
 import { normalizeHitObjects } from "../utils";
 import { Slider } from "../hitobjects/Slider";
 import { HitCircle } from "../hitobjects/HitCircle";
-import { OsuClassicMods } from "../mods/Mods";
+import { OsuClassicMod } from "../mods/Mods";
 import { Spinner } from "../hitobjects/Spinner";
 import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
+import { AllHitObjects, OsuHitObject } from "../hitobjects/Types";
 
 /**
  * A built beatmap that is not supposed to be modified.
@@ -17,7 +17,7 @@ export class Beatmap {
   constructor(
     public readonly hitObjects: Array<OsuHitObject>,
     public readonly difficulty: BeatmapDifficulty,
-    public readonly appliedMods: OsuClassicMods[],
+    public readonly appliedMods: OsuClassicMod[],
   ) {
     this.hitObjectIndex = normalizeHitObjects(hitObjects);
   }

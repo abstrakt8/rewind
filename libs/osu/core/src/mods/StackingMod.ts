@@ -1,9 +1,8 @@
+import produce from "immer";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { Position, Vec2 } from "@rewind/osu/math";
 import { Slider } from "../hitobjects/Slider";
-import { OsuHitObject } from "../hitobjects";
-import produce from "immer";
-import { Spinner } from "../hitobjects/Spinner";
+import { isHitCircle, isSlider, isSpinner, OsuHitObject } from "../hitobjects/Types";
 
 function stackOffset(stackHeight: number, scale: number): Position {
   const value = stackHeight * scale * -6.4;
@@ -15,90 +14,79 @@ function stackedPosition(initialPosition: Position, stackHeight: number, scale: 
   return Vec2.add(initialPosition, offset);
 }
 
+type StackableHitObject = Slider | HitCircle;
 const STACK_DISTANCE = 3;
 
-function endTimeOf(hitObject: HitCircle | Slider) {
-  if (hitObject instanceof Slider) {
-    return hitObject.endTime;
-  } else {
-    return hitObject.hitTime;
-  }
-}
+// I refuse to put an endPosition and endTime into HitCircle just because it's then easier to code it here
+// How does it even make sense that an HitCircle has an "endPosition" or "endTime".
+// Or how does it make sense that a Spinner has a stacking position, when it even doesn't have a position?
 
-function endPosition(hitObject: HitCircle | Slider) {
-  if (hitObject instanceof Slider) {
-    return hitObject.endPosition;
-  } else {
-    return hitObject.position;
-  }
-}
-
-type StackableHitObjects = Spinner | HitCircle;
-
-function getHitCircle(o: OsuHitObject): HitCircle | undefined {
-  if (o instanceof HitCircle) return o;
-  if (o instanceof Slider) return o.head;
-  return undefined;
-}
+const hitCircle = (o: StackableHitObject) => (isSlider(o) ? o.head : o);
+const approachDuration = (o: StackableHitObject) => hitCircle(o).approachDuration;
+const hitTime = (o: StackableHitObject) => hitCircle(o).hitTime;
+const position = (o: StackableHitObject) => hitCircle(o).position;
+const endPosition = (o: StackableHitObject) => (isSlider(o) ? o.endPosition : o.position);
+const endTime = (o: StackableHitObject) => (isSlider(o) ? o.endTime : o.hitTime);
 
 function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): Map<string, number> {
-  const startIndex = 0,
-    endIndex = hitObjects.length - 1;
-  let extendedEndIndex = endIndex;
+  const startIndex = 0;
+  const endIndex = hitObjects.length - 1;
+  const extendedEndIndex = endIndex;
   const stackingHeights = new Map<string, number>();
+
+  function setH(o: StackableHitObject, val: number) {
+    stackingHeights.set(hitCircle(o).id, val);
+  }
+
+  function H(o: StackableHitObject) {
+    return stackingHeights.get(hitCircle(o).id) ?? 0;
+  }
 
   // They all have 0 as stack heights
   for (const ho of hitObjects) {
-    const hc = getHitCircle(ho);
-    if (hc) stackingHeights.set(hc.id, 0);
-  }
-
-  function setH(o: HitCircle, val: number) {
-    stackingHeights.set(o.id, val);
-  }
-
-  function H(o: HitCircle) {
-    return stackingHeights.get(o.id) ?? 0;
-  }
-
-  if (endIndex < hitObjects.length - 1) {
-    // Extend the end index to include objects they are stacked on
-    for (let i = endIndex; i >= startIndex; i--) {
-      let stackBaseIndex = i;
-
-      for (let n = stackBaseIndex + 1; n < hitObjects.length; n++) {
-        const stackBaseObject = hitObjects[stackBaseIndex];
-        const stackBaseHitCircle = getHitCircle(hitObjects[stackBaseIndex]);
-        if (!stackBaseHitCircle) break;
-
-        const objectN = getHitCircle(hitObjects[n]);
-        if (!objectN) break;
-
-        // TODO: Check if this is correct for sliders
-        const endTime = endTimeOf(stackBaseHitCircle);
-        const stackThreshold = objectN.approachDuration * stackLeniency;
-
-        if (objectN.hitTime - endTime > stackThreshold)
-          // no longer within stacking range of the next object
-          break;
-
-        if (
-          Vec2.distance(stackBaseHitCircle.position, objectN.position) < STACK_DISTANCE ||
-          (stackBaseObject.type === "SLIDER" &&
-            Vec2.distance(endPosition(stackBaseHitCircle), objectN.position) < STACK_DISTANCE)
-        ) {
-          stackBaseIndex = n;
-          // HitObjects after the specified update range haven't been reset yet
-          stackingHeights.set(objectN.id, 0);
-        }
-      }
-
-      if (stackBaseIndex > extendedEndIndex) {
-        extendedEndIndex = stackBaseIndex;
-        if (extendedEndIndex === hitObjects.length - 1) break;
-      }
+    if (!isSpinner(ho)) {
+      setH(ho, 0);
     }
   }
+
+  // if (endIndex < hitObjects.length - 1) {
+  //   // Extend the end index to include objects they are stacked on
+  //   for (let i = endIndex; i >= startIndex; i--) {
+  //     let stackBaseIndex = i;
+  //
+  //     for (let n = stackBaseIndex + 1; n < hitObjects.length; n++) {
+  //       const stackBaseObject = hitObjects[stackBaseIndex];
+  //       const stackBaseHitCircle = getHitCircle(hitObjects[stackBaseIndex]);
+  //       if (!stackBaseHitCircle) break;
+  //
+  //       const objectN = getHitCircle(hitObjects[n]);
+  //       if (!objectN) break;
+  //
+  //       // TODO: Check if this is correct for sliders
+  //       const endTime = endTimeOf(stackBaseHitCircle);
+  //       const stackThreshold = objectN.approachDuration * stackLeniency;
+  //
+  //       if (objectN.hitTime - endTime > stackThreshold)
+  //         // no longer within stacking range of the next object
+  //         break;
+  //
+  //       if (
+  //         Vec2.distance(stackBaseHitCircle.position, objectN.position) < STACK_DISTANCE ||
+  //         (stackBaseObject.type === "SLIDER" &&
+  //           Vec2.distance(endPosition(stackBaseHitCircle), objectN.position) < STACK_DISTANCE)
+  //       ) {
+  //         stackBaseIndex = n;
+  //         // HitObjects after the specified update range haven't been reset yet
+  //         stackingHeights.set(objectN.id, 0);
+  //       }
+  //     }
+  //
+  //     if (stackBaseIndex > extendedEndIndex) {
+  //       extendedEndIndex = stackBaseIndex;
+  //       if (extendedEndIndex === hitObjects.length - 1) break;
+  //     }
+  //   }
+  // }
 
   // Reverse pass for stack calculation
   let extendedStartIndex = startIndex;
@@ -106,47 +94,45 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
   for (let i = extendedEndIndex; i > startIndex; i--) {
     let n = i;
 
-    let objectI = getHitCircle(hitObjects[i]);
-    if (!objectI || stackingHeights.get(objectI.id) !== 0) continue;
+    let objectI = hitObjects[i];
+    if (isSpinner(objectI) || H(objectI) !== 0) continue;
 
-    const stackThreshold = objectI.approachDuration * stackLeniency;
+    const stackThreshold = approachDuration(objectI) * stackLeniency;
 
-    if (objectI.type === "HIT_CIRCLE") {
+    if (isHitCircle(objectI)) {
       while (--n >= 0) {
-        const objectN = getHitCircle(hitObjects[n]);
-        if (!objectN) break;
+        const objectN = hitObjects[n];
+        if (isSpinner(objectN)) break;
 
-        const endTime = endTimeOf(objectN);
-
-        if (objectI.hitTime - endTime > stackThreshold) break;
+        if (hitTime(objectI) - endTime(objectN) > stackThreshold) break;
         if (n < extendedStartIndex) {
-          stackingHeights.set(objectN.id, 0);
+          setH(objectN, 0);
           extendedStartIndex = n;
         }
 
-        if (objectN.type === "SLIDER" && Vec2.distance(endPosition(objectN), objectI.position) < STACK_DISTANCE) {
+        if (isSlider(objectN) && Vec2.distance(endPosition(objectN), position(objectI)) < STACK_DISTANCE) {
           const offset = H(objectI) - H(objectN) + 1;
           for (let j = n + 1; j <= i; j++) {
-            const objectJ = getHitCircle(hitObjects[j]);
-            if (!objectJ) continue; // TODO: Inserted, but not sure
-            if (Vec2.distance(endPosition(objectN), objectJ.position) < STACK_DISTANCE) {
+            const objectJ = hitObjects[j];
+            if (isSpinner(objectJ)) continue; // TODO: Inserted, but not sure
+            if (Vec2.distance(endPosition(objectN), position(objectJ)) < STACK_DISTANCE) {
               setH(objectJ, H(objectJ) - offset);
             }
           }
           break;
         }
-        if (Vec2.distance(objectN.position, objectI.position) < STACK_DISTANCE) {
+        if (Vec2.distance(position(objectN), position(objectI)) < STACK_DISTANCE) {
           setH(objectN, H(objectI) + 1);
           objectI = objectN;
         }
       }
-    } else if (objectI.type === "SLIDER") {
+    } else {
       while (--n >= startIndex) {
-        const objectN = getHitCircle(hitObjects[n]);
-        if (!objectN) continue;
-        if (objectI.hitTime - objectN.hitTime > stackThreshold) break;
+        const objectN = hitObjects[n];
+        if (isSpinner(objectN)) continue;
+        if (hitTime(objectI) - hitTime(objectN) > stackThreshold) break;
 
-        if (Vec2.distance(endPosition(objectN), objectI.position) < STACK_DISTANCE) {
+        if (Vec2.distance(endPosition(objectN), position(objectI)) < STACK_DISTANCE) {
           setH(objectN, H(objectI) + 1);
           objectI = objectN;
         }
@@ -170,10 +156,12 @@ export function modifyStackingPosition(
   })();
   return produce(hitObjects, (list) => {
     list.forEach((hitObject) => {
-      const hitCircle = getHitCircle(hitObject as OsuHitObject);
-      if (hitCircle) {
-        hitCircle.position = stackedPosition(hitCircle.position, heights.get(hitCircle.id) ?? 0, hitCircle.scale);
-      }
+      if (isSpinner(hitObject as OsuHitObject)) return;
+      const h = hitCircle(hitObject as StackableHitObject);
+      h.position = stackedPosition(h.position, heights.get(h.id), h.scale);
+      // if (hitCircle) {
+      //   hitCircle.position = stackedPosition(hitCircle.position, heights.get(hitCircle.id) ?? 0, hitCircle.scale);
+      // }
     });
   });
 }

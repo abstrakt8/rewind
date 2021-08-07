@@ -9,7 +9,7 @@ import {
 } from "../blueprint/HitObjectSettings";
 import { ControlPointInfo } from "./ControlPoints/ControlPointInfo";
 import { HitCircle } from "../hitobjects/HitCircle";
-import { BeatmapDifficultyAdjuster, ModSettings, OsuClassicMods } from "../mods/Mods";
+import { BeatmapDifficultyAdjuster, ModSettings, OsuClassicMod } from "../mods/Mods";
 import produce from "immer";
 import { modifyStackingPosition } from "../mods/StackingMod";
 import { generateSliderCheckpoints } from "../hitobjects/slider/SliderCheckPointGenerator";
@@ -18,10 +18,10 @@ import { SliderPath } from "../hitobjects/slider/SliderPath";
 import { TimingControlPoint } from "./ControlPoints/TimingControlPoint";
 import { Slider } from "../hitobjects/Slider";
 import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
-import { OsuHitObject } from "../hitobjects";
 import { Beatmap } from "./Beatmap";
 import { Spinner } from "../hitobjects/Spinner";
 import { difficultyRange } from "@rewind/osu/math";
+import { OsuHitObject } from "../hitobjects/Types";
 
 // Minimum preempt time at AR=10
 const DEFAULT_FADE_IN = 400;
@@ -180,7 +180,7 @@ function assignComboIndex(bluePrintSettings: HitObjectSettings[], hitObjects: Os
 
 interface BeatmapBuilderOptions {
   addStacking: boolean;
-  mods: OsuClassicMods[];
+  mods: OsuClassicMod[];
 }
 
 const defaultBeatmapBuilderOptions: BeatmapBuilderOptions = {
@@ -189,7 +189,7 @@ const defaultBeatmapBuilderOptions: BeatmapBuilderOptions = {
 };
 
 // There should only be one, otherwise ...
-function findDifficultyApplier(mods: OsuClassicMods[]): BeatmapDifficultyAdjuster {
+function findDifficultyApplier(mods: OsuClassicMod[]): BeatmapDifficultyAdjuster {
   for (const m of mods) {
     if (ModSettings[m].difficultyAdjuster) {
       return ModSettings[m].difficultyAdjuster;

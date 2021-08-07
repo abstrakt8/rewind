@@ -26,7 +26,6 @@ export * from "./hitobjects/slider/PathControlPoint";
 export * from "./hitobjects/slider/PathType";
 export * from "./hitobjects/slider/SliderPath";
 export * from "./hitobjects/HitCircle";
-export * from "./hitobjects/index";
 export * from "./hitobjects/Types";
 export * from "./hitobjects/Slider";
 export * from "./hitobjects/SliderCheckPoint";

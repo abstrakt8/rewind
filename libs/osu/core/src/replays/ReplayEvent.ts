@@ -1,10 +1,10 @@
 import { Position } from "@rewind/osu/math";
 import { normalizeHitObjects } from "../utils";
 import { ReplayState } from "./ReplayState";
-import { OsuHitObject } from "../hitobjects";
 import { Slider } from "../hitobjects/Slider";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { MainHitObjectVerdict } from "./Verdicts";
+import { OsuHitObject } from "../hitobjects/Types";
 
 /**
  * ReplayAnalysisEvents are point of interests for the user.

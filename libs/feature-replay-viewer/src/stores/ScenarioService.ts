@@ -8,7 +8,7 @@ import {
   HitObjectJudgement,
   isHitObjectJudgement,
   NoteLockStyle,
-  OsuClassicMods,
+  OsuClassicMod,
   ReplayAnalysisEvent,
   ReplayStateTimeMachine,
   retrieveEvents,
@@ -157,7 +157,7 @@ export class ScenarioService {
     const gameClock = new PerformanceGameClock();
     const view = this.preferencesService.preferredViewSettings();
 
-    const mods: OsuClassicMods[] = [];
+    const mods: OsuClassicMod[] = [];
     // TODO: Depending on replayMods
     const modHidden = false;
     const playbackSpeed = 1.0;

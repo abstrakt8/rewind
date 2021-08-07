@@ -4,7 +4,7 @@ import { BeatmapDifficultyAdjuster, HitObjectsAdjuster } from "./Mods";
 import produce from "immer";
 import { Position } from "@rewind/osu/math";
 import { Slider } from "../hitobjects/Slider";
-import { OsuHitObject } from "../hitobjects";
+import { OsuHitObject } from "../hitobjects/Types";
 
 function flipY(position: Position) {
   const { x, y } = position;

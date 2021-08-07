@@ -37,7 +37,7 @@ export class ObjectPool<T> {
         return [this.pool[i], true];
       }
     }
-    console.log(`Current size : ${this.pool.length}, Free: ${this.free} `);
+    // console.log(`Current size : ${this.pool.length}, Free: ${this.free} `);
     if (this.free > 0) {
       this.dict.set(id, --this.free);
       return [this.pool[this.free], false];
