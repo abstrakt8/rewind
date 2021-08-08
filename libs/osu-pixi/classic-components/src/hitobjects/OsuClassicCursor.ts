@@ -8,6 +8,7 @@ import { Position, Vec2 } from "@rewind/osu/math";
 const MAX_CURSOR_TRAILS = 8;
 
 export interface OsuClassicCursorSetting {
+  // The position of the cursor
   position: Position;
 
   // 0th trail is the earliest and will have the highest alpha, the others will "fade out" just like in OsuClassic
@@ -54,6 +55,7 @@ export class OsuClassicCursor implements PrepareSetting<OsuClassicCursorSetting>
       this.container.addChild(this.cursorTrailSprites[MAX_CURSOR_TRAILS - i - 1]);
     }
     this.container.addChild(this.cursorSprite);
+    this.container.position.set(0, 0);
   }
 
   prepare(setting: Partial<OsuClassicCursorSetting>): void {
@@ -65,18 +67,20 @@ export class OsuClassicCursor implements PrepareSetting<OsuClassicCursorSetting>
 
     // The cursor is centered in the container at (0, 0) and the container is the one that gets "moved" around.
     // The cursor trails have their positions relative to (0, 0) basically.
-    this.cursorSprite.position.set(0, 0);
-    this.container.position.set(position.x, position.y);
+    this.cursorSprite.position.set(position.x, position.y);
+    this.cursorSprite.scale.set(cursorScale);
+    // this.container.position.set(position.x, position.y);
     this.cursorTrailSprites.forEach((cts, i) => {
       cts.texture = cursorTrailTexture;
       if (i < trailPositions.length) {
-        const offset = Vec2.sub(trailPositions[i], position);
-        cts.position.set(offset.x, offset.y);
+        // const offset = Vec2.sub(trailPositions[i], position);
+        cts.position.set(trailPositions[i].x, trailPositions[i].y);
         cts.alpha = (trailPositions.length - i) / trailPositions.length; // Linear (but might be configurable)
+        cts.scale.set(cursorScale);
       } else {
         cts.alpha = 0;
       }
     });
-    this.container.scale.set(cursorScale);
+    // this.container.scale.set(cursorScale);
   }
 }

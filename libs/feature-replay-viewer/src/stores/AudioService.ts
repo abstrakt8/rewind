@@ -18,8 +18,6 @@ export class AudioService implements GameClock {
 
   song?: MediaElementAudioSourceNode;
 
-  sampleBuffers: { [key: string]: AudioBuffer };
-
   // In seconds
   sampleWindow = 0.1;
   schedulePointer = 0;
@@ -42,13 +40,14 @@ export class AudioService implements GameClock {
     this.musicGain.gain.value = 0.35;
     this.samplesGain.gain.value = 1.0;
 
-    this.sampleBuffers = {};
     makeObservable(this, {
       start: action,
       pause: action,
       isPlaying: observable,
       playbackRate: observable,
       currentSpeed: computed,
+      maxTime: computed,
+      song: observable,
     });
   }
 
