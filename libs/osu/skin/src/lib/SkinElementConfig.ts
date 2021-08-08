@@ -23,18 +23,18 @@ export enum SkinTextures {
   SLIDER_REPEAT = "sliderrepeat",
   //
   // // Spinner
-  // SPINNER_APPROACH_CIRCLE,
-  // SPINNER_BACKGROUND,
-  // SPINNER_BOTTOM,
-  // SPINNER_CIRCLE,
-  // SPINNER_CLEAR,
-  // SPINNER_GLOW,
-  // SPINNER_MIDDLE,
-  // SPINNER_OSU,
-  // SPINNER_RPM,
-  // SPINNER_SPIN,
-  // SPINNER_TOP,
-  //
+  SPINNER_APPROACH_CIRCLE = "SPINNER_APPROACH_CIRCLE",
+  SPINNER_BACKGROUND = "SPINNER_BACKGROUND",
+  SPINNER_BOTTOM = "SPINNER_BOTTOM",
+  SPINNER_CIRCLE = "SPINNER_CIRCLE",
+  SPINNER_CLEAR = "SPINNER_CLEAR",
+  SPINNER_GLOW = "SPINNER_GLOW",
+  SPINNER_MIDDLE2 = "SPINNER_MIDDLE2",
+  SPINNER_MIDDLE = "SPINNER_MIDDLE",
+  SPINNER_OSU = "SPINNER_OSU",
+  SPINNER_RPM = "SPINNER_RPM",
+  SPINNER_SPIN = "SPINNER_SPIN",
+  SPINNER_TOP = "SPINNER_TOP",
 
   // I think default shouldn't even exist -> Score and Combo might use them but also might not
   DEFAULT_0 = "default0",
@@ -189,6 +189,7 @@ export const getDefaultNumberSkinTexture = (digit: number): SkinTextures => {
   throw Error("what u doing");
 };
 
+//
 export const DefaultTextureConfig: DefaultTextureConfigType = {
   [SkinTextures.HIT_CIRCLE]: {
     filePrefix: "hitcircle",
@@ -283,4 +284,47 @@ export const DefaultTextureConfig: DefaultTextureConfigType = {
   [SkinTextures.CURSOR_TRAIL]: {
     filePrefix: "cursortrail",
   },
+  [SkinTextures.SPINNER_APPROACH_CIRCLE]: {
+    // Element is positioned around 397px vertically
+    // Applied to old and new style
+    filePrefix: "spinner-approachcircle",
+  },
+  [SkinTextures.SPINNER_RPM]: {
+    /*
+    Origin: TopLeft
+    This element is positioned at 139px to the left from the middle of the screen and at 712px height
+(373,712) at 1024x768
+(544,712) at 1366x768
+     */
+    filePrefix: "spinner-rpm",
+  },
+
+  [SkinTextures.SPINNER_CLEAR]: {
+    // Position around 230px vertically
+    // Shown, when player has fulfilled the spinner
+    filePrefix: "spinner-clear",
+  },
+  [SkinTextures.SPINNER_SPIN]: {
+    // Positioned around 582px vertically
+    // Appears at the start of the spinner
+    filePrefix: "spinner-spin",
+  },
+  [SkinTextures.SPINNER_GLOW]: {
+    filePrefix: "spinner-glow",
+  },
+  [SkinTextures.SPINNER_BOTTOM]: {
+    filePrefix: "spinner-bottom",
+  },
+  [SkinTextures.SPINNER_TOP]: {
+    filePrefix: "spinner-top",
+  },
+  [SkinTextures.SPINNER_MIDDLE2]: {
+    filePrefix: "spinner-middle2",
+  },
+  [SkinTextures.SPINNER_MIDDLE]: {
+    filePrefix: "spinner-middle",
+  },
+
+  // Spinner (old) TODO: Someday
+  // spinner-background, circle, metre, osu
 };
