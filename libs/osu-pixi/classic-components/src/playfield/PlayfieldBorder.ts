@@ -1,25 +1,35 @@
 import * as PIXI from "pixi.js";
 import { Graphics } from "pixi.js";
 import { OSU_PLAYFIELD_BASE_X, OSU_PLAYFIELD_BASE_Y } from "./ExtendedPlayfieldContainer";
+import { circleSizeToScale } from "@rewind/osu/math";
 
-// thickness in osu!px
-type PlayfieldBorderStyle = { type?: any; thickness: number };
+// Thickness in osu!px
+type PlayfieldBorderSettings = {
+  enabled: boolean;
+  thickness: number;
+  // Type : Full, Corners, ...
+  // Maybe also
+};
 
-export class PlayfieldBorder extends Graphics {
-  style: PlayfieldBorderStyle;
+const cs4 = circleSizeToScale(4) * 64;
 
-  constructor(style?: PlayfieldBorderStyle) {
-    super();
-    this.style = Object.assign({ type: "full", thickness: 2 }, style);
+export class PlayfieldBorder {
+  graphics: Graphics;
+
+  constructor() {
+    this.graphics = new Graphics();
   }
 
-  render(renderer: PIXI.Renderer): void {
-    super.render(renderer);
-    // The thickness is defined by the osu!px x value.
-    this.clear();
+  prepare(settings: PlayfieldBorderSettings) {
+    const { thickness, enabled } = settings;
+    this.graphics.clear();
+
+    if (enabled) {
+      // TODO: Alpha configurable?
+      this.graphics.lineStyle(thickness, 0xffffff, 0.7);
+      this.graphics.drawRect(-cs4, -cs4, OSU_PLAYFIELD_BASE_X + cs4, OSU_PLAYFIELD_BASE_Y + cs4);
+    }
     // TODO: Add more options for color, alpha
-    this.lineStyle(this.style.thickness, 0xffffff, 0.7);
     // TODO: Are there off by one errors here? (or more?)
-    this.drawRect(0, 0, OSU_PLAYFIELD_BASE_X, OSU_PLAYFIELD_BASE_Y);
   }
 }

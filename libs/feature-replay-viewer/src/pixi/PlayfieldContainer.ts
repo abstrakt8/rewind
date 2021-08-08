@@ -40,7 +40,7 @@ export class PlayfieldContainer {
     this.cursorContainer = new Container();
 
     this.container.addChild(
-      this.playfieldBorder,
+      this.playfieldBorder.graphics,
       this.hitObjectPreparer.spinnerProxies,
       this.judgementLayer,
       this.hitObjectPreparer.hitObjectContainer,
@@ -181,7 +181,13 @@ export class PlayfieldContainer {
     // this.judgementLayer.sortChildren();
   }
 
+  preparePlayfieldBorder(scene: Scene) {
+    const { thickness, enabled } = scene.view.playfieldBorder;
+    this.playfieldBorder.prepare({ thickness, enabled });
+  }
+
   prepare(scene: Scene) {
+    this.preparePlayfieldBorder(scene);
     this.hitObjectPreparer.prepare(scene);
     this.prepareCursors(scene);
     this.prepareJudgements(scene);
