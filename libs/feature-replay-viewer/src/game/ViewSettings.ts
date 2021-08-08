@@ -37,7 +37,7 @@ export const defaultViewSettings: () => ViewSettings = () => ({
     thickness: 2,
     enabled: true,
   },
-  backgroundDim: 0.5,
+  backgroundDim: 0.1,
   modHidden: false,
   osuCursor: {
     showTrail: true,

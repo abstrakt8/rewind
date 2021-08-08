@@ -12,6 +12,7 @@ export interface Scene {
   gameplayInfo?: GameplayInfo;
   judgements: HitObjectJudgement[];
   view: ViewSettings;
+  backgroundUrl: string;
 }
 
 export type SceneLoader = () => Scene;

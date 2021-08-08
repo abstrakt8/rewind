@@ -35,6 +35,7 @@ export class Scenario {
   constructor(
     public readonly gameClock: GameClock,
     public readonly beatmap: Beatmap,
+    public readonly backgroundUrl: string,
     public skin: Skin,
     public view: ViewSettings,
     public readonly replay?: OsuReplay,
@@ -89,7 +90,7 @@ export class Scenario {
   }
 
   getCurrentScene(): Scene {
-    const { skin, beatmap, replay, judgements } = this;
+    const { skin, beatmap, replay, judgements, backgroundUrl } = this;
     const time = this.gameClock.getCurrentTime();
     const gameplayState = this.gameplayTimeMachine?.replayStateAt(time);
     const gameplayInfo = gameplayState
@@ -105,6 +106,7 @@ export class Scenario {
       skin,
       judgements,
       view: this._view,
+      backgroundUrl,
     };
   }
 }
@@ -112,6 +114,7 @@ export class Scenario {
 const defaultScenario: Scenario = new Scenario(
   new PerformanceGameClock(),
   Beatmap.EMPTY_BEATMAP,
+  "",
   Skin.EMPTY,
   defaultViewSettings(),
 );
@@ -177,6 +180,10 @@ export class ScenarioService {
     gameClock.setSpeed(playbackSpeed);
 
     const beatmap = buildBeatmap(blueprint, { addStacking: true, mods });
+    const backgroundUrl = this.blueprintService.backgroundUrl(
+      blueprintId,
+      blueprint.blueprintInfo.metadata.backgroundFile,
+    );
 
     // if (replay) {
     //   // This implicitly also calculates all states for each bucket
@@ -186,7 +193,7 @@ export class ScenarioService {
     // }
     // console.log("Loaded blue print", blueprintId, replayId);
 
-    const scenario = new Scenario(gameClock, beatmap, skin, view, replay);
+    const scenario = new Scenario(gameClock, beatmap, backgroundUrl, skin, view, replay);
 
     return scenario;
   }

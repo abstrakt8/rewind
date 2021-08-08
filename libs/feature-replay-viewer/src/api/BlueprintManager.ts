@@ -11,12 +11,12 @@ export interface BlueprintManager {
  * A beatmap manager that loads the beatmap from an osu-express API.
  */
 export class OsuExpressBlueprintManager implements BlueprintManager {
-  constructor(private readonly osuExpressUrl: string) {}
+  constructor(private readonly apiUrl: string) {}
 
   // TODO: Ofc with caching some point in time
-  async loadBlueprint(beatmapFolderAndFile: string): Promise<Blueprint> {
-    const url = `${this.osuExpressUrl}/static/songs/${beatmapFolderAndFile}`;
-    const name = `beatmaps/${beatmapFolderAndFile}/osu`;
+  async loadBlueprint(id: string): Promise<Blueprint> {
+    const url = `${this.apiUrl}/api/blueprints/${id}/osu`;
+    // const name = `beatmaps/${beatmapFolderAndFile}/osu`;
     const osuFile = (await axios
       .get(url)
       .then((value) => value.data)

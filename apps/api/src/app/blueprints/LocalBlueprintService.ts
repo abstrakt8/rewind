@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { LocalBlueprint } from "./LocalBlueprint";
+import { BlueprintInfo } from "./BlueprintInfo";
 import { OsuDBDao } from "./OsuDBDao";
 import { stat, readFile } from "fs/promises";
 import { join } from "path";
@@ -9,7 +9,7 @@ import { OSU_FOLDER } from "../constants";
 
 const sectionsToRead: BlueprintSection[] = ["General", "Difficulty", "Events", "Metadata"];
 
-function mapToLocalBlueprint(blueprint: Blueprint, osuFileName: string, folderName: string): LocalBlueprint {
+function mapToLocalBlueprint(blueprint: Blueprint, osuFileName: string, folderName: string): BlueprintInfo {
   const { metadata } = blueprint.blueprintInfo;
   const md5Hash = "";
   return {
@@ -27,7 +27,7 @@ function mapToLocalBlueprint(blueprint: Blueprint, osuFileName: string, folderNa
 
 @Injectable()
 export class LocalBlueprintService {
-  blueprints: Record<string, LocalBlueprint> = {};
+  blueprints: Record<string, BlueprintInfo> = {};
 
   constructor(private readonly osuDbDao: OsuDBDao, @Inject(OSU_FOLDER) private readonly osuFolder: string) {}
 
@@ -59,11 +59,11 @@ export class LocalBlueprintService {
   }
 
   // Usually for watchers
-  addNewBlueprint(blueprint: LocalBlueprint) {
+  addNewBlueprint(blueprint: BlueprintInfo) {
     this.blueprints[blueprint.md5Hash] = blueprint;
   }
 
-  async getAllBlueprints(): Promise<Record<string, LocalBlueprint>> {
+  async getAllBlueprints(): Promise<Record<string, BlueprintInfo>> {
     // It's better to rely on the "osu!.db" than the ones we received from watching.
     // But ofc, we if we read from osu!.db again there might still be some folders that have not been properly flushed.
     if (await this.osuDbDao.hasChanged()) {
@@ -72,7 +72,7 @@ export class LocalBlueprintService {
     return this.blueprints;
   }
 
-  async getBlueprintByMD5(md5: string): Promise<LocalBlueprint | undefined> {
+  async getBlueprintByMD5(md5: string): Promise<BlueprintInfo | undefined> {
     const maps = await this.getAllBlueprints();
     return maps[md5];
   }

@@ -444,6 +444,7 @@ export class OsuBlueprintParser {
 
   // TODO: Don't know if we should support stream reading because this does read the entire file into memory though.
   private sectionsToRead: readonly BlueprintSection[];
+  private sectionsFinishedReading: string[];
 
   constructor(data: string, options: BlueprintParseOptions = defaultOptions) {
     this.data = data;
@@ -451,10 +452,15 @@ export class OsuBlueprintParser {
     this.section = null;
     this.formatVersion = options.formatVersion;
     this.sectionsToRead = options.sectionsToRead;
+    this.sectionsFinishedReading = [];
 
     // BeatmapVersion 4 and lower had an incorrect offset (stable has this set as 24ms off)
     this.offset = this.formatVersion <= 4 ? 24 : 0;
     // this.hitObjectParser = new OsuHitObjectParser(this.offset, this.formatVersion);
+  }
+
+  finishedReading() {
+    return this.sectionsToRead <= this.sectionsFinishedReading;
   }
 
   parseLine(line: string): void {
@@ -467,10 +473,16 @@ export class OsuBlueprintParser {
       return;
     }
     if (SECTION_REGEX.test(strippedLine)) {
+      // We only add sections we want to read to the list
+      if (this.sectionsToRead.indexOf(this.section) !== -1) {
+        this.sectionsFinishedReading.push(this.section);
+      }
       this.section = (SECTION_REGEX.exec(strippedLine) as RegExpExecArray)[1] as BlueprintSection;
+      // It will stop when we are done with reading all required sections
       return;
     }
 
+    // We skip reading sections we don't want to read for optimization
     if (this.sectionsToRead.indexOf(this.section) === -1) {
       return;
     }
@@ -493,13 +505,30 @@ export class OsuBlueprintParser {
         break;
       // Below are low priority sections
       case "Events":
-        // Contains the background path ...
+        this.handleEvents(strippedLine);
         break;
       case "Editor":
         this.handleEditor(strippedLine);
         break;
       case "Colours":
         break;
+    }
+  }
+
+  handleEvents(line: string) {
+    const [eventType, _startTime, ...eventParams] = line.split(",");
+    switch (eventType) {
+      case "0": {
+        const [filename, xOffset, yOffset] = eventParams;
+        // The quotes can optionally be given ...
+        this.blueprint.blueprintInfo.metadata.backgroundFile = filename.replace(/"/g, "");
+        this.blueprint.blueprintInfo.metadata.backgroundOffset = {
+          // In case they weren't provided: 0,0 should be used according to docs.
+          x: parseInt(xOffset ?? "0"),
+          y: parseInt(yOffset ?? "0"),
+        };
+      }
+      // Videos and Storyboard ignored for first...
     }
   }
 
@@ -727,6 +756,9 @@ export class OsuBlueprintParser {
     const lines = this.data.split("\n").map((v) => v.trim());
     for (const line of lines) {
       this.parseLine(line);
+      if (this.finishedReading()) {
+        break;
+      }
     }
     this.flushPendingPoints();
     return this.blueprint;

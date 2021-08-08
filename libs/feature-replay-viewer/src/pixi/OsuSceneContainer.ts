@@ -2,12 +2,15 @@ import * as PIXI from "pixi.js";
 import { Scene } from "../game/Scene";
 import { PlayfieldContainer } from "./PlayfieldContainer";
 import { ForegroundHUDContainer } from "./ForegroundHUDContainer";
+import { Sprite, Texture } from "pixi.js";
 
 export const OSU_PLAYFIELD_BASE_X = 512;
 export const OSU_PLAYFIELD_BASE_Y = 384;
 
 export class OsuSceneContainer {
   public stage: PIXI.Container;
+  private backgroundUrlUsed = "";
+  private background: Sprite;
   private playfield: PlayfieldContainer;
   private foregroundHUD: ForegroundHUDContainer;
 
@@ -18,18 +21,27 @@ export class OsuSceneContainer {
     this.stage = new PIXI.Container();
     this.playfield = new PlayfieldContainer(renderer);
     this.foregroundHUD = new ForegroundHUDContainer();
+    this.background = new Sprite();
 
-    this.stage.addChild(this.playfield.container, this.foregroundHUD.container);
+    this.stage.addChild(this.background, this.playfield.container, this.foregroundHUD.container);
   }
 
   prepare(scene: Scene) {
-    this.prepareBackground();
+    this.prepareBackground(scene);
     this.foregroundHUD.prepare(scene);
     this.playfield.prepare(scene);
   }
 
-  prepareBackground() {
-    // TODO: Texture of the background ...
+  async prepareBackground(scene: Scene) {
+    const { backgroundUrl, view } = scene;
+    if (backgroundUrl !== this.backgroundUrlUsed) {
+      // Not sure if that is bad
+      this.background.texture = await Texture.fromURL(backgroundUrl);
+      this.backgroundUrlUsed = backgroundUrl;
+      console.log(`Using backgroundUrl=${backgroundUrl}`);
+    }
+    this.background.alpha = view.backgroundDim;
+    this.background.anchor.set(0.5, 0.5);
   }
 
   resizeTo(widthInPx: number, heightInPx: number): void {
@@ -37,7 +49,7 @@ export class OsuSceneContainer {
     this.heightInPx = heightInPx;
     this.foregroundHUD.resizeTo(widthInPx, heightInPx);
 
-    // this.backgroundSprite.position.set(this.widthInPx / 2, this.heightInPx / 2);
+    this.background.position.set(this.widthInPx / 2, this.heightInPx / 2);
     const scaling = this.getPlayfieldScaling();
     this.playfield.container.scale.set(scaling);
     // Set it to the center
@@ -46,6 +58,7 @@ export class OsuSceneContainer {
       (heightInPx - OSU_PLAYFIELD_BASE_Y * scaling) / 2,
     );
   }
+
   /**
    *
    * @param paddingPercent how much padding to use 80% means that there is 10% on both sides is padded.

@@ -8,4 +8,8 @@ export class BlueprintService {
     const b = new OsuExpressBlueprintManager(this.url);
     return b.loadBlueprint(id);
   }
+
+  backgroundUrl(id: string, bgFile: string) {
+    return `${this.url}/api/blueprints/${id}/folder/${bgFile}`;
+  }
 }

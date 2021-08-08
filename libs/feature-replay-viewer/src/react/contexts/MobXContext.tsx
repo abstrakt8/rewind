@@ -17,19 +17,16 @@ export const MobXProvider = (props: MobXProps) => {
   const { children, url, socket } = props;
   const rootStore = new RootStore({ url });
   if (socket) {
-    socket.on(
-      "replayAdded",
-      (replay: { filename: string }, beatmapMetaData: { folderName: string; osuFileName: string }) => {
-        const { folderName, osuFileName } = beatmapMetaData;
-        console.log(`Replay added: ${replay.filename}, ${beatmapMetaData.folderName}`);
+    socket.on("replayAdded", (replay: { filename: string }, beatmapMetaData: { md5Hash: string }) => {
+      const { md5Hash } = beatmapMetaData;
+      console.log(`Replay added: ${replay.filename}, ${md5Hash}`);
 
-        const blueprintId = `${folderName}/${osuFileName}`;
-        const replayId = replay.filename;
-        rootStore.scenarioService.changeScenario(blueprintId, replayId).then(() => {
-          console.log("Successfully changed scenario from WebSocket broadcast");
-        });
-      },
-    );
+      const blueprintId = md5Hash;
+      const replayId = replay.filename;
+      rootStore.scenarioService.changeScenario(blueprintId, replayId).then(() => {
+        console.log("Successfully changed scenario from WebSocket broadcast");
+      });
+    });
   }
 
   return <MobXContext.Provider value={rootStore}>{children}</MobXContext.Provider>;

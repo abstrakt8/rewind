@@ -1,12 +1,12 @@
 import { readFile } from "fs/promises";
-import { LocalBlueprint } from "./LocalBlueprint";
+import { BlueprintInfo } from "./BlueprintInfo";
 import { fileLastModifiedTime, ticksToDate } from "@rewind/osu-local/utils";
 import { Beatmap as DBBeatmap, OsuDBReader } from "@rewind/osu-local/db-reader";
 import { Inject } from "@nestjs/common";
 import { OSU_FOLDER } from "../constants";
 import { join } from "path";
 
-const mapToBlueprint = (b: DBBeatmap): LocalBlueprint => {
+const mapToBlueprint = (b: DBBeatmap): BlueprintInfo => {
   return {
     md5Hash: b.md5Hash,
     audioFileName: b.audioFileName,
@@ -21,7 +21,7 @@ const mapToBlueprint = (b: DBBeatmap): LocalBlueprint => {
 
 export class OsuDBDao {
   private lastMtime = -1;
-  private blueprints: LocalBlueprint[] = [];
+  private blueprints: BlueprintInfo[] = [];
 
   constructor(@Inject(OSU_FOLDER) private readonly osuFolder: string) {}
 
@@ -46,7 +46,7 @@ export class OsuDBDao {
     return this.lastMtime;
   }
 
-  async getAllBlueprints(): Promise<LocalBlueprint[]> {
+  async getAllBlueprints(): Promise<BlueprintInfo[]> {
     const lastModified = await this.getOsuDbLastModifiedTime();
     if (lastModified === this.lastMtime) {
       return this.blueprints;
@@ -58,7 +58,7 @@ export class OsuDBDao {
     return (this.blueprints = osuDB.beatmaps.map(mapToBlueprint));
   }
 
-  async getBlueprintByMD5(md5: string): Promise<LocalBlueprint | undefined> {
+  async getBlueprintByMD5(md5: string): Promise<BlueprintInfo | undefined> {
     const maps = await this.getAllBlueprints();
     return maps.find((m) => m.md5Hash === md5);
   }
