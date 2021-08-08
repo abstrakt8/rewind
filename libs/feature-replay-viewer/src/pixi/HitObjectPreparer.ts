@@ -1,6 +1,6 @@
 import { Container, Graphics, Renderer, Texture } from "pixi.js";
 import { Scene } from "../game/Scene";
-import { HitCircle, Slider, SliderCheckPoint, Spinner } from "@rewind/osu/core";
+import { HitCircle, isHitCircle, isSlider, isSpinner, Slider, SliderCheckPoint, Spinner } from "@rewind/osu/core";
 import { Skin } from "../skins/Skin";
 import {
   BasicSliderTextureRenderer,
@@ -12,6 +12,7 @@ import {
   OsuClassicSliderBall,
   OsuClassicSliderBody,
   OsuClassicSliderRepeat,
+  OsuClassicSpinner,
   SliderBodySettings,
   SliderTextureManager,
 } from "@rewind/osu-pixi/classic-components";
@@ -216,7 +217,21 @@ export class HitObjectPreparer {
     this.prepareHitCircle(scene, slider.head);
   }
 
-  prepareSpinner() {}
+  prepareSpinner(scene: Scene, spinner: Spinner) {
+    const { skin, time, view } = scene;
+
+    if (spinner.startTime <= time && time <= spinner.endTime + 500) {
+      const gSpinner = new OsuClassicSpinner();
+      gSpinner.prepare({
+        approachCircleTexture: skin.getTexture(SkinTextures.SPINNER_APPROACH_CIRCLE),
+        duration: spinner.duration,
+        time: time - spinner.endTime,
+        modHidden: view.modHidden,
+      });
+
+      this.hitObjectContainer.addChild(gSpinner.container);
+    }
+  }
 
   prepare(scene: Scene) {
     const { beatmap } = scene;
@@ -229,9 +244,9 @@ export class HitObjectPreparer {
     // TODO: This assumes that they are ordered by some time
     for (let i = hitObjects.length - 1; i >= 0; i--) {
       const hitObject = hitObjects[i];
-      if (hitObject instanceof HitCircle) this.prepareHitCircle(scene, hitObject);
-      if (hitObject instanceof Slider) this.prepareSlider(scene, hitObject);
-      // if (hitObject instanceof Spinner) this.prepareSpinner();
+      if (isHitCircle(hitObject)) this.prepareHitCircle(scene, hitObject);
+      if (isSlider(hitObject)) this.prepareSlider(scene, hitObject);
+      if (isSpinner(hitObject)) this.prepareSpinner(scene, hitObject);
     }
 
     this.graphicsPool.releaseUntouched();
