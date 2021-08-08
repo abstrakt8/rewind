@@ -14,10 +14,6 @@ export class LocalBlueprintController {
     private readonly userConfigService: UserConfigService,
   ) {}
 
-  songsFolder(...args: string[]) {
-    return join(this.userConfigService.getConfig().osuDirectory, "Songs", ...args);
-  }
-
   async blueprint(md5: string) {
     return this.blueprintService.getBlueprintByMD5(md5);
   }

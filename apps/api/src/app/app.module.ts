@@ -19,6 +19,19 @@ import { OsuDBDao } from "./blueprints/OsuDBDao";
 
 // TODO: Split into multiple modules: Replay/Skin/ ...
 
+// const osuFolderFactory = {
+//   provide: OSU_FOLDER,
+//   useFactory: (userConfigService: UserConfigService) => {
+//     return userConfigService.getConfig().osuDirectory;
+//   },
+//   inject: [UserConfigService],
+// }; // TODO: Dynamically resolve...
+const osuFolderFactory = {
+  provide: OSU_FOLDER,
+  useValue: "E:\\osu!",
+};
+
+//
 @Module({
   imports: [
     GraphQLModule.forRoot({
@@ -28,7 +41,7 @@ import { OsuDBDao } from "./blueprints/OsuDBDao";
   ],
   controllers: [AppController, LocalReplayController, SkinController, LocalBlueprintController],
   providers: [
-    { provide: OSU_FOLDER, useValue: "E:\\osu!" }, // TODO: Dynamically resolve...
+    osuFolderFactory,
     AppService,
     SkinResolver,
     SkinService,

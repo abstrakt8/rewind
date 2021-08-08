@@ -11,6 +11,7 @@ import { AppModule } from "./app/app.module";
 import { OSU_FOLDER } from "./app/constants";
 import { ReplayWatcher } from "./app/replays/ReplayWatcher";
 import { join } from "path";
+import { LocalBlueprintService } from "./app/blueprints/LocalBlueprintService";
 
 const globalPrefix = "api";
 
@@ -24,6 +25,10 @@ async function bootstrap() {
   app.useStaticAssets(join(osuFolder, "Songs"), { prefix: "/static/songs" });
   // app.useStaticAssets("E:\\osu!\\Replays", { prefix: "/static/replays" });
   // app.useStaticAssets("E:\\osu!\\Data\\r", { prefix: "/static/replays" });
+
+  // TODO TODO TODO getAllBlueprints() should store a state "IS_LOADING"
+  const localBlueprintService = app.get(LocalBlueprintService);
+  localBlueprintService.getAllBlueprints().then(() => Logger.log("Loaded all blueprints."));
 
   const replayWatcher = app.get(ReplayWatcher);
   replayWatcher.watchForReplays(join(osuFolder, "Replays"));

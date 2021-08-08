@@ -32,7 +32,7 @@ export class LocalBlueprintService {
   constructor(private readonly osuDbDao: OsuDBDao, @Inject(OSU_FOLDER) private readonly osuFolder: string) {}
 
   get songsFolder() {
-    return this.osuFolder + "/Songs";
+    return join(this.osuFolder, "Songs");
   }
 
   // osu!.db + Songs folder read
@@ -74,6 +74,7 @@ export class LocalBlueprintService {
 
   async getBlueprintByMD5(md5: string): Promise<BlueprintInfo | undefined> {
     const maps = await this.getAllBlueprints();
+    console.log("md5", md5);
     return maps[md5];
   }
 }
