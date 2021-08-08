@@ -290,13 +290,12 @@ export class NextFrameEvaluator {
 
   // OsuFramedReplayInputHandler.cs
   // Used for interpolation
-  private previousTime: number;
-  private previousPosition: Position;
+  private previousTime = 0;
+  private previousPosition: Position = { x: 0, y: 0 };
 
   private gameState: GameState;
-  private hitWindows: number[];
-  private noteLockStyle: NoteLockStyle;
-  private settings: NextFrameEvaluatorOptions;
+  private readonly hitWindows: number[];
+  private readonly settings: NextFrameEvaluatorOptions;
 
   constructor(private readonly beatmap: Beatmap, settings?: Partial<NextFrameEvaluatorOptions>) {
     this.settings = Object.assign({ ...defaultOptions }, settings);

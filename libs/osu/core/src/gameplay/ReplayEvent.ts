@@ -1,4 +1,4 @@
-import { Position } from "@rewind/osu/math";
+import { formatGameTime, Position } from "@rewind/osu/math";
 import { normalizeHitObjects } from "../utils";
 import { GameState } from "./GameState";
 import { Slider } from "../hitobjects/Slider";
@@ -54,12 +54,12 @@ export const isHitObjectJudgement = (h: ReplayAnalysisEvent): h is HitObjectJudg
 
 // This is osu!stable style and is also only recommended for offline processing.
 // In the future, where something like online replay streaming is implemented, this implementation will ofc be too slow.
-export function retrieveEvents(replayState: GameState, hitObjects: OsuHitObject[]) {
+export function retrieveEvents(gameState: GameState, hitObjects: OsuHitObject[]) {
   const events: ReplayAnalysisEvent[] = [];
   const dict = normalizeHitObjects(hitObjects);
 
   // HitCircle judgements (SliderHeads included and indicated)
-  for (const [id, state] of replayState.hitCircleState.entries()) {
+  for (const [id, state] of gameState.hitCircleState.entries()) {
     const hitCircle = dict[id] as HitCircle;
     const isSliderHead = hitCircle.sliderId !== undefined;
     const verdict = state.type;
@@ -73,7 +73,7 @@ export function retrieveEvents(replayState: GameState, hitObjects: OsuHitObject[
     });
   }
 
-  for (const [id, verdict] of replayState.sliderJudgement.entries()) {
+  for (const [id, verdict] of gameState.sliderJudgement.entries()) {
     // Slider judgement events
     const slider = dict[id] as Slider;
     const position = slider.endPosition;
@@ -81,7 +81,14 @@ export function retrieveEvents(replayState: GameState, hitObjects: OsuHitObject[
 
     // CheckpointEvents
     for (const point of slider.checkPoints) {
-      const hit = replayState.checkPointState.get(point.id).hit;
+      // TODO: How is it possible that one of them is not judged?
+      const checkPointState = gameState.checkPointState.get(point.id);
+      if (!checkPointState) {
+        console.log(`WTF @ ${point.id} ${formatGameTime(point.hitTime, true)}`);
+      }
+
+      const hit = checkPointState?.hit ?? false;
+
       const isLastTick = point.type === "LAST_LEGACY_TICK";
       events.push({ time: slider.endTime, position: point.position, type: "CheckpointJudgement", hit, isLastTick });
     }
