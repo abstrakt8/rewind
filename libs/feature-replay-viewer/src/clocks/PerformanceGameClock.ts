@@ -63,4 +63,8 @@ export class PerformanceGameClock implements GameClock {
   get currentSpeed(): number {
     return this.playbackRate;
   }
+
+  get maxTime(): number {
+    return 20 * 1000 * 60;
+  }
 }

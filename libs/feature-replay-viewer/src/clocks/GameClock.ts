@@ -9,4 +9,5 @@ export interface GameClock {
   currentSpeed: number;
   isPlaying: boolean;
   setSpeed(speed: number): void;
+  maxTime: number;
 }

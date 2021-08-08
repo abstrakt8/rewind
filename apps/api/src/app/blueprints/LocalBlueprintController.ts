@@ -35,6 +35,12 @@ export class LocalBlueprintController {
     return this.redirectToFolder(res, md5hash, blueprintMetaData.osuFileName);
   }
 
+  @Get(":md5hash/audio")
+  async getBlueprintAudio(@Res() res: Response, @Param("md5hash") md5hash: string) {
+    const blueprintMetaData = await this.blueprint(md5hash);
+    return this.redirectToFolder(res, md5hash, blueprintMetaData.audioFileName);
+  }
+
   @Get(":md5hash/folder/:file")
   async redirectToFolder(@Res() res: Response, @Param("md5hash") md5hash: string, @Param("file") file: string) {
     const blueprintMetaData = await this.blueprint(md5hash);

@@ -9,7 +9,12 @@ export class BlueprintService {
     return b.loadBlueprint(id);
   }
 
+  // TODO: Implement a service method /background
   backgroundUrl(id: string, bgFile: string) {
     return `${this.url}/api/blueprints/${id}/folder/${bgFile}`;
+  }
+
+  audioUrl(id: string) {
+    return `${this.url}/api/blueprints/${id}/audio`;
   }
 }

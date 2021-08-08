@@ -23,6 +23,7 @@ import { PerformanceGameClock } from "../clocks/PerformanceGameClock";
 import { PreferencesService } from "./PreferencesService";
 import { SkinService } from "./SkinService";
 import { action, autorun, computed, makeObservable, observable, toJS } from "mobx";
+import { AudioService } from "./AudioService";
 
 // A scene defines what should be drawn on the screen.
 // The scene manager is almost equivalent to the store in Redux and PixiJS is just the underlying rendering platform.
@@ -138,6 +139,7 @@ export class ScenarioService {
     private readonly replayService: ReplayService,
     private readonly skinService: SkinService,
     private readonly preferencesService: PreferencesService,
+    private readonly audioService: AudioService,
   ) {
     makeObservable(this, {
       currentScenario: computed,
@@ -161,15 +163,16 @@ export class ScenarioService {
 
   async loadScenario(blueprintId: string, replayId?: string) {
     // An error will be thrown, if one of them fails to be loaded
+    const audioService = new AudioService();
     const [blueprint, replay, skin] = await Promise.all([
       this.blueprintService.loadBlueprint(blueprintId),
       replayId ? this.replayService.loadReplay(replayId) : undefined,
       this.skinService.loadSkin(this.preferencesService.skinId),
+      audioService.loadSong(this.blueprintService.audioUrl(blueprintId)),
     ]);
 
     console.log(`Loaded skin ${skin.config.general.name}`);
 
-    const gameClock = new PerformanceGameClock();
     const view = this.preferencesService.preferredViewSettings();
 
     const mods: OsuClassicMod[] = replay?.mods ?? [];
@@ -177,7 +180,7 @@ export class ScenarioService {
     const modHidden = mods.indexOf("HIDDEN") !== -1;
     const playbackSpeed = determinePlaybackSpeed(mods);
     view.modHidden = modHidden;
-    gameClock.setSpeed(playbackSpeed);
+    audioService.setSpeed(playbackSpeed);
 
     const beatmap = buildBeatmap(blueprint, { addStacking: true, mods });
     const backgroundUrl = this.blueprintService.backgroundUrl(
@@ -193,7 +196,7 @@ export class ScenarioService {
     // }
     // console.log("Loaded blue print", blueprintId, replayId);
 
-    const scenario = new Scenario(gameClock, beatmap, backgroundUrl, skin, view, replay);
+    const scenario = new Scenario(audioService, beatmap, backgroundUrl, skin, view, replay);
 
     return scenario;
   }

@@ -89,7 +89,6 @@ const useGameClock = () => {
   return { gameClock, currentTime };
 };
 
-const maxTime = 20 * 60 * 1000;
 const PlaybarColors = {
   MISS: "#ff0000",
   SLIDER_BREAK: "hsl(351,100%,70%)",
@@ -101,7 +100,11 @@ type PlaybarFilter = "showMisses" | "showSliderBreaks" | "show100s" | "show50s";
 
 type PlaybarSettings = Record<PlaybarFilter, boolean>;
 
-function mapToPlaybarEvents(replayEvents: ReplayAnalysisEvent[], settings: PlaybarSettings): PlaybarEvent[] {
+function mapToPlaybarEvents(
+  replayEvents: ReplayAnalysisEvent[],
+  settings: PlaybarSettings,
+  maxTime: number,
+): PlaybarEvent[] {
   const { showSliderBreaks, show100s, show50s, showMisses } = settings;
   const events: PlaybarEvent[] = [];
   // TODO: Refactor -> maybe filter afterwards
@@ -134,16 +137,21 @@ function mapToPlaybarEvents(replayEvents: ReplayAnalysisEvent[], settings: Playb
 const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
   const { settings } = props;
   const { gameClock, currentTime } = useGameClock();
+  const maxTime = gameClock.maxTime;
   const scenario = useCurrentScenario();
   const loadedPercentage = currentTime / maxTime;
   const handleSeekTo = useCallback(
     (percentage) => {
       const t = percentage * maxTime;
+      console.log(`Seeking to time=${t} `);
       gameClock.seekTo(t);
     },
     [maxTime, gameClock],
   );
-  const events = useMemo(() => mapToPlaybarEvents(scenario.replayEvents, settings), [settings, scenario.replayEvents]);
+  const events = useMemo(
+    () => mapToPlaybarEvents(scenario.replayEvents, settings, maxTime),
+    [settings, scenario.replayEvents, maxTime],
+  );
   return <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} events={events} />;
 });
 
@@ -162,7 +170,8 @@ export const CurrentTime = () => {
 // TODO: Maybe make frameJump dynamic
 // If paused -> only +1ms
 // If
-const speedsAllowed = [0.01, 0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
+// const speedsAllowed = [0.01, 0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
+const speedsAllowed = [0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
 // TODO: FLOATING POINT EQUALITY ALERT
 const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
 const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length - 1, speedIndex(speed) + 1)];
@@ -172,6 +181,7 @@ const frameJump = 16;
 
 export const useShortcuts = () => {
   const { gameClock } = useGameClock();
+  const maxTime = gameClock.maxTime;
   const scenario = useCurrentScenario();
   // TODO: Connect with store -> hotkeys settings
   // https://github.com/jaywcjlove/hotkeys/#defining-shortcuts
@@ -235,7 +245,6 @@ const GameCanvas = () => {
 };
 
 export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) => {
-  const maxTimeHMS = formatReplayTime(maxTime);
   // Canvas / Game
   //
   const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
@@ -248,6 +257,7 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
   const scenario = useCurrentScenario();
   const { view, gameClock } = scenario;
 
+  const maxTimeHMS = formatReplayTime(gameClock.maxTime);
   useShortcuts();
 
   const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
