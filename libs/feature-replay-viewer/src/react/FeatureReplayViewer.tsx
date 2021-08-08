@@ -181,15 +181,17 @@ const frameJump = 16;
 
 export const useShortcuts = () => {
   const { gameClock } = useGameClock();
-  const maxTime = gameClock.maxTime;
   const scenario = useCurrentScenario();
   // TODO: Connect with store -> hotkeys settings
   // https://github.com/jaywcjlove/hotkeys/#defining-shortcuts
   useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.currentSpeed)), [gameClock]);
   useHotkeys("s", () => gameClock.setSpeed(prevSpeed(gameClock.currentSpeed)), [gameClock]);
   useHotkeys("space", () => gameClock.togglePlaying(), [gameClock]);
-  useHotkeys("d", () => gameClock.seekTo(Math.min(maxTime, gameClock.getCurrentTime() + frameJump)), [gameClock]);
-  useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)), [gameClock]);
+  useHotkeys("d", () => gameClock.seekTo(Math.min(gameClock.maxTime, gameClock.getCurrentTime() + frameJump)), [
+    gameClock,
+    frameJump,
+  ]);
+  useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)), [gameClock, frameJump]);
   useHotkeys("f", () => scenario.toggleHidden(), [scenario]);
 };
 
