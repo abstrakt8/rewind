@@ -2,12 +2,12 @@ import {
   defaultStableSettings,
   evaluateWholeReplay,
   osuClassicScoreScreenJudgementCount,
-  parseReplayFromFS,
+  parseReplayFramesFromFS,
   replayPath,
   TEST_MAPS,
 } from "./util.spec";
-import { HitCircleMissReason, HitCircleState, ReplayState } from "../src/replays/ReplayState";
-import { BucketedReplayStateTimeMachine } from "../src/replays/ReplayStateTimeMachine";
+import { HitCircleMissReason, HitCircleState, GameState } from "../src/gameplay/GameState";
+import { BucketedGameStateTimeMachine } from "../src/gameplay/GameStateTimeMachine";
 import { Slider } from "../src/hitobjects/Slider";
 
 /**
@@ -24,7 +24,7 @@ describe("Daijobanai [Slider (Repeat = 1)]", function () {
     lastTickId = "0/1";
 
   describe("- Perfume - Daijobanai [Slider (Repeat = 1)] (2021-07-07) Perfect.osr", function () {
-    const replay = parseReplayFromFS(
+    const replay = parseReplayFramesFromFS(
       replayPath("- Perfume - Daijobanai [Slider (Repeat = 1)] (2021-07-07) Perfect.osr"),
     );
     const state = evaluateWholeReplay(evaluator, replay);
@@ -53,7 +53,9 @@ describe("Daijobanai [Short kick slider]", function () {
     lastTickId = "0/0";
 
   describe("- Perfume - Daijobanai [Short kick slider] (2021-07-16) Perfect.osr", function () {
-    const replay = parseReplayFromFS(replayPath("- Perfume - Daijobanai [Short kick slider] (2021-07-16) Perfect.osr"));
+    const replay = parseReplayFramesFromFS(
+      replayPath("- Perfume - Daijobanai [Short kick slider] (2021-07-16) Perfect.osr"),
+    );
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must be hit", function () {
       expect(state.hitCircleState.get(sliderHeadId)?.type).not.toBe("MISS");
@@ -64,7 +66,7 @@ describe("Daijobanai [Short kick slider]", function () {
   });
 
   describe("- Perfume - Daijobanai [Short kick slider] (2021-07-16) TooLateMissed.osr", function () {
-    const replay = parseReplayFromFS(
+    const replay = parseReplayFramesFromFS(
       replayPath("- Perfume - Daijobanai [Short kick slider] (2021-07-16) TooLateMissed.osr"),
     );
     const state = evaluateWholeReplay(evaluator, replay);
@@ -85,12 +87,12 @@ describe("Daijobanai [Short kick slider]", function () {
 
 describe("OsuStd! ReplayState - Violet Perfume (no sliders/spinners)", function () {
   const { hitObjects, settings, evaluator, beatmap, hitWindows } = defaultStableSettings(TEST_MAPS.VIOLET_PERFUME);
-  const replay = parseReplayFromFS(replayPath("abstrakt - SHK - Violet Perfume [Insane] (2021-03-27) Osu.osr"));
+  const replay = parseReplayFramesFromFS(replayPath("abstrakt - SHK - Violet Perfume [Insane] (2021-03-27) Osu.osr"));
   console.log(hitWindows);
 
   const finalState = evaluateWholeReplay(evaluator, replay);
 
-  function count(state: ReplayState) {
+  function count(state: GameState) {
     return osuClassicScoreScreenJudgementCount(state, hitObjects);
   }
 
@@ -101,28 +103,28 @@ describe("OsuStd! ReplayState - Violet Perfume (no sliders/spinners)", function 
   });
 
   describe("OsuReplayState TimeMachine", function () {
-    const timeMachine = new BucketedReplayStateTimeMachine(replay, beatmap, settings);
+    const timeMachine = new BucketedGameStateTimeMachine(replay, beatmap, settings);
 
     // Not 100% sure, only checked with VLC
     it("at t=5s should be [23, 0, 0, 0]", function () {
       const at5 = [23, 0, 0, 0];
-      expect(count(timeMachine.replayStateAt(5 * 1000))).toEqual(at5);
+      expect(count(timeMachine.gameStateAt(5 * 1000))).toEqual(at5);
     });
 
     // Not 100% sure, only checked with VLC
     it("at t=52s should be [267, 6, 6, 1]", function () {
       const at52 = [267, 6, 6, 1];
-      expect(count(timeMachine.replayStateAt(52 * 1000))).toEqual(at52);
+      expect(count(timeMachine.gameStateAt(52 * 1000))).toEqual(at52);
 
       // Just a small test if it actually goes back properly to an unmodified state with immerjs
       const at5 = [23, 0, 0, 0];
-      expect(count(timeMachine.replayStateAt(5 * 1000))).toEqual(at5);
+      expect(count(timeMachine.gameStateAt(5 * 1000))).toEqual(at5);
     });
 
     // Basically t=300s exceeds the map's duration, but that should also work in this case
     it("at t=300s should be [544, 22, 7, 4]", function () {
       const atEnd = [544, 22, 7, 4]; // This is the only one that is 100% correct
-      expect(count(timeMachine.replayStateAt(300 * 1000))).toEqual(atEnd);
+      expect(count(timeMachine.gameStateAt(300 * 1000))).toEqual(atEnd);
     });
   });
 });

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { fromRawToReplay, modsFromBitmask, OsuClassicMod, RawReplayData } from "@rewind/osu/core";
+import { parseReplayFramesFromRaw, modsFromBitmask, OsuClassicMod, RawReplayData } from "@rewind/osu/core";
 import { ReplayFrame } from "@rewind/osu/core";
 
 // TODO: Rename this to replay or something
@@ -39,7 +39,7 @@ export class OsuExpressReplayManager implements ReplayManager {
 
     return {
       gameVersion: res.gameVersion,
-      frames: fromRawToReplay(res.replay_data),
+      frames: parseReplayFramesFromRaw(res.replay_data),
       mods: modsFromBitmask(res.mods),
       md5hash: "",
       player: "",

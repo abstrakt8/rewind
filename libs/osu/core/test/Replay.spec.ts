@@ -1,5 +1,5 @@
-import { parseBlueprintFromFS, parseReplayFromFS, TEST_MAPS, TEST_REPLAYS } from "./util.spec";
-import { buildBeatmap, fromRawToReplay, OsuAction, ReplayFrame } from "../src";
+import { parseBlueprintFromFS, parseReplayFramesFromFS, TEST_MAPS, TEST_REPLAYS } from "./util.spec";
+import { buildBeatmap, parseReplayFramesFromRaw, OsuAction, ReplayFrame } from "../src";
 import { readSync } from "node-osr";
 
 // w, x, y, z
@@ -10,7 +10,7 @@ describe("Parsing rawReplayData (from node-osr)", function () {
   it("should ignore the first three frames from legacy due to negative", function () {
     // From RyuK +HDDT Akatsuki Zukuyo replay
     const raw = "0|256|-500|0,-1|256|-500|0,-1171|257.0417|124.7764|1";
-    const actual = fromRawToReplay(raw);
+    const actual = parseReplayFramesFromRaw(raw);
     expect(actual).toStrictEqual([]);
     // assert.deepStrictEqual(actual, []);
     console.log(actual);
@@ -23,13 +23,13 @@ describe("Parsing rawReplayData (from node-osr)", function () {
       position: { x: 256.8854, y: 124.8789 },
       actions: [OsuAction.leftButton],
     };
-    const actual = fromRawToReplay(raw);
+    const actual = parseReplayFramesFromRaw(raw);
     expect(actual).toEqual([f1]);
   });
 });
 
 describe("Parsing SunMoonStar", function () {
-  const r = parseReplayFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
+  const r = parseReplayFramesFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
 
   // .osr 336KB
   // OsrReplay 1.5MB
@@ -49,7 +49,7 @@ describe("Parsing SunMoonStar", function () {
 describe("SElf test", function () {
   const bluePrint = parseBlueprintFromFS(TEST_MAPS.SUN_MOON_STAR);
   const beatmap = buildBeatmap(bluePrint, { addStacking: true });
-  const replay = parseReplayFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
+  const replay = parseReplayFramesFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
 
   // 876399
   console.log("wait");
@@ -61,6 +61,6 @@ describe("FromRawToReplay Speed test", function () {
   console.timeEnd("readSync");
 
   console.time("fromRawToReplay");
-  fromRawToReplay(a.replay_data);
+  parseReplayFramesFromRaw(a.replay_data);
   console.timeEnd("fromRawToReplay");
 });

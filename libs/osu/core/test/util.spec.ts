@@ -4,17 +4,21 @@ import { readSync } from "node-osr";
 import { normalizeHitObjects } from "../src/utils";
 import { hitWindowsForOD } from "@rewind/osu/math";
 import {
-  OsuBlueprintParser,
   Blueprint,
-  fromRawToReplay,
-  ReplayState,
-  OsuHitObject,
-  Slider,
-  defaultReplayState,
-  NextFrameEvaluator,
+  BucketedGameStateTimeMachine,
   buildBeatmap,
+  defaultReplayState,
+  modsFromBitmask,
+  NextFrameEvaluator,
   NextFrameEvaluatorOptions,
   NoteLockStyle,
+  OsuBlueprintParser,
+  OsuClassicMod,
+  OsuHitObject,
+  parseReplayFramesFromRaw,
+  ReplayFrame,
+  GameState,
+  Slider,
 } from "../src";
 
 // This makes the whole testing module node.js only
@@ -35,9 +39,23 @@ export function replayPath(name: string): string {
   return path.join(rewindTestOsuDir, "Replays", name);
 }
 
-export function parseReplayFromFS(replayFile: string) {
+export function parseReplayFramesFromFS(replayFile: string) {
   const r = readSync(replayFile);
-  return fromRawToReplay(r.replay_data);
+  return parseReplayFramesFromRaw(r.replay_data);
+}
+
+interface TestReplay {
+  frames: ReplayFrame[];
+  mods: OsuClassicMod[];
+}
+
+export function parseReplayFromFS(replayFile: string): TestReplay {
+  const r = readSync(replayFile);
+
+  return {
+    mods: modsFromBitmask(r.mods),
+    frames: parseReplayFramesFromRaw(r.replay_data),
+  };
 }
 
 export const TEST_MAPS = {
@@ -53,20 +71,22 @@ export const TEST_MAPS = {
   SUN_MOON_STAR: osuMapPath(
     "933630 Aether Realm - The Sun, The Moon, The Star/Aether Realm - The Sun, The Moon, The Star (ItsWinter) [Mourning Those Things I've Long Left Behind].osu",
   ),
+  TOP_RANKER: osuMapPath(
+    "1357624 sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix)/sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) (Nathan) [Senseabel's Extra].osu",
+  ),
 };
 
 export const TEST_REPLAYS = {
   SUN_MOON_STAR_VARVALIAN: replayPath(
     "Varvalian - Aether Realm - The Sun, The Moon, The Star [Mourning Those Things I've Long Left Behind] (2019-05-15) Osu.osr",
   ),
+  ABSTRAKT_TOP_RANKER: replayPath(
+    "abstrakt - sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) [Senseabel's Extra] (2021-08-08) Osu.osr",
+  ),
 };
 
 // This allows us to easily test
-export function osuClassicScoreScreenJudgementCount(
-  state: ReplayState,
-  hitObjects: OsuHitObject[],
-  osuLazer?: boolean,
-) {
+export function osuClassicScoreScreenJudgementCount(state: GameState, hitObjects: OsuHitObject[], osuLazer?: boolean) {
   const count = [0, 0, 0, 0];
   const dict = normalizeHitObjects(hitObjects);
 
@@ -101,7 +121,7 @@ export function defaultStableSettings(mapFile: string) {
   const hitWindows = hitWindowsForOD(blueprint.defaultDifficulty.overallDifficulty);
 
   const settings: NextFrameEvaluatorOptions = {
-    hitWindows,
+    hitWindowStyle: "OSU_STABLE",
     noteLockStyle: NoteLockStyle.STABLE,
   };
 
@@ -113,5 +133,22 @@ export function defaultStableSettings(mapFile: string) {
     settings,
     evaluator,
     hitWindows,
+  };
+}
+
+export function createTestTimeMachine(mapFile: string, replayFile: string) {
+  const blueprint = parseBlueprintFromFS(mapFile);
+  const replay = parseReplayFromFS(replayFile);
+  const beatmap = buildBeatmap(blueprint, { addStacking: true, mods: replay.mods });
+  const timeMachine = new BucketedGameStateTimeMachine(replay.frames, beatmap, {
+    hitWindowStyle: "OSU_STABLE",
+    noteLockStyle: NoteLockStyle.STABLE,
+  });
+
+  return {
+    blueprint,
+    replay,
+    beatmap,
+    timeMachine,
   };
 }

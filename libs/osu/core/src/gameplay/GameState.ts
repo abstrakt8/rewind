@@ -1,5 +1,5 @@
-import { OsuAction, ReplayFrame } from "./Replay";
-import { Position, Vec2 } from "@rewind/osu/math";
+import { OsuAction, ReplayFrame } from "../replays/Replay";
+import { hitWindowsForOD, Position, Vec2 } from "@rewind/osu/math";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { Slider } from "../hitobjects/Slider";
 import { Spinner } from "../hitobjects/Spinner";
@@ -19,9 +19,12 @@ export enum NoteLockStyle {
   LAZER,
 }
 
+// TODO: ...
+// type NoteLockStyle = "NONE" | "STABLE" | "LAZER";
+type HitWindowStyle = "OSU_STABLE" | "OSU_LAZER";
+
 export type NextFrameEvaluatorOptions = {
-  // TODO: Maybe say : lazerHitWindowStyle? -> then the hitwindows are increased by +1
-  hitWindows: number[];
+  hitWindowStyle: HitWindowStyle;
   noteLockStyle: NoteLockStyle;
 };
 
@@ -146,7 +149,7 @@ export type SpinnerState = {
 };
 
 // TODO: GameplayState
-export interface ReplayState {
+export interface GameState {
   // currentTime might be not really needed, but serves as an "id"
   currentTime: number;
   cursorPosition: Position;
@@ -180,7 +183,7 @@ export interface ReplayState {
   pressingSince: PressingSinceTimings;
 }
 
-export function cloneReplayState(replayState: ReplayState): ReplayState {
+export function cloneGameState(replayState: GameState): GameState {
   const {
     aliveHitCircleIds,
     hitCircleState,
@@ -240,7 +243,7 @@ function sliderJudgementBasedOnCheckpoints(totalCheckpoints: number, hitCheckpoi
 // SliderCheckPoint at its hitTime
 // Spinner at endTime
 // HitCircle at when it was hit / missed (dynamic)
-export const defaultReplayState = (): ReplayState => ({
+export const defaultReplayState = (): GameState => ({
   currentTime: 0,
   cursorPosition: Vec2.Zero,
   hitCircleState: new Map<string, HitCircleState>(),
@@ -273,6 +276,11 @@ const HitObjectVerdicts = {
   MISS: 3,
 } as const;
 
+const defaultOptions: NextFrameEvaluatorOptions = {
+  noteLockStyle: NoteLockStyle.STABLE,
+  hitWindowStyle: "OSU_STABLE",
+};
+
 // This will be VERY buggy for 2B maps since we make a big assumption that there are no overlaps between the
 // different hit objects.
 export class NextFrameEvaluator {
@@ -285,26 +293,34 @@ export class NextFrameEvaluator {
   private previousTime: number;
   private previousPosition: Position;
 
-  private replayState: ReplayState;
+  private gameState: GameState;
+  private hitWindows: number[];
+  private noteLockStyle: NoteLockStyle;
+  private settings: NextFrameEvaluatorOptions;
 
-  constructor(private readonly beatmap: Beatmap, private readonly settings: NextFrameEvaluatorOptions) {
-    this.replayState = defaultReplayState();
+  constructor(private readonly beatmap: Beatmap, settings?: Partial<NextFrameEvaluatorOptions>) {
+    this.settings = Object.assign({ ...defaultOptions }, settings);
+    this.gameState = defaultReplayState();
+    this.hitWindows = hitWindowsForOD(
+      beatmap.difficulty.overallDifficulty,
+      this.settings.hitWindowStyle === "OSU_LAZER",
+    );
   }
 
   private get currentTime() {
-    return this.replayState.currentTime;
+    return this.gameState.currentTime;
   }
 
   private get cursorPosition() {
-    return this.replayState.cursorPosition;
+    return this.gameState.cursorPosition;
   }
 
   private get pressingSince() {
-    return this.replayState.pressingSince;
+    return this.gameState.pressingSince;
   }
 
   private get judgedObjects() {
-    return this.replayState.judgedObjects;
+    return this.gameState.judgedObjects;
   }
 
   private get hitObjectsBySpawnTime() {
@@ -313,7 +329,7 @@ export class NextFrameEvaluator {
 
   // Checks whether the user has pressed in this frame
   private get hasFreshClickThisFrame(): boolean {
-    return this.replayState.pressingSince.includes(this.currentTime);
+    return this.gameState.pressingSince.includes(this.currentTime);
   }
 
   private getHitCircle(id: string): HitCircle {
@@ -341,7 +357,7 @@ export class NextFrameEvaluator {
   earliestHitCircleStartTime(onlyConsiderFutureOnes?: boolean): number | undefined {
     let earliest;
     // Remember Slider is synonymous to HitCircleWithSlider
-    for (const id of this.replayState.aliveHitCircleIds) {
+    for (const id of this.gameState.aliveHitCircleIds) {
       const h = this.getHitCircle(id);
       if (onlyConsiderFutureOnes && h.hitTime < this.currentTime) continue; // this one's in the past;
       // TODO: Not sure if those that would expire in this frame (startTime+missHitWindow<=replayTime), should be
@@ -355,30 +371,30 @@ export class NextFrameEvaluator {
    * Checks for new hit objects that must be tracked.
    */
   private checkNewAliveHitObjects(): void {
-    while (this.replayState.latestHitObjectIndex < this.hitObjectsBySpawnTime.length) {
-      const hitObject = this.hitObjectsBySpawnTime[this.replayState.latestHitObjectIndex];
+    while (this.gameState.latestHitObjectIndex < this.hitObjectsBySpawnTime.length) {
+      const hitObject = this.hitObjectsBySpawnTime[this.gameState.latestHitObjectIndex];
       // We only consider hit objects in the past.
-      if (hitObject.spawnTime > this.replayState.currentTime) {
+      if (hitObject.spawnTime > this.gameState.currentTime) {
         break;
       }
       if (hitObject instanceof Spinner) {
-        this.replayState.aliveSpinnerIds.add(hitObject.id);
+        this.gameState.aliveSpinnerIds.add(hitObject.id);
       } else if (hitObject instanceof HitCircle) {
-        this.replayState.aliveHitCircleIds.add(hitObject.id);
+        this.gameState.aliveHitCircleIds.add(hitObject.id);
       } else {
         // Slider
-        this.replayState.aliveHitCircleIds.add(hitObject.head.id);
-        this.replayState.aliveSliderIds.add(hitObject.id);
-        this.replayState.nextCheckPointIndex.set(hitObject.id, 0);
+        this.gameState.aliveHitCircleIds.add(hitObject.head.id);
+        this.gameState.aliveSliderIds.add(hitObject.id);
+        this.gameState.nextCheckPointIndex.set(hitObject.id, 0);
       }
-      this.replayState.latestHitObjectIndex++;
+      this.gameState.latestHitObjectIndex++;
     }
   }
 
   // This is also for SliderHeads
   private finishHitCircle(id: string, state: HitCircleState) {
-    this.replayState.hitCircleState.set(id, state);
-    this.replayState.aliveHitCircleIds.delete(id);
+    this.gameState.hitCircleState.set(id, state);
+    this.gameState.aliveHitCircleIds.delete(id);
     this.judgedObjects.push(id);
   }
 
@@ -387,7 +403,7 @@ export class NextFrameEvaluator {
     const slider = this.getSlider(id);
 
     // Clean up the head if it hasn't been hit
-    if (!this.replayState.hitCircleState.has(slider.head.id)) {
+    if (!this.gameState.hitCircleState.has(slider.head.id)) {
       this.finishHitCircle(slider.head.id, {
         judgementTime: slider.endTime,
         type: "MISS",
@@ -399,24 +415,20 @@ export class NextFrameEvaluator {
     const totalCheckpoints = slider.checkPoints.length + 1;
     let hitCheckpoints = 0;
 
-    if (this.replayState.hitCircleState.get(slider.head.id)?.type !== "MISS") hitCheckpoints++;
+    if (this.gameState.hitCircleState.get(slider.head.id)?.type !== "MISS") hitCheckpoints++;
 
     for (const c of slider.checkPoints) {
-      hitCheckpoints += this.replayState.checkPointState.get(c.id)?.hit ? 1 : 0;
+      hitCheckpoints += this.gameState.checkPointState.get(c.id)?.hit ? 1 : 0;
     }
     const judgement = sliderJudgementBasedOnCheckpoints(totalCheckpoints, hitCheckpoints);
-    this.replayState.sliderJudgement.set(id, judgement);
+    this.gameState.sliderJudgement.set(id, judgement);
 
     this.judgedObjects.push(slider.id);
 
-    this.replayState.aliveSliderIds.delete(id);
-    this.replayState.nextCheckPointIndex.delete(id);
-    this.replayState.sliderBodyState.delete(id); // not needed anymore
-    this.replayState.aliveHitCircleIds.delete(this.getSlider(id).head.id);
-  }
-
-  private get hitWindows() {
-    return this.settings.hitWindows;
+    this.gameState.aliveSliderIds.delete(id);
+    this.gameState.nextCheckPointIndex.delete(id);
+    this.gameState.sliderBodyState.delete(id); // not needed anymore
+    this.gameState.aliveHitCircleIds.delete(this.getSlider(id).head.id);
   }
 
   private hitWindow(verdict: HitObjectVerdict) {
@@ -430,7 +442,7 @@ export class NextFrameEvaluator {
   handleHitCircle(id: string): void {
     const { noteLockStyle } = this.settings;
     const hitCircle = this.getHitCircle(id);
-    const currentTime = this.replayState.currentTime;
+    const currentTime = this.gameState.currentTime;
     const supposedHitTime = hitCircle.hitTime;
     const timeDelta = currentTime - supposedHitTime;
 
@@ -452,7 +464,7 @@ export class NextFrameEvaluator {
     }
 
     // It should not be possible to click two hit circles at the same time
-    if (this.replayState.clickWasUseful) {
+    if (this.gameState.clickWasUseful) {
       return;
     }
 
@@ -501,7 +513,7 @@ export class NextFrameEvaluator {
           judgementTime: this.currentTime,
           type: jtypes[i],
         });
-        this.replayState.clickWasUseful = true;
+        this.gameState.clickWasUseful = true;
         // TODO: Force other notes to miss in Lazer note lock style
         return;
       }
@@ -525,7 +537,7 @@ export class NextFrameEvaluator {
   private handleHitCircles(): void {
     // First, we will do changes on this.aliveHitObjectsIdx (removing) so we need to create a copy
     // Also the iteration order should be by start time
-    const hitCircleIndices = Array.from(this.replayState.aliveHitCircleIds.values());
+    const hitCircleIndices = Array.from(this.gameState.aliveHitCircleIds.values());
     hitCircleIndices.sort((i, j) => this.getHitCircle(i).hitTime - this.getHitCircle(j).hitTime);
     for (const id of hitCircleIndices) {
       this.handleHitCircle(id);
@@ -533,18 +545,18 @@ export class NextFrameEvaluator {
   }
 
   private headHitTime(headId: string): number | undefined {
-    const j = this.replayState.hitCircleState.get(headId);
+    const j = this.gameState.hitCircleState.get(headId);
     if (!j || j.type === "MISS") return undefined;
     return j.judgementTime;
   }
 
   private updateSliderBodyTracking(): void {
     // For every alive slider (even in non 2B case there might multiple alive)
-    for (const id of this.replayState.aliveSliderIds) {
+    for (const id of this.gameState.aliveSliderIds) {
       const slider = this.getSlider(id);
 
       const headHitTime: number | undefined = this.headHitTime(slider.head.id);
-      const wasTracking: boolean = this.replayState.sliderBodyState.get(id)?.isTracking ?? false;
+      const wasTracking: boolean = this.gameState.sliderBodyState.get(id)?.isTracking ?? false;
       // If he just released at time here, then assume that
       // Release time is always registered btw
       // TODO
@@ -556,13 +568,13 @@ export class NextFrameEvaluator {
         this.pressingSince,
         headHitTime,
       );
-      this.replayState.sliderBodyState.set(id, { isTracking });
+      this.gameState.sliderBodyState.set(id, { isTracking });
     }
   }
 
   private handleSliderJudgment(): void {
     // Some might be killed in the process ...
-    const sliderIdsCopy = [...this.replayState.aliveSliderIds];
+    const sliderIdsCopy = [...this.gameState.aliveSliderIds];
     for (const id of sliderIdsCopy) {
       const slider = this.getSlider(id);
 
@@ -583,7 +595,7 @@ export class NextFrameEvaluator {
     while (true) {
       let sliderIdOfEarliest = undefined,
         earliestTime = 1e18;
-      for (const [sliderId, checkPointIndex] of this.replayState.nextCheckPointIndex) {
+      for (const [sliderId, checkPointIndex] of this.gameState.nextCheckPointIndex) {
         const slider = this.getSlider(sliderId);
         const checkPoint = slider.checkPoints[checkPointIndex];
         if (checkPoint.hitTime < this.currentTime && checkPoint.hitTime < earliestTime) {
@@ -595,11 +607,11 @@ export class NextFrameEvaluator {
         break;
       }
       const slider = this.getSlider(sliderIdOfEarliest);
-      const index = this.replayState.nextCheckPointIndex.get(sliderIdOfEarliest) as number;
+      const index = this.gameState.nextCheckPointIndex.get(sliderIdOfEarliest) as number;
       const checkPoint = slider.checkPoints[index];
 
       const headHitTime: number | undefined = this.headHitTime(slider.head.id);
-      const wasTracking: boolean = this.replayState.sliderBodyState.get(slider.id)?.isTracking ?? false;
+      const wasTracking: boolean = this.gameState.sliderBodyState.get(slider.id)?.isTracking ?? false;
       // We don't have any data for non important events so we have to predict them with interpolation
 
       // TODO: This is based on an assumption that the gameClock does not work with sub milliseconds (?)
@@ -615,15 +627,15 @@ export class NextFrameEvaluator {
         oldPressingSince,
         headHitTime,
       );
-      this.replayState.checkPointState.set(checkPoint.id, { hit: isTracking });
+      this.gameState.checkPointState.set(checkPoint.id, { hit: isTracking });
 
       this.judgedObjects.push(checkPoint.id);
 
       if (index + 1 < slider.checkPoints.length) {
-        this.replayState.nextCheckPointIndex.set(slider.id, index + 1);
+        this.gameState.nextCheckPointIndex.set(slider.id, index + 1);
       } else {
         // Doesn't affect combo
-        this.replayState.nextCheckPointIndex.delete(slider.id);
+        this.gameState.nextCheckPointIndex.delete(slider.id);
       }
     }
   }
@@ -637,28 +649,28 @@ export class NextFrameEvaluator {
   // TODO: More sophisticated
   private handleSpinners(): void {
     // If 2B, there should only be one
-    const spinnerIds = this.replayState.aliveSpinnerIds.values();
+    const spinnerIds = this.gameState.aliveSpinnerIds.values();
     for (const id of spinnerIds) {
       const spinner = this.beatmap.getSpinner(id);
       if (spinner.endTime < this.currentTime) {
-        this.replayState.aliveSpinnerIds.delete(spinner.id);
-        this.replayState.judgedObjects.push(id);
+        this.gameState.aliveSpinnerIds.delete(spinner.id);
+        this.gameState.judgedObjects.push(id);
       }
     }
   }
 
-  evaluateNextFrameMutated(previousReplayState: ReplayState, frame: ReplayFrame): void {
-    this.previousPosition = { ...previousReplayState.cursorPosition };
-    this.previousTime = previousReplayState.currentTime;
-    this.replayState = previousReplayState;
-    this.replayState.currentTime = frame.time;
-    this.replayState.cursorPosition = frame.position;
-    this.replayState.clickWasUseful = false;
+  evaluateNextFrameMutated(previousGameState: GameState, frame: ReplayFrame): void {
+    this.previousPosition = { ...previousGameState.cursorPosition };
+    this.previousTime = previousGameState.currentTime;
+    this.gameState = previousGameState;
+    this.gameState.currentTime = frame.time;
+    this.gameState.cursorPosition = frame.position;
+    this.gameState.clickWasUseful = false;
 
     // Need to store this for the check points ...
-    const oldPressingSince = this.replayState.pressingSince.slice();
+    const oldPressingSince = this.gameState.pressingSince.slice();
 
-    this.replayState.pressingSince = newPressingSince(this.replayState.pressingSince, frame.actions, frame.time);
+    this.gameState.pressingSince = newPressingSince(this.gameState.pressingSince, frame.actions, frame.time);
     this.checkNewAliveHitObjects();
     this.determineTimeSupposedToClick();
 

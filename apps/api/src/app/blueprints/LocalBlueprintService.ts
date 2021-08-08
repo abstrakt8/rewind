@@ -74,7 +74,6 @@ export class LocalBlueprintService {
 
   async getBlueprintByMD5(md5: string): Promise<BlueprintInfo | undefined> {
     const maps = await this.getAllBlueprints();
-    console.log("md5", md5);
     return maps[md5];
   }
 }

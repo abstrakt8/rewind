@@ -2,7 +2,7 @@ import { Scene } from "../game/Scene";
 import { GameClock } from "../clocks/GameClock";
 import {
   Beatmap,
-  BucketedReplayStateTimeMachine,
+  BucketedGameStateTimeMachine,
   buildBeatmap,
   GameplayInfoEvaluator,
   HitObjectJudgement,
@@ -10,7 +10,7 @@ import {
   NoteLockStyle,
   OsuClassicMod,
   ReplayAnalysisEvent,
-  ReplayStateTimeMachine,
+  GameStateTimeMachine,
   retrieveEvents,
 } from "@rewind/osu/core";
 import { OsuReplay } from "../api/ReplayManager";
@@ -28,7 +28,7 @@ import { AudioService } from "./AudioService";
 // A scene defines what should be drawn on the screen.
 // The scene manager is almost equivalent to the store in Redux and PixiJS is just the underlying rendering platform.
 export class Scenario {
-  public gameplayTimeMachine?: ReplayStateTimeMachine;
+  public gameplayTimeMachine?: GameStateTimeMachine;
   public replayEvents: ReplayAnalysisEvent[];
   private _view: ViewSettings;
   private judgements: HitObjectJudgement[];
@@ -42,11 +42,11 @@ export class Scenario {
     public readonly replay?: OsuReplay,
   ) {
     if (replay) {
-      this.gameplayTimeMachine = new BucketedReplayStateTimeMachine(replay.frames, beatmap, {
-        hitWindows: hitWindowsForOD(beatmap.difficulty.overallDifficulty),
+      this.gameplayTimeMachine = new BucketedGameStateTimeMachine(replay.frames, beatmap, {
+        hitWindowStyle: "OSU_STABLE",
         noteLockStyle: NoteLockStyle.STABLE,
       });
-      const finalState = this.gameplayTimeMachine.replayStateAt(1e9);
+      const finalState = this.gameplayTimeMachine.gameStateAt(1e9);
       this.replayEvents = retrieveEvents(finalState, beatmap.hitObjects);
       this.judgements = this.replayEvents.filter(isHitObjectJudgement);
     } else {
@@ -93,7 +93,7 @@ export class Scenario {
   getCurrentScene(): Scene {
     const { skin, beatmap, replay, judgements, backgroundUrl } = this;
     const time = this.gameClock.getCurrentTime();
-    const gameplayState = this.gameplayTimeMachine?.replayStateAt(time);
+    const gameplayState = this.gameplayTimeMachine?.gameStateAt(time);
     const gameplayInfo = gameplayState
       ? new GameplayInfoEvaluator(this.beatmap, {}).evaluateReplayState(gameplayState)
       : undefined;

@@ -1,26 +1,26 @@
 import {
   defaultStableSettings,
   osuClassicScoreScreenJudgementCount,
-  parseReplayFromFS,
+  parseReplayFramesFromFS,
   TEST_MAPS,
   TEST_REPLAYS,
 } from "./util.spec";
-import { BucketedReplayStateTimeMachine } from "../src";
-import { osuStableAccuracy } from "../src/replays/GameplayInfo";
+import { BucketedGameStateTimeMachine } from "../src";
+import { osuStableAccuracy } from "../src/gameplay/GameplayInfo";
 
 describe("OsuStd! ReplayTimeMachine - The Sun, The Moon, The Stars", function () {
   const { hitObjects, settings, beatmap, hitWindows } = defaultStableSettings(TEST_MAPS.SUN_MOON_STAR);
-  const frames = parseReplayFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
+  const frames = parseReplayFramesFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
 
   console.log("Starting SunMoonStar");
   console.log(`HitObjects: ${hitObjects.length} Frames: ${frames.length}`);
   console.log(hitWindows);
 
-  const timeMachine = new BucketedReplayStateTimeMachine(frames, beatmap, settings);
+  const timeMachine = new BucketedGameStateTimeMachine(frames, beatmap, settings);
   const timeInMs = (min: number, sec: number, ms: number) => ms + sec * 1000 + min * 1000 * 60;
 
   function evaluateForTime(ms: number) {
-    const state = timeMachine.replayStateAt(ms); // 1:3:866
+    const state = timeMachine.gameStateAt(ms); // 1:3:866
     console.log("Evaluating to time ", ms);
 
     // Combo at the time should be ~607

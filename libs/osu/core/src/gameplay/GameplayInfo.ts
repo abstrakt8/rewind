@@ -2,7 +2,7 @@
  * Shows the statistics
  */
 
-import { ReplayState } from "./ReplayState";
+import { GameState } from "./GameState";
 import { HitObjectType, SliderCheckPointType } from "../hitobjects/Types";
 import { MainHitObjectVerdict } from "./Verdicts";
 import { Beatmap, HitCircle, Slider, SliderCheckPoint, Spinner } from "@rewind/osu/core";
@@ -125,7 +125,7 @@ export class GameplayInfoEvaluator {
     return ["GREAT", "OK", "MEH", "MISS"].map((v) => this.verdictCount[v]);
   }
 
-  evaluateReplayState(replayState: ReplayState): GameplayInfo {
+  evaluateReplayState(replayState: GameState): GameplayInfo {
     while (this.judgedObjectsIndex < replayState.judgedObjects.length) {
       const id = replayState.judgedObjects[this.judgedObjectsIndex++];
       const hitObject = this.beatmap.getHitObject(id);

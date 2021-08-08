@@ -1,6 +1,6 @@
 import { Position } from "@rewind/osu/math";
 import { normalizeHitObjects } from "../utils";
-import { ReplayState } from "./ReplayState";
+import { GameState } from "./GameState";
 import { Slider } from "../hitobjects/Slider";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { MainHitObjectVerdict } from "./Verdicts";
@@ -54,7 +54,7 @@ export const isHitObjectJudgement = (h: ReplayAnalysisEvent): h is HitObjectJudg
 
 // This is osu!stable style and is also only recommended for offline processing.
 // In the future, where something like online replay streaming is implemented, this implementation will ofc be too slow.
-export function retrieveEvents(replayState: ReplayState, hitObjects: OsuHitObject[]) {
+export function retrieveEvents(replayState: GameState, hitObjects: OsuHitObject[]) {
   const events: ReplayAnalysisEvent[] = [];
   const dict = normalizeHitObjects(hitObjects);
 
