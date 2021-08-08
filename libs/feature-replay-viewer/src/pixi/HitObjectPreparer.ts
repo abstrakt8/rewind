@@ -60,11 +60,18 @@ export class HitObjectPreparer {
     const { view, skin, time: gameTime } = scene;
     const { modHidden } = view;
 
-    // TODO: +300?
+    // TODO: Cleanup pfusch
     if (gameTime < hitCircle.spawnTime || hitCircle.hitTime + 300 < gameTime) return;
+    //
     {
       const area = this.getOsuClassicHitCircleArea(hitCircle.id);
-      const hitResult = { hit: true, timing: 0 }; // Can be determined from gameplayState
+      const hitCircleState = scene.gameplayState?.hitCircleState.get(hitCircle.id);
+      const hitResult = hitCircleState
+        ? {
+            hit: hitCircleState.type !== "MISS",
+            timing: hitCircleState.judgementTime - hitCircle.hitTime,
+          }
+        : null;
       area.prepare(settingsHitCircleArea({ hitCircle, gameTime, modHidden, skin, hitResult }));
       this.hitObjectContainer.addChild(area.container);
     }
@@ -96,7 +103,7 @@ export class HitObjectPreparer {
   // Only for DEBUG option
   private prepareSliderLastLegacyTick(gameTime: number, checkpoint: SliderCheckPoint) {
     const delta = checkpoint.hitTime - gameTime;
-    if (!(delta >= 0 && delta < 200)) return;
+    if (!(delta >= 0 && delta < 500)) return;
     const [lastTick] = this.graphicsPool.allocate(checkpoint.id + "/raw");
     lastTick.clear();
     lastTick.beginFill(0xff0000);
