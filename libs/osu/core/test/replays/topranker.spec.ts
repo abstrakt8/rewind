@@ -14,7 +14,7 @@ test("abstrakt - Top Ranker", () => {
 
   const gameState = timeMachine.gameStateAt(1e9);
 
-  commonStats(replay.frames);
+  // commonStats(replay.frames);
   // There also slider ticks and so on
   expect(gameState.judgedObjects.length).toBeGreaterThan(1653);
 

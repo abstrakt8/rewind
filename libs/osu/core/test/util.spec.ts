@@ -85,17 +85,23 @@ export const TEST_REPLAYS = {
   ),
 };
 
-// This allows us to easily test
+// this code  is so messy but should be replaced with something else anyways
 export function osuClassicScoreScreenJudgementCount(state: GameState, hitObjects: OsuHitObject[], osuLazer?: boolean) {
   const count = [0, 0, 0, 0];
   const dict = normalizeHitObjects(hitObjects);
+  const HitObjectVerdicts = {
+    GREAT: 0,
+    OK: 1,
+    MEH: 2,
+    MISS: 3,
+  } as const;
 
   for (const s of Object.values(state.hitCircleVerdict)) {
-    count[s.type]++;
+    count[HitObjectVerdicts[s.type]]++;
   }
   for (const id in state.sliderVerdict) {
     const j = state.sliderVerdict[id];
-    count[j]++;
+    count[HitObjectVerdicts[j]]++;
     const slider = dict[id] as Slider;
 
     // In osu!classic the heads are not counted and we just subtract them
@@ -162,6 +168,7 @@ export function timeDeltas(frames: { time: number }[]) {
   }
   return deltas;
 }
+
 export function commonStats(frames: ReplayFrame[], outlierMs = 16 * 2) {
   const t = timeDeltas(frames);
   const med = median(t);

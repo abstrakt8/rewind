@@ -66,7 +66,7 @@ export class HitObjectPreparer {
     //
     {
       const area = this.getOsuClassicHitCircleArea(hitCircle.id);
-      const hitCircleState = scene.gameplayState?.hitCircleState.get(hitCircle.id);
+      const hitCircleState = scene.gameplayState?.hitCircleVerdict[hitCircle.id];
       const hitResult = hitCircleState
         ? {
             hit: hitCircleState.type !== "MISS",

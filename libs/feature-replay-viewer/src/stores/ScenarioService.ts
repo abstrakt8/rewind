@@ -5,16 +5,14 @@ import {
   BucketedGameStateTimeMachine,
   buildBeatmap,
   GameplayInfoEvaluator,
+  GameStateTimeMachine,
   HitObjectJudgement,
   isHitObjectJudgement,
-  NoteLockStyle,
   OsuClassicMod,
   ReplayAnalysisEvent,
-  GameStateTimeMachine,
   retrieveEvents,
 } from "@rewind/osu/core";
 import { OsuReplay } from "../api/ReplayManager";
-import { hitWindowsForOD } from "@rewind/osu/math";
 import { Skin } from "../skins/Skin";
 import { defaultViewSettings, ViewSettings } from "../game/ViewSettings";
 import { ReplayService } from "./ReplayService";
@@ -44,7 +42,7 @@ export class Scenario {
     if (replay) {
       this.gameplayTimeMachine = new BucketedGameStateTimeMachine(replay.frames, beatmap, {
         hitWindowStyle: "OSU_STABLE",
-        noteLockStyle: NoteLockStyle.STABLE,
+        noteLockStyle: "STABLE",
       });
       const finalState = this.gameplayTimeMachine.gameStateAt(1e9);
       this.replayEvents = retrieveEvents(finalState, beatmap.hitObjects);

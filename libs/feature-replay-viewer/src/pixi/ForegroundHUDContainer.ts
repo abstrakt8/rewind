@@ -68,7 +68,8 @@ export class ForegroundHUDContainer {
       // TODO: optimize
       const hits = [];
       if (gameplayState) {
-        for (const [id, s] of gameplayState.hitCircleState.entries()) {
+        for (const id in gameplayState.hitCircleVerdict) {
+          const s = gameplayState.hitCircleVerdict[id];
           const hitCircle = beatmap.getHitCircle(id);
           const offset = s.judgementTime - hitCircle.hitTime;
           const timeAgo = time - s.judgementTime;
