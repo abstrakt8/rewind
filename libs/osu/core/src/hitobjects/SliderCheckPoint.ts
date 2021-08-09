@@ -6,7 +6,7 @@ import { SliderCheckPointType } from "./Types";
 // Important points on the slider. Depending on if they were "hit" or not, we will have a different judgement on the
 // slider.
 export class SliderCheckPoint implements HasId, HasPosition, HasHitTime {
-  constructor(private readonly slider: Slider) {}
+  constructor(public readonly slider: Slider) {}
 
   id = "";
   type: SliderCheckPointType = "TICK";

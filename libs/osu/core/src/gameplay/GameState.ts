@@ -161,10 +161,6 @@ export interface GameState {
   sliderJudgement: Map<string, MainHitObjectVerdict>;
   spinnerState: Map<string, SpinnerState>;
 
-  // TODO: Remove
-  currentCombo: number;
-  maxCombo: number;
-
   clickWasUseful: boolean;
 
   // Stores the ids of the objects that have been judged in the order of judgement.
@@ -195,8 +191,6 @@ export function cloneGameState(replayState: GameState): GameState {
     checkPointState,
     nextCheckPointIndex,
     clickWasUseful,
-    maxCombo,
-    currentCombo,
     currentTime,
     cursorPosition,
     latestHitObjectIndex,
@@ -209,13 +203,11 @@ export function cloneGameState(replayState: GameState): GameState {
     aliveSliderIds: new Set<string>(aliveSliderIds),
     aliveSpinnerIds: new Set<string>(aliveSpinnerIds),
     checkPointState: new Map<string, CheckPointState>(checkPointState),
-    currentCombo: currentCombo,
     currentTime: currentTime,
     cursorPosition: cursorPosition,
     latestHitObjectIndex: latestHitObjectIndex,
     judgedObjects: [...judgedObjects],
     clickWasUseful: clickWasUseful,
-    maxCombo: maxCombo,
     nextCheckPointIndex: new Map<string, number>(nextCheckPointIndex),
     sliderBodyState: new Map<string, SliderBodyState>(sliderBodyState),
     sliderJudgement: new Map<string, MainHitObjectVerdict>(sliderJudgement),
@@ -251,10 +243,6 @@ export const defaultReplayState = (): GameState => ({
   checkPointState: new Map<string, CheckPointState>(),
   spinnerState: new Map<string, SpinnerState>(),
   sliderJudgement: new Map<string, MainHitObjectVerdict>(),
-
-  // TODO: Move outside
-  currentCombo: 0,
-  maxCombo: 0,
 
   clickWasUseful: false,
   // Rest are used for optimizations
@@ -614,8 +602,8 @@ export class NextFrameEvaluator {
       // We don't have any data for non important events so we have to predict them with interpolation
 
       // TODO: This is based on an assumption that the gameClock does not work with sub milliseconds (?)
+      const timeToCheck = checkPoint.hitTime;
       // const timeToCheck = Math.ceil(checkPoint.hitTime - 1e-10);
-      const timeToCheck = Math.ceil(checkPoint.hitTime - 1e-10);
       const predictedPosition = this.predictedPositionAt(timeToCheck);
 
       const isTracking = determineTracking(
