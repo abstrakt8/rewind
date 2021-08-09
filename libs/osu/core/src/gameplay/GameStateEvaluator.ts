@@ -1,95 +1,20 @@
 import {
   Beatmap,
-  CheckPointState,
+  defaultGameState,
+  GameState,
   HitCircle,
+  HitCircleVerdict,
   isHitCircle,
   isSlider,
-  isSpinner,
   MainHitObjectVerdict,
-  newPressingSince,
+  NOT_PRESSING,
+  OsuAction,
+  PressingSinceTimings,
   ReplayFrame,
   Slider,
-  SliderBodyState,
-  SpinnerState,
 } from "@rewind/osu/core";
 
 import { hitWindowsForOD, Position, Vec2 } from "@rewind/osu/math";
-
-export const NOT_PRESSING = +727727727;
-
-type PressingSinceTimings = number[];
-
-const HitCircleMissReasons = [
-  // When the time has expired and the circle got force killed.
-  "TIME_EXPIRED",
-  // There is no HIT_TOO_LATE because TIME_EXPIRED would occur earlier.
-  "HIT_TOO_EARLY",
-  // This is only possible in osu!lazer where clicking a later circle can cause this circle to be force missed.
-  "FORCE_MISS_NOTELOCK",
-  // If the user had time to press the hitCircle until time 300, but the slider is so short that it ends at 200,
-  // then the user actually has a reduced hit window for hitting it.
-  "SLIDER_FINISHED_FASTER",
-] as const;
-export type HitCircleMissReason = typeof HitCircleMissReasons[number];
-
-export type HitCircleVerdict = {
-  // Is the only that has a judgement time not being equal the hit object hitTime/startTime/endTime.
-  judgementTime: number;
-} & ({ type: "GREAT" | "MEH" | "OK" } | { type: "MISS"; missReason: HitCircleMissReason });
-
-interface GameState {
-  // currentTime might be not really needed, but serves as an "id"
-  currentTime: number;
-  cursorPosition: Position;
-
-  // Keeps track of where we are in the events list (as an optimization).
-  eventIndex: number;
-
-  // The verdicts are a summary of how well these objects were played
-  hitCircleVerdict: Record<string, HitCircleVerdict>;
-  checkPointVerdict: Record<string, CheckPointState>;
-  sliderVerdict: Record<string, MainHitObjectVerdict>;
-  // spinnerVerdict ..
-
-  spinnerState: Map<string, SpinnerState>;
-  sliderBodyState: Map<string, SliderBodyState>;
-
-  clickWasUseful: boolean;
-
-  // Stores the ids of the objects that have been judged in the order of judgement.
-  // This can be used to easily derive the combo,maxCombo,accuracy,number of 300/100/50/misses, score
-  // This is only useful for knowing the order
-  judgedObjects: Array<string>;
-
-  // Rest are used for optimizations
-  latestHitObjectIndex: number;
-  aliveHitCircleIds: Set<string>;
-  aliveSliderIds: Set<string>;
-  aliveSpinnerIds: Set<string>;
-
-  pressingSince: PressingSinceTimings;
-}
-
-export const defaultGameState = (): GameState => ({
-  eventIndex: 0,
-  currentTime: 0,
-  cursorPosition: Vec2.Zero,
-  hitCircleVerdict: {},
-  sliderBodyState: new Map<string, SliderBodyState>(),
-  checkPointVerdict: {},
-  spinnerState: new Map<string, SpinnerState>(),
-  sliderVerdict: {},
-
-  clickWasUseful: false,
-  // Rest are used for optimizations
-  latestHitObjectIndex: 0 as number,
-  aliveHitCircleIds: new Set<string>(),
-  aliveSliderIds: new Set<string>(),
-  aliveSpinnerIds: new Set<string>(),
-  // Also used as an optimization
-  judgedObjects: [],
-  pressingSince: [NOT_PRESSING, NOT_PRESSING],
-});
 
 /**
  * In the real osu game, the slider body will be evaluated at every game tick (?), which is something we can not do.
@@ -180,7 +105,7 @@ function isWithinHitWindow(hitWindow: number[], delta: number, verdict: MainHitO
   return Math.abs(delta) <= hitWindow[HitObjectVerdicts[verdict]];
 }
 
-class GameStateEvaluator {
+export class GameStateEvaluator {
   private readonly events: Event[];
   private gameState: GameState = defaultGameState();
   private frame: ReplayFrame = { time: 0, position: { x: 0, y: 0 }, actions: [] };
@@ -480,3 +405,23 @@ function sliderVerdictBasedOnCheckpoints(totalCheckpoints: number, hitCheckpoint
   if (hitCheckpoints * 2 >= totalCheckpoints) return "OK";
   return "MEH";
 }
+
+// Maybe hitObjects should be flattened out (nested pulled out)
+// The mods should be applied to those them ...
+const actionsToBooleans = (osuActions: OsuAction[]) => [
+  osuActions.includes(OsuAction.leftButton),
+  osuActions.includes(OsuAction.rightButton),
+];
+
+export const newPressingSince = (pressingSince: PressingSinceTimings, osuActions: OsuAction[], time: number) => {
+  const pressed = actionsToBooleans(osuActions);
+  const newPressingSince = [...pressingSince];
+  for (let i = 0; i < newPressingSince.length; i++) {
+    if (pressed[i]) {
+      newPressingSince[i] = Math.min(newPressingSince[i], time);
+    } else {
+      newPressingSince[i] = NOT_PRESSING;
+    }
+  }
+  return newPressingSince;
+};

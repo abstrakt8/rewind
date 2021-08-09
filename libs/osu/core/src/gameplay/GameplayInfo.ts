@@ -5,7 +5,10 @@
 import { GameState } from "./GameState";
 import { HitObjectType, SliderCheckPointType } from "../hitobjects/Types";
 import { MainHitObjectVerdict } from "./Verdicts";
-import { Beatmap, HitCircle, Slider, SliderCheckPoint, Spinner } from "@rewind/osu/core";
+import { Beatmap } from "../beatmap/Beatmap";
+import { HitCircle } from "../hitobjects/HitCircle";
+import { Slider } from "../hitobjects/Slider";
+import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
 
 export interface GameplayInfo {
   accuracy: number;
@@ -122,7 +125,7 @@ export class GameplayInfoEvaluator {
   }
 
   countAsArray() {
-    return ["GREAT", "OK", "MEH", "MISS"].map((v) => this.verdictCount[v]);
+    return (["GREAT", "OK", "MEH", "MISS"] as const).map((v) => this.verdictCount[v]);
   }
 
   evaluateReplayState(replayState: GameState): GameplayInfo {
@@ -130,16 +133,17 @@ export class GameplayInfoEvaluator {
       const id = replayState.judgedObjects[this.judgedObjectsIndex++];
       const hitObject = this.beatmap.getHitObject(id);
       if (hitObject instanceof SliderCheckPoint) {
-        const hit = replayState.checkPointState.get(hitObject.id).hit;
+        const hit = replayState.checkPointVerdict[hitObject.id].hit;
         this.evaluateSliderCheckpoint(hitObject.type, hit);
       } else if (hitObject instanceof HitCircle) {
-        const verdict = replayState.hitCircleState.get(id).type;
+        const verdict = replayState.hitCircleVerdict[id].type;
         const isSliderHead = hitObject.sliderId !== undefined;
         this.evaluateHitObject(hitObject.type, verdict, isSliderHead);
       } else if (hitObject instanceof Slider) {
-        const verdict = replayState.sliderJudgement.get(hitObject.id);
+        const verdict = replayState.sliderVerdict[hitObject.id];
         this.evaluateHitObject(hitObject.type, verdict);
-      } else if (hitObject instanceof Spinner) {
+      } else {
+        // Spinner
         // TODO: We just going to assume that they hit it
         this.evaluateHitObject("SPINNER", "GREAT");
       }

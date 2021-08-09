@@ -1,14 +1,9 @@
-import {
-  cloneGameState,
-  defaultReplayState,
-  NextFrameEvaluator,
-  NextFrameEvaluatorOptions,
-  GameState,
-} from "./GameState";
+import { cloneGameState, defaultGameState, GameState } from "./GameState";
 import { ReplayFrame } from "../replays/Replay";
 import { Vec2 } from "@rewind/osu/math";
 import { Beatmap } from "../beatmap/Beatmap";
 import { GameplayInfo } from "./GameplayInfo";
+import { GameStateEvaluator, GameStateEvaluatorOptions } from "./GameStateEvaluator";
 
 export interface GameStateTimeMachine {
   gameStateAt(time: number): GameState;
@@ -30,21 +25,21 @@ export class BucketedGameStateTimeMachine implements GameStateTimeMachine {
   storedGameState: GameState[] = [];
   bucketSize: number;
   frames: ReplayFrame[];
-  evaluator: NextFrameEvaluator;
+  evaluator: GameStateEvaluator;
 
   constructor(
     initialKnownFrames: ReplayFrame[],
     private readonly beatmap: Beatmap,
     // private readonly hitObjects: OsuHitObject[],
-    private readonly settings: NextFrameEvaluatorOptions,
+    private readonly settings: GameStateEvaluatorOptions,
     bucketSize?: number,
   ) {
     // Add a dummy replay frame at the beginning.
     this.frames = [{ time: -727_727, position: new Vec2(0, 0), actions: [] }, ...initialKnownFrames];
     this.bucketSize = bucketSize ?? Math.ceil(Math.sqrt(this.frames.length));
-    this.storedGameState[0] = defaultReplayState();
+    this.storedGameState[0] = defaultGameState();
     this.currentGameState = cloneGameState(this.storedGameState[0]);
-    this.evaluator = new NextFrameEvaluator(beatmap, settings);
+    this.evaluator = new GameStateEvaluator(beatmap, settings);
   }
 
   private getHighestCachedIndex(time: number): number {
@@ -76,7 +71,7 @@ export class BucketedGameStateTimeMachine implements GameStateTimeMachine {
         break;
       }
 
-      this.evaluator.evaluateNextFrameMutated(this.currentGameState, nextFrame);
+      this.evaluator.evaluate(this.currentGameState, nextFrame);
       this.currentIndex += 1;
 
       // Caching the state at a multiple of bucketSize
