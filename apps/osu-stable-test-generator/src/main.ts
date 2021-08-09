@@ -1,5 +1,6 @@
 import * as WebSocket from "ws";
 import { GosuMemoryAPI, OsuMemoryStatus } from "@rewind/osu-local/gosumemory";
+import { writeFileSync } from "fs";
 
 const wsUrl = "ws://localhost:24050/ws";
 
@@ -48,7 +49,10 @@ interface DataToStore {
   hitOffsets: number[];
 }
 
-function persist(file: string, data: DataToStore) {}
+function persist(file: string, data: DataToStore) {
+  const json = JSON.stringify(data);
+  writeFileSync(file, json);
+}
 
 function filterInteresting(gameStates: OsuStableGameState[]) {
   // First one always interesting
@@ -71,7 +75,10 @@ class TestGenerator {
   processPlaying(data: MyData) {
     if (this.previousState !== OsuMemoryStatus.Playing) {
       console.log(`Started with new beatmap ${data.beatmapMd5}`);
-      this.gameStates = [data];
+      // `data` is really weird at the beginning
+      // Sometimes it's like time=20000 with count=0,0,0,0 then on next frame it's like time=16ms with count=[0,0,0,1]
+      // That's why we manually initialize this array.
+      this.gameStates = [{ hitOffsets: [], time: 0, counts: [0, 0, 0, 0] }];
     } else {
       this.gameStates.push(data);
     }
@@ -94,7 +101,10 @@ class TestGenerator {
         hitOffsets: lastState.hitOffsets,
       };
 
-      console.log(JSON.stringify(store));
+      const name = `${data.beatmapMd5}_${Date.now()}.json`;
+      console.log(`Storing data into file ${name}`);
+      persist(name, store);
+      // console.log(JSON.stringify(store));
     }
   }
 
