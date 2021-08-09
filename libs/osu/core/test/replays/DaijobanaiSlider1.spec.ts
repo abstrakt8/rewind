@@ -56,6 +56,9 @@ describe("Daijobanai [Slider 1]", function () {
       const sliderTickState = state.checkPointVerdict["0/0"] as CheckPointState;
       expect(sliderTickState.hit).toBe(true);
     });
+    it("slider verdict should be GREAT", function () {
+      expect(state.sliderVerdict["0"]).toBe("GREAT");
+    });
     // This gives a "300" as a judgment and a combo of 2
   });
 
@@ -117,6 +120,10 @@ describe("Daijobanai [Slider 1]", function () {
       const sliderTickState = state.checkPointVerdict["0/0"];
       expect(sliderTickState.hit).toBe(true);
     });
+
+    it("slider verdict should be GREAT", function () {
+      expect(state.sliderVerdict["0"]).toBe("GREAT");
+    });
   });
   describe("SliderEndMissed.osr", function () {
     beforeEach(function () {
@@ -130,11 +137,17 @@ describe("Daijobanai [Slider 1]", function () {
       const hitCircleState = state.hitCircleVerdict["0/HEAD"];
       expectHitCircleToBeNotAMiss(hitCircleState);
     });
+
     it("legacy slider tick missed", function () {
       const sliderTickState = state.checkPointVerdict["0/0"];
       console.log(hitObjects[0] as Slider);
       expect(sliderTickState.hit).toBe(false);
     });
+
+    it("slider verdict should be OK", function () {
+      expect(state.sliderVerdict["0"]).toBe("OK");
+    });
+
     // This gives a "100" as a judgment and a combo of 1
   });
 });

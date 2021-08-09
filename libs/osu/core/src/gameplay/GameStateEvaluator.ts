@@ -164,7 +164,7 @@ export class GameStateEvaluator {
     // Now count the hit checkpoints and get the verdict
     const totalCheckpoints = slider.checkPoints.length + 1;
     let hitCheckpoints = 0;
-    if (headVerdict === undefined || headVerdict.type === "MISS") hitCheckpoints++;
+    if (!(headVerdict === undefined || headVerdict.type === "MISS")) hitCheckpoints++;
     for (const c of slider.checkPoints) {
       hitCheckpoints += this.gameState.checkPointVerdict[c.id]?.hit ? 1 : 0;
     }
@@ -328,7 +328,7 @@ export class GameStateEvaluator {
     while (gameState.eventIndex < this.events.length) {
       const event = this.events[gameState.eventIndex];
       // We haven't reached the time yet
-      if (gameState.currentTime < event.time) {
+      if (frame.time < event.time) {
         break;
       }
       gameState.eventIndex += 1;

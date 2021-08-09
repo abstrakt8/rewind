@@ -177,7 +177,7 @@ const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
 const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length - 1, speedIndex(speed) + 1)];
 const prevSpeed = (speed: number) => speedsAllowed[Math.max(0, speedIndex(speed) - 1)];
 
-const frameJump = 16;
+const frameJump = 1;
 
 export const useShortcuts = () => {
   const { gameClock } = useGameClock();
