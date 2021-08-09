@@ -6,7 +6,7 @@ import {
   replayPath,
   TEST_MAPS,
 } from "./util.spec";
-import { HitCircleMissReason, HitCircleState, GameState } from "../src/gameplay/GameState";
+import { GameState, HitCircleVerdict } from "../src/gameplay/GameState";
 import { BucketedGameStateTimeMachine } from "../src/gameplay/GameStateTimeMachine";
 import { Slider } from "../src/hitobjects/Slider";
 
@@ -29,11 +29,11 @@ describe("Daijobanai [Slider (Repeat = 1)]", function () {
     );
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must be hit", function () {
-      expect(state.hitCircleState.get(sliderHeadId)?.type).not.toBe("MISS");
+      expect(state.hitCircleVerdict[sliderHeadId]?.type).not.toBe("MISS");
     });
     it("repeat and last tick must be hit", function () {
-      expect(state.checkPointState.get(repeatId)?.hit).toBe(true);
-      expect(state.checkPointState.get(lastTickId)?.hit).toBe(true);
+      expect(state.checkPointVerdict[repeatId]?.hit).toBe(true);
+      expect(state.checkPointVerdict[lastTickId]?.hit).toBe(true);
     });
   });
 });
@@ -58,10 +58,10 @@ describe("Daijobanai [Short kick slider]", function () {
     );
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must be hit", function () {
-      expect(state.hitCircleState.get(sliderHeadId)?.type).not.toBe("MISS");
+      expect(state.hitCircleVerdict[sliderHeadId]?.type).not.toBe("MISS");
     });
     it("last tick must be missed", function () {
-      expect(state.checkPointState.get(lastTickId)?.hit).toBe(true);
+      expect(state.checkPointVerdict[lastTickId]?.hit).toBe(true);
     });
   });
 
@@ -71,16 +71,16 @@ describe("Daijobanai [Short kick slider]", function () {
     );
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must have been missed due to slider too short force miss", function () {
-      const actualState = state.hitCircleState.get(sliderHeadId) as HitCircleState;
-      const expectedState: HitCircleState = {
+      const actualState = state.hitCircleVerdict[sliderHeadId];
+      const expectedState: HitCircleVerdict = {
         judgementTime: 1715.25,
-        missReason: HitCircleMissReason.SLIDER_FINISHED_FASTER,
+        missReason: "SLIDER_FINISHED_FASTER",
         type: "MISS",
       };
       expect(actualState).toEqual(expectedState);
     });
     it("last tick must be missed", function () {
-      expect(state.checkPointState.get(lastTickId)?.hit).toBe(false);
+      expect(state.checkPointVerdict[lastTickId]?.hit).toBe(false);
     });
   });
 });

@@ -81,8 +81,8 @@ function generateEvents(beatmap: Beatmap, hitWindows: number[]): Event[] {
   return events;
 }
 
-type NoteLockStyle = "NONE" | "STABLE" | "LAZER";
-type HitWindowStyle = "OSU_STABLE" | "OSU_LAZER";
+export type NoteLockStyle = "NONE" | "STABLE" | "LAZER";
+export type HitWindowStyle = "OSU_STABLE" | "OSU_LAZER";
 
 export type GameStateEvaluatorOptions = {
   hitWindowStyle: HitWindowStyle;

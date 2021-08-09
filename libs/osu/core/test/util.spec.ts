@@ -7,11 +7,7 @@ import {
   Blueprint,
   BucketedGameStateTimeMachine,
   buildBeatmap,
-  defaultReplayState,
   modsFromBitmask,
-  NextFrameEvaluator,
-  NextFrameEvaluatorOptions,
-  NoteLockStyle,
   OsuBlueprintParser,
   OsuClassicMod,
   OsuHitObject,
@@ -19,6 +15,9 @@ import {
   ReplayFrame,
   GameState,
   Slider,
+  GameStateEvaluator,
+  defaultGameState,
+  GameStateEvaluatorOptions,
 } from "../src";
 import { average, max, median, min } from "simple-statistics";
 
@@ -91,15 +90,16 @@ export function osuClassicScoreScreenJudgementCount(state: GameState, hitObjects
   const count = [0, 0, 0, 0];
   const dict = normalizeHitObjects(hitObjects);
 
-  for (const s of state.hitCircleState.values()) {
+  for (const s of Object.values(state.hitCircleVerdict)) {
     count[s.type]++;
   }
-  for (const [id, j] of state.sliderJudgement.entries()) {
+  for (const id in state.sliderVerdict) {
+    const j = state.sliderVerdict[id];
     count[j]++;
     const slider = dict[id] as Slider;
 
     // In osu!classic the heads are not counted and we just subtract them
-    const headState = state.hitCircleState.get(slider.head.id);
+    const headState = state.hitCircleVerdict[slider.head.id];
     if (!headState) throw Error("Head state was not calculated?");
     count[headState.type]--;
   }
@@ -107,10 +107,10 @@ export function osuClassicScoreScreenJudgementCount(state: GameState, hitObjects
   return count;
 }
 
-export function evaluateWholeReplay(evaluator: NextFrameEvaluator, replay: any[]) {
-  const state = defaultReplayState();
+export function evaluateWholeReplay(evaluator: GameStateEvaluator, replay: ReplayFrame[]) {
+  const state = defaultGameState();
   for (const frame of replay) {
-    evaluator.evaluateNextFrameMutated(state, frame);
+    evaluator.evaluate(state, frame);
   }
   return state;
 }
@@ -121,12 +121,12 @@ export function defaultStableSettings(mapFile: string) {
   const hitObjects = beatmap.hitObjects;
   const hitWindows = hitWindowsForOD(blueprint.defaultDifficulty.overallDifficulty);
 
-  const settings: NextFrameEvaluatorOptions = {
+  const settings: GameStateEvaluatorOptions = {
     hitWindowStyle: "OSU_STABLE",
-    noteLockStyle: NoteLockStyle.STABLE,
+    noteLockStyle: "STABLE",
   };
 
-  const evaluator = new NextFrameEvaluator(beatmap, settings);
+  const evaluator = new GameStateEvaluator(beatmap, settings);
 
   return {
     beatmap,
@@ -143,7 +143,7 @@ export function createTestTimeMachine(mapFile: string, replayFile: string) {
   const beatmap = buildBeatmap(blueprint, { addStacking: true, mods: replay.mods });
   const timeMachine = new BucketedGameStateTimeMachine(replay.frames, beatmap, {
     hitWindowStyle: "OSU_STABLE",
-    noteLockStyle: NoteLockStyle.STABLE,
+    noteLockStyle: "STABLE",
   });
 
   return {

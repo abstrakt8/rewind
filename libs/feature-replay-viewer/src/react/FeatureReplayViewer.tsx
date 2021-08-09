@@ -9,7 +9,7 @@ import { usePerformanceMonitor } from "./hooks/usePerformanceMonitor";
 import { useMobXContext } from "./contexts/MobXContext";
 import { observer } from "mobx-react-lite";
 import { useHotkeys } from "react-hotkeys-hook";
-import { ReplayAnalysisEvent, ReplayAnalysisEventType } from "@rewind/osu/core";
+import { ReplayAnalysisEvent, GameplayAnalysisEventType } from "@rewind/osu/core";
 import { Switch } from "@headlessui/react";
 import { Scenario } from "../stores/ScenarioService";
 import { useScenarioService } from "./hooks/game";

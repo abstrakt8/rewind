@@ -1,6 +1,4 @@
-import { parseBlueprintFromFS, parseReplayFramesFromFS, TEST_MAPS, TEST_REPLAYS } from "./util.spec";
-import { buildBeatmap, parseReplayFramesFromRaw, OsuAction, ReplayFrame } from "../src";
-import { readSync } from "node-osr";
+import { OsuAction, parseReplayFramesFromRaw, ReplayFrame } from "../src";
 
 // w, x, y, z
 // w time since last action

@@ -35,14 +35,15 @@ export * from "./hitobjects/Spinner";
 export * from "./parsers/OsuBlueprintParser";
 
 // gameplay
+
+export * from "./gameplay/GameplayAnalysisEvent";
+export * from "./gameplay/GameplayInfo";
+export * from "./gameplay/GameState";
+export * from "./gameplay/GameStateEvaluator";
 export * from "./gameplay/GameStateTimeMachine";
+export * from "./gameplay/Verdicts";
 
 // replays
-export * from "./gameplay/GameState";
-export * from "./gameplay/ReplayEvent";
-export * from "./gameplay/Verdicts";
-export * from "./gameplay/GameplayInfo";
-
 export * from "./replays/RawReplayData";
 export * from "./replays/Replay";
 export { parseReplayFramesFromRaw } from "./replays/ReplayParser";

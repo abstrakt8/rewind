@@ -1,4 +1,4 @@
-import { formatGameTime, Position } from "@rewind/osu/math";
+import { Position } from "@rewind/osu/math";
 import { normalizeHitObjects } from "../utils";
 import { GameState } from "./GameState";
 import { Slider } from "../hitobjects/Slider";
@@ -11,11 +11,11 @@ import { OsuHitObject } from "../hitobjects/Types";
  *
  */
 
-export type ReplayAnalysisEventType = "HitObjectJudgement" | "CheckpointJudgement" | "UnnecessaryClick";
+export type GameplayAnalysisEventType = "HitObjectJudgement" | "CheckpointJudgement" | "UnnecessaryClick";
 
 // Where and when to display these events
 interface DisplayBase {
-  type: ReplayAnalysisEventType;
+  type: GameplayAnalysisEventType;
   time: number;
   position: Position;
 }
@@ -59,7 +59,8 @@ export function retrieveEvents(gameState: GameState, hitObjects: OsuHitObject[])
   const dict = normalizeHitObjects(hitObjects);
 
   // HitCircle judgements (SliderHeads included and indicated)
-  for (const [id, state] of gameState.hitCircleState.entries()) {
+  for (const id in gameState.hitCircleVerdict) {
+    const state = gameState.hitCircleVerdict[id];
     const hitCircle = dict[id] as HitCircle;
     const isSliderHead = hitCircle.sliderId !== undefined;
     const verdict = state.type;
@@ -73,7 +74,8 @@ export function retrieveEvents(gameState: GameState, hitObjects: OsuHitObject[])
     });
   }
 
-  for (const [id, verdict] of gameState.sliderJudgement.entries()) {
+  for (const id in gameState.sliderVerdict) {
+    const verdict = gameState.sliderVerdict[id];
     // Slider judgement events
     const slider = dict[id] as Slider;
     const position = slider.endPosition;
@@ -81,12 +83,7 @@ export function retrieveEvents(gameState: GameState, hitObjects: OsuHitObject[])
 
     // CheckpointEvents
     for (const point of slider.checkPoints) {
-      // TODO: How is it possible that one of them is not judged?
-      const checkPointState = gameState.checkPointState.get(point.id);
-      if (!checkPointState) {
-        console.log(`WTF @ ${point.id} ${formatGameTime(point.hitTime, true)}`);
-      }
-
+      const checkPointState = gameState.checkPointVerdict[point.id];
       const hit = checkPointState?.hit ?? false;
 
       const isLastTick = point.type === "LAST_LEGACY_TICK";
