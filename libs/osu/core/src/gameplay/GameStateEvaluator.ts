@@ -78,6 +78,9 @@ function generateEvents(beatmap: Beatmap, hitWindows: number[]): Event[] {
     }
   }
 
+  // TODO: What if 2B maps?
+  events.sort((a, b) => a.time - b.time);
+
   return events;
 }
 
