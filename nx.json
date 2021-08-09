@@ -56,6 +56,9 @@
     "osu-local-db-reader": {
       "tags": []
     },
+    "osu-local-gosumemory": {
+      "tags": []
+    },
     "osu-local-osr-reader": {
       "tags": []
     },
@@ -72,6 +75,9 @@
       "tags": []
     },
     "osu-skin": {
+      "tags": []
+    },
+    "osu-stable-test-generator": {
       "tags": []
     },
     "web": {

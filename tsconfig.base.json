@@ -17,6 +17,7 @@
     "paths": {
       "@rewind/feature-replay-viewer": ["libs/feature-replay-viewer/src/index.ts"],
       "@rewind/osu-local/db-reader": ["libs/osu-local/db-reader/src/index.ts"],
+      "@rewind/osu-local/gosumemory": ["libs/osu-local/gosumemory/src/index.ts"],
       "@rewind/osu-local/osr-reader": ["libs/osu-local/osr-reader/src/index.ts"],
       "@rewind/osu-local/skin-reader": ["libs/osu-local/skin-reader/src/index.ts"],
       "@rewind/osu-local/utils": ["libs/osu-local/utils/src/index.ts"],

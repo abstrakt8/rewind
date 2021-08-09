@@ -402,6 +402,27 @@
         }
       }
     },
+    "osu-local-gosumemory": {
+      "root": "libs/osu-local/gosumemory",
+      "sourceRoot": "libs/osu-local/gosumemory/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/osu-local/gosumemory/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/osu-local/gosumemory"],
+          "options": {
+            "jestConfig": "libs/osu-local/gosumemory/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "osu-local-osr-reader": {
       "root": "libs/osu-local/osr-reader",
       "sourceRoot": "libs/osu-local/osr-reader/src",
@@ -523,6 +544,56 @@
           "outputs": ["coverage/libs/osu/skin"],
           "options": {
             "jestConfig": "libs/osu/skin/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "osu-stable-test-generator": {
+      "root": "apps/osu-stable-test-generator",
+      "sourceRoot": "apps/osu-stable-test-generator/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/osu-stable-test-generator",
+            "main": "apps/osu-stable-test-generator/src/main.ts",
+            "tsConfig": "apps/osu-stable-test-generator/tsconfig.app.json",
+            "assets": ["apps/osu-stable-test-generator/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/osu-stable-test-generator/src/environments/environment.ts",
+                  "with": "apps/osu-stable-test-generator/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "osu-stable-test-generator:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/osu-stable-test-generator/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/osu-stable-test-generator"],
+          "options": {
+            "jestConfig": "apps/osu-stable-test-generator/jest.config.js",
             "passWithNoTests": true
           }
         }

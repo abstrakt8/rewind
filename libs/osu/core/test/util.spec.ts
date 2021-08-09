@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { readSync } from "node-osr";
 import { normalizeHitObjects } from "../src/utils";
-import { hitWindowsForOD } from "@rewind/osu/math";
+import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
 import {
   Blueprint,
   BucketedGameStateTimeMachine,
@@ -20,6 +20,7 @@ import {
   GameState,
   Slider,
 } from "../src";
+import { average, max, median, min } from "simple-statistics";
 
 // This makes the whole testing module node.js only
 
@@ -151,4 +152,31 @@ export function createTestTimeMachine(mapFile: string, replayFile: string) {
     beatmap,
     timeMachine,
   };
+}
+
+// Time deltas
+export function timeDeltas(frames: { time: number }[]) {
+  const deltas = [];
+  for (let i = 1; i < frames.length; i++) {
+    deltas.push(frames[i].time - frames[i - 1].time);
+  }
+  return deltas;
+}
+export function commonStats(frames: ReplayFrame[], outlierMs = 16 * 2) {
+  const t = timeDeltas(frames);
+  const med = median(t);
+  const avg = average(t);
+  const mn = min(t);
+  const mx = max(t);
+
+  let time = 0;
+  for (let i = 0; i < t.length; i++) {
+    time += t[i];
+    // 2 Frames lost
+    if (t[i] >= outlierMs) {
+      console.log(`Outlier at t=${formatGameTime(time, true)} with delta = ${t[i]}`);
+    }
+  }
+
+  console.log(`Max=${mx} , Min=${mn}, Avg=${avg}, Median=${med}`);
 }
