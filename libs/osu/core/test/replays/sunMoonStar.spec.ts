@@ -7,14 +7,9 @@ import {
   TEST_MAPS,
   TEST_REPLAYS,
 } from "../util.spec";
-import {
-  BucketedGameStateTimeMachine,
-  isSlider,
-  osuStableAccuracy,
-  parseReplayFramesFromRaw,
-  Slider,
-} from "@rewind/osu/core";
+
 import { readSync } from "node-osr";
+import { BucketedGameStateTimeMachine, isSlider, osuStableAccuracy, parseReplayFramesFromRaw, Slider } from "../../src";
 
 describe("Parsing SunMoonStar", function () {
   const r = parseReplayFramesFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);

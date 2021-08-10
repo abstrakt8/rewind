@@ -220,7 +220,7 @@ export function parseOsuHitObjectSetting(line: string): HitCircleSettings | Slid
     };
   }
   if (hasFlag(typeBitmask, LegacyHitObjectType.Slider)) {
-    let length: number | null = null;
+    let length: number | undefined;
     const slides = parseInt(split[6]);
     if (slides > 9000) throw new Error("Slides count is way too high");
 
@@ -230,7 +230,7 @@ export function parseOsuHitObjectSetting(line: string): HitCircleSettings | Slid
 
     if (split.length > 7) {
       length = Math.max(0, parseFloat(split[7]));
-      if (length === 0) length = null;
+      if (length === 0) length = undefined;
     }
 
     return {
@@ -474,7 +474,7 @@ export class OsuBlueprintParser {
     }
     if (SECTION_REGEX.test(strippedLine)) {
       // We only add sections we want to read to the list
-      if (this.sectionsToRead.indexOf(this.section) !== -1) {
+      if (this.section !== null && this.sectionsToRead.includes(this.section)) {
         this.sectionsFinishedReading.push(this.section);
       }
       this.section = (SECTION_REGEX.exec(strippedLine) as RegExpExecArray)[1] as BlueprintSection;
@@ -483,7 +483,7 @@ export class OsuBlueprintParser {
     }
 
     // We skip reading sections we don't want to read for optimization
-    if (this.sectionsToRead.indexOf(this.section) === -1) {
+    if (this.section === null || this.sectionsToRead.indexOf(this.section) === -1) {
       return;
     }
 

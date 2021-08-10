@@ -1,4 +1,4 @@
-import { buildBeatmap, HitCircle, Slider } from "@rewind/osu/core";
+import { buildBeatmap, HitCircle, Slider } from "../src";
 import { parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
 
 describe("BeatmapBuilder", function () {

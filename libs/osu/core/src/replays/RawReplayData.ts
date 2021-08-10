@@ -48,7 +48,7 @@ export const ReplayModBit: Record<OsuClassicMod, number> = {
 };
 
 export function modsFromBitmask(modMask: number): OsuClassicMod[] {
-  const list = [];
+  const list: OsuClassicMod[] = [];
   for (const mod of OsuClassicMods) {
     const bit = ReplayModBit[mod];
     if ((modMask & bit) > 0) {

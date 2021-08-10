@@ -6,7 +6,7 @@ import {
   PathType,
   SliderSettings,
   SpinnerSettings,
-} from "@rewind/osu/core";
+} from "../src";
 import { parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
 import { Position } from "@rewind/osu/math";
 

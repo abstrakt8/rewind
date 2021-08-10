@@ -1,5 +1,5 @@
 import { Slider } from "../hitobjects/Slider";
-import { AllHitObjects, OsuHitObject } from "@rewind/osu/core";
+import { AllHitObjects, OsuHitObject } from "../hitobjects/Types";
 
 export function normalizeHitObjects(hitObjects: OsuHitObject[]): Record<string, AllHitObjects> {
   const hitObjectById: Record<string, AllHitObjects> = {};

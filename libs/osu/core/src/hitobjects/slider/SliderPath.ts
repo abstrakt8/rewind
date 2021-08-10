@@ -3,15 +3,12 @@ import { PathType } from "./PathType";
 import { Position, Vec2 } from "@rewind/osu/math";
 import { floatEqual } from "@rewind/osu/math";
 import { PathApproximator } from "./PathApproximator";
-import { immerable } from "immer";
 
 function mapToVector2(p: Position[]) {
   return p.map((p) => new Vec2(p.x, p.y));
 }
 
 export class SliderPath {
-  [immerable] = true;
-
   controlPoints: PathControlPoint[];
 
   // Cached helper data that should only be calculated when there is change in the control points.

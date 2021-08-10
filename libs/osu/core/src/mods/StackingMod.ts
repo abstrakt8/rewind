@@ -158,10 +158,11 @@ export function modifyStackingPosition(
     list.forEach((hitObject) => {
       if (isSpinner(hitObject as OsuHitObject)) return;
       const h = hitCircle(hitObject as StackableHitObject);
-      h.position = stackedPosition(h.position, heights.get(h.id), h.scale);
-      // if (hitCircle) {
-      //   hitCircle.position = stackedPosition(hitCircle.position, heights.get(hitCircle.id) ?? 0, hitCircle.scale);
-      // }
+      const height = heights.get(h.id);
+      if (height === undefined) {
+        throw Error("Stack height can't be undefined");
+      }
+      h.position = stackedPosition(h.position, height, h.scale);
     });
   });
 }

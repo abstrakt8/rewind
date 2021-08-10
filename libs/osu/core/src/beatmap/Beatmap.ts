@@ -12,35 +12,35 @@ import { AllHitObjects, OsuHitObject } from "../hitobjects/Types";
  */
 export class Beatmap {
   static EMPTY_BEATMAP = new Beatmap([], DEFAULT_BEATMAP_DIFFICULTY, []);
-  hitObjectIndex: Record<string, AllHitObjects>;
+  private readonly hitObjectDict: Record<string, AllHitObjects>;
 
   constructor(
     public readonly hitObjects: Array<OsuHitObject>,
     public readonly difficulty: BeatmapDifficulty,
     public readonly appliedMods: OsuClassicMod[],
   ) {
-    this.hitObjectIndex = normalizeHitObjects(hitObjects);
+    this.hitObjectDict = normalizeHitObjects(hitObjects);
   }
 
   getHitObject(id: string): AllHitObjects {
-    return this.hitObjectIndex[id];
+    return this.hitObjectDict[id];
   }
 
   // TODO: Perform some .type checks otherwise these don't make sense
 
   getSliderCheckPoint(id: string): SliderCheckPoint {
-    return this.hitObjectIndex[id] as SliderCheckPoint;
+    return this.hitObjectDict[id] as SliderCheckPoint;
   }
 
   getSlider(id: string): Slider {
-    return this.hitObjectIndex[id] as Slider;
+    return this.hitObjectDict[id] as Slider;
   }
 
   getHitCircle(id: string): HitCircle {
-    return this.hitObjectIndex[id] as HitCircle;
+    return this.hitObjectDict[id] as HitCircle;
   }
 
   getSpinner(id: string): Spinner {
-    return this.hitObjectIndex[id] as Spinner;
+    return this.hitObjectDict[id] as Spinner;
   }
 }

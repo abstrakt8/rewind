@@ -31,7 +31,7 @@ export interface SliderSettings extends HitObjectSettings {
   // e.g. `[Circle[p1, p2, p3], Bezier[p4, p5, p6, p7], Catmull[p8, p9, p10]]`.
   // The type of the segment is determined by its first point, so in the above's it would be in p1, p4 and p8.
   pathPoints: PathControlPoint[];
-  length: number;
+  length?: number;
 
   // 36
   legacyLastTickOffset: number;
