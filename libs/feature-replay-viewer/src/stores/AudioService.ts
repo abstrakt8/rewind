@@ -126,6 +126,6 @@ export class AudioService implements GameClock {
   }
 
   get maxTime() {
-    return this.getMusicDuration();
+    return (this.song?.mediaElement.duration ?? 1) * 1000;
   }
 }

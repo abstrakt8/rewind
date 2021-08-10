@@ -107,6 +107,7 @@ function mapToPlaybarEvents(
 ): PlaybarEvent[] {
   const { showSliderBreaks, show100s, show50s, showMisses } = settings;
   const events: PlaybarEvent[] = [];
+  console.log("Remapping???");
   // TODO: Refactor -> maybe filter afterwards
   replayEvents.forEach((e) => {
     const position = e.time / maxTime;

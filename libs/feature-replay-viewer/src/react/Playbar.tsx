@@ -1,5 +1,5 @@
 import "tailwindcss/tailwind.css";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import useMouse from "@react-hook/mouse-position";
 
 /* eslint-disable-next-line */
@@ -72,6 +72,16 @@ function Shade(props: { width: number; color: number }) {
   );
 }
 
+function EventLines(props: { events: PlaybarEvent[] }) {
+  const { events } = props;
+  const d = useMemo(
+    () => events.map((e, id) => <EventLine color={e.color} position={e.position} key={id} />),
+    [events],
+  );
+  // console.log("Rerender");
+  return <>{d}</>;
+}
+
 export function Playbar(props: PlaybarProps) {
   const { onClick, loadedPercentage, events } = props;
   const radius = 0.001;
@@ -100,6 +110,7 @@ export function Playbar(props: PlaybarProps) {
     lightP = mousePercentage;
     darkP = loadedPercentage;
   }
+
   return (
     <div
       className="h-full bg-gray-300 relative cursor-pointer rounded-lg overflow-hidden"
@@ -110,13 +121,7 @@ export function Playbar(props: PlaybarProps) {
       {/*<div className={"absolute h-full bg-gray-500"} style={{ ...widthStyle(primaryP) }} />*/}
       <Shade width={lightP} color={4} />
       <Shade width={darkP} color={5} />
-      {/*<LineBar x={loadedPercent} />*/}
-      {events.map((e, id) => (
-        <EventLine color={e.color} position={e.position} key={id} />
-      ))}
-      {/*<EventLine d={{ width: 0.001, height: heights, x: 0.3, y: 0.5 }} />*/}
-      {/*<EventLine d={{ width: 0.001, height: heights, x: 0.5, y: 0.5 }} />*/}
-      {/*<EventLine d={{ width: 0.001, height: heights, x: 0.8, y: 0.5 }} />*/}
+      <EventLines events={events} />
     </div>
   );
 }
