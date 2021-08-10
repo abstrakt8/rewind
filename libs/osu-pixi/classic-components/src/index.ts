@@ -7,7 +7,7 @@ export * from "./hitobjects/OsuClassicSliderBody";
 export * from "./hitobjects/OsuClassicSliderRepeat";
 export * from "./hitobjects/OsuClassicSliderBall";
 export * from "./hitobjects/OsuClassicJudgements"; // TODO: Move
-// export * from "./hitobjects/OsuClassicSliderTick";
+export * from "./hitobjects/OsuClassicSliderTick";
 export * from "./hitobjects/OsuClassicCursor";
 export * from "./hitobjects/OsuClassicSpinner";
 export * from "./hitobjects/OsuClassicNumber";
@@ -15,4 +15,3 @@ export * from "./DrawableSettings";
 
 export * from "./managers/SliderTextureManager";
 export * from "./renderers/BasicSliderTextureRenderer";
-// export * from "./drawables/classic/OsuClassicSliderRepeat";

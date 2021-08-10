@@ -1,61 +1,55 @@
-// import { Disposable, HasRenderTime } from "./DrawableHitObject";
-// import { Preparable } from "../utils/Preparable";
-// import { ModHiddenSetting, SkinSetting } from "./DrawableSettings";
-// import { createCenteredSprite, fadeInWithDuration, fadeOutWithDuration } from "../utils/Pixi";
-// import { Container, Sprite } from "pixi.js";
-//
-// type Settings = SkinSetting &
-//   ModHiddenSetting & {
-//     approachTime: number;
-//   };
-//
-// type SliderTick = {};
-// // TODO:...
-// export class ClassicSliderTick extends Container implements Preparable, Disposable, HasRenderTime {
-//   private readonly settings: Settings;
-//   private readonly tick: SliderTick;
-//   private readonly sprite: Sprite;
-//
-//   constructor(tick: SliderTick, settings: Settings) {
-//     super();
-//     this.settings = settings;
-//     this.tick = tick;
-//     this.sprite = createCenteredSprite();
-//     this.addChild(this.sprite);
-//   }
-//
-//   // SliderEndCircle.cs
-//   renderStartTime(): number {
-//     return this.tick.startTime - this.tick.timePreempt;
-//   }
-//
-//   get animDuration(): number {
-//     return 150;
-//   }
-//
-//   renderEndTime(): number {
-//     return this.tick.startTime + this.animDuration;
-//   }
-//
-//   dispose(): void {
-//     return;
-//   }
-//
-//   prepareFor(time: number): void {
-//     const { startTime, stackedPosition, scale } = this.tick;
-//     const { skin } = this.settings;
-//
-//     // Maybe this is slow idk
-//     this.sprite.texture = skin.getTexture(SkinTextures.SLIDER_TICK);
-//     this.alpha = 1;
-//     // monkaHmm stackedPosition might be wrong
-//     this.position.set(stackedPosition.x, stackedPosition.y);
-//     this.scale.set(scale);
-//
-//     if (fadeInWithDuration(this, time, startTime - 727, 727)) {
-//       return;
-//     }
-//     // TODO: fadeOut based on hitResult
-//     fadeOutWithDuration(this, time, startTime, this.animDuration);
-//   }
-// }
+import {
+  applyPropertiesToDisplayObject,
+  createCenteredSprite,
+  DisplayObjectTransformationProcess,
+  evaluateTransformationsToProperties,
+} from "../utils/Pixi";
+import { Sprite, Texture } from "pixi.js";
+import { Position } from "@rewind/osu/math";
+import { fadeInT, fadeOutT } from "../utils/Transformations";
+
+// Lazer/DrawableSliderTick.cs
+
+interface SliderTickSettings {
+  time: number;
+  position: Position;
+  scale: number;
+  texture: Texture;
+  approachDuration: number; // Has complicated logic
+  hit?: boolean;
+}
+
+const ANIM_DURATION = 150;
+
+export class OsuClassicSliderTick {
+  public readonly sprite: Sprite;
+
+  constructor() {
+    this.sprite = createCenteredSprite();
+  }
+
+  static normalTransformation(settings: { approachDuration: number }): DisplayObjectTransformationProcess {
+    const { approachDuration } = settings;
+    return {
+      alpha: {
+        startValue: 0,
+        transformations: [
+          { time: [-approachDuration, -approachDuration + ANIM_DURATION], func: fadeInT() },
+          { time: [0, 0 + ANIM_DURATION], func: fadeOutT() },
+        ],
+      },
+    };
+  }
+
+  prepare(settings: SliderTickSettings): void {
+    const { time, position, scale, texture, approachDuration, hit } = settings;
+
+    this.sprite.texture = texture;
+    this.sprite.position.set(position.x, position.y);
+    this.sprite.scale.set(scale); // TODO: Actually it scales from 0.5 to 1.0
+
+    const t = OsuClassicSliderTick.normalTransformation({ approachDuration });
+    const p = evaluateTransformationsToProperties(t, time);
+    applyPropertiesToDisplayObject(p, this.sprite);
+  }
+}

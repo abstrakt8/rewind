@@ -191,8 +191,9 @@ const defaultBeatmapBuilderOptions: BeatmapBuilderOptions = {
 // There should only be one, otherwise ...
 function findDifficultyApplier(mods: OsuClassicMod[]): BeatmapDifficultyAdjuster {
   for (const m of mods) {
-    if (ModSettings[m].difficultyAdjuster) {
-      return ModSettings[m].difficultyAdjuster;
+    const adjuster = ModSettings[m].difficultyAdjuster;
+    if (adjuster !== undefined) {
+      return adjuster;
     }
   }
   return (d: BeatmapDifficulty) => d; // The identity function

@@ -12,6 +12,7 @@ import {
   OsuClassicSliderBall,
   OsuClassicSliderBody,
   OsuClassicSliderRepeat,
+  OsuClassicSliderTick,
   OsuClassicSpinner,
   SliderBodySettings,
   SliderTextureManager,
@@ -113,7 +114,20 @@ export class HitObjectPreparer {
     this.hitObjectContainer.addChild(lastTick);
   }
 
-  private prepareSliderTicks(gameTime: number, ticks: SliderCheckPoint[]) {}
+  private prepareSliderTicks(gameTime: number, ticks: SliderCheckPoint[], skin: Skin) {
+    ticks.forEach((t) => {
+      // See SliderTick.cs
+      const { spanIndex, spanStartTime, position, scale } = t;
+      const offset = spanIndex > 0 ? 200 : 400 * 0.66;
+      const approachDuration = (t.hitTime - spanStartTime) / 2 + offset;
+      const graphic = new OsuClassicSliderTick();
+      const time = gameTime - t.hitTime;
+      const hit = true; // TODO
+      const texture = skin.getTexture(SkinTextures.SLIDER_TICK);
+      graphic.prepare({ time, position, scale, hit, approachDuration, texture });
+      this.hitObjectContainer.addChild(graphic.sprite);
+    });
+  }
 
   private prepareSliderRepeats(gameTime: number, skin: Skin, repeats: SliderCheckPoint[], slider: Slider) {
     const first_end_circle_preempt_adjust = 2 / 3;
@@ -207,7 +221,7 @@ export class HitObjectPreparer {
     });
 
     this.prepareSliderTail(time, slider);
-    this.prepareSliderTicks(time, ticks);
+    this.prepareSliderTicks(time, ticks, skin);
     if (legacyTick && view.sliderAnalysis) {
       this.prepareSliderLastLegacyTick(time, legacyTick);
     }
