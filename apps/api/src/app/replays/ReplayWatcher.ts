@@ -28,7 +28,7 @@ export class ReplayWatcher {
       if (!path.endsWith(".osr")) {
         return;
       }
-      Logger.log(`Detected path: ${path}`);
+      this.logger.log(`Detected path: ${path}`);
       osrRead(path, (err, replay) => {
         const event: ReplayReadEvent = { payload: { replay, path, filename: basename(path) } };
         this.eventEmitter.emit(ReplayWatchEvents.ReplayRead, event);

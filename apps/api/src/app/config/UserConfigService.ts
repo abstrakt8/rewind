@@ -1,12 +1,17 @@
 import { Injectable } from "@nestjs/common";
+import { DEFAULT_SKIN_ID } from "../constants";
 
 // TODO: DefaultSkin, API Key, ...
 interface Config {
-  osuDirectory: string;
+  skinId: string;
+  // apiKey: string;
+  // osuDirectory: string;
 }
 
 const defaultConfig: Config = {
-  osuDirectory: "E:\\osu!",
+  skinId: DEFAULT_SKIN_ID,
+  // apiKey: "",
+  // osuDirectory: "E:\\osu!",
 };
 
 @Injectable()

@@ -1,17 +1,17 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { OsuLegacySkinReader, SkinFolderReader } from "@rewind/osu-local/skin-reader";
+import { Inject, Injectable, Logger } from "@nestjs/common";
+import { SkinFolderReader } from "@rewind/osu-local/skin-reader";
 import { join } from "path";
-import { UserConfigService } from "../config/UserConfigService";
 import { Skin } from "./skin.model";
+import { OSU_FOLDER } from "../constants";
 
 @Injectable()
 export class SkinService {
   private logger = new Logger("SkinService");
 
-  constructor(private userConfigService: UserConfigService) {}
+  constructor(@Inject(OSU_FOLDER) private osuDirectory: string) {}
 
   skinsFolder(path?: string) {
-    return join(this.userConfigService.getConfig().osuDirectory, "Skins", path);
+    return join(this.osuDirectory, "Skins", path);
   }
 
   async getSkinInfo(folder: string) {
