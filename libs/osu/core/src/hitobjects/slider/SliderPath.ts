@@ -18,8 +18,8 @@ export class SliderPath {
   private _invalid: boolean;
   private _cumulativeLength: number[];
   private _calculatedPath: Position[];
-  private _min: Position;
-  private _max: Position;
+  private _min: Position = { x: 0, y: 0 };
+  private _max: Position = { x: 0, y: 0 };
   private readonly _expectedDistance?: number;
 
   constructor(controlPoints: PathControlPoint[], length?: number) {

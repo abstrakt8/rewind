@@ -7,7 +7,13 @@ import {
   TEST_MAPS,
   TEST_REPLAYS,
 } from "../util.spec";
-import { BucketedGameStateTimeMachine, osuStableAccuracy, parseReplayFramesFromRaw } from "@rewind/osu/core";
+import {
+  BucketedGameStateTimeMachine,
+  isSlider,
+  osuStableAccuracy,
+  parseReplayFramesFromRaw,
+  Slider,
+} from "@rewind/osu/core";
 import { readSync } from "node-osr";
 
 describe("Parsing SunMoonStar", function () {
@@ -17,7 +23,7 @@ describe("Parsing SunMoonStar", function () {
   // OsrReplay 1.5MB
   // ReplayFrames 5.2MB
   // Parsing + Read took exactly 1s
-  console.log(JSON.stringify(r).length);
+  // console.log(JSON.stringify(r).length);
 
   it("should not have duplicated frames", function () {
     const seen: Record<number, boolean> = {};
@@ -28,11 +34,15 @@ describe("Parsing SunMoonStar", function () {
   });
 });
 
-describe("Testing frame times", function () {
+test("Testing frame times", function () {
   const { timeMachine, beatmap, replay } = createTestTimeMachine(
     TEST_MAPS.SUN_MOON_STAR,
     TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN,
   );
+
+  const i = beatmap.hitObjects.findIndex((o) => isSlider(o) && o.startTime === 876199);
+  const slider = beatmap.hitObjects[i] as Slider;
+  console.log(slider);
 
   // commonStats(replay.frames, 36);
 

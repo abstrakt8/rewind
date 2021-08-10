@@ -116,8 +116,8 @@ export class PathApproximator {
       const v4 = i < controlPointsLength - 2 ? controlPoints[i + 2] : v3.add(v3).sub(v2);
 
       for (let c = 0; c < catmullDetail; c++) {
-        result.push(PathApproximator._catmullFindPoint(v1, v2, v3, v4, Math.fround(c) / catmullDetail));
-        result.push(PathApproximator._catmullFindPoint(v1, v2, v3, v4, Math.fround(c + 1) / catmullDetail));
+        result.push(PathApproximator._catmullFindPoint(v1, v2, v3, v4, Math.fround(c / catmullDetail)));
+        result.push(PathApproximator._catmullFindPoint(v1, v2, v3, v4, Math.fround((c + 1) / catmullDetail)));
       }
     }
 
