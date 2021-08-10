@@ -30,6 +30,7 @@ export class Scenario {
   public replayEvents: ReplayAnalysisEvent[];
   private _view: ViewSettings;
   private judgements: HitObjectJudgement[];
+  private gameplayEvaluator: GameplayInfoEvaluator;
 
   constructor(
     public readonly gameClock: GameClock,
@@ -51,6 +52,7 @@ export class Scenario {
       this.replayEvents = [];
       this.judgements = [];
     }
+    this.gameplayEvaluator = new GameplayInfoEvaluator(beatmap, {});
 
     makeObservable(this, {
       view: observable,
@@ -92,9 +94,7 @@ export class Scenario {
     const { skin, beatmap, replay, judgements, backgroundUrl } = this;
     const time = this.gameClock.getCurrentTime();
     const gameplayState = this.gameplayTimeMachine?.gameStateAt(time);
-    const gameplayInfo = gameplayState
-      ? new GameplayInfoEvaluator(this.beatmap, {}).evaluateReplayState(gameplayState)
-      : undefined;
+    const gameplayInfo = gameplayState ? this.gameplayEvaluator.evaluateReplayState(gameplayState) : undefined;
 
     return {
       time,

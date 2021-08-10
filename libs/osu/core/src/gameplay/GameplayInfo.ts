@@ -129,6 +129,14 @@ export class GameplayInfoEvaluator {
   }
 
   evaluateReplayState(replayState: GameState): GameplayInfo {
+    // Assume something like seeking backwards happened at reevaluate
+    if (this.judgedObjectsIndex >= replayState.judgedObjects.length + 1) {
+      this.comboInfo = { maxComboSoFar: 0, currentCombo: 0 };
+      this.verdictCount = { MISS: 0, MEH: 0, GREAT: 0, OK: 0 };
+      this.judgedObjectsIndex = 0;
+      console.log("Reset");
+    }
+
     while (this.judgedObjectsIndex < replayState.judgedObjects.length) {
       const id = replayState.judgedObjects[this.judgedObjectsIndex++];
       const hitObject = this.beatmap.getHitObject(id);
