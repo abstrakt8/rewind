@@ -1,6 +1,6 @@
 import { spawn } from "redux-saga/effects";
-import { watchScenarioChange } from "./ScenarioSaga";
-import { watchReplaysAdded } from "./ReplayFolderWatchSaga";
+import { watchScenarioChangeRequests } from "../theater/saga";
+import { watchReplaysAdded } from "../replays/ReplayFolderWatchSaga";
 
 // Maybe url ?
 type Options = {
@@ -15,7 +15,7 @@ export function createRewindRootSaga(options: Options) {
   const url = "http://localhost:7271";
   const { watchReplayFolder } = Object.assign({ ...defaultOptions }, options);
   return function* () {
-    yield spawn(watchScenarioChange);
+    yield spawn(watchScenarioChangeRequests);
     if (watchReplayFolder) {
       yield spawn(watchReplaysAdded, url);
     }

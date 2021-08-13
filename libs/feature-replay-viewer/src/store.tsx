@@ -1,18 +1,27 @@
 import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import { useDispatch } from "react-redux";
-import { createRewindRootSaga } from "../../../../libs/feature-replay-viewer/src/sagas/RootSaga";
-import { rewindApi } from "../../../../libs/feature-replay-viewer/src/api";
+import replayReducer from "./replays/slice";
+import localBlueprintInfoReducer from "./blueprints/LocalBlueprintInfo";
+import rawBlueprintReducer from "./blueprints/RawBlueprint";
+import gameClockReducer from "./clocks/slice";
+import preferencesReducer from "./preferences/slice";
+import { createRewindRootSaga } from ".";
+
+const sagaMiddleware = createSagaMiddleware();
 
 const reducer = {
-  [rewindApi.reducerPath]: rewindApi.reducer,
+  localBlueprintInfo: localBlueprintInfoReducer,
+  rawBlueprint: rawBlueprintReducer,
+  replay: replayReducer,
+  gameClock: gameClockReducer,
+  preferences: preferencesReducer,
 };
-const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware).concat(rewindApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
 });
 
 // TODO: https://redux-toolkit.js.org/rtk-query/overview ?

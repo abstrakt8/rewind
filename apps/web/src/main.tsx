@@ -5,7 +5,7 @@ import * as ReactDOM from "react-dom";
 import App from "./app/app";
 import { io } from "socket.io-client";
 import { Provider } from "react-redux";
-import store from "./app/store";
+import store from "../../../libs/feature-replay-viewer/src/store";
 
 // TODO: process.env.URL
 const url = "http://localhost:7271";

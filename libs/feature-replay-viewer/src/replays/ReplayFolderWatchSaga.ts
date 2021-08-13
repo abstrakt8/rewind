@@ -1,7 +1,7 @@
 import { call, put, take } from "redux-saga/effects";
 import { io, Socket } from "socket.io-client";
 import { eventChannel, SagaIterator } from "redux-saga";
-import { scenarioChangeRequested } from "./ScenarioSaga";
+import { scenarioChangeRequested } from "../theater/actions";
 
 function createWebSocketConnection(url: string) {
   const socket = io(url);

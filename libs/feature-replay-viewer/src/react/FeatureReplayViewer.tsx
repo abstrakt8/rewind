@@ -365,7 +365,7 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
             <span className={"font-mono bg-gray-800 px-2"}>f</span>
           </ShortcutHelper>
         </SidebarBox>
-        {/*<SidebarBox>{scenario.state}</SidebarBox>*/}
+        {/*<SidebarBox>{theater.state}</SidebarBox>*/}
       </div>
     </div>
   );

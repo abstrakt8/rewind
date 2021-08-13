@@ -1,15 +1,6 @@
 import axios from "axios";
-import { parseReplayFramesFromRaw, modsFromBitmask, OsuClassicMod, RawReplayData } from "@rewind/osu/core";
-import { ReplayFrame } from "@rewind/osu/core";
-
-// TODO: Rename this to replay or something
-export type OsuReplay = {
-  md5hash: string;
-  gameVersion: number;
-  mods: OsuClassicMod[];
-  player: string; // Could be useful to draw
-  frames: ReplayFrame[];
-};
+import { modsFromBitmask, parseReplayFramesFromRaw, RawReplayData } from "@rewind/osu/core";
+import { OsuReplay } from "../replays/slice";
 
 // Just happened to be RawReplayData ;)
 type OsuExpressReplay = RawReplayData;

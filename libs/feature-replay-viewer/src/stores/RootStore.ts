@@ -2,7 +2,6 @@ import { BlueprintService } from "./BlueprintService";
 import { PreferencesService } from "./PreferencesService";
 import { ReplayService } from "./ReplayService";
 import { ScenarioService } from "./ScenarioService";
-import { ScenarioUI } from "./ScenarioUI";
 import { SkinService } from "./SkinService";
 import { AudioService } from "./AudioService";
 
@@ -14,7 +13,6 @@ export class RootStore {
   public preferencesService: PreferencesService;
 
   public scenarioService: ScenarioService;
-  public scenarioUI: ScenarioUI;
   private audioService: AudioService;
 
   constructor(options: { url: string }) {
@@ -23,7 +21,6 @@ export class RootStore {
     this.skinService = new SkinService(url);
     this.blueprintService = new BlueprintService(url);
     this.preferencesService = new PreferencesService();
-    this.scenarioUI = new ScenarioUI();
     this.audioService = new AudioService();
     this.scenarioService = new ScenarioService(
       this.blueprintService,

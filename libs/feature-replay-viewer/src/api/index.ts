@@ -1,17 +1,21 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RawReplayData } from "@rewind/osu/core";
 
-const apiUrl = process.env.REWIND_API_URL || "http://localhost:7271";
-type RawBlueprint = string;
+function createApi(url: string) {
+  const baseUrl = url + "/api";
 
-export const rewindApi = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: apiUrl + "/api" }),
-  endpoints: (builder) => ({
-    getRawBlueprintByMd5: builder.query<RawBlueprint, string>({
-      query: (md5) => `blueprints/${md5}/osu`,
-    }),
-    getExportedReplayByName: builder.query<RawReplayData, string>({
-      query: (replayName) => `replays/exported/${replayName}`,
-    }),
-  }),
-});
+  async function getRawBlueprintByMd5(md5: string) {
+    const result = await fetch(`${baseUrl}/blueprints/${md5}/osu`);
+    return result.text();
+  }
+
+  // replayId = exported/${name}
+  // Or just internal/${md5}
+  async function getReplayById(replayId: string): Promise<RawReplayData> {
+    const result = await fetch(`${baseUrl}/replays/exported/${replayId}`);
+    return result.json();
+  }
+
+  return { getRawBlueprintByMd5, getReplayById };
+}
+
+export const RewindAPI = createApi("http://localhost:7271");

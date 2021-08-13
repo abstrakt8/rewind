@@ -1,4 +1,5 @@
-import { OsuExpressReplayManager, OsuReplay } from "../api/ReplayManager";
+import { OsuExpressReplayManager } from "../api/ReplayManager";
+import { OsuReplay } from "../replays/slice";
 
 // TODO: Caching
 export class ReplayService {

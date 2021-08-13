@@ -12,7 +12,6 @@ import {
   ReplayAnalysisEvent,
   retrieveEvents,
 } from "@rewind/osu/core";
-import { OsuReplay } from "../api/ReplayManager";
 import { Skin } from "../skins/Skin";
 import { defaultViewSettings, ViewSettings } from "../game/ViewSettings";
 import { ReplayService } from "./ReplayService";
@@ -22,6 +21,7 @@ import { PreferencesService } from "./PreferencesService";
 import { SkinService } from "./SkinService";
 import { action, autorun, computed, makeObservable, observable, toJS } from "mobx";
 import { AudioService } from "./AudioService";
+import { OsuReplay } from "../replays/slice";
 
 // A scene defines what should be drawn on the screen.
 // The scene manager is almost equivalent to the store in Redux and PixiJS is just the underlying rendering platform.
