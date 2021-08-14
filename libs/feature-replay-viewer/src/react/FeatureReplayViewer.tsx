@@ -14,6 +14,8 @@ import { Switch } from "@headlessui/react";
 import { Scenario } from "../stores/ScenarioService";
 import { useScenarioService } from "./hooks/game";
 import { observe } from "mobx";
+import { useAppDispatch, useAppSelector } from "../store";
+import { gameClockToggled } from "../clocks/slice";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -247,24 +249,29 @@ const GameCanvas = () => {
   );
 };
 
-export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) => {
+export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
   // Canvas / Game
   //
-  const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
-    show50s: false,
-    show100s: false,
-    showMisses: true,
-    showSliderBreaks: true,
-  });
+  // const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
+  //   show50s: false,
+  //   show100s: false,
+  //   showMisses: true,
+  //   showSliderBreaks: true,
+  // });
+  // const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
+  //   setPbSetting((prevState) => ({ ...prevState, [who]: value }));
 
-  const scenario = useCurrentScenario();
-  const { view, gameClock } = scenario;
+  // const scenario = useCurrentScenario();
+  // const { view, gameClock } = scenario;
 
-  const maxTimeHMS = formatReplayTime(gameClock.maxTime);
-  useShortcuts();
+  const maxTimeHMS = "7:27:27";
+  const dispatch = useAppDispatch();
+  // const maxTimeHMS = formatReplayTime(gameClock.maxTime);
+  // useShortcuts();
 
-  const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
-    setPbSetting((prevState) => ({ ...prevState, [who]: value }));
+  const currentPlaybackRate = useAppSelector((state) => state.gameClock.playbackRate);
+  const isPlaying = useAppSelector((state) => state.gameClock.playing);
+  const handlePlayButtonClick = () => dispatch(gameClockToggled);
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
@@ -274,79 +281,75 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
         <GameCanvas />
         {/*</div>*/}
         <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
-          <button
-            className={"transition-colors hover:text-gray-400"}
-            tabIndex={-1}
-            onClick={() => gameClock.togglePlaying()}
-          >
-            {gameClock.isPlaying ? <PauseIcon /> : <PlayIcon />}
+          <button className={"transition-colors hover:text-gray-400"} tabIndex={-1} onClick={handlePlayButtonClick}>
+            {isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <CurrentTime />
-          <div className={"flex-1"}>
-            <EfficientPlaybar settings={pbSetting} />
-          </div>
+          {/*<div className={"flex-1"}>*/}
+          {/*  <EfficientPlaybar settings={pbSetting} />*/}
+          {/*</div>*/}
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
-          <button className={"w-10 -mb-1"} onClick={() => scenario.toggleHidden()}>
-            <img
-              src={modHidden}
-              alt={"ModHidden"}
-              className={`filter ${view.modHidden ? "grayscale-0" : "grayscale"} `}
-            />
-          </button>
-          <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{gameClock.currentSpeed}x</button>
+          {/*<button className={"w-10 -mb-1"} onClick={() => scenario.toggleHidden()}>*/}
+          {/*  <img*/}
+          {/*    src={modHidden}*/}
+          {/*    alt={"ModHidden"}*/}
+          {/*    className={`filter ${view.modHidden ? "grayscale-0" : "grayscale"} `}*/}
+          {/*  />*/}
+          {/*</button>*/}
+          <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{currentPlaybackRate}x</button>
         </div>
       </div>
       <div className={"flex flex-col gap-4 flex-none w-52 h-full overflow-y-auto"}>
+        {/*<SidebarBox>*/}
+        {/*  <SettingsTitle title={"Playbar Events"} />*/}
+        {/*  <PlaybarEventsBox>*/}
+        {/*    /!*TODO: Colors should correspond to the events *!/*/}
+        {/*    <div>Misses</div>*/}
+        {/*    <MyToggle*/}
+        {/*      enabled={pbSetting["showMisses"]}*/}
+        {/*      setEnabled={handleTogglePbSetting("showMisses")}*/}
+        {/*      color={PlaybarColors.MISS}*/}
+        {/*    />*/}
+        {/*    <div>Slider breaks</div>*/}
+        {/*    <MyToggle*/}
+        {/*      enabled={pbSetting["showSliderBreaks"]}*/}
+        {/*      setEnabled={handleTogglePbSetting("showSliderBreaks")}*/}
+        {/*      color={PlaybarColors.SLIDER_BREAK}*/}
+        {/*    />*/}
+        {/*    <div>50s</div>*/}
+        {/*    <MyToggle*/}
+        {/*      enabled={pbSetting["show50s"]}*/}
+        {/*      setEnabled={handleTogglePbSetting("show50s")}*/}
+        {/*      color={PlaybarColors.MEH}*/}
+        {/*    />*/}
+        {/*    <div>100s</div>*/}
+        {/*    <MyToggle*/}
+        {/*      enabled={pbSetting["show100s"]}*/}
+        {/*      setEnabled={handleTogglePbSetting("show100s")}*/}
+        {/*      color={PlaybarColors.OK}*/}
+        {/*    />*/}
+        {/*  </PlaybarEventsBox>*/}
+        {/*</SidebarBox>*/}
         <SidebarBox>
-          <SettingsTitle title={"Playbar Events"} />
-          <PlaybarEventsBox>
-            {/*TODO: Colors should correspond to the events */}
-            <div>Misses</div>
-            <MyToggle
-              enabled={pbSetting["showMisses"]}
-              setEnabled={handleTogglePbSetting("showMisses")}
-              color={PlaybarColors.MISS}
-            />
-            <div>Slider breaks</div>
-            <MyToggle
-              enabled={pbSetting["showSliderBreaks"]}
-              setEnabled={handleTogglePbSetting("showSliderBreaks")}
-              color={PlaybarColors.SLIDER_BREAK}
-            />
-            <div>50s</div>
-            <MyToggle
-              enabled={pbSetting["show50s"]}
-              setEnabled={handleTogglePbSetting("show50s")}
-              color={PlaybarColors.MEH}
-            />
-            <div>100s</div>
-            <MyToggle
-              enabled={pbSetting["show100s"]}
-              setEnabled={handleTogglePbSetting("show100s")}
-              color={PlaybarColors.OK}
-            />
-          </PlaybarEventsBox>
+          {/*<SettingsTitle title={"beatmap analysis"} />*/}
+          {/*<GenericToggleSettingsBox>*/}
+          {/*  <div>Hidden</div>*/}
+          {/*  <MyToggle enabled={scenario.view.modHidden} setEnabled={() => scenario.toggleHidden()} />*/}
+          {/*  <div>Slider Debug</div>*/}
+          {/*  <MyToggle enabled={scenario.view.sliderAnalysis} setEnabled={() => scenario.toggleSliderAnalysis()} />*/}
+          {/*</GenericToggleSettingsBox>*/}
         </SidebarBox>
         <SidebarBox>
-          <SettingsTitle title={"beatmap analysis"} />
-          <GenericToggleSettingsBox>
-            <div>Hidden</div>
-            <MyToggle enabled={scenario.view.modHidden} setEnabled={() => scenario.toggleHidden()} />
-            <div>Slider Debug</div>
-            <MyToggle enabled={scenario.view.sliderAnalysis} setEnabled={() => scenario.toggleSliderAnalysis()} />
-          </GenericToggleSettingsBox>
-        </SidebarBox>
-        <SidebarBox>
-          <SettingsTitle title={"replay analysis"} />
-          <GenericToggleSettingsBox>
-            <div>Normal Cursor</div>
-            <MyToggle enabled={scenario.view.osuCursor.enabled} setEnabled={() => scenario.toggleOsuCursor()} />
-            <div>Analysis Cursor</div>
-            <MyToggle
-              enabled={scenario.view.analysisCursor.enabled}
-              setEnabled={() => scenario.toggleAnalysisCursor()}
-            />
-          </GenericToggleSettingsBox>
+          {/*<SettingsTitle title={"replay analysis"} />*/}
+          {/*<GenericToggleSettingsBox>*/}
+          {/*  <div>Normal Cursor</div>*/}
+          {/*  <MyToggle enabled={scenario.view.osuCursor.enabled} setEnabled={() => scenario.toggleOsuCursor()} />*/}
+          {/*  <div>Analysis Cursor</div>*/}
+          {/*  <MyToggle*/}
+          {/*    enabled={scenario.view.analysisCursor.enabled}*/}
+          {/*    setEnabled={() => scenario.toggleAnalysisCursor()}*/}
+          {/*  />*/}
+          {/*</GenericToggleSettingsBox>*/}
         </SidebarBox>
         <SidebarBox>
           <SettingsTitle title={"shortcuts"} />
@@ -369,6 +372,6 @@ export const FeatureReplayViewer = observer((props: FeatureReplayViewerProps) =>
       </div>
     </div>
   );
-});
+};
 
 export default FeatureReplayViewer;

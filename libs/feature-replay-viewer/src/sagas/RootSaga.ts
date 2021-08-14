@@ -1,5 +1,5 @@
 import { spawn } from "redux-saga/effects";
-import { watchScenarioChangeRequests } from "../theater/saga";
+import { createTheaterSaga } from "../theater/saga";
 import { watchReplaysAdded } from "../replays/ReplayFolderWatchSaga";
 
 // Maybe url ?
@@ -13,6 +13,7 @@ const defaultOptions: Options = {
 // TODO: Maybe it's better to just compose it at the application...
 export function createRewindRootSaga(options: Options) {
   const url = "http://localhost:7271";
+  const { watchScenarioChangeRequests } = createTheaterSaga();
   const { watchReplayFolder } = Object.assign({ ...defaultOptions }, options);
   return function* () {
     yield spawn(watchScenarioChangeRequests);

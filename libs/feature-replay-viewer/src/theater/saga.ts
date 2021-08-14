@@ -1,4 +1,4 @@
-import { all, call, cancelled, put, select, takeLatest } from "redux-saga/effects";
+import { all, call, cancelled, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 import { SagaIterator } from "redux-saga";
 import { Action } from "@reduxjs/toolkit";
 import { Blueprint, buildBeatmap, OsuClassicMod } from "@rewind/osu/core";
@@ -22,43 +22,56 @@ function determineDefaultPlaybackSpeed(mods: OsuClassicMod[]) {
 }
 
 // This saga changes the theater
-export function* changeScenario(action: Action): SagaIterator {
-  if (!scenarioChangeRequested.match(action)) {
-    return;
-  }
-  const { blueprintId, replayId } = action.payload;
+export function createTheaterSaga() {
+  function* changeScenario(action: Action): SagaIterator {
+    if (!scenarioChangeRequested.match(action)) {
+      return;
+    }
+    const { blueprintId, replayId } = action.payload;
 
-  try {
-    const [blueprint, replay]: [Blueprint, OsuReplay] = yield all([
-      call(retrieveBlueprint, blueprintId),
-      call(retrieveReplay, replayId),
-    ]);
-    // Load background texture
-    // Load audio.mp3
-    const { mods } = replay;
+    try {
+      const [blueprint, replay]: [Blueprint, OsuReplay] = yield all([
+        call(retrieveBlueprint, blueprintId),
+        call(retrieveReplay, replayId),
+      ]);
+      // Load background texture
+      // Load audio.mp3
+      const { mods } = replay;
 
-    const beatmap = buildBeatmap(blueprint, { mods, addStacking: true });
+      const beatmap = buildBeatmap(blueprint, { mods, addStacking: true });
 
-    // Change view settings with adjustments such as hidden enabled
-    const modHiddenEnabled = mods.includes("HIDDEN");
-    const viewSettings: ViewSettings = yield select(preferencesViewSelector);
-    const adjustedViewSettings = produce(viewSettings, (draft) => {
-      draft.modHidden = modHiddenEnabled;
-    });
-    yield put(theaterViewChanged(adjustedViewSettings));
+      // Change view settings with adjustments such as hidden enabled
+      const modHiddenEnabled = mods.includes("HIDDEN");
+      const viewSettings: ViewSettings = yield select(preferencesViewSelector);
+      const adjustedViewSettings = produce(viewSettings, (draft) => {
+        draft.modHidden = modHiddenEnabled;
+      });
+      yield put(theaterViewChanged(adjustedViewSettings));
 
-    // Change speed according to mod
-    const defaultPlaybackSpeed = determineDefaultPlaybackSpeed(mods);
-    yield put(gameClockPlaybackRateChanged(defaultPlaybackSpeed));
-  } finally {
-    if (yield cancelled()) {
-      console.log(`Scenario change (blueprint=${blueprintId}, replay=${replayId}) was cancelled`);
+      // Change speed according to mod
+      const defaultPlaybackSpeed = determineDefaultPlaybackSpeed(mods);
+      yield put(gameClockPlaybackRateChanged(defaultPlaybackSpeed));
+    } finally {
+      if (yield cancelled()) {
+        console.log(`Scenario change (blueprint=${blueprintId}, replay=${replayId}) was cancelled`);
+      }
     }
   }
-}
 
-export function* watchScenarioChangeRequests() {
-  // We take the latest in case the user makes multiple requests (such as pressing F2 twice on accident on score screen)
-  // This will cancel the previous ones so that we don't get weird effects.
-  yield takeLatest(scenarioChangeRequested.type, changeScenario);
+  function* watchScenarioChangeRequests() {
+    // We take the latest in case the user makes multiple requests (such as pressing F2 twice on accident on score screen)
+    // This will cancel the previous ones so that we don't get weird effects.
+    yield takeLatest(scenarioChangeRequested.type, changeScenario);
+  }
+
+  function handleTheaterViewChanged(action: Action) {
+    if (!theaterViewChanged.match(action)) return;
+    const viewSettings = action.payload;
+  }
+
+  function* watchTheaterViewChanged() {
+    yield takeEvery(theaterViewChanged.type, handleTheaterViewChanged);
+  }
+
+  return { watchScenarioChangeRequests };
 }

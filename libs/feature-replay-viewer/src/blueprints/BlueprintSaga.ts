@@ -7,6 +7,7 @@ import { RewindAPI } from "../api";
 export function* retrieveBlueprint(blueprintId: string): SagaIterator {
   const options = {}; // Default options are fine for now
   const rawData: string = yield call(RewindAPI.getRawBlueprintByMd5, blueprintId);
+  // Technically speaking this is only done for caching?
   yield put(addRawBlueprint({ id: blueprintId, rawData }));
   return yield call(parseBlueprint, rawData, options);
 }

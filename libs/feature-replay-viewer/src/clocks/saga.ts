@@ -1,5 +1,5 @@
 import { GameClock } from "./GameClock";
-import { takeEvery } from "redux-saga/effects";
+import { fork, takeEvery } from "redux-saga/effects";
 import { gameClockPaused, gameClockPlaybackRateChanged, gameClockStarted } from "./slice";
 import { Action } from "@reduxjs/toolkit";
 
@@ -21,4 +21,12 @@ export function createGameClockSaga(gameClock: GameClock) {
   function* watchGameClockPlaybackRateChanged() {
     yield takeEvery(gameClockPlaybackRateChanged.type, handleGameClockPlaybackRateChanged);
   }
+
+  function* watchGameClockRoot() {
+    yield fork(watchGameClockStarted);
+    yield fork(watchGameClockStopped);
+    yield fork(watchGameClockPlaybackRateChanged);
+  }
+
+  return watchGameClockRoot;
 }
