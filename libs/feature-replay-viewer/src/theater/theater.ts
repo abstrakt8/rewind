@@ -3,6 +3,7 @@ import { autoDetectRenderer, Container, Ticker } from "pixi.js";
 import { OsuSceneContainer } from "../pixi/OsuSceneContainer";
 import { PerformanceMonitor } from "../utils/PerformanceMonitor";
 import { SceneLoader } from "../game/Scene";
+import { Scenario } from "./scenario";
 
 export class Theater {
   // TODO: ReplayViewerApp with splitted up renderer
@@ -11,16 +12,26 @@ export class Theater {
   private scene?: OsuSceneContainer;
   private performanceMonitor?: PerformanceMonitor; // Create one yourself
   // private ticker: Ticker;
+  private scenario?: Scenario;
 
-  constructor(private ticker: Ticker, private sceneLoader: SceneLoader) {}
+  constructor(private ticker: Ticker) {}
+
+  sceneLoader() {
+    return this.scenario?.getCurrentScene();
+  }
 
   tickHandler() {
     if (!this.renderer || !this.scene) return;
     this.performanceMonitor?.begin();
     this.resizeCanvasToDisplaySize();
-    this.scene.prepare(this.sceneLoader());
+    const scene = this.sceneLoader();
+    if (scene) this.scene.prepare(scene);
     this.renderer.render(this.scene.stage);
     this.performanceMonitor?.end();
+  }
+
+  changeScenario(scenario: Scenario) {
+    this.scenario = scenario;
   }
 
   initializeRenderer(canvas: HTMLCanvasElement) {

@@ -14,9 +14,9 @@ import { Switch } from "@headlessui/react";
 import { Scenario } from "../stores/ScenarioService";
 import { useScenarioService } from "./hooks/game";
 import { observe } from "mobx";
-import { useAppDispatch, useAppSelector } from "../store";
 import { gameClockToggled } from "../clocks/slice";
 import { modHiddenToggleRequested } from "../theater/slice";
+import { useAppDispatch, useAppSelector } from "../hooks";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
