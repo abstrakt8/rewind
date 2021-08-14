@@ -1,4 +1,4 @@
-import { all, call, cancelled, put, select, takeEvery, takeLatest } from "redux-saga/effects";
+import { all, call, cancelled, fork, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 import { SagaIterator } from "redux-saga";
 import { Action } from "@reduxjs/toolkit";
 import { Blueprint, buildBeatmap, OsuClassicMod } from "@rewind/osu/core";
@@ -73,5 +73,10 @@ export function createTheaterSaga() {
     yield takeEvery(theaterViewChanged.type, handleTheaterViewChanged);
   }
 
-  return { watchScenarioChangeRequests };
+  function* theaterRootSaga() {
+    yield fork(watchScenarioChangeRequests);
+    yield fork(watchTheaterViewChanged);
+  }
+
+  return { theaterRootSaga };
 }

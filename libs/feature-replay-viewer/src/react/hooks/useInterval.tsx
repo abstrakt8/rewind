@@ -12,6 +12,7 @@ export function useInterval(callback: () => void, delay: number | null) {
   useEffect(() => {
     // Don't schedule if no delay is specified.
     if (delay === null) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       return () => {};
     }
 

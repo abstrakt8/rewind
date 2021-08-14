@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import modHidden from "../../assets/mod_hidden.cfc32448.png";
+import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import styled from "styled-components";
 import Playbar, { PlaybarEvent } from "./Playbar";
 import { useInterval } from "./hooks/useInterval";
@@ -16,6 +16,7 @@ import { useScenarioService } from "./hooks/game";
 import { observe } from "mobx";
 import { useAppDispatch, useAppSelector } from "../store";
 import { gameClockToggled } from "../clocks/slice";
+import { modHiddenToggleRequested } from "../theater/slice";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -82,8 +83,8 @@ const useGameClock = () => {
   const { gameClock } = useCurrentScenario();
   const [currentTime, setCurrentTime] = useState(0);
 
-  // When I originally implemented this with an update of every 16ms I get FPS drops on the canvas. It does look smoother
-  // though.
+  // When I originally implemented this with an update of every 16ms I get FPS drops on the canvas. It does look
+  // smoother though.
   useInterval(() => {
     setCurrentTime(gameClock.getCurrentTime());
   }, 128);
@@ -271,7 +272,10 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
 
   const currentPlaybackRate = useAppSelector((state) => state.gameClock.playbackRate);
   const isPlaying = useAppSelector((state) => state.gameClock.playing);
+  const modHiddenEnabled = useAppSelector((state) => state.theater.view.modHidden);
+
   const handlePlayButtonClick = () => dispatch(gameClockToggled);
+  const handleHiddenButtonClicked = () => dispatch(modHiddenToggleRequested);
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
@@ -289,13 +293,13 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
           {/*  <EfficientPlaybar settings={pbSetting} />*/}
           {/*</div>*/}
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
-          {/*<button className={"w-10 -mb-1"} onClick={() => scenario.toggleHidden()}>*/}
-          {/*  <img*/}
-          {/*    src={modHidden}*/}
-          {/*    alt={"ModHidden"}*/}
-          {/*    className={`filter ${view.modHidden ? "grayscale-0" : "grayscale"} `}*/}
-          {/*  />*/}
-          {/*</button>*/}
+          <button className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>
+            <img
+              src={modHiddenImg}
+              alt={"ModHidden"}
+              className={`filter ${modHiddenEnabled ? "grayscale-0" : "grayscale"} `}
+            />
+          </button>
           <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{currentPlaybackRate}x</button>
         </div>
       </div>

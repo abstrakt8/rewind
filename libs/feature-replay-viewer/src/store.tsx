@@ -31,11 +31,9 @@ const store = configureStore({
 // setupListeners(store.dispatch)
 
 const gameClock = new PerformanceGameClock();
-console.log("Create rewind root saga", createRewindRootSaga);
-const rootSaga = createRewindRootSaga({ watchReplayFolder: true });
 
 // TODO: Run it here?
-// sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(createRewindRootSaga({ watchReplayFolder: true }));
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
