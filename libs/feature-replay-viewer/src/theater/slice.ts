@@ -4,14 +4,20 @@ import { AppDispatch, RootState } from "../store";
 
 type State = "LOADING" | "DONE" | "ERROR";
 
+// This slice is just
+
 interface Theater {
   view: ViewSettings;
   state: State;
+  isPlaying: boolean;
+  playbackRate: number;
 }
 
 const initialState: Theater = {
   state: "LOADING",
   view: defaultViewSettings(),
+  isPlaying: false,
+  playbackRate: 1.0,
 };
 
 const theaterSlice = createSlice({

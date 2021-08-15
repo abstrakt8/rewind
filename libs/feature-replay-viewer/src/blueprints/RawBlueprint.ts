@@ -1,5 +1,6 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 
+// Very likely deleteo
 interface RawBlueprint {
   id: string;
   rawData: string;

@@ -29,7 +29,6 @@ export interface ViewSettings {
 
   osuCursor: OsuCursorSetting;
   analysisCursor: AnalysisCursorSetting;
-  skinId: string;
 }
 
 export const defaultViewSettings: () => ViewSettings = () => ({
@@ -54,6 +53,4 @@ export const defaultViewSettings: () => ViewSettings = () => ({
     colorKey1: 0xaffede,
     colorKey2: 0xdeadbe,
   },
-  // TODO
-  skinId: "RewindDefaultSkin",
 });

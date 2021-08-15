@@ -3,7 +3,6 @@ import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 interface LocalBlueprintInfo {
   id: string;
   title: string;
-  rawData: string;
   // lastPlayed: ... ? ->
 }
 

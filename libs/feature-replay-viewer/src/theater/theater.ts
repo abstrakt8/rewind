@@ -4,17 +4,25 @@ import { OsuSceneContainer } from "../pixi/OsuSceneContainer";
 import { PerformanceMonitor } from "../utils/PerformanceMonitor";
 import { SceneLoader } from "../game/Scene";
 import { Scenario } from "./scenario";
+import { defaultViewSettings, ViewSettings } from "../game/ViewSettings";
 
 export class Theater {
   // TODO: ReplayViewerApp with splitted up renderer
   private canvas?: HTMLCanvasElement;
   private renderer?: PIXI.Renderer;
   private scene?: OsuSceneContainer;
+  private view: ViewSettings;
   private performanceMonitor?: PerformanceMonitor; // Create one yourself
   // private ticker: Ticker;
   private scenario?: Scenario;
 
-  constructor(private ticker: Ticker) {}
+  constructor(private ticker: Ticker) {
+    this.view = defaultViewSettings();
+  }
+
+  changeViewSettings(view: ViewSettings) {
+    this.view = view;
+  }
 
   sceneLoader() {
     return this.scenario?.getCurrentScene();

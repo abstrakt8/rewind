@@ -48,9 +48,14 @@ export function createTheaterSaga() {
       });
       yield put(theaterViewChanged(adjustedViewSettings));
 
+      // TODO: Maybe set skin to the preferred one
+
       // Change speed according to mod
       const defaultPlaybackSpeed = determineDefaultPlaybackSpeed(mods);
       yield put(gameClockPlaybackRateChanged(defaultPlaybackSpeed));
+
+      // Set game play simulator
+      // Set
     } finally {
       if (yield cancelled()) {
         console.log(`Scenario change (blueprint=${blueprintId}, replay=${replayId}) was cancelled`);

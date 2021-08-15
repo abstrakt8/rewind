@@ -25,7 +25,7 @@ export class Scenario {
     private gameClock: GameClock,
     public readonly beatmap: Beatmap,
     public readonly background: Texture,
-    public view: ViewSettings,
+    public view: ViewSettings, // -> get from store
     public readonly replay?: OsuReplay,
   ) {
     if (replay) {

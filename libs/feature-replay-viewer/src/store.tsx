@@ -8,6 +8,7 @@ import preferencesReducer from "./preferences/slice";
 import theaterReducer from "./theater/slice";
 import { createRewindRootSaga } from "./sagas/RootSaga";
 import { PerformanceGameClock } from "./clocks/PerformanceGameClock";
+import { createRewindApp } from "./app/rewind";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -19,6 +20,9 @@ const reducer = {
   preferences: preferencesReducer,
   theater: theaterReducer,
 };
+
+const url = "http://localhost:7271";
+const app = createRewindApp({ url });
 
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
@@ -33,5 +37,10 @@ sagaMiddleware.run(createRewindRootSaga({ gameClock, watchReplayFolder: true }))
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export interface EssentialStore {
+  dispatch: AppDispatch;
+  getState: () => RootState;
+}
 
 export default store;
