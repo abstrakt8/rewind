@@ -1,4 +1,4 @@
-import { EventEmitter, GameClockEvents } from "../events";
+import { EventEmitter, GameClockEvents } from "../../events";
 
 const getCurrentTimeInMs = () => performance.now();
 

@@ -1,4 +1,4 @@
-import { defaultViewSettings, ViewSettings } from "../../game/ViewSettings";
+import { defaultViewSettings, ViewSettings } from "../../../game/ViewSettings";
 
 export class TheaterViewService {
   private view: ViewSettings;

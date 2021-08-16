@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { BackgroundPreparer } from "../background/BackgroundPreparer";
 import { injectable } from "inversify";
-import { TheaterStagePreparer } from "../../TheaterStagePreparer";
+import { TheaterStagePreparer } from "../../../core/TheaterStagePreparer";
 
 @injectable()
 export class GameStagePreparer implements TheaterStagePreparer {

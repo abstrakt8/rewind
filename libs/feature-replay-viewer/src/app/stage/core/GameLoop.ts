@@ -2,7 +2,8 @@ import * as PIXI from "pixi.js";
 import { GameplayClock } from "./GameplayClock";
 import { PixiRendererService } from "./PixiRendererService";
 import { TheaterStagePreparer } from "./TheaterStagePreparer";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../types";
 
 // Game loop does not have to stop if the game clock is paused
 // For example we could still toggle hidden on/off and it needs to apply the changes.
@@ -14,7 +15,7 @@ export class GameLoop {
     private ticker: PIXI.Ticker,
     private gameClock: GameplayClock,
     private pixiRendererService: PixiRendererService,
-    private theaterStagePreparer: TheaterStagePreparer,
+    @inject(TYPES.THEATER_STAGE_PREPARER) private theaterStagePreparer: TheaterStagePreparer,
   ) {}
 
   setupListeners() {

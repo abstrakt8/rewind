@@ -10,6 +10,7 @@ export class BlueprintService {
     const url = `${this.apiUrl}/api/blueprints/${blueprintId}/osu`;
     const res = await fetch(url);
     const data = await res.text();
+    // TODO: Emit
     return parseBlueprint(data);
   }
 }

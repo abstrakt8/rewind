@@ -8,7 +8,7 @@ import preferencesReducer from "./preferences/slice";
 import theaterReducer from "./theater/slice";
 import { createRewindRootSaga } from "./sagas/RootSaga";
 import { PerformanceGameClock } from "./clocks/PerformanceGameClock";
-import { createRewindApp } from "./app/rewind";
+import { createRewindApp } from "./app/stage";
 
 const sagaMiddleware = createSagaMiddleware();
 

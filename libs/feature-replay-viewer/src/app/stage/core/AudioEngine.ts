@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { EventEmitter, GameClockEvents } from "../events";
+import { EventEmitter, GameClockEvents } from "../../events";
 
 // "AudioEngine"
 @injectable()

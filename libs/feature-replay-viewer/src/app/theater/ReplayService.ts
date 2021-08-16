@@ -1,6 +1,6 @@
 import axios from "axios";
 import { modsFromBitmask, parseReplayFramesFromRaw, RawReplayData } from "@rewind/osu/core";
-import { OsuReplay } from "../replays/slice";
+import { OsuReplay } from "../../replays/slice";
 
 export class ReplayService {
   // retrieve and parse
@@ -16,6 +16,8 @@ export class ReplayService {
         console.error(err);
         return null;
       })) as RawReplayData;
+
+    // TODO: Emit ...
 
     return {
       gameVersion: res.gameVersion,
