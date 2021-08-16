@@ -50,6 +50,7 @@
     "core-js": "^3.6.5",
     "date-fns": "^2.23.0",
     "document-register-element": "1.13.1",
+    "eventemitter2": "^6.4.4",
     "graphql": "^15.5.1",
     "graphql-tools": "^8.0.0",
     "i": "^0.3.6",
