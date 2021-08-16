@@ -24,7 +24,7 @@ export const MobXProvider = (props: MobXProps) => {
       const blueprintId = md5Hash;
       const replayId = replay.filename;
       rootStore.scenarioService.changeScenario(blueprintId, replayId).then(() => {
-        console.log("Successfully changed theater from WebSocket broadcast");
+        console.log("Successfully changed components from WebSocket broadcast");
       });
     });
   }

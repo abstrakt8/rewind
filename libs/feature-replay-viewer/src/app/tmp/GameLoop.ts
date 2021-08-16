@@ -29,7 +29,8 @@ export class GameLoop {
     if (renderer === undefined) {
       return;
     }
-
+    // TODO: Resizing
+    // TODO: Audio sample queue
     const stage = this.theaterStagePreparer.prepare();
     renderer.render(stage);
   }
