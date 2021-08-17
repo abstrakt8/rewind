@@ -230,10 +230,13 @@ const useCurrentScenario = () => {
 const GameCanvas = () => {
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const performanceMonitor = usePerformanceMonitor({});
   const { stage } = useStageContext();
 
-  // const scenario = useCurrentScenario();
+  useEffect(() => {
+    if (containerRef.current !== null) {
+      containerRef.current.appendChild(stage.performanceMonitor.dom);
+    }
+  }, [stage]);
   useEffect(() => {
     if (canvas.current) {
       const destroy = stage.initializeRenderer(canvas.current);

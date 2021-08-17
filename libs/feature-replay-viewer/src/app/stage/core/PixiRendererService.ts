@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { injectable } from "inversify";
+import { Container } from "pixi.js";
 
 /**
  * Because we will use the canvas that is initialized at a later point of time we need need a "service".
@@ -21,6 +22,24 @@ export class PixiRendererService {
       console.log("Renderer will be destroyed.");
       this.renderer?.destroy();
     };
+  }
+
+  resizeRendererToCanvasSize() {
+    const canvas = this.canvas;
+    if (!canvas || !this.renderer) {
+      return;
+    }
+    // look up the size the canvas is being displayed
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+
+    // If it's resolution does not match change it
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+
+      this.renderer.resize(canvas.width, canvas.height);
+    }
   }
 
   getRenderer(): PIXI.Renderer | undefined {

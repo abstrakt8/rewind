@@ -56,6 +56,7 @@ export function createRewindStage(settings: RewindStageSettings) {
     clock,
     initializeRenderer: pixiRenderService.initializeRenderer.bind(pixiRenderService),
     initializeTicker: gameLoop.initializeTicker.bind(gameLoop),
+    performanceMonitor: gameLoop.getPerformanceMonitor(),
   };
 }
 

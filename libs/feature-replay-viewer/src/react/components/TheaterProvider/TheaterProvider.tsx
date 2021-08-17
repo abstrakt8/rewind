@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { createRewindTheater, Theater } from "../../../app/theater";
 import { RewindStage } from "../../../app/stage";
 
@@ -16,7 +16,7 @@ interface TheaterProviderProps {
 }
 
 export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
-  const [theater] = useState(createRewindTheater({ apiUrl }));
+  const theater = useMemo(() => createRewindTheater({ apiUrl }), [apiUrl]);
   const [isCreatingStage, setIsCreatingStage] = useState(false);
 
   const createStage = useCallback(

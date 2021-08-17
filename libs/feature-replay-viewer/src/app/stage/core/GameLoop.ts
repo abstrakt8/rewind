@@ -4,6 +4,17 @@ import { PixiRendererService } from "./PixiRendererService";
 import { TheaterStagePreparer } from "./TheaterStagePreparer";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
+import MrDoobStats from "stats.js";
+
+function defaultMonitor() {
+  const s = new MrDoobStats();
+  s.dom.style.position = "absolute";
+  s.dom.style.left = "0px";
+  s.dom.style.top = "0px";
+  s.dom.style.zIndex = "9000";
+  // if (props.initialPanel !== undefined) s.showPanel(props.initialPanel);
+  return s;
+}
 
 // Game loop does not have to stop if the game clock is paused.
 // For example we could still toggle hidden on/off and need to see the changes on the canvas.
@@ -14,6 +25,7 @@ import { TYPES } from "../types";
 @injectable()
 export class GameLoop {
   private ticker: PIXI.Ticker;
+  private performanceMonitor: MrDoobStats;
 
   constructor(
     private gameClock: GameplayClock, // Maybe also inject?
@@ -21,6 +33,7 @@ export class GameLoop {
     @inject(TYPES.THEATER_STAGE_PREPARER) private theaterStagePreparer: TheaterStagePreparer,
   ) {
     this.ticker = new PIXI.Ticker();
+    this.performanceMonitor = defaultMonitor();
   }
 
   setupListeners() {
@@ -33,21 +46,28 @@ export class GameLoop {
     this.ticker.start(); // TODO: Remove probably
   }
 
+  getPerformanceMonitor() {
+    return this.performanceMonitor;
+  }
+
   startTicker() {
     this.ticker.start();
   }
 
   tickHandler() {
+    this.performanceMonitor.begin();
     this.gameClock.tick();
 
     const renderer = this.pixiRendererService.getRenderer();
     if (renderer === undefined) {
       return;
     }
+    this.pixiRendererService.resizeRendererToCanvasSize();
     // TODO: Resizing
     // TODO: Audio sample queue
     const stage = this.theaterStagePreparer.prepare();
     renderer.render(stage);
+    this.performanceMonitor.end();
   }
 
   onWindowBlur() {

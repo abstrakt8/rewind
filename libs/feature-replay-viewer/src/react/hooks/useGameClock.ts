@@ -35,7 +35,7 @@ export function useGameClockControls() {
   };
 }
 
-const GAME_TIME_SYNC_INTERVAL_IN_MS = 128;
+const GAME_TIME_SYNC_INTERVAL_IN_MS = 32;
 
 export function usePartiallySyncedGameClockTime() {
   const clock = useGameClock();
@@ -46,6 +46,12 @@ export function usePartiallySyncedGameClockTime() {
   useInterval(() => {
     setTimeInMs(clock.timeElapsedInMs);
   }, GAME_TIME_SYNC_INTERVAL_IN_MS);
+
+  // This will immediately sync with the timeElapsed otherwise it looks a bit weird if the
+  // GAME_TIME_SYNC_INTERVAL_IN_MS is set to 1s and the game time is synced only after 1 second.
+  useEffect(() => {
+    clock.onPaused(() => setTimeInMs(clock.timeElapsedInMs));
+  }, [clock]);
 
   return timeInMs;
 }
