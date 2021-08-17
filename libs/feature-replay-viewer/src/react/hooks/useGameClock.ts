@@ -44,7 +44,6 @@ export function usePartiallySyncedGameClockTime() {
   // The gameClock.tick() is handled in the game loop and we will only "listen/sync" to what ever the game clock is
   // displaying.
   useInterval(() => {
-    clock.tick();
     setTimeInMs(clock.timeElapsedInMs);
   }, GAME_TIME_SYNC_INTERVAL_IN_MS);
 

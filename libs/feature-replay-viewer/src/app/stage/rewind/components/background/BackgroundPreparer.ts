@@ -1,4 +1,4 @@
-import { Sprite } from "pixi.js";
+import { Sprite, Texture } from "pixi.js";
 import { injectable } from "inversify";
 import { TextureManager } from "../../TextureManager";
 import { StageViewService } from "../../StageViewService";
@@ -18,6 +18,7 @@ export class BackgroundPreparer {
 
   prepare() {
     this.background.texture = this.textureManager.getTexture("BACKGROUND");
+    // this.background.texture = Texture.WHITE;
     this.background.alpha = this.theaterViewService.getView().backgroundDim;
     return this.background;
   }

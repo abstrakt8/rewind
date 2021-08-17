@@ -13,12 +13,15 @@ import { TYPES } from "../types";
 // could detect through some memory reader.
 @injectable()
 export class GameLoop {
+  private ticker: PIXI.Ticker;
+
   constructor(
-    private ticker: PIXI.Ticker,
     private gameClock: GameplayClock, // Maybe also inject?
     private pixiRendererService: PixiRendererService,
     @inject(TYPES.THEATER_STAGE_PREPARER) private theaterStagePreparer: TheaterStagePreparer,
-  ) {}
+  ) {
+    this.ticker = new PIXI.Ticker();
+  }
 
   setupListeners() {
     // window.addEventListener("blur", this.onWindowBlur.bind(this));
@@ -27,6 +30,7 @@ export class GameLoop {
 
   initializeTicker() {
     this.ticker.add(this.tickHandler.bind(this));
+    this.ticker.start(); // TODO: Remove probably
   }
 
   startTicker() {

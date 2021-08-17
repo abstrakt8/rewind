@@ -10,12 +10,17 @@ export class PixiRendererService {
   private renderer?: PIXI.Renderer;
   private canvas?: HTMLCanvasElement;
 
+  constructor() {}
+
   initializeRenderer(canvas: HTMLCanvasElement) {
     // Destroy old renderer
     this.renderer = new PIXI.Renderer({ view: canvas, antialias: true });
     this.canvas = canvas;
 
-    return () => this.renderer?.destroy();
+    return () => {
+      console.log("Renderer will be destroyed.");
+      this.renderer?.destroy();
+    };
   }
 
   getRenderer(): PIXI.Renderer | undefined {

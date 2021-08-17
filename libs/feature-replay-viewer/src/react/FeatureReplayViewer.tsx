@@ -237,6 +237,7 @@ const GameCanvas = () => {
   useEffect(() => {
     if (canvas.current) {
       const destroy = stage.initializeRenderer(canvas.current);
+      stage.initializeTicker();
       return () => destroy();
     }
     return () => {};

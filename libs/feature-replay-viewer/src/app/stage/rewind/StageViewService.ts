@@ -5,8 +5,12 @@ import { injectable } from "inversify";
 export class StageViewService {
   private view: ViewSettings;
 
-  constructor(defaultViewSettings: ViewSettings) {
-    this.view = defaultViewSettings;
+  // constructor(defaultViewSettings: ViewSettings) {
+  //   this.view = defaultViewSettings;
+  // }
+
+  constructor() {
+    this.view = defaultViewSettings();
   }
 
   getView() {
