@@ -1,6 +1,7 @@
 import { EventEmitter, GameClockEvents } from "../../events";
+import { ListenerFn } from "eventemitter2";
 
-const getCurrentTimeInMs = () => performance.now();
+const getNowInMs = () => performance.now();
 
 export class GameplayClock {
   public isPlaying = false;
@@ -9,7 +10,7 @@ export class GameplayClock {
   public timeElapsedInMs = 0;
   private lastUpdateTimeInMs = 0;
 
-  constructor(private eventEmitter: EventEmitter) {}
+  constructor(public eventEmitter: EventEmitter) {}
 
   // Tick should only be used once in each frame and for the rest of the frame one should refer to `timeElapsedInMs`.
   tick() {
@@ -23,7 +24,7 @@ export class GameplayClock {
 
   updateTimeElapsed() {
     if (!this.isPlaying) return;
-    const nowInMs = getCurrentTimeInMs();
+    const nowInMs = getNowInMs();
     const delta = this.speed * (nowInMs - this.lastUpdateTimeInMs);
     this.timeElapsedInMs += delta;
     this.lastUpdateTimeInMs = nowInMs;
@@ -32,7 +33,7 @@ export class GameplayClock {
   start() {
     if (this.isPlaying) return;
     this.isPlaying = true;
-    this.lastUpdateTimeInMs = getCurrentTimeInMs();
+    this.lastUpdateTimeInMs = getNowInMs();
     this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_STARTED);
   }
 
@@ -46,12 +47,19 @@ export class GameplayClock {
   setSpeed(speed: number) {
     this.updateTimeElapsed();
     this.speed = speed;
-    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_SPEED_CHANGED);
+    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_SPEED_CHANGED, speed);
   }
 
   seekTo(timeInMs: number) {
     this.timeElapsedInMs = timeInMs;
-    this.lastUpdateTimeInMs = getCurrentTimeInMs();
-    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_SEEK);
+    this.lastUpdateTimeInMs = getNowInMs();
+    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_SEEK, timeInMs);
+  }
+
+  onStarted(fn: ListenerFn) {
+    this.eventEmitter.on(GameClockEvents.GAME_CLOCK_STARTED, fn);
+  }
+  onPaused(fn: ListenerFn) {
+    this.eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, fn);
   }
 }

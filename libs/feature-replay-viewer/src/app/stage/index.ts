@@ -20,15 +20,12 @@ function createCoreContainer() {
   return container;
 }
 
-interface RewindSettings {
+interface RewindStageSettings {
   beatmap: Beatmap;
   replay: OsuReplay;
 }
 
-// This is basically the application entry point
-export function createRewindApp(settings: RewindSettings) {
-  // Use InversifyJS
-  // const { url } = settings;
+export function createRewindStage(settings: RewindStageSettings) {
   const container = createCoreContainer();
 
   const { beatmap, replay } = settings;
@@ -47,6 +44,8 @@ export function createRewindApp(settings: RewindSettings) {
     initializeRenderer: pixiRenderService.initializeRenderer.bind(pixiRenderService),
   };
 }
+
+export type RewindStage = ReturnType<typeof createRewindStage>;
 
 // In another application that uses another stage preparer ...
 // container.bind(TYPES.THEATER_STAGE_PREPARER).toService(BadApplePreparer);

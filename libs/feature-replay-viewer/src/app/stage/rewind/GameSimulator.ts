@@ -1,4 +1,14 @@
+import { Beatmap } from "@rewind/osu/core";
+import { injectable, inject } from "inversify";
+import { TYPES } from "../types";
+import { OsuReplay } from "../../../replays/slice";
+
+@injectable()
 export class GameSimulator {
+  constructor(
+    @inject(TYPES.BEATMAP) private readonly beatmap: Beatmap,
+    @inject(TYPES.REPLAY) private readonly replay: OsuReplay,
+  ) {}
   async simulate() {}
 
   // Very likely to be a request from the UI since it wants to render the playbar events

@@ -1,13 +1,13 @@
 import { Sprite } from "pixi.js";
 import { injectable } from "inversify";
 import { TextureManager } from "../../TextureManager";
-import { TheaterViewService } from "../../TheaterViewService";
+import { StageViewService } from "../../StageViewService";
 
 @injectable()
 export class BackgroundPreparer {
   private readonly background: Sprite;
 
-  constructor(private textureManager: TextureManager, private theaterViewService: TheaterViewService) {
+  constructor(private textureManager: TextureManager, private theaterViewService: StageViewService) {
     this.background = new Sprite();
     this.background.anchor.set(0.5, 0.5);
   }

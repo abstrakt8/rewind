@@ -8,7 +8,7 @@ import preferencesReducer from "./preferences/slice";
 import theaterReducer from "./theater/slice";
 import { createRewindRootSaga } from "./sagas/RootSaga";
 import { PerformanceGameClock } from "./clocks/PerformanceGameClock";
-import { createRewindApp } from "./app/stage";
+import { createRewindStage } from "./app/stage";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -20,9 +20,6 @@ const reducer = {
   preferences: preferencesReducer,
   theater: theaterReducer,
 };
-
-const url = "http://localhost:7271";
-const app = createRewindApp({ url });
 
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",

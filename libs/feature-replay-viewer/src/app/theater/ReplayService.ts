@@ -1,10 +1,13 @@
 import axios from "axios";
 import { modsFromBitmask, parseReplayFramesFromRaw, RawReplayData } from "@rewind/osu/core";
 import { OsuReplay } from "../../replays/slice";
+import { inject, injectable } from "inversify";
+import { TYPES } from "./types";
 
+@injectable()
 export class ReplayService {
   // retrieve and parse
-  constructor(private apiUrl: string) {}
+  constructor(@inject(TYPES.API_URL) private apiUrl: string) {}
 
   async retrieveReplay(replayId: string): Promise<OsuReplay> {
     const url = [this.apiUrl, "api", "replays", "exported", replayId].join("/");
