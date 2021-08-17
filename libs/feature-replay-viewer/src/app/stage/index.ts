@@ -6,7 +6,6 @@ import { TYPES } from "./types";
 import { GameStagePreparer } from "./rewind/components/stage/GameStagePreparer";
 import { BackgroundPreparer } from "./rewind/components/background/BackgroundPreparer";
 import { Beatmap } from "@rewind/osu/core";
-import { OsuReplay } from "../../replays/slice";
 import { PixiRendererService } from "./core/PixiRendererService";
 import { GameLoop } from "./core/GameLoop";
 import { PlayfieldBorderPreparer } from "./rewind/components/playfield/PlayfieldBorderPreparer";
@@ -15,7 +14,8 @@ import { TextureManager } from "./rewind/TextureManager";
 import { StageViewService } from "./rewind/StageViewService";
 import { HitObjectsPreparer } from "./rewind/components/playfield/HitObjectsPreparer";
 import { StageSkinService } from "./StageSkinService";
-import { Skin } from "../../skins/Skin";
+import { Skin } from "./rewind/Skin";
+import { OsuReplay } from "../theater";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 

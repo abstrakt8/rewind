@@ -4,7 +4,7 @@ import axios from "axios";
 import { SkinConfig, SkinTextures } from "@rewind/osu/skin";
 import { inject, injectable } from "inversify";
 import { TYPES } from "./types";
-import { Skin, SkinTexturesByKey } from "../../skins/Skin";
+import { Skin, SkinTexturesByKey } from "../stage/rewind/Skin";
 
 export type SkinTextureLocation = { key: SkinTextures; paths: string[] };
 

@@ -1,4 +1,4 @@
-import { FeatureReplayViewer, StageProvider, useMobXContext, useTheaterContext } from "@rewind/feature-replay-viewer";
+import { FeatureReplayViewer, StageProvider, useTheaterContext } from "@rewind/feature-replay-viewer";
 import { useEffect, useState } from "react";
 import { RewindStage } from "../../../../libs/feature-replay-viewer/src/app/stage";
 

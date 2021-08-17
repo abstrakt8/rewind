@@ -1,7 +1,7 @@
 import { Container, Graphics, Renderer, Texture } from "pixi.js";
 import { Scene } from "../game/Scene";
 import { HitCircle, isHitCircle, isSlider, isSpinner, Slider, SliderCheckPoint, Spinner } from "@rewind/osu/core";
-import { Skin } from "../skins/Skin";
+import { Skin } from "../app/stage/rewind/Skin";
 import {
   BasicSliderTextureRenderer,
   HitResult,

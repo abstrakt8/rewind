@@ -7,7 +7,7 @@ import { settingsApproachCircle } from "../../../../../pixi/HitObjectPreparer";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageViewService } from "../../StageViewService";
 import { StageSkinService } from "../../../StageSkinService";
-import { Skin } from "../../../../../skins/Skin";
+import { Skin } from "../../Skin";
 import {
   HitResult,
   OsuClassicApproachCircle,

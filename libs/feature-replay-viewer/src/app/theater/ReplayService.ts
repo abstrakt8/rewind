@@ -1,8 +1,8 @@
 import axios from "axios";
 import { modsFromBitmask, parseReplayFramesFromRaw, RawReplayData } from "@rewind/osu/core";
-import { OsuReplay } from "../../replays/slice";
 import { inject, injectable } from "inversify";
 import { TYPES } from "./types";
+import { OsuReplay } from "./index";
 
 @injectable()
 export class ReplayService {

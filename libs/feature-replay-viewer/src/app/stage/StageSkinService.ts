@@ -1,4 +1,4 @@
-import { Skin } from "../../skins/Skin";
+import { Skin } from "./rewind/Skin";
 import { injectable } from "inversify";
 
 @injectable()

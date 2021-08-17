@@ -16,6 +16,7 @@ const prevSpeed = (speed: number) => speedsAllowed[Math.max(0, speedIndex(speed)
 
 const frameJump = 16;
 
+// Probably need a React.Context
 export function useGameClockControls() {
   const clock = useGameClock();
 

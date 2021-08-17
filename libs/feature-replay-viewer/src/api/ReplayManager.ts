@@ -1,6 +1,6 @@
 import axios from "axios";
 import { modsFromBitmask, parseReplayFramesFromRaw, RawReplayData } from "@rewind/osu/core";
-import { OsuReplay } from "../replays/slice";
+import { OsuReplay } from "../app/theater";
 
 // Just happened to be RawReplayData ;)
 type OsuExpressReplay = RawReplayData;

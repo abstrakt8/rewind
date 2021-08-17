@@ -1,7 +1,7 @@
 import { Beatmap } from "@rewind/osu/core";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../types";
-import { OsuReplay } from "../../../replays/slice";
+import { OsuReplay } from "../../theater";
 
 @injectable()
 export class GameSimulator {
