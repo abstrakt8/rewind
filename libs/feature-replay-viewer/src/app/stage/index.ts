@@ -21,11 +21,12 @@ import { OsuReplay } from "../theater";
 
 function createCoreContainer() {
   const container = new Container();
-  container.bind<EventEmitter>(EventEmitter).toSelf().inSingletonScope();
   container.bind<AudioEngine>(AudioEngine).toSelf().inSingletonScope();
   container.bind<GameplayClock>(GameplayClock).toSelf().inSingletonScope();
   container.bind<PixiRendererService>(PixiRendererService).toSelf().inSingletonScope();
   container.bind<GameLoop>(GameLoop).toSelf().inSingletonScope();
+  container.bind(TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter());
+  container.bind(TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
   return container;
 }
 
@@ -33,15 +34,16 @@ interface RewindStageSettings {
   beatmap: Beatmap;
   replay: OsuReplay;
   skin: Skin;
+  songUrl: string;
 }
 
 export function createRewindStage(settings: RewindStageSettings) {
   const container = createCoreContainer();
 
-  const { beatmap, replay, skin } = settings;
+  const { beatmap, replay, skin, songUrl } = settings;
   container.bind(TYPES.BEATMAP).toConstantValue(beatmap);
   container.bind(TYPES.REPLAY).toConstantValue(replay);
-
+  container.bind(TYPES.SONG_URL).toConstantValue(songUrl);
   container.bind(TYPES.THEATER_STAGE_PREPARER).to(GameStagePreparer);
 
   container.bind(BackgroundPreparer).toSelf();
@@ -55,8 +57,12 @@ export function createRewindStage(settings: RewindStageSettings) {
   container.bind(HitObjectsPreparer).toSelf();
 
   // TODO: Setup listeners?
-
   // Maybe only return what we want to expose
+  const eventEmitter = container.get<EventEmitter>(TYPES.EVENT_EMITTER);
+
+  const audioEngine = container.get<AudioEngine>(AudioEngine);
+  audioEngine.setupListeners(eventEmitter);
+
   const pixiRenderService = container.get<PixiRendererService>(PixiRendererService);
   const gameLoop = container.get<GameLoop>(GameLoop);
   const clock = container.get<GameplayClock>(GameplayClock);

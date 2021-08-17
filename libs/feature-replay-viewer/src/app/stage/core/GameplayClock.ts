@@ -1,6 +1,7 @@
 import { EventEmitter, GameClockEvents } from "../../events";
 import { ListenerFn } from "eventemitter2";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../types";
 
 const getNowInMs = () => performance.now();
 
@@ -11,10 +12,11 @@ export class GameplayClock {
   public durationInMs = 727 * 1000;
   public timeElapsedInMs = 0;
   private lastUpdateTimeInMs = 0;
-  private eventEmitter: EventEmitter;
 
-  constructor() {
-    this.eventEmitter = new EventEmitter();
+  // private eventEmitter: EventEmitter;
+
+  constructor(@inject(TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter) {
+    // this.eventEmitter = new EventEmitter();
   }
 
   // Tick should only be used once in each frame and for the rest of the frame one should refer to `timeElapsedInMs`.
