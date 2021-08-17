@@ -1,7 +1,7 @@
 // TODO: Should only be imported once
 import "reflect-metadata";
 
-import { MobXProvider } from "@rewind/feature-replay-viewer";
+import { MobXProvider, TheaterProvider } from "@rewind/feature-replay-viewer";
 import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";
 
@@ -24,7 +24,9 @@ ReactDOM.render(
   <StrictMode>
     <Provider store={store}>
       <MobXProvider url={url} socket={socket}>
-        <App />
+        <TheaterProvider apiUrl={url}>
+          <App />
+        </TheaterProvider>
       </MobXProvider>
     </Provider>
   </StrictMode>,

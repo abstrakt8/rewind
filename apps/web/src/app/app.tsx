@@ -1,5 +1,6 @@
-import { FeatureReplayViewer, useMobXContext } from "@rewind/feature-replay-viewer";
-import { useEffect } from "react";
+import { FeatureReplayViewer, StageProvider, useMobXContext, useTheaterContext } from "@rewind/feature-replay-viewer";
+import { useEffect, useState } from "react";
+import { RewindStage } from "../../../../libs/feature-replay-viewer/src/app/stage";
 
 type Replay = {
   id: string;
@@ -16,10 +17,11 @@ type LSkin = {
   name: string;
 };
 // const hibanaId = "671199 DECO_27 - HIBANA feat Hatsune Miku/DECO27 - HIBANA feat. Hatsune Miku (Pho) [Lock On].osu";
-// const akatsukiId = "351280 HoneyWorks - Akatsuki Zukuyo/HoneyWorks - Akatsuki Zukuyo ([C u r i]) [Taeyang's Extra].osu";
-// const akatsukiReplayId = "RyuK - HoneyWorks - Akatsuki Zukuyo [Taeyang's Extra] (2019-06-08) Osu.osr";
-// "150945 Knife Party - Centipede/Knife Party - Centipede (Sugoi-_-Desu) [This isn't a map, just a simple visualisation].osu";
-// "933630 Aether Realm - The Sun, The Moon, The Star/Aether Realm - The Sun, The Moon, The Star (ItsWinter) [Mourning Those Things I've Long Left Behind].osu";
+// const akatsukiId = "351280 HoneyWorks - Akatsuki Zukuyo/HoneyWorks - Akatsuki Zukuyo ([C u r i]) [Taeyang's
+// Extra].osu"; const akatsukiReplayId = "RyuK - HoneyWorks - Akatsuki Zukuyo [Taeyang's Extra] (2019-06-08) Osu.osr";
+// "150945 Knife Party - Centipede/Knife Party - Centipede (Sugoi-_-Desu) [This isn't a map, just a simple
+// visualisation].osu"; "933630 Aether Realm - The Sun, The Moon, The Star/Aether Realm - The Sun, The Moon, The Star
+// (ItsWinter) [Mourning Those Things I've Long Left Behind].osu";
 
 const akatsukiId = "535c6e5b4febb48629cbdd4e3a268624";
 const akatsukiReplayId = "RyuK - HoneyWorks - Akatsuki Zukuyo [Taeyang's Extra] (2019-06-08) Osu.osr";
@@ -100,15 +102,35 @@ const ALL_SKINS: Record<string, LSkin> = {
   [kasugaMirai]: { id: kasugaMirai, name: "Kasuga Mirai" },
 };
 
+// export function App() {
+//   const { scenarioService, preferencesService } = useMobXContext();
+//   useEffect(() => {
+//     preferencesService.changePreferredSkin(chosenSkinId);
+//     Promise.all([scenarioService.changeScenario(chosenBlueprintId, chosenReplayId)]).then(() => {
+//       console.log(`Finished loading ${chosenBlueprintId} with skin ${chosenSkinId}`);
+//     });
+//   }, [scenarioService, chosenBlueprintId, chosenReplayId, chosenSkinId]);
+//   return <FeatureReplayViewer />;
+// }
+
 export function App() {
-  const { scenarioService, preferencesService } = useMobXContext();
+  const { createStage, isCreatingStage } = useTheaterContext();
+  const [stage, setStage] = useState<RewindStage | null>(null);
+
   useEffect(() => {
-    preferencesService.changePreferredSkin(chosenSkinId);
-    Promise.all([scenarioService.changeScenario(chosenBlueprintId, chosenReplayId)]).then(() => {
-      console.log(`Finished loading ${chosenBlueprintId} with skin ${chosenSkinId}`);
-    });
-  }, [scenarioService, chosenBlueprintId, chosenReplayId, chosenSkinId]);
-  return <FeatureReplayViewer />;
+    console.log(`Creating stage with ${chosenBlueprintId} and ${chosenReplayId}`);
+    createStage(chosenBlueprintId, chosenReplayId).then((createdStage) => setStage(createdStage));
+  }, [createStage]);
+
+  if (isCreatingStage || !stage) {
+    return <div>Preparing the stage...</div>;
+  }
+
+  return (
+    <StageProvider stage={stage}>
+      <FeatureReplayViewer />
+    </StageProvider>
+  );
 }
 
 export default App;

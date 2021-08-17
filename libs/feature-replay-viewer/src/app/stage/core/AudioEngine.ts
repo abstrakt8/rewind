@@ -4,7 +4,7 @@ import { EventEmitter, GameClockEvents } from "../../events";
 // "AudioEngine"
 @injectable()
 export class AudioEngine {
-  constructor(private eventEmitter: EventEmitter) {}
+  constructor() {}
 
   setupListeners(eventEmitter: EventEmitter) {
     eventEmitter.on(GameClockEvents.GAME_CLOCK_SEEK, this.onGameClockSeek.bind(this));

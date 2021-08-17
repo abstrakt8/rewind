@@ -40,7 +40,6 @@ export function createRewindStage(settings: RewindStageSettings) {
   const pixiRenderService = container.get<PixiRendererService>(PixiRendererService);
   return {
     clock: container.get<GameplayClock>(GameplayClock),
-    eventEmitter: container.get<EventEmitter>(EventEmitter),
     initializeRenderer: pixiRenderService.initializeRenderer.bind(pixiRenderService),
   };
 }

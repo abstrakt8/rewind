@@ -17,6 +17,8 @@ import { observe } from "mobx";
 import { gameClockToggled } from "../clocks/slice";
 import { modHiddenToggleRequested } from "../theater/slice";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import { useGameClockControls, usePartiallySyncedGameClockTime } from "./hooks/useGameClock";
+import { useStageContext } from "./components/StageProvider/StageProvider";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -160,7 +162,7 @@ const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
 });
 
 export const CurrentTime = () => {
-  const { currentTime } = useGameClock();
+  const currentTime = usePartiallySyncedGameClockTime();
   const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
 
   return (
@@ -229,20 +231,17 @@ const GameCanvas = () => {
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const performanceMonitor = usePerformanceMonitor({});
-  const scenario = useCurrentScenario();
+  const { stage } = useStageContext();
+
+  // const scenario = useCurrentScenario();
   useEffect(() => {
-    let gameApp: any;
     if (canvas.current) {
-      gameApp = new ReplayViewerApp(canvas.current, () => scenario.getCurrentScene(), {
-        antialias: true,
-        performanceMonitor,
-      });
+      const destroy = stage.initializeRenderer(canvas.current);
+      return () => destroy();
     }
-    if (containerRef.current) {
-      containerRef.current?.appendChild(performanceMonitor.dom);
-    }
-    return () => gameApp?.destroy();
-  }, [canvas, scenario]);
+    return () => {};
+  }, [stage]);
+
   return (
     <div ref={containerRef} className={"overflow-auto flex-1 rounded relative"}>
       <canvas className={"w-full h-full bg-black"} ref={canvas} />
@@ -265,17 +264,19 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
   // const scenario = useCurrentScenario();
   // const { view, gameClock } = scenario;
 
-  const maxTimeHMS = "7:27:27";
   const dispatch = useAppDispatch();
   // const maxTimeHMS = formatReplayTime(gameClock.maxTime);
   // useShortcuts();
 
-  const currentPlaybackRate = useAppSelector((state) => state.gameClock.playbackRate);
-  const isPlaying = useAppSelector((state) => state.gameClock.playing);
+  const { isPlaying, toggleClock, speed, durationInMs } = useGameClockControls();
+  const maxTimeHMS = formatReplayTime(durationInMs);
+
+  // const currentPlaybackRate = useAppSelector((state) => state.gameClock.playbackRate);
+  // const isPlaying = useAppSelector((state) => state.gameClock.playing);
   const modHiddenEnabled = useAppSelector((state) => state.theater.view.modHidden);
 
-  const handlePlayButtonClick = () => dispatch(gameClockToggled);
-  const handleHiddenButtonClicked = () => dispatch(modHiddenToggleRequested);
+  const handlePlayButtonClick = useCallback(() => toggleClock(), [toggleClock]);
+  const handleHiddenButtonClicked = useCallback(() => {}, []);
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
@@ -300,7 +301,7 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
               className={`filter ${modHiddenEnabled ? "grayscale-0" : "grayscale"} `}
             />
           </button>
-          <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{currentPlaybackRate}x</button>
+          <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{speed}x</button>
         </div>
       </div>
       <div className={"flex flex-col gap-4 flex-none w-52 h-full overflow-y-auto"}>

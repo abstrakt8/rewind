@@ -22,7 +22,10 @@ export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
   const createStage = useCallback(
     (blueprintId: string, replayId: string) => {
       setIsCreatingStage(true);
-      return theater.createStage(blueprintId, replayId);
+      return theater.createStage(blueprintId, replayId).then((stage) => {
+        setIsCreatingStage(false);
+        return stage;
+      });
     },
     [theater],
   );

@@ -12,6 +12,8 @@ export function useGameClockControls() {
   const clock = useGameClock();
 
   const [isPlaying, setIsPlaying] = useState(clock.isPlaying);
+  const [speed] = useState(clock.speed);
+  const [durationInMs] = useState(clock.durationInMs);
 
   // Since the clock can be paused on its own we want to listen to those changes.
   useEffect(() => {
@@ -21,11 +23,15 @@ export function useGameClockControls() {
 
   const startClock = useCallback(() => clock.start(), [clock]);
   const pauseClock = useCallback(() => clock.pause(), [clock]);
+  const toggleClock = useCallback(() => (isPlaying ? clock.pause() : clock.start()), [clock, isPlaying]);
 
   return {
     isPlaying,
+    speed,
+    durationInMs,
     startClock,
     pauseClock,
+    toggleClock,
   };
 }
 
@@ -38,6 +44,7 @@ export function usePartiallySyncedGameClockTime() {
   // The gameClock.tick() is handled in the game loop and we will only "listen/sync" to what ever the game clock is
   // displaying.
   useInterval(() => {
+    clock.tick();
     setTimeInMs(clock.timeElapsedInMs);
   }, GAME_TIME_SYNC_INTERVAL_IN_MS);
 
