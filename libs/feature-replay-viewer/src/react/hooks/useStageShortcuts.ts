@@ -1,9 +1,9 @@
 import { useHotkeys } from "react-hotkeys-hook";
-import { useGameClockControls } from "./useGameClock";
+import { useGameClockContext } from "../components/StageProvider/StageClockProvider";
 import { useStageViewSettings } from "./useStageViewSettings";
 
 export function useStageShortcuts() {
-  const { toggleClock, increaseSpeed, decreaseSpeed } = useGameClockControls();
+  const { toggleClock, increaseSpeed, decreaseSpeed } = useGameClockContext();
   const { toggleModHidden } = useStageViewSettings();
 
   useHotkeys("w", () => increaseSpeed(), [increaseSpeed]);

@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext } from "react";
 import { RewindStage } from "../../../app/stage";
+import { GameClockProvider } from "./StageClockProvider";
 
 interface IStage {
   stage: RewindStage;
@@ -14,7 +15,11 @@ interface StageProviderProps {
 const StageContext = createContext<IStage>(null!);
 
 export function StageProvider({ stage, children }: StageProviderProps) {
-  return <StageContext.Provider value={{ stage }}>{children}</StageContext.Provider>;
+  return (
+    <StageContext.Provider value={{ stage }}>
+      <GameClockProvider clock={stage.clock}>{children}</GameClockProvider>
+    </StageContext.Provider>
+  );
 }
 
 export function useStageContext() {

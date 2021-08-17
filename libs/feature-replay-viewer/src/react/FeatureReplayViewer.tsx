@@ -2,15 +2,14 @@ import React, { useCallback, useMemo, useState } from "react";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import styled from "styled-components";
 import Playbar, { PlaybarEvent } from "./Playbar";
-import { useInterval } from "./hooks/useInterval";
 import { formatReplayTime } from "../utils/time";
 import { observer } from "mobx-react-lite";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 import { Switch } from "@headlessui/react";
-import { useGameClock, useGameClockControls, usePartiallySyncedGameClockTime } from "./hooks/useGameClock";
 import { useStageViewSettings } from "./hooks/useStageViewSettings";
 import { GameCanvas } from "./GameCanvas";
 import { useStageShortcuts } from "./hooks/useStageShortcuts";
+import { useGameClockContext } from "./components/StageProvider/StageClockProvider";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -121,9 +120,8 @@ function mapToPlaybarEvents(
 
 const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
   const { settings } = props;
-  const currentTime = usePartiallySyncedGameClockTime();
-  const gameClock = useGameClock();
-  const maxTime = gameClock.durationInMs;
+  const { timeInMs: currentTime, durationInMs: maxTime, seekTo } = useGameClockContext();
+
   // const scenario = useCurrentScenario();
   const replayEvents: ReplayAnalysisEvent[] = [];
   const loadedPercentage = currentTime / maxTime;
@@ -131,16 +129,16 @@ const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
     (percentage) => {
       const t = percentage * maxTime;
       console.log(`Seeking to time=${t} `);
-      gameClock.seekTo(t);
+      seekTo(t);
     },
-    [maxTime, gameClock],
+    [maxTime, seekTo],
   );
   const events = useMemo(() => mapToPlaybarEvents(replayEvents, settings, maxTime), [settings, replayEvents, maxTime]);
   return <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} events={events} />;
 });
 
 export const CurrentTime = () => {
-  const currentTime = usePartiallySyncedGameClockTime();
+  const { timeInMs: currentTime } = useGameClockContext();
   const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
 
   return (
@@ -190,7 +188,7 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
   // const maxTimeHMS = formatReplayTime(gameClock.maxTime);
   // useShortcuts();
 
-  const { isPlaying, toggleClock, speed, durationInMs } = useGameClockControls();
+  const { isPlaying, toggleClock, speed, durationInMs } = useGameClockContext();
   const maxTimeHMS = formatReplayTime(durationInMs);
 
   // const currentPlaybackRate = useAppSelector((state) => state.gameClock.playbackRate);

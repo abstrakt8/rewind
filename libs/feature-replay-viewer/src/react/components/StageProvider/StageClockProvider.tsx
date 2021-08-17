@@ -1,12 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { useStageContext } from "../components/StageProvider/StageProvider";
-import { useInterval } from "./useInterval";
-
-export function useGameClock() {
-  const { stage } = useStageContext();
-  const { clock } = stage;
-  return clock;
-}
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { useInterval } from "../../hooks/useInterval";
+import { GameplayClock } from "../../../app/stage/core/GameplayClock";
 
 const speedsAllowed = [0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
 // TODO: FLOATING POINT EQUALITY ALERT
@@ -15,11 +9,10 @@ const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length
 const prevSpeed = (speed: number) => speedsAllowed[Math.max(0, speedIndex(speed) - 1)];
 
 const frameJump = 16;
+const GAME_TIME_SYNC_INTERVAL_IN_MS = 32;
 
 // Probably need a React.Context
-export function useGameClockControls() {
-  const clock = useGameClock();
-
+function useGameClockControls(clock: GameplayClock) {
   const [isPlaying, setIsPlaying] = useState(clock.isPlaying);
   const [speed, setSpeed] = useState(clock.speed);
   const [durationInMs] = useState(clock.durationInMs);
@@ -37,22 +30,9 @@ export function useGameClockControls() {
   const increaseSpeed = useCallback(() => clock.setSpeed(nextSpeed(clock.speed)), [clock]);
   const decreaseSpeed = useCallback(() => clock.setSpeed(prevSpeed(clock.speed)), [clock]);
 
-  return {
-    isPlaying,
-    speed,
-    durationInMs,
-    startClock,
-    pauseClock,
-    toggleClock,
-    increaseSpeed,
-    decreaseSpeed,
-  };
-}
+  // TODO: Immediately sync time again
+  const seekTo = useCallback((timeInMs) => clock.seekTo(timeInMs), [clock]);
 
-const GAME_TIME_SYNC_INTERVAL_IN_MS = 32;
-
-export function usePartiallySyncedGameClockTime() {
-  const clock = useGameClock();
   const [timeInMs, setTimeInMs] = useState(clock.timeElapsedInMs);
 
   // The gameClock.tick() is handled in the game loop and we will only "listen/sync" to what ever the game clock is
@@ -67,5 +47,36 @@ export function usePartiallySyncedGameClockTime() {
     clock.onPaused(() => setTimeInMs(clock.timeElapsedInMs));
   }, [clock]);
 
-  return timeInMs;
+  return {
+    isPlaying,
+    speed,
+    durationInMs,
+    startClock,
+    pauseClock,
+    toggleClock,
+    increaseSpeed,
+    decreaseSpeed,
+    timeInMs,
+    seekTo,
+  };
+}
+
+const GameClockContext = createContext<ReturnType<typeof useGameClockControls>>(null!);
+
+interface GameClockProviderProps {
+  clock: GameplayClock;
+  children: ReactNode;
+}
+
+export function GameClockProvider({ clock, children }: GameClockProviderProps) {
+  const controls = useGameClockControls(clock);
+  return <GameClockContext.Provider value={controls}>{children}</GameClockContext.Provider>;
+}
+
+export function useGameClockContext() {
+  const context = useContext(GameClockContext);
+  if (!context) {
+    throw Error("useGameClockContext can only be used within a GameClockProvider");
+  }
+  return context;
 }
