@@ -8,22 +8,33 @@ export function useGameClock() {
   return clock;
 }
 
+const speedsAllowed = [0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
+// TODO: FLOATING POINT EQUALITY ALERT
+const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
+const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length - 1, speedIndex(speed) + 1)];
+const prevSpeed = (speed: number) => speedsAllowed[Math.max(0, speedIndex(speed) - 1)];
+
+const frameJump = 16;
+
 export function useGameClockControls() {
   const clock = useGameClock();
 
   const [isPlaying, setIsPlaying] = useState(clock.isPlaying);
-  const [speed] = useState(clock.speed);
+  const [speed, setSpeed] = useState(clock.speed);
   const [durationInMs] = useState(clock.durationInMs);
 
   // Since the clock can be paused on its own we want to listen to those changes.
   useEffect(() => {
     clock.onStarted(() => setIsPlaying(true));
     clock.onPaused(() => setIsPlaying(false));
+    clock.onSpeedChange((speed) => setSpeed(speed));
   }, [clock]);
 
   const startClock = useCallback(() => clock.start(), [clock]);
   const pauseClock = useCallback(() => clock.pause(), [clock]);
   const toggleClock = useCallback(() => (isPlaying ? clock.pause() : clock.start()), [clock, isPlaying]);
+  const increaseSpeed = useCallback(() => clock.setSpeed(nextSpeed(clock.speed)), [clock]);
+  const decreaseSpeed = useCallback(() => clock.setSpeed(prevSpeed(clock.speed)), [clock]);
 
   return {
     isPlaying,
@@ -32,6 +43,8 @@ export function useGameClockControls() {
     startClock,
     pauseClock,
     toggleClock,
+    increaseSpeed,
+    decreaseSpeed,
   };
 }
 

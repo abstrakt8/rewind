@@ -65,11 +65,15 @@ export function createRewindStage(settings: RewindStageSettings) {
   const stageSkinService = container.get(StageSkinService);
   stageSkinService.setSkin(skin);
 
+  const stageViewService = container.get(StageViewService);
+  // stageViewService.changeView(...)
+
   return {
     clock,
     initializeRenderer: pixiRenderService.initializeRenderer.bind(pixiRenderService),
     initializeTicker: gameLoop.initializeTicker.bind(gameLoop),
     performanceMonitor: gameLoop.getPerformanceMonitor(),
+    stageViewService,
   };
 }
 

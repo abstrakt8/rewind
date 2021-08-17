@@ -65,6 +65,10 @@ export class GameplayClock {
     this.eventEmitter.on(GameClockEvents.GAME_CLOCK_STARTED, fn);
   }
 
+  onSpeedChange(fn: ListenerFn) {
+    this.eventEmitter.on(GameClockEvents.GAME_CLOCK_SPEED_CHANGED, fn);
+  }
+
   onPaused(fn: ListenerFn) {
     this.eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, fn);
   }

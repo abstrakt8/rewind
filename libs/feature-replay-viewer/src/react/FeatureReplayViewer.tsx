@@ -1,24 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import styled from "styled-components";
 import Playbar, { PlaybarEvent } from "./Playbar";
 import { useInterval } from "./hooks/useInterval";
 import { formatReplayTime } from "../utils/time";
-import { ReplayViewerApp } from "../pixi/ReplayViewerApp";
-import { usePerformanceMonitor } from "./hooks/usePerformanceMonitor";
-import { useMobXContext } from "./contexts/MobXContext";
 import { observer } from "mobx-react-lite";
-import { useHotkeys } from "react-hotkeys-hook";
-import { ReplayAnalysisEvent, GameplayAnalysisEventType } from "@rewind/osu/core";
+import { ReplayAnalysisEvent } from "@rewind/osu/core";
 import { Switch } from "@headlessui/react";
-import { Scenario } from "../stores/ScenarioService";
-import { useScenarioService } from "./hooks/game";
-import { observe } from "mobx";
-import { gameClockToggled } from "../clocks/slice";
-import { modHiddenToggleRequested } from "../theater/slice";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { useGameClockControls, usePartiallySyncedGameClockTime } from "./hooks/useGameClock";
-import { useStageContext } from "./components/StageProvider/StageProvider";
+import { useGameClock, useGameClockControls, usePartiallySyncedGameClockTime } from "./hooks/useGameClock";
+import { useStageViewSettings } from "./hooks/useStageViewSettings";
+import { GameCanvas } from "./GameCanvas";
+import { useStageShortcuts } from "./hooks/useStageShortcuts";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -81,19 +73,6 @@ const SidebarBox = (props: { children: React.ReactNode }) => {
   return <div className={"bg-gray-700 rounded px-1 py-2 flex flex-col items-center gap-2 px-4"}>{props.children}</div>;
 };
 
-const useGameClock = () => {
-  const { gameClock } = useCurrentScenario();
-  const [currentTime, setCurrentTime] = useState(0);
-
-  // When I originally implemented this with an update of every 16ms I get FPS drops on the canvas. It does look
-  // smoother though.
-  useInterval(() => {
-    setCurrentTime(gameClock.getCurrentTime());
-  }, 128);
-
-  return { gameClock, currentTime };
-};
-
 const PlaybarColors = {
   MISS: "#ff0000",
   SLIDER_BREAK: "hsl(351,100%,70%)",
@@ -142,9 +121,11 @@ function mapToPlaybarEvents(
 
 const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
   const { settings } = props;
-  const { gameClock, currentTime } = useGameClock();
-  const maxTime = gameClock.maxTime;
-  const scenario = useCurrentScenario();
+  const currentTime = usePartiallySyncedGameClockTime();
+  const gameClock = useGameClock();
+  const maxTime = gameClock.durationInMs;
+  // const scenario = useCurrentScenario();
+  const replayEvents: ReplayAnalysisEvent[] = [];
   const loadedPercentage = currentTime / maxTime;
   const handleSeekTo = useCallback(
     (percentage) => {
@@ -154,10 +135,7 @@ const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
     },
     [maxTime, gameClock],
   );
-  const events = useMemo(
-    () => mapToPlaybarEvents(scenario.replayEvents, settings, maxTime),
-    [settings, scenario.replayEvents, maxTime],
-  );
+  const events = useMemo(() => mapToPlaybarEvents(replayEvents, settings, maxTime), [settings, replayEvents, maxTime]);
   return <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} events={events} />;
 });
 
@@ -171,34 +149,6 @@ export const CurrentTime = () => {
       <span className={"text-gray-500 text-xs"}>.{timeMS}</span>
     </span>
   );
-};
-
-// TODO: Maybe make frameJump dynamic
-// If paused -> only +1ms
-// If
-// const speedsAllowed = [0.01, 0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
-const speedsAllowed = [0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
-// TODO: FLOATING POINT EQUALITY ALERT
-const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
-const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length - 1, speedIndex(speed) + 1)];
-const prevSpeed = (speed: number) => speedsAllowed[Math.max(0, speedIndex(speed) - 1)];
-
-const frameJump = 16;
-
-export const useShortcuts = () => {
-  const { gameClock } = useGameClock();
-  const scenario = useCurrentScenario();
-  // TODO: Connect with store -> hotkeys settings
-  // https://github.com/jaywcjlove/hotkeys/#defining-shortcuts
-  useHotkeys("w", () => gameClock.setSpeed(nextSpeed(gameClock.currentSpeed)), [gameClock]);
-  useHotkeys("s", () => gameClock.setSpeed(prevSpeed(gameClock.currentSpeed)), [gameClock]);
-  useHotkeys("space", () => gameClock.togglePlaying(), [gameClock]);
-  useHotkeys("d", () => gameClock.seekTo(Math.min(gameClock.maxTime, gameClock.getCurrentTime() + frameJump)), [
-    gameClock,
-    frameJump,
-  ]);
-  useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)), [gameClock, frameJump]);
-  useHotkeys("f", () => scenario.toggleHidden(), [scenario]);
 };
 
 function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown; color?: string }) {
@@ -222,53 +172,21 @@ function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown
   );
 }
 
-const useCurrentScenario = () => {
-  const scenarioService = useScenarioService();
-  return scenarioService.currentScenario;
-};
-
-const GameCanvas = () => {
-  const canvas = useRef<HTMLCanvasElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const { stage } = useStageContext();
-
-  useEffect(() => {
-    if (containerRef.current !== null) {
-      containerRef.current.appendChild(stage.performanceMonitor.dom);
-    }
-  }, [stage]);
-  useEffect(() => {
-    if (canvas.current) {
-      const destroy = stage.initializeRenderer(canvas.current);
-      stage.initializeTicker();
-      return () => destroy();
-    }
-    return () => {};
-  }, [stage]);
-
-  return (
-    <div ref={containerRef} className={"overflow-auto flex-1 rounded relative"}>
-      <canvas className={"w-full h-full bg-black"} ref={canvas} />
-    </div>
-  );
-};
-
 export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
   // Canvas / Game
   //
-  // const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
-  //   show50s: false,
-  //   show100s: false,
-  //   showMisses: true,
-  //   showSliderBreaks: true,
-  // });
-  // const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
-  //   setPbSetting((prevState) => ({ ...prevState, [who]: value }));
+  const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
+    show50s: false,
+    show100s: false,
+    showMisses: true,
+    showSliderBreaks: true,
+  });
+  const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
+    setPbSetting((prevState) => ({ ...prevState, [who]: value }));
 
   // const scenario = useCurrentScenario();
   // const { view, gameClock } = scenario;
 
-  const dispatch = useAppDispatch();
   // const maxTimeHMS = formatReplayTime(gameClock.maxTime);
   // useShortcuts();
 
@@ -277,10 +195,13 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
 
   // const currentPlaybackRate = useAppSelector((state) => state.gameClock.playbackRate);
   // const isPlaying = useAppSelector((state) => state.gameClock.playing);
-  const modHiddenEnabled = useAppSelector((state) => state.theater.view.modHidden);
 
   const handlePlayButtonClick = useCallback(() => toggleClock(), [toggleClock]);
-  const handleHiddenButtonClicked = useCallback(() => {}, []);
+
+  const { modHidden, toggleModHidden } = useStageViewSettings();
+  const handleHiddenButtonClicked = useCallback(() => toggleModHidden(), [toggleModHidden]);
+
+  useStageShortcuts();
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
@@ -294,15 +215,15 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
             {isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <CurrentTime />
-          {/*<div className={"flex-1"}>*/}
-          {/*  <EfficientPlaybar settings={pbSetting} />*/}
-          {/*</div>*/}
+          <div className={"flex-1"}>
+            <EfficientPlaybar settings={pbSetting} />
+          </div>
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
           <button className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>
             <img
               src={modHiddenImg}
               alt={"ModHidden"}
-              className={`filter ${modHiddenEnabled ? "grayscale-0" : "grayscale"} `}
+              className={`filter ${modHidden ? "grayscale-0" : "grayscale"} `}
             />
           </button>
           <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{speed}x</button>
