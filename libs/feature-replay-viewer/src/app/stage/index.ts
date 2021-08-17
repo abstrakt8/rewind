@@ -16,6 +16,9 @@ import { HitObjectsPreparer } from "./rewind/components/playfield/HitObjectsPrep
 import { StageSkinService } from "./StageSkinService";
 import { Skin } from "./rewind/Skin";
 import { OsuReplay } from "../theater";
+import { HitCirclePreparer } from "./rewind/components/playfield/HitCirclePreparer";
+import { SliderTextureService } from "./rewind/SliderTextureService";
+import { SliderPreparer } from "./rewind/components/playfield/SliderPreparer";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
@@ -55,6 +58,9 @@ export function createRewindStage(settings: RewindStageSettings) {
   container.bind(StageSkinService).toSelf().inSingletonScope();
 
   container.bind(HitObjectsPreparer).toSelf();
+  container.bind(HitCirclePreparer).toSelf();
+  container.bind(SliderPreparer).toSelf();
+  container.bind(SliderTextureService).toSelf();
 
   // TODO: Setup listeners?
   // Maybe only return what we want to expose
