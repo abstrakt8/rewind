@@ -1,14 +1,27 @@
 import * as PIXI from "pixi.js";
-import { PlayfieldBorderPreparer } from "../border/PlayfieldBorderPreparer";
+import { PlayfieldBorderPreparer } from "./PlayfieldBorderPreparer";
 import { injectable } from "inversify";
+import { HitObjectsPreparer } from "./HitObjectsPreparer";
 
 @injectable()
 export class PlayfieldPreparer {
   private readonly container: PIXI.Container;
+  private judgementLayer: PIXI.Container;
 
-  constructor(private playfieldBorderPreparer: PlayfieldBorderPreparer) {
+  constructor(
+    private playfieldBorderPreparer: PlayfieldBorderPreparer,
+    private hitObjectsPreparer: HitObjectsPreparer,
+  ) {
     this.container = new PIXI.Container();
-    this.container.addChild(playfieldBorderPreparer.getGraphics());
+    this.judgementLayer = new PIXI.Container();
+    this.container.addChild(
+      playfieldBorderPreparer.getGraphics(),
+      this.hitObjectsPreparer.spinnerProxies,
+      this.judgementLayer,
+      this.hitObjectsPreparer.hitObjectContainer,
+      this.hitObjectsPreparer.approachCircleContainer,
+      /// cursorContainer
+    );
   }
 
   getContainer() {
@@ -17,5 +30,6 @@ export class PlayfieldPreparer {
 
   prepare() {
     this.playfieldBorderPreparer.prepare();
+    this.hitObjectsPreparer.prepare();
   }
 }

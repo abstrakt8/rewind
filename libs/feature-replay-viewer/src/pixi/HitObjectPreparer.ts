@@ -288,6 +288,30 @@ export function settingsApproachCircle(s: {
   };
 }
 
+export function sliderBodySetting(s: {
+  skin: Skin;
+  modHidden: boolean;
+  slider: Slider;
+  gameTime: number;
+  texture: Texture;
+}): SliderBodySettings {
+  const { texture, modHidden, slider, gameTime } = s;
+  const headPositionInRectangle = Vec2.scale(slider.path.boundaryBox[0], -1).add({
+    x: slider.radius,
+    y: slider.radius,
+  });
+
+  return {
+    modHidden,
+    duration: slider.duration,
+    position: slider.head.position,
+    approachDuration: slider.head.approachDuration,
+    time: gameTime - slider.startTime,
+    texture,
+    headPositionInRectangle,
+  };
+}
+
 function settingsHitCircleArea(s: {
   hitCircle: HitCircle;
   skin: Skin;
@@ -315,29 +339,5 @@ function settingsHitCircleArea(s: {
     position: hitCircle.position,
     hitResult,
     // fadeInDuration, numberScaling
-  };
-}
-
-export function sliderBodySetting(s: {
-  skin: Skin;
-  modHidden: boolean;
-  slider: Slider;
-  gameTime: number;
-  texture: Texture;
-}): SliderBodySettings {
-  const { texture, modHidden, slider, gameTime } = s;
-  const headPositionInRectangle = Vec2.scale(slider.path.boundaryBox[0], -1).add({
-    x: slider.radius,
-    y: slider.radius,
-  });
-
-  return {
-    modHidden,
-    duration: slider.duration,
-    position: slider.head.position,
-    approachDuration: slider.head.approachDuration,
-    time: gameTime - slider.startTime,
-    texture,
-    headPositionInRectangle,
   };
 }

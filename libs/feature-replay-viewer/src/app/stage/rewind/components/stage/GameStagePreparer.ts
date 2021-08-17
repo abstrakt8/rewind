@@ -5,7 +5,6 @@ import { TheaterStagePreparer } from "../../../core/TheaterStagePreparer";
 import { PlayfieldPreparer } from "../playfield/PlayfieldPreparer";
 import { PixiRendererService } from "../../../core/PixiRendererService";
 import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "@rewind/osu/core";
-import { OSU_PLAYFIELD_BASE_X, OSU_PLAYFIELD_BASE_Y } from "../../../../../pixi/OsuSceneContainer";
 
 @injectable()
 export class GameStagePreparer implements TheaterStagePreparer {
@@ -34,8 +33,8 @@ export class GameStagePreparer implements TheaterStagePreparer {
     const playfield = this.playfieldPreparer.getContainer();
     playfield.scale.set(scaling);
     playfield.position.set(
-      (this.widthInPx - OSU_PLAYFIELD_BASE_X * scaling) / 2,
-      (this.heightInPx - OSU_PLAYFIELD_BASE_Y * scaling) / 2,
+      (this.widthInPx - OSU_PLAYFIELD_WIDTH * scaling) / 2,
+      (this.heightInPx - OSU_PLAYFIELD_HEIGHT * scaling) / 2,
     );
   }
 

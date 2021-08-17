@@ -9,10 +9,13 @@ import { Beatmap } from "@rewind/osu/core";
 import { OsuReplay } from "../../replays/slice";
 import { PixiRendererService } from "./core/PixiRendererService";
 import { GameLoop } from "./core/GameLoop";
-import { PlayfieldBorderPreparer } from "./rewind/components/border/PlayfieldBorderPreparer";
+import { PlayfieldBorderPreparer } from "./rewind/components/playfield/PlayfieldBorderPreparer";
 import { PlayfieldPreparer } from "./rewind/components/playfield/PlayfieldPreparer";
 import { TextureManager } from "./rewind/TextureManager";
 import { StageViewService } from "./rewind/StageViewService";
+import { HitObjectsPreparer } from "./rewind/components/playfield/HitObjectsPreparer";
+import { StageSkinService } from "./StageSkinService";
+import { Skin } from "../../skins/Skin";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
@@ -29,22 +32,27 @@ function createCoreContainer() {
 interface RewindStageSettings {
   beatmap: Beatmap;
   replay: OsuReplay;
+  skin: Skin;
 }
 
 export function createRewindStage(settings: RewindStageSettings) {
   const container = createCoreContainer();
 
-  const { beatmap, replay } = settings;
+  const { beatmap, replay, skin } = settings;
   container.bind(TYPES.BEATMAP).toConstantValue(beatmap);
   container.bind(TYPES.REPLAY).toConstantValue(replay);
 
   container.bind(TYPES.THEATER_STAGE_PREPARER).to(GameStagePreparer);
 
-  container.bind<BackgroundPreparer>(BackgroundPreparer).toSelf();
-  container.bind<PlayfieldBorderPreparer>(PlayfieldBorderPreparer).toSelf();
-  container.bind<PlayfieldPreparer>(PlayfieldPreparer).toSelf();
+  container.bind(BackgroundPreparer).toSelf();
+  container.bind(PlayfieldBorderPreparer).toSelf();
+  container.bind(PlayfieldPreparer).toSelf();
   container.bind(TextureManager).toSelf();
-  container.bind(StageViewService).toSelf();
+
+  container.bind(StageViewService).toSelf().inSingletonScope();
+  container.bind(StageSkinService).toSelf().inSingletonScope();
+
+  container.bind(HitObjectsPreparer).toSelf();
 
   // TODO: Setup listeners?
 
@@ -52,6 +60,11 @@ export function createRewindStage(settings: RewindStageSettings) {
   const pixiRenderService = container.get<PixiRendererService>(PixiRendererService);
   const gameLoop = container.get<GameLoop>(GameLoop);
   const clock = container.get<GameplayClock>(GameplayClock);
+
+  // Config
+  const stageSkinService = container.get(StageSkinService);
+  stageSkinService.setSkin(skin);
+
   return {
     clock,
     initializeRenderer: pixiRenderService.initializeRenderer.bind(pixiRenderService),
