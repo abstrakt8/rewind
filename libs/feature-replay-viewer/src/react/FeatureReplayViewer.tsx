@@ -123,7 +123,7 @@ const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
   const { timeInMs: currentTime, durationInMs: maxTime, seekTo } = useGameClockContext();
 
   // const scenario = useCurrentScenario();
-  const replayEvents: ReplayAnalysisEvent[] = [];
+  const replayEvents: ReplayAnalysisEvent[] = useMemo(() => [], []);
   const loadedPercentage = currentTime / maxTime;
   const handleSeekTo = useCallback(
     (percentage) => {
