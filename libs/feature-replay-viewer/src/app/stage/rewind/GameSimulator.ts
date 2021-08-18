@@ -26,11 +26,13 @@ export class GameSimulator {
       noteLockStyle: "STABLE",
     });
     this.gameplayEvaluator = new GameplayInfoEvaluator(beatmap, {});
+    // TODO: Move this to async ...
     this.currentState = this.gameplayTimeMachine.gameStateAt(1e9);
     this.currentInfo = defaultGameplayInfo;
   }
 
   // Simulates the game to be at the given time
+  // If a whole game simulation has happened, then this should be really fast
   simulate(gameTimeInMs: number) {
     this.currentState = this.gameplayTimeMachine.gameStateAt(gameTimeInMs);
     this.currentInfo = this.gameplayEvaluator.evaluateReplayState(this.currentState);

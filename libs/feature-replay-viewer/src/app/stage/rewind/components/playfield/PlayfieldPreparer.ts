@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { PlayfieldBorderPreparer } from "./PlayfieldBorderPreparer";
 import { injectable } from "inversify";
 import { HitObjectsPreparer } from "./HitObjectsPreparer";
+import { CursorPreparer } from "./CursorPreparer";
 
 @injectable()
 export class PlayfieldPreparer {
@@ -11,6 +12,7 @@ export class PlayfieldPreparer {
   constructor(
     private playfieldBorderPreparer: PlayfieldBorderPreparer,
     private hitObjectsPreparer: HitObjectsPreparer,
+    private cursorPreparer: CursorPreparer,
   ) {
     this.container = new PIXI.Container();
     this.judgementLayer = new PIXI.Container();
@@ -20,7 +22,7 @@ export class PlayfieldPreparer {
       this.judgementLayer,
       this.hitObjectsPreparer.hitObjectContainer,
       this.hitObjectsPreparer.approachCircleContainer,
-      /// cursorContainer
+      this.cursorPreparer.getContainer(),
     );
   }
 
@@ -31,5 +33,6 @@ export class PlayfieldPreparer {
   prepare() {
     this.playfieldBorderPreparer.prepare();
     this.hitObjectsPreparer.prepare();
+    this.cursorPreparer.prepare();
   }
 }
