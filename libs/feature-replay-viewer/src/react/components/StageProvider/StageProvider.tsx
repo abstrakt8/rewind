@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useEffect } from "react";
 import { RewindStage } from "../../../app/stage";
 import { GameClockProvider } from "./StageClockProvider";
 import { StageViewProvider } from "./StageViewProvider";

@@ -1,13 +1,13 @@
 import "tailwindcss/tailwind.css";
 import { Story, Meta } from "@storybook/react";
-import { FeatureReplayViewer, FeatureReplayViewerProps } from "./FeatureReplayViewer";
+import { GameStage, FeatureReplayViewerProps } from "./GameStage";
 
 export default {
-  component: FeatureReplayViewer,
+  component: GameStage,
   title: "FeatureReplayViewer",
 } as Meta;
 
-const Template: Story<FeatureReplayViewerProps> = (args) => <FeatureReplayViewer {...args} />;
+const Template: Story<FeatureReplayViewerProps> = (args) => <GameStage {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {};

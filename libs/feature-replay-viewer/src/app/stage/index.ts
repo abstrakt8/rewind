@@ -92,9 +92,17 @@ export function createRewindStage(settings: RewindStageSettings) {
   stageSkinService.setSkin(skin);
 
   const stageViewService = container.get(StageViewService);
+
   // stageViewService.changeView(...)
 
+  function destroy() {
+    console.log(`Going to destroy the stage with replay = ${replay.md5hash}`);
+    gameLoop.destroy();
+    audioEngine.destroy();
+  }
+
   return {
+    destroy,
     clock,
     initializeRenderer: pixiRenderService.initializeRenderer.bind(pixiRenderService),
     initializeTicker: gameLoop.initializeTicker.bind(gameLoop),

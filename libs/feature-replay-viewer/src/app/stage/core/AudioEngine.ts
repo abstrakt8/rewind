@@ -99,6 +99,13 @@ export class AudioEngine {
   get durationInMs() {
     return (this.song?.mediaElement.duration ?? 1) * 1000;
   }
+
+  destroy() {
+    this.pause();
+    // this.audioContext.close().then(() => {
+    //   console.log("Audio context closed.");
+    // });
+  }
 }
 
 // // HTML5 Audio supports time stretching without pitch changing (otherwise sounds like night core / chipmunks dying).

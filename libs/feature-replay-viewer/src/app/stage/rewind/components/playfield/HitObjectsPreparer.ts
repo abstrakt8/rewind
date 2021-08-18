@@ -25,7 +25,6 @@ export class HitObjectsPreparer {
     this.approachCircleContainer = new Container();
     this.hitObjectContainer = new Container();
     this.spinnerProxies = new Container();
-    // this.sliderTextureManager = new SliderTextureManager(new BasicSliderTextureRenderer(renderer));
   }
 
   private prepareHitCircle(hitCircle: HitCircle) {

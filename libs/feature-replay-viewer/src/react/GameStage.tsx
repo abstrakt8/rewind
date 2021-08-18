@@ -170,7 +170,7 @@ function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown
   );
 }
 
-export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
+export const GameStage = (props: FeatureReplayViewerProps) => {
   // Canvas / Game
   //
   const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
@@ -293,4 +293,4 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
   );
 };
 
-export default FeatureReplayViewer;
+export default GameStage;

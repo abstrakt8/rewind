@@ -13,11 +13,9 @@ export const GameCanvas = () => {
   }, [stage]);
   useEffect(() => {
     if (canvas.current) {
-      const destroy = stage.initializeRenderer(canvas.current);
+      stage.initializeRenderer(canvas.current);
       stage.initializeTicker();
-      return () => destroy();
     }
-    return () => {};
   }, [stage]);
 
   return (

@@ -56,6 +56,11 @@ export class GameLoop {
     this.ticker.start();
   }
 
+  destroy() {
+    this.ticker.stop();
+    // this.ticker.destroy();
+  }
+
   tickHandler() {
     this.performanceMonitor.begin();
     this.gameClock.tick();
