@@ -1,15 +1,14 @@
 import React, { useCallback, useMemo, useState } from "react";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
-import styled from "styled-components";
 import Playbar, { PlaybarEvent } from "./Playbar";
 import { formatReplayTime } from "../utils/time";
 import { observer } from "mobx-react-lite";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
-import { Switch } from "@headlessui/react";
-import { StageViewProvider, useStageViewContext } from "./components/StageProvider/StageViewProvider";
+import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
 import { GameCanvas } from "./GameCanvas";
 import { useStageShortcuts } from "./hooks/useStageShortcuts";
 import { useGameClockContext } from "./components/StageProvider/StageClockProvider";
+import { Sidebar } from "./Sidebar";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -18,37 +17,6 @@ export interface FeatureReplayViewerProps {
   // skinId: string;
   // replays: OsuReplay[];
 }
-
-function SettingsTitle(props: { title: string }) {
-  return <h1 className={"uppercase text-gray-400 text-sm"}>{props.title}</h1>;
-}
-
-const PlaybarEventsBox = styled.div`
-  display: grid;
-  grid-template-columns: 1fr min-content;
-  grid-column-gap: 0.5em;
-  grid-row-gap: 1em;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const GenericToggleSettingsBox = styled.div`
-  display: grid;
-  grid-template-columns: 1fr min-content;
-  grid-row-gap: 1em;
-  grid-column-gap: 1em;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const ShortcutHelper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr min-content;
-  grid-column-gap: 1em;
-  grid-row-gap: 0.5em;
-  align-items: center;
-  justify-content: space-between;
-`;
 
 const PlayIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 20 20" fill="currentColor">
@@ -68,9 +36,6 @@ const PauseIcon = () => (
     />
   </svg>
 );
-const SidebarBox = (props: { children: React.ReactNode }) => {
-  return <div className={"bg-gray-700 rounded px-1 py-2 flex flex-col items-center gap-2 px-4"}>{props.children}</div>;
-};
 
 const PlaybarColors = {
   MISS: "#ff0000",
@@ -149,27 +114,6 @@ export const CurrentTime = () => {
   );
 };
 
-function MyToggle(props: { enabled: boolean; setEnabled: (b: boolean) => unknown; color?: string }) {
-  const { enabled, setEnabled, color } = props;
-
-  return (
-    <Switch
-      // doesn't really work
-      tabIndex={-1}
-      checked={enabled}
-      onChange={setEnabled}
-      className={`relative inline-flex items-center h-6 rounded-full w-11`}
-      style={{ backgroundColor: enabled ? color ?? "#4272b3" : "#dddddd" }}
-    >
-      <span
-        className={`${
-          enabled ? "translate-x-6" : "translate-x-1"
-        } inline-block w-4 h-4 transform bg-white rounded-full`}
-      />
-    </Switch>
-  );
-}
-
 export const GameStage = (props: FeatureReplayViewerProps) => {
   // Canvas / Game
   //
@@ -218,77 +162,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
           <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{speed}x</button>
         </div>
       </div>
-      <div className={"flex flex-col gap-4 flex-none w-52 h-full overflow-y-auto"}>
-        {/*<SidebarBox>*/}
-        {/*  <SettingsTitle title={"Playbar Events"} />*/}
-        {/*  <PlaybarEventsBox>*/}
-        {/*    /!*TODO: Colors should correspond to the events *!/*/}
-        {/*    <div>Misses</div>*/}
-        {/*    <MyToggle*/}
-        {/*      enabled={pbSetting["showMisses"]}*/}
-        {/*      setEnabled={handleTogglePbSetting("showMisses")}*/}
-        {/*      color={PlaybarColors.MISS}*/}
-        {/*    />*/}
-        {/*    <div>Slider breaks</div>*/}
-        {/*    <MyToggle*/}
-        {/*      enabled={pbSetting["showSliderBreaks"]}*/}
-        {/*      setEnabled={handleTogglePbSetting("showSliderBreaks")}*/}
-        {/*      color={PlaybarColors.SLIDER_BREAK}*/}
-        {/*    />*/}
-        {/*    <div>50s</div>*/}
-        {/*    <MyToggle*/}
-        {/*      enabled={pbSetting["show50s"]}*/}
-        {/*      setEnabled={handleTogglePbSetting("show50s")}*/}
-        {/*      color={PlaybarColors.MEH}*/}
-        {/*    />*/}
-        {/*    <div>100s</div>*/}
-        {/*    <MyToggle*/}
-        {/*      enabled={pbSetting["show100s"]}*/}
-        {/*      setEnabled={handleTogglePbSetting("show100s")}*/}
-        {/*      color={PlaybarColors.OK}*/}
-        {/*    />*/}
-        {/*  </PlaybarEventsBox>*/}
-        {/*</SidebarBox>*/}
-        <SidebarBox>
-          {/*<SettingsTitle title={"beatmap analysis"} />*/}
-          {/*<GenericToggleSettingsBox>*/}
-          {/*  <div>Hidden</div>*/}
-          {/*  <MyToggle enabled={scenario.view.modHidden} setEnabled={() => scenario.toggleHidden()} />*/}
-          {/*  <div>Slider Debug</div>*/}
-          {/*  <MyToggle enabled={scenario.view.sliderAnalysis} setEnabled={() => scenario.toggleSliderAnalysis()} />*/}
-          {/*</GenericToggleSettingsBox>*/}
-        </SidebarBox>
-        <SidebarBox>
-          {/*<SettingsTitle title={"replay analysis"} />*/}
-          {/*<GenericToggleSettingsBox>*/}
-          {/*  <div>Normal Cursor</div>*/}
-          {/*  <MyToggle enabled={scenario.view.osuCursor.enabled} setEnabled={() => scenario.toggleOsuCursor()} />*/}
-          {/*  <div>Analysis Cursor</div>*/}
-          {/*  <MyToggle*/}
-          {/*    enabled={scenario.view.analysisCursor.enabled}*/}
-          {/*    setEnabled={() => scenario.toggleAnalysisCursor()}*/}
-          {/*  />*/}
-          {/*</GenericToggleSettingsBox>*/}
-        </SidebarBox>
-        <SidebarBox>
-          <SettingsTitle title={"shortcuts"} />
-          <ShortcutHelper>
-            <span>Start / Pause</span>
-            <span className={"font-mono bg-gray-800 px-2"}>␣</span>
-            <span>Previous frame</span>
-            <span className={"font-mono bg-gray-800 px-2"}>a</span>
-            <span>Next frame</span>
-            <span className={"font-mono bg-gray-800 px-2"}>d</span>
-            <span>Speed decrease</span>
-            <span className={"font-mono bg-gray-800 px-2"}>s</span>
-            <span>Speed increase</span>
-            <span className={"font-mono bg-gray-800 px-2"}>w</span>
-            <span>Toggle Hidden</span>
-            <span className={"font-mono bg-gray-800 px-2"}>f</span>
-          </ShortcutHelper>
-        </SidebarBox>
-        {/*<SidebarBox>{theater.state}</SidebarBox>*/}
-      </div>
+      <Sidebar />
     </div>
   );
 };

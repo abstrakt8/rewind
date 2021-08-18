@@ -1,6 +1,5 @@
 import { inject, injectable } from "inversify";
 import { Container } from "pixi.js";
-import { Scene } from "../../../../../game/Scene";
 import { OsuClassicJudgement } from "@rewind/osu-pixi/classic-components";
 import { circleSizeToScale } from "@rewind/osu/math";
 import { Beatmap, MainHitObjectVerdict } from "@rewind/osu/core";
@@ -8,7 +7,6 @@ import { SkinTextures } from "@rewind/osu/skin";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageSkinService } from "../../../StageSkinService";
 import { TYPES } from "../../../types";
-import { OsuReplay } from "../../../../theater";
 import { GameSimulator } from "../../GameSimulator";
 
 function texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {

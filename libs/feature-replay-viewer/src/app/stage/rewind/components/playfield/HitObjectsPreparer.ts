@@ -53,5 +53,7 @@ export class HitObjectsPreparer {
       if (isSlider(hitObject)) this.prepareSlider(hitObject);
       // if (isSpinner(hitObject)) this.prepareSpinner(scene, hitObject);
     }
+
+    this.sliderPreparer.afterPrepare();
   }
 }

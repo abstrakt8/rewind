@@ -225,6 +225,11 @@ export class SliderPreparer {
     addChildren(this.prepareSliderBall(slider));
     return container;
   }
+
+  // TODO: ...
+  afterPrepare() {
+    this.graphicsPool.releaseUntouched();
+  }
 }
 
 export function sliderBodySetting(s: {

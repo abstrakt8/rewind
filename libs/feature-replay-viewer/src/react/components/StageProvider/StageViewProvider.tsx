@@ -1,31 +1,40 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect } from "react";
 import { StageViewService } from "../../../app/stage/rewind/StageViewService";
-import produce from "immer";
-import { WritableDraft } from "immer/dist/types/types-external";
 import { ViewSettings } from "../../../game/ViewSettings";
+import { useImmer } from "use-immer";
 
 function useStageView(viewService: StageViewService) {
-  const [viewSettings, setViewSettings] = useState(viewService.getView());
+  const [viewSettings, updateViewSettings] = useImmer<ViewSettings>(viewService.getView());
 
-  const changeViewSettings = (recipe: (x: WritableDraft<ViewSettings>) => any) => {
-    setViewSettings((v) => produce(v, recipe));
-  };
-  const modHidden = viewSettings.modHidden;
-  const toggleModHidden = useCallback(
-    () =>
-      changeViewSettings((draft) => {
-        draft.modHidden = !draft.modHidden;
-      }),
-    [],
-  );
-
+  // Making sure that the stage also gets the viewSettings synchronized on change.
   useEffect(() => {
     viewService.changeView(viewSettings);
   }, [viewService, viewSettings]);
 
+  // ModHidden
+  const modHidden = viewSettings.modHidden;
+  const setModHidden = (value: boolean) =>
+    updateViewSettings((draft) => {
+      draft.modHidden = value;
+    });
+  const toggleModHidden = () =>
+    updateViewSettings((draft) => {
+      draft.modHidden = !draft.modHidden;
+    });
+
+  // SliderAnalysis
+  const sliderAnalysisFlag = viewSettings.sliderAnalysis;
+  const setSliderAnalysisFlag = (value: boolean) =>
+    updateViewSettings((draft) => {
+      draft.sliderAnalysis = value;
+    });
+
   return {
     modHidden,
     toggleModHidden,
+    setModHidden,
+    sliderAnalysisFlag,
+    setSliderAnalysisFlag,
   };
 }
 

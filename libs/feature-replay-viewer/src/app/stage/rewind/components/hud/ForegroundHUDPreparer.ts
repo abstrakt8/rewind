@@ -21,7 +21,7 @@ export class ForegroundHUDPreparer {
     private readonly gameSimulator: GameSimulator,
   ) {
     this.container = new Container();
-    this.stats = new Text("", { fontSize: 10, fill: 0xeeeeee, fontFamily: "Arial", align: "center" });
+    this.stats = new Text("", { fontSize: 16, fill: 0xeeeeee, fontFamily: "Arial", align: "center" });
     this.hitErrorBar = new AnalysisHitErrorBar();
   }
 
