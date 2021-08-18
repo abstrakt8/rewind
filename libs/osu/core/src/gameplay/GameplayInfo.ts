@@ -95,9 +95,18 @@ const defaultEvaluationOptions = {
 
 type StableVerdictCount = Record<MainHitObjectVerdict, number>;
 
+export const defaultGameplayInfo: GameplayInfo = Object.freeze({
+  currentCombo: 0,
+  maxComboSoFar: 0,
+  verdictCounts: [0, 0, 0, 0],
+  accuracy: 0,
+  score: 0,
+});
+
 /**
  * Calculating: Count, Accuracy, Combo, MaxCombo
- * The one who is calling this has to make sure that slider heads are not considered in case they are using osu!stable calculation.
+ * The one who is calling this has to make sure that slider heads are not considered in case they are using osu!stable
+ * calculation.
  */
 export class GameplayInfoEvaluator {
   options: EvaluationOption;

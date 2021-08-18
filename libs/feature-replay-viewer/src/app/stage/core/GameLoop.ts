@@ -5,6 +5,7 @@ import { TheaterStagePreparer } from "./TheaterStagePreparer";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import MrDoobStats from "stats.js";
+import { GameSimulator } from "../rewind/GameSimulator";
 
 function defaultMonitor() {
   const s = new MrDoobStats();
@@ -29,6 +30,7 @@ export class GameLoop {
 
   constructor(
     private gameClock: GameplayClock, // Maybe also inject?
+    private gameSimulator: GameSimulator,
     private pixiRendererService: PixiRendererService,
     @inject(TYPES.THEATER_STAGE_PREPARER) private theaterStagePreparer: TheaterStagePreparer,
   ) {
@@ -62,6 +64,9 @@ export class GameLoop {
     if (renderer === undefined) {
       return;
     }
+
+    this.gameSimulator.simulate(this.gameClock.timeElapsedInMs);
+
     this.pixiRendererService.resizeRendererToCanvasSize();
     // TODO: Resizing
     // TODO: Audio sample queue

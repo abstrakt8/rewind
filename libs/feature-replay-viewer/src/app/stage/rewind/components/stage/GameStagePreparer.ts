@@ -5,29 +5,16 @@ import { TheaterStagePreparer } from "../../../core/TheaterStagePreparer";
 import { PlayfieldPreparer } from "../playfield/PlayfieldPreparer";
 import { PixiRendererService } from "../../../core/PixiRendererService";
 import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "@rewind/osu/core";
+import { ForegroundHUDPreparer } from "../hud/ForegroundHUDPreparer";
 
 // The whole game stage will be in the virtual size 1024x768
 //
 // const STAGE_WIDTH = 1024;
 // const STAGE_HEIGHT = 600;
-export const STAGE_WIDTH = 854;
-export const STAGE_HEIGHT = 480;
+export const STAGE_WIDTH = 1600;
+export const STAGE_HEIGHT = 900;
 
 const ratio = STAGE_WIDTH / STAGE_HEIGHT;
-
-/**
- * @param paddingPercent how much padding to use 80% means that there is 10% on both sides is padded.
- */
-function getPlayfieldScaling(screenWidth: number, screenHeight: number, paddingPercent = 0.8): number {
-  // screenHeight * (4/3) would be the screen width if we set the size to screenHeight
-  if (screenWidth < screenHeight * (STAGE_WIDTH / STAGE_HEIGHT)) {
-    return (screenWidth * paddingPercent) / OSU_PLAYFIELD_WIDTH;
-  } else {
-    // It's almost always constrained by height
-    // Maybe the other case will happen if the user is watching this on mobile in vertical mode.
-    return (screenHeight * paddingPercent) / OSU_PLAYFIELD_HEIGHT;
-  }
-}
 
 @injectable()
 export class GameStagePreparer implements TheaterStagePreparer {
@@ -40,15 +27,23 @@ export class GameStagePreparer implements TheaterStagePreparer {
     private rendererService: PixiRendererService,
     private backgroundPreparer: BackgroundPreparer,
     private playfieldPreparer: PlayfieldPreparer,
+    private foregroundHUDPreparer: ForegroundHUDPreparer,
   ) {
     const background = backgroundPreparer.getSprite();
     const playfield = this.playfieldPreparer.getContainer();
+    const foregroundHUD = this.foregroundHUDPreparer.container;
 
     this.stage = new PIXI.Container();
-    this.stage.addChild(background, playfield);
+    this.stage.addChild(background, playfield, foregroundHUD);
     this.stage.interactiveChildren = false;
     this.stage.interactive = false;
-    playfield.position.set((STAGE_WIDTH - OSU_PLAYFIELD_WIDTH) / 2, (STAGE_HEIGHT - OSU_PLAYFIELD_HEIGHT) / 2);
+    const playfieldScaling = (STAGE_HEIGHT * 0.8) / OSU_PLAYFIELD_HEIGHT;
+
+    playfield.position.set(
+      (STAGE_WIDTH - OSU_PLAYFIELD_WIDTH * playfieldScaling) / 2,
+      (STAGE_HEIGHT - OSU_PLAYFIELD_HEIGHT * playfieldScaling) / 2,
+    );
+    playfield.scale.set(playfieldScaling);
   }
 
   resizeTo() {
@@ -76,6 +71,7 @@ export class GameStagePreparer implements TheaterStagePreparer {
     this.resizeTo();
     this.backgroundPreparer.prepare();
     this.playfieldPreparer.prepare();
+    this.foregroundHUDPreparer.prepare();
     return this.stage;
   }
 }

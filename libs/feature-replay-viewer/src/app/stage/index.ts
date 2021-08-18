@@ -19,6 +19,8 @@ import { OsuReplay } from "../theater";
 import { HitCirclePreparer } from "./rewind/components/playfield/HitCirclePreparer";
 import { SliderTextureService } from "./rewind/SliderTextureService";
 import { SliderPreparer } from "./rewind/components/playfield/SliderPreparer";
+import { ForegroundHUDPreparer } from "./rewind/components/hud/ForegroundHUDPreparer";
+import { GameSimulator } from "./rewind/GameSimulator";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
@@ -28,6 +30,7 @@ function createCoreContainer() {
   container.bind<GameplayClock>(GameplayClock).toSelf().inSingletonScope();
   container.bind<PixiRendererService>(PixiRendererService).toSelf().inSingletonScope();
   container.bind<GameLoop>(GameLoop).toSelf().inSingletonScope();
+  container.bind(GameSimulator).toSelf().inSingletonScope();
   container.bind(TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter());
   container.bind(TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
   return container;
@@ -51,6 +54,7 @@ export function createRewindStage(settings: RewindStageSettings) {
 
   container.bind(BackgroundPreparer).toSelf();
   container.bind(PlayfieldBorderPreparer).toSelf();
+  container.bind(ForegroundHUDPreparer).toSelf();
   container.bind(PlayfieldPreparer).toSelf();
   container.bind(TextureManager).toSelf();
 
