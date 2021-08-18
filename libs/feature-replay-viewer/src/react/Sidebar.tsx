@@ -15,10 +15,6 @@ const ShortcutHelper = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
-const SidebarBox = (props: { children: React.ReactNode }) => {
-  return <div className={"bg-gray-700 rounded px-1 py-2 flex flex-col items-center gap-2 px-4"}>{props.children}</div>;
-};
-
 const PlaybarEventsBox = styled.div`
   display: grid;
   grid-template-columns: 1fr min-content;
@@ -36,6 +32,11 @@ const GenericToggleSettingsBox = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
+
+// TODO: Use @apply from tailwind ...
+const SidebarBox = (props: { children: React.ReactNode }) => {
+  return <div className={"bg-gray-700 rounded px-1 py-2 flex flex-col items-center gap-2 px-4"}>{props.children}</div>;
+};
 
 function BeatmapAnalysisBox() {
   const { modHidden, setModHidden, sliderAnalysisFlag, setSliderAnalysisFlag } = useStageViewContext();
