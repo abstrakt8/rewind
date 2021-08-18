@@ -6,7 +6,7 @@ import { formatReplayTime } from "../utils/time";
 import { observer } from "mobx-react-lite";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 import { Switch } from "@headlessui/react";
-import { useStageViewSettings } from "./hooks/useStageViewSettings";
+import { StageViewProvider, useStageViewContext } from "./components/StageProvider/StageViewProvider";
 import { GameCanvas } from "./GameCanvas";
 import { useStageShortcuts } from "./hooks/useStageShortcuts";
 import { useGameClockContext } from "./components/StageProvider/StageClockProvider";
@@ -182,21 +182,12 @@ export const FeatureReplayViewer = (props: FeatureReplayViewerProps) => {
   const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
     setPbSetting((prevState) => ({ ...prevState, [who]: value }));
 
-  // const scenario = useCurrentScenario();
-  // const { view, gameClock } = scenario;
-
-  // const maxTimeHMS = formatReplayTime(gameClock.maxTime);
-  // useShortcuts();
-
   const { isPlaying, toggleClock, speed, durationInMs } = useGameClockContext();
   const maxTimeHMS = formatReplayTime(durationInMs);
 
-  // const currentPlaybackRate = useAppSelector((state) => state.gameClock.playbackRate);
-  // const isPlaying = useAppSelector((state) => state.gameClock.playing);
-
   const handlePlayButtonClick = useCallback(() => toggleClock(), [toggleClock]);
 
-  const { modHidden, toggleModHidden } = useStageViewSettings();
+  const { modHidden, toggleModHidden } = useStageViewContext();
   const handleHiddenButtonClicked = useCallback(() => toggleModHidden(), [toggleModHidden]);
 
   useStageShortcuts();
