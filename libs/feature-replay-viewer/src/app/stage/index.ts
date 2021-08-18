@@ -10,7 +10,7 @@ import { PixiRendererService } from "./core/PixiRendererService";
 import { GameLoop } from "./core/GameLoop";
 import { PlayfieldBorderPreparer } from "./rewind/components/playfield/PlayfieldBorderPreparer";
 import { PlayfieldPreparer } from "./rewind/components/playfield/PlayfieldPreparer";
-import { TextureManager } from "./rewind/TextureManager";
+import { RewindTextureId } from "../theater/TextureManager";
 import { StageViewService } from "./rewind/StageViewService";
 import { HitObjectsPreparer } from "./rewind/components/playfield/HitObjectsPreparer";
 import { StageSkinService } from "./StageSkinService";
@@ -23,6 +23,7 @@ import { ForegroundHUDPreparer } from "./rewind/components/hud/ForegroundHUDPrep
 import { GameSimulator } from "./rewind/GameSimulator";
 import { CursorPreparer } from "./rewind/components/playfield/CursorPreparer";
 import { JudgementPreparer } from "./rewind/components/playfield/JudgementPreparer";
+import { Texture } from "pixi.js";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
@@ -43,22 +44,23 @@ interface RewindStageSettings {
   replay: OsuReplay;
   skin: Skin;
   songUrl: string;
+  textureMap: Map<RewindTextureId, Texture>;
 }
 
 export function createRewindStage(settings: RewindStageSettings) {
   const container = createCoreContainer();
 
-  const { beatmap, replay, skin, songUrl } = settings;
+  const { beatmap, replay, skin, songUrl, textureMap } = settings;
   container.bind(TYPES.BEATMAP).toConstantValue(beatmap);
   container.bind(TYPES.REPLAY).toConstantValue(replay);
   container.bind(TYPES.SONG_URL).toConstantValue(songUrl);
   container.bind(TYPES.THEATER_STAGE_PREPARER).to(GameStagePreparer);
+  container.bind(TYPES.TEXTURE_MAP).toConstantValue(textureMap);
 
   container.bind(BackgroundPreparer).toSelf();
   container.bind(PlayfieldBorderPreparer).toSelf();
   container.bind(ForegroundHUDPreparer).toSelf();
   container.bind(PlayfieldPreparer).toSelf();
-  container.bind(TextureManager).toSelf();
 
   container.bind(StageViewService).toSelf().inSingletonScope();
   container.bind(StageSkinService).toSelf().inSingletonScope();

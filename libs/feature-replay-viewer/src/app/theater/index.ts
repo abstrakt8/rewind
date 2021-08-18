@@ -6,6 +6,7 @@ import { RewindStageCreator } from "./RewindStageCreator";
 import { SkinService } from "./SkinService";
 import { OsuClassicMod, ReplayFrame } from "@rewind/osu/core";
 import { AudioService } from "./AudioService";
+import { TextureManager } from "./TextureManager";
 
 interface Settings {
   apiUrl: string;
@@ -21,6 +22,7 @@ export function createRewindTheater(settings: Settings) {
   container.bind<SkinService>(SkinService).toSelf();
   container.bind<AudioService>(AudioService).toSelf();
   container.bind<RewindStageCreator>(RewindStageCreator).toSelf();
+  container.bind<TextureManager>(TextureManager).toSelf().inSingletonScope();
 
   const rewindStageService = container.get(RewindStageCreator);
 

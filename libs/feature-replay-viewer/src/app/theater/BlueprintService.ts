@@ -13,4 +13,8 @@ export class BlueprintService {
     // TODO: Emit
     return parseBlueprint(data);
   }
+
+  blueprintBgUrl(blueprintId: string) {
+    return `${this.apiUrl}/api/blueprints/${blueprintId}/bg`;
+  }
 }
