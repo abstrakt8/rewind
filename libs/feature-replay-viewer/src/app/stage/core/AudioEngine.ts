@@ -13,7 +13,7 @@ export class AudioEngine {
   musicUrl?: string;
   musicBuffer?: AudioBuffer;
 
-  song?: MediaElementAudioSourceNode;
+  song: MediaElementAudioSourceNode;
 
   // In seconds
   sampleWindow = 0.1;

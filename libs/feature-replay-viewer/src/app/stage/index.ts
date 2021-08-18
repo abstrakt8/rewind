@@ -71,7 +71,17 @@ export function createRewindStage(settings: RewindStageSettings) {
 
   const pixiRenderService = container.get<PixiRendererService>(PixiRendererService);
   const gameLoop = container.get<GameLoop>(GameLoop);
+
+  // Clock config
   const clock = container.get<GameplayClock>(GameplayClock);
+  // ???TODO
+  // setTimeout(() => {
+  //   clock.durationInMs = audioEngine.durationInMs;
+  //   console.log("hello");
+  // }, 1000);
+  // audioEngine.song.addEventListener("loadedmetadata", () => {
+  //   console.log("hello");
+  // });
 
   // Config
   const stageSkinService = container.get(StageSkinService);

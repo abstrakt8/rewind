@@ -20,6 +20,8 @@ export class GameStagePreparer implements TheaterStagePreparer {
   ) {
     this.stage = new PIXI.Container();
     this.stage.addChild(backgroundPreparer.getSprite(), playfieldPreparer.getContainer());
+    this.stage.interactiveChildren = false;
+    this.stage.interactive = false;
   }
 
   resizeTo() {

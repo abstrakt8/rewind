@@ -135,40 +135,45 @@ export class SliderPreparer {
     return sprites;
   }
 
-  // private prepareSliderBall(gameTime: number, skin: Skin, slider: Slider, sliderAnalysis: boolean) {
-  //   if (gameTime < slider.startTime || slider.endTime < gameTime) return;
-  //   const progress = (gameTime - slider.startTime) / slider.duration;
-  //   const position = slider.ballPositionAt(progress);
-  //
-  //   const sliderBall = new OsuClassicSliderBall();
-  //   sliderBall.prepare({
-  //     ballTint: null, // TODO
-  //     ballTexture: skin.getTexture(SkinTextures.SLIDER_BALL),
-  //     followCircleTexture: skin.getTexture(SkinTextures.SLIDER_FOLLOW_CIRCLE),
-  //     position,
-  //     scale: slider.scale,
-  //   });
-  //
-  //   this.hitObjectContainer.addChild(sliderBall.container);
-  //
-  //   if (sliderAnalysis) {
-  //     {
-  //       const [rawFollowCircle] = this.graphicsPool.allocate(slider.id + "/rawFollowCircle");
-  //       rawFollowCircle.clear();
-  //       rawFollowCircle.lineStyle(1, DEBUG_FOLLOW_CIRCLE_COLOR);
-  //       rawFollowCircle.drawCircle(position.x, position.y, slider.radius * 2.4);
-  //       this.hitObjectContainer.addChild(rawFollowCircle);
-  //     }
-  //     {
-  //       const [pixelBall] = this.graphicsPool.allocate(slider.id + "/pixelBall");
-  //       pixelBall.clear();
-  //       pixelBall.beginFill(DEBUG_PIXEL_BALL_COLOR);
-  //       pixelBall.drawCircle(position.x, position.y, 1);
-  //       pixelBall.endFill();
-  //       this.hitObjectContainer.addChild(pixelBall);
-  //     }
-  //   }
-  // }
+  private prepareSliderBall(slider: Slider) {
+    const { time: gameTime, skin, view } = this;
+    if (gameTime < slider.startTime || slider.endTime < gameTime) return [];
+
+    const sliderAnalysis = view.sliderAnalysis;
+
+    const progress = (gameTime - slider.startTime) / slider.duration;
+    const position = slider.ballPositionAt(progress);
+    const displayObjects: DisplayObject[] = [];
+
+    const sliderBall = new OsuClassicSliderBall();
+    sliderBall.prepare({
+      ballTint: null, // TODO
+      ballTexture: skin.getTexture(SkinTextures.SLIDER_BALL),
+      followCircleTexture: skin.getTexture(SkinTextures.SLIDER_FOLLOW_CIRCLE),
+      position,
+      scale: slider.scale,
+    });
+    displayObjects.push(sliderBall.container);
+
+    if (sliderAnalysis) {
+      {
+        const [rawFollowCircle] = this.graphicsPool.allocate(slider.id + "/rawFollowCircle");
+        rawFollowCircle.clear();
+        rawFollowCircle.lineStyle(1, DEBUG_FOLLOW_CIRCLE_COLOR);
+        rawFollowCircle.drawCircle(position.x, position.y, slider.radius * 2.4);
+        displayObjects.push(rawFollowCircle);
+      }
+      {
+        const [pixelBall] = this.graphicsPool.allocate(slider.id + "/pixelBall");
+        pixelBall.clear();
+        pixelBall.beginFill(DEBUG_PIXEL_BALL_COLOR);
+        pixelBall.drawCircle(position.x, position.y, 1);
+        pixelBall.endFill();
+        displayObjects.push(pixelBall);
+      }
+    }
+    return displayObjects;
+  }
 
   get time() {
     return this.gameClock.timeElapsedInMs;
@@ -217,7 +222,7 @@ export class SliderPreparer {
       if (tick) container.addChild(tick);
     }
     addChildren(this.prepareSliderRepeats(repeats, slider));
-    // this.prepareSliderBall(time, skin, slider, view.sliderAnalysis);
+    addChildren(this.prepareSliderBall(slider));
     return container;
   }
 }
