@@ -52,6 +52,43 @@ function BeatmapAnalysisBox() {
   );
 }
 
+function CheatSheetBox() {
+  return (
+    <SidebarBox>
+      <SettingsTitle title={"shortcuts"} />
+      <ShortcutHelper>
+        <span>Start / Pause</span>
+        <span className={"font-mono bg-gray-800 px-2"}>␣</span>
+        <span>Previous frame</span>
+        <span className={"font-mono bg-gray-800 px-2"}>a</span>
+        <span>Next frame</span>
+        <span className={"font-mono bg-gray-800 px-2"}>d</span>
+        <span>Speed decrease</span>
+        <span className={"font-mono bg-gray-800 px-2"}>s</span>
+        <span>Speed increase</span>
+        <span className={"font-mono bg-gray-800 px-2"}>w</span>
+        <span>Toggle Hidden</span>
+        <span className={"font-mono bg-gray-800 px-2"}>f</span>
+      </ShortcutHelper>
+    </SidebarBox>
+  );
+}
+
+function ReplayAnalysisBox() {
+  const { analysisCursorFlag, setAnalysisCursorFlag, osuCursorFlag, setOsuCursorFlag } = useStageViewContext();
+  return (
+    <SidebarBox>
+      <SettingsTitle title={"replay analysis"} />
+      <GenericToggleSettingsBox>
+        <div>Normal Cursor</div>
+        <Toggle enabled={osuCursorFlag} setEnabled={setOsuCursorFlag} />
+        <div>Analysis Cursor</div>
+        <Toggle enabled={analysisCursorFlag} setEnabled={setAnalysisCursorFlag} />
+      </GenericToggleSettingsBox>
+    </SidebarBox>
+  );
+}
+
 export function Sidebar() {
   return (
     <div className={"flex flex-col gap-4 flex-none w-52 h-full overflow-y-auto"}>
@@ -86,36 +123,8 @@ export function Sidebar() {
       {/*  </PlaybarEventsBox>*/}
       {/*</SidebarBox>*/}
       <BeatmapAnalysisBox />
-      <SidebarBox>
-        {/*<SettingsTitle title={"replay analysis"} />*/}
-        {/*<GenericToggleSettingsBox>*/}
-        {/*  <div>Normal Cursor</div>*/}
-        {/*  <MyToggle enabled={scenario.view.osuCursor.enabled} setEnabled={() => scenario.toggleOsuCursor()} />*/}
-        {/*  <div>Analysis Cursor</div>*/}
-        {/*  <MyToggle*/}
-        {/*    enabled={scenario.view.analysisCursor.enabled}*/}
-        {/*    setEnabled={() => scenario.toggleAnalysisCursor()}*/}
-        {/*  />*/}
-        {/*</GenericToggleSettingsBox>*/}
-      </SidebarBox>
-      <SidebarBox>
-        <SettingsTitle title={"shortcuts"} />
-        <ShortcutHelper>
-          <span>Start / Pause</span>
-          <span className={"font-mono bg-gray-800 px-2"}>␣</span>
-          <span>Previous frame</span>
-          <span className={"font-mono bg-gray-800 px-2"}>a</span>
-          <span>Next frame</span>
-          <span className={"font-mono bg-gray-800 px-2"}>d</span>
-          <span>Speed decrease</span>
-          <span className={"font-mono bg-gray-800 px-2"}>s</span>
-          <span>Speed increase</span>
-          <span className={"font-mono bg-gray-800 px-2"}>w</span>
-          <span>Toggle Hidden</span>
-          <span className={"font-mono bg-gray-800 px-2"}>f</span>
-        </ShortcutHelper>
-      </SidebarBox>
-      {/*<SidebarBox>{theater.state}</SidebarBox>*/}
+      <ReplayAnalysisBox />
+      <CheatSheetBox />
     </div>
   );
 }

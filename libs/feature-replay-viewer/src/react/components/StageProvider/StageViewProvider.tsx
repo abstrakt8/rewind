@@ -29,12 +29,28 @@ function useStageView(viewService: StageViewService) {
       draft.sliderAnalysis = value;
     });
 
+  const osuCursorFlag = viewSettings.osuCursor.enabled;
+  const setOsuCursorFlag = (value: boolean) =>
+    updateViewSettings((draft) => {
+      draft.osuCursor.enabled = value;
+    });
+
+  const analysisCursorFlag = viewSettings.analysisCursor.enabled;
+  const setAnalysisCursorFlag = (value: boolean) =>
+    updateViewSettings((draft) => {
+      draft.analysisCursor.enabled = value;
+    });
+
   return {
     modHidden,
     toggleModHidden,
     setModHidden,
     sliderAnalysisFlag,
     setSliderAnalysisFlag,
+    osuCursorFlag,
+    setOsuCursorFlag,
+    analysisCursorFlag,
+    setAnalysisCursorFlag,
   };
 }
 
