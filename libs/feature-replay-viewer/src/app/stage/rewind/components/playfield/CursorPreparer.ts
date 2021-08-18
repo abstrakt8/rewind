@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import { Scene } from "../../../../../game/Scene";
 import { OsuClassicCursor } from "@rewind/osu-pixi/classic-components";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../../../../../utils/Replay";
 import { SkinTextures } from "@rewind/osu/skin";
@@ -38,9 +37,15 @@ export class CursorPreparer {
   }
 
   prepareOsuCursor() {
+    const { osuCursor } = this.view;
+
+    if (!osuCursor.enabled) {
+      return;
+    }
+
     const { time, replay, skin } = this;
     const cursor = new OsuClassicCursor();
-    const { showTrail, scaleWithCS, scale } = this.view.osuCursor;
+    const { showTrail, scaleWithCS, scale } = osuCursor;
     if (!replay) return;
     const frames = replay.frames;
 
@@ -69,7 +74,12 @@ export class CursorPreparer {
   }
 
   prepareAnalysisCursor() {
-    const { replay, time } = this;
+    const { replay, time, view } = this;
+    const { enabled } = view.analysisCursor;
+    if (!enabled) {
+      return;
+    }
+
     if (!replay) return;
     const { frames } = replay;
     const cursor = new AnalysisCursor();

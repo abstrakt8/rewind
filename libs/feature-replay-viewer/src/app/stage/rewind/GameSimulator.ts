@@ -5,6 +5,10 @@ import {
   GameplayInfo,
   GameplayInfoEvaluator,
   GameState,
+  HitObjectJudgement,
+  isHitObjectJudgement,
+  ReplayAnalysisEvent,
+  retrieveEvents,
 } from "@rewind/osu/core";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../types";
@@ -16,6 +20,8 @@ export class GameSimulator {
   private gameplayEvaluator: GameplayInfoEvaluator;
   private currentState: GameState;
   private currentInfo: GameplayInfo;
+  public replayEvents: ReplayAnalysisEvent[];
+  public judgements: HitObjectJudgement[];
 
   constructor(
     @inject(TYPES.BEATMAP) private readonly beatmap: Beatmap,
@@ -29,6 +35,9 @@ export class GameSimulator {
     // TODO: Move this to async ...
     this.currentState = this.gameplayTimeMachine.gameStateAt(1e9);
     this.currentInfo = defaultGameplayInfo;
+    // this.currentState = finalState...
+    this.replayEvents = retrieveEvents(this.currentState, beatmap.hitObjects);
+    this.judgements = this.replayEvents.filter(isHitObjectJudgement);
   }
 
   // Simulates the game to be at the given time

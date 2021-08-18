@@ -22,6 +22,7 @@ import { SliderPreparer } from "./rewind/components/playfield/SliderPreparer";
 import { ForegroundHUDPreparer } from "./rewind/components/hud/ForegroundHUDPreparer";
 import { GameSimulator } from "./rewind/GameSimulator";
 import { CursorPreparer } from "./rewind/components/playfield/CursorPreparer";
+import { JudgementPreparer } from "./rewind/components/playfield/JudgementPreparer";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
@@ -67,6 +68,7 @@ export function createRewindStage(settings: RewindStageSettings) {
   container.bind(SliderPreparer).toSelf();
   container.bind(SliderTextureService).toSelf();
   container.bind(CursorPreparer).toSelf();
+  container.bind(JudgementPreparer).toSelf();
 
   // TODO: Setup listeners?
   // Maybe only return what we want to expose
