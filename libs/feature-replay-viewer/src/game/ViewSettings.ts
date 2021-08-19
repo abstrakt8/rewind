@@ -29,7 +29,6 @@ export interface ViewSettings {
 
   osuCursor: OsuCursorSetting;
   analysisCursor: AnalysisCursorSetting;
-  // playbackSpeed: number;
 }
 
 export const defaultViewSettings: () => ViewSettings = () => ({

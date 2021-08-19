@@ -76,6 +76,15 @@ export class LocalBlueprintService {
     const maps = await this.getAllBlueprints();
     return maps[md5];
   }
+
+  // xd
+  async blueprintBg(md5: string): Promise<string | undefined> {
+    const { osuFileName, folderName } = await this.getBlueprintByMD5(md5);
+    const data = await readFile(join(this.songsFolder, folderName, osuFileName), { encoding: "utf-8" });
+    const blueprint = parseBlueprint(data, { sectionsToRead: ["Events"] });
+    // There is also an offset but let's ignore for now
+    return blueprint.blueprintInfo.metadata.backgroundFile;
+  }
 }
 
 // This might be a very expensive operation and should be done only once at startup. The new ones should be watched

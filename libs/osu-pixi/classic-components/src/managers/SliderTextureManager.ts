@@ -47,8 +47,9 @@ export class SliderTextureManager {
   }
 
   removeFromCache(id: string) {
-    if (this.textures.has(id)) {
-      this.textures.get(id).destroy();
+    const texture = this.textures.get(id);
+    if (texture !== undefined) {
+      texture.destroy();
       this.textures.delete(id);
     }
   }
