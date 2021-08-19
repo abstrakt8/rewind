@@ -1,6 +1,6 @@
 import { posix } from "path";
 import { promises as fs } from "fs";
-import { OsuLegacySkinReader, SkinReader } from "./SkinReader";
+import { OsuLegacySkinReader } from "./SkinReader";
 import { SkinConfigParser } from "@rewind/osu/skin";
 
 const join = posix.join;

@@ -3,18 +3,19 @@ import { useGameClockContext } from "../components/StageProvider/StageClockProvi
 import { useStageViewContext } from "../components/StageProvider/StageViewProvider";
 
 export function useStageShortcuts() {
-  const { toggleClock, increaseSpeed, decreaseSpeed } = useGameClockContext();
+  const { toggleClock, increaseSpeed, decreaseSpeed, seekForward, seekBackward } = useGameClockContext();
   const { toggleModHidden } = useStageViewContext();
 
   useHotkeys("w", () => increaseSpeed(), [increaseSpeed]);
   useHotkeys("s", () => decreaseSpeed(), [decreaseSpeed]);
   useHotkeys("space", () => toggleClock(), [toggleClock]);
-  // useHotkeys("d", () => gameClock.seekTo(Math.min(gameClock.maxTime, gameClock.getCurrentTime() + frameJump)), [
-  //   gameClock,
-  //   frameJump,
-  // ]);
-  // useHotkeys("a", () => gameClock.seekTo(Math.max(0, gameClock.getCurrentTime() - frameJump)), [gameClock,
-  // frameJump]);
+
+  const leftKey = "a";
+  const rightKey = "d";
+  useHotkeys(`shift+${leftKey}`, () => seekBackward(1), [seekBackward]);
+  useHotkeys(`shift+${rightKey}`, () => seekForward(1), [seekForward]);
+  useHotkeys(leftKey, () => seekBackward(16), [seekBackward]);
+  useHotkeys(rightKey, () => seekForward(16), [seekForward]);
 
   useHotkeys("f", () => toggleModHidden(), [toggleModHidden]);
 }
