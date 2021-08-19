@@ -49,8 +49,11 @@ export class HitObjectsPreparer {
     // TODO: This assumes that they are ordered by some time
     for (let i = hitObjects.length - 1; i >= 0; i--) {
       const hitObject = hitObjects[i];
-      if (isHitCircle(hitObject)) this.prepareHitCircle(hitObject);
-      if (isSlider(hitObject)) this.prepareSlider(hitObject);
+      if (isHitCircle(hitObject)) {
+        this.prepareHitCircle(hitObject);
+      } else if (isSlider(hitObject)) {
+        this.prepareSlider(hitObject);
+      }
       // if (isSpinner(hitObject)) this.prepareSpinner(scene, hitObject);
     }
 

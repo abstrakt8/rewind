@@ -20,7 +20,7 @@ export const GameCanvas = () => {
 
   return (
     <div ref={containerRef} className={"overflow-auto flex-1 rounded relative"}>
-      <canvas className={"w-full h-full bg-black"} ref={canvas} />
+      <canvas className={"w-full h-full bg-black pointer-events-none"} ref={canvas} />
     </div>
   );
 };
