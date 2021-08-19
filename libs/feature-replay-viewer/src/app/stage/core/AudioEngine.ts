@@ -2,6 +2,10 @@ import { inject, injectable } from "inversify";
 import { EventEmitter, GameClockEvents } from "../../events";
 import { TYPES } from "../types";
 
+// HTML5 Audio supports time stretching without pitch changing (otherwise sounds like night core)
+// Chromium's implementation of <audio> is the best.
+// HTML5 Audio currentTime sucks though in terms of accuracy
+
 // "AudioEngine"
 @injectable()
 export class AudioEngine {
@@ -63,11 +67,11 @@ export class AudioEngine {
   }
 
   changePlaybackRate(newPlaybackRate: number) {
-    const wasPlaying = this.isPlaying;
+    // const wasPlaying = this.isPlaying;
     if (this.song) {
-      if (wasPlaying) this.pause();
+      // if (wasPlaying) this.pause();
       this.song.mediaElement.playbackRate = newPlaybackRate;
-      if (wasPlaying) this.start();
+      // if (wasPlaying) this.start();
     }
   }
 
@@ -107,7 +111,3 @@ export class AudioEngine {
     // });
   }
 }
-
-// // HTML5 Audio supports time stretching without pitch changing (otherwise sounds like night core / chipmunks dying).
-// // Chromium's implementation of <audio> is the best.
-// // HTML5 Audio currentTime sucks though in terms of accuracy

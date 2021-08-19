@@ -8,20 +8,20 @@ const speedIndex = (speed: number) => speedsAllowed.indexOf(speed);
 const nextSpeed = (speed: number) => speedsAllowed[Math.min(speedsAllowed.length - 1, speedIndex(speed) + 1)];
 const prevSpeed = (speed: number) => speedsAllowed[Math.max(0, speedIndex(speed) - 1)];
 
-const frameJump = 16;
 const GAME_TIME_SYNC_INTERVAL_IN_MS = 32;
 
 // Probably need a React.Context
 function useGameClockControls(clock: GameplayClock) {
   const [isPlaying, setIsPlaying] = useState(clock.isPlaying);
   const [speed, setSpeed] = useState(clock.speed);
-  const [durationInMs] = useState(clock.durationInMs);
+  const [durationInMs, setDurationInMs] = useState(clock.durationInMs);
 
   // Since the clock can be paused on its own we want to listen to those changes.
   useEffect(() => {
     clock.onStarted(() => setIsPlaying(true));
     clock.onPaused(() => setIsPlaying(false));
     clock.onSpeedChange((speed) => setSpeed(speed));
+    clock.onDurationChange((durationInMs) => setDurationInMs(durationInMs));
   }, [clock]);
 
   const startClock = useCallback(() => clock.start(), [clock]);

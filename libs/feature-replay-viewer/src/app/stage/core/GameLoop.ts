@@ -57,9 +57,9 @@ export class GameLoop {
   }
 
   destroy() {
-    this.ticker.stop();
+    // this.ticker.stop();
     this.performanceMonitor.dom.remove();
-    // this.ticker.destroy();
+    this.ticker.destroy();
   }
 
   tickHandler() {

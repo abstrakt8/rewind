@@ -76,14 +76,14 @@ const kasugaMirai = "Kasuga Mirai";
 // const chosenBlueprintId = paranoidLostId;
 // const chosenReplayId = undefined;
 
-// const chosenBlueprintId = hibanaId;
-// const chosenReplayId = hibanaReplayId;
+const chosenBlueprintId = hibanaId;
+const chosenReplayId = hibanaReplayId;
 
 // const chosenBlueprintId = centipedeId;
 // const chosenReplayId = undefined;
 
-const chosenBlueprintId = sunMoonId;
-const chosenReplayId = sunMoonReplayId;
+// const chosenBlueprintId = sunMoonId;
+// const chosenReplayId = sunMoonReplayId;
 
 // const chosenBlueprintId = akatsukiId;
 // const chosenReplayId = akatsukiReplayId;

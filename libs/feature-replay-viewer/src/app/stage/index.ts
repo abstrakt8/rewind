@@ -84,14 +84,14 @@ export function createRewindStage(settings: RewindStageSettings) {
 
   // Clock config
   const clock = container.get<GameplayClock>(GameplayClock);
-  // ???TODO
-  // setTimeout(() => {
-  //   clock.durationInMs = audioEngine.durationInMs;
-  //   console.log("hello");
-  // }, 1000);
-  // audioEngine.song.addEventListener("loadedmetadata", () => {
-  //   console.log("hello");
-  // });
+
+  // If for some reason the meta data got loaded really fast then set it here
+  if (!isNaN(audioEngine.song.mediaElement.duration)) {
+    clock.setDuration(audioEngine.song.mediaElement.duration * 1000);
+  }
+  audioEngine.song.mediaElement.addEventListener("loadedmetadata", () => {
+    clock.setDuration(audioEngine.song.mediaElement.duration * 1000);
+  });
 
   // Config
   const stageSkinService = container.get(StageSkinService);

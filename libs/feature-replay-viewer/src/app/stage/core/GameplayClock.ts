@@ -39,6 +39,11 @@ export class GameplayClock {
 
   start() {
     if (this.isPlaying) return;
+    // Resets it back to 0 in case the user wants to start the clock again when it already ended.
+    if (this.timeElapsedInMs >= this.durationInMs) {
+      // Will also emit an event
+      this.seekTo(0);
+    }
     this.isPlaying = true;
     this.lastUpdateTimeInMs = getNowInMs();
     this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_STARTED);
@@ -57,6 +62,12 @@ export class GameplayClock {
     this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_SPEED_CHANGED, speed);
   }
 
+  setDuration(durationInMs: number) {
+    console.log(`Duration  ${durationInMs}`);
+    this.durationInMs = durationInMs;
+    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_DURATION_CHANGED, durationInMs);
+  }
+
   seekTo(timeInMs: number) {
     this.timeElapsedInMs = Math.min(this.durationInMs, Math.max(0, timeInMs));
     this.lastUpdateTimeInMs = getNowInMs();
@@ -73,5 +84,9 @@ export class GameplayClock {
 
   onPaused(fn: ListenerFn) {
     this.eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, fn);
+  }
+
+  onDurationChange(fn: ListenerFn) {
+    this.eventEmitter.on(GameClockEvents.GAME_CLOCK_DURATION_CHANGED, fn);
   }
 }
