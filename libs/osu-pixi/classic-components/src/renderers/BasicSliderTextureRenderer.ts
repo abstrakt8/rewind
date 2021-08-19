@@ -130,6 +130,15 @@ function getUnitCircleScaled(numberOfDivisions: number, radius: number) {
   return unitCircle.map((u: Position) => Vec2.scale(u, radius));
 }
 
+// Actually ~65536
+// But maybe I did some Math wrong...
+const MAX_NUMBER_OF_VERTICES = 60000;
+
+function numberOfVertices(numberOfPoints: number) {
+  // Cap + Joins
+  return numberOfPoints * (SLIDER_BODY_UNIT_CIRCLE_SUBDIVISIONS + 1) + (numberOfPoints - 1) * 6;
+}
+
 export function getSliderGeometry(points: Position[], radius: number): PIXI.Geometry {
   const coneNumberOfDivisions = SLIDER_BODY_UNIT_CIRCLE_SUBDIVISIONS;
   const numberOfVerticesEachCapJoin = coneNumberOfDivisions + 1;
@@ -312,6 +321,13 @@ export const getBoundsFromSliderPath = (points: Position[], radius: number): Bou
 
 // Does no caching, just returns a Texture as requested.
 // Shader is only initialized once, since we can just change the uniforms for changing slider border color.
+/**
+ * In case of very large sliders such as the one in The Sun The Moon The Star (~10:40) that has over 100k vertices
+ * we need to make multiple render calls because the index buffer is a uint16 array (due to compatibility reasons)
+ * and we can thus not refer to indices larger than ~65k.
+ *
+ * https://stackoverflow.com/questions/4998278/is-there-a-limit-of-vertices-in-webgl
+ */
 export class BasicSliderTextureRenderer {
   shader: PIXI.Shader;
   renderer: PIXI.Renderer;
@@ -333,24 +349,38 @@ export class BasicSliderTextureRenderer {
     const width = maxX - minX;
     const height = maxY - minY;
 
-    // TODO: Maybe this shifting can be avoided by using transformation in .render() or vertexShader?
+    // TODO: do some pooling here
+    const renderTexture = RenderTexture.create({ width, height, resolution });
+    renderTexture.framebuffer.enableDepth();
+
     const boundaryBoxCenter = new Vec2((maxX + minX) / 2, (maxY + minY) / 2);
     // The reason why we shift the points is that a frame buffer of size [w, h] will only render the points with the
     // coordinates in Rectangle{(-w/2,-h/2), (+w/2,+h/2)}. Currently some points may be outside this rectangle,
     // that's why we have to shift them to the center.
     const points = path.map((p) => Vec2.sub(p, boundaryBoxCenter));
 
-    const geometry = getSliderGeometry(points, radius);
-    const sliderMesh = new PIXI.Mesh(geometry, this.shader as MeshMaterial);
-    sliderMesh.state.depthTest = true;
-    sliderMesh.state.blend = false;
+    const renderSubPath = (points: Vec2[]) => {
+      const geometry = getSliderGeometry(points, radius);
+      const sliderMesh = new PIXI.Mesh(geometry, this.shader as MeshMaterial);
+      sliderMesh.state.depthTest = true;
+      sliderMesh.state.blend = false;
+      // Or maybe even use Transform here
+      this.renderer.render(sliderMesh, { renderTexture, clear: false });
+    };
 
-    // TODO: do some pooling here
-    const renderTexture = RenderTexture.create({ width, height, resolution });
-
-    renderTexture.framebuffer.enableDepth();
-    // Or maybe even use Transform here
-    this.renderer.render(sliderMesh, { renderTexture, clear: false });
+    // The reason we have to render the whole slider in multiple sub-paths is described above.
+    // Usually this will only happen for long sliders (in terms of vertices).
+    let subPoints = [];
+    for (let i = 0; i < points.length; i++) {
+      if (numberOfVertices(subPoints.length + 1) > MAX_NUMBER_OF_VERTICES) {
+        renderSubPath(subPoints);
+        subPoints = [];
+      }
+      subPoints.push(points[i]);
+    }
+    if (subPoints.length > 0) {
+      renderSubPath(subPoints);
+    }
 
     // TODO: Do we need to cleanup? disableDepth?
 
