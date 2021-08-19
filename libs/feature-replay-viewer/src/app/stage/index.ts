@@ -111,7 +111,11 @@ export function createRewindStage(settings: RewindStageSettings) {
     destroy,
     clock,
     initializeRenderer: pixiRenderService.initializeRenderer.bind(pixiRenderService),
+
     initializeTicker: gameLoop.initializeTicker.bind(gameLoop),
+    startTicker: gameLoop.startTicker.bind(gameLoop),
+    stopTicker: gameLoop.stopTicker.bind(gameLoop),
+
     performanceMonitor: gameLoop.getPerformanceMonitor(),
     stageViewService,
   };

@@ -9,6 +9,7 @@ import { GameCanvas } from "./GameCanvas";
 import { useStageShortcuts } from "./hooks/useStageShortcuts";
 import { useGameClockContext } from "./components/StageProvider/StageClockProvider";
 import { Sidebar } from "./Sidebar";
+import { useEnergySaver } from "./hooks/useEnergySaver";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -135,6 +136,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
   const handleHiddenButtonClicked = useCallback(() => toggleModHidden(), [toggleModHidden]);
 
   useStageShortcuts();
+  useEnergySaver(true);
 
   return (
     <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>

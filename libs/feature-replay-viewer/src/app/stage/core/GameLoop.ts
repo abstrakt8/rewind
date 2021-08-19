@@ -55,6 +55,9 @@ export class GameLoop {
   startTicker() {
     this.ticker.start();
   }
+  stopTicker() {
+    this.ticker.stop();
+  }
 
   destroy() {
     // this.ticker.stop();
