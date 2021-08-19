@@ -13,7 +13,9 @@ import { StageViewService } from "../../StageViewService";
 
 @injectable()
 export class CursorPreparer {
-  private container: Container;
+  private readonly container: Container;
+  private readonly osuClassicCursor: OsuClassicCursor;
+  private readonly analysisCursor: AnalysisCursor;
 
   constructor(
     @inject(TYPES.REPLAY) private readonly replay: OsuReplay,
@@ -22,6 +24,8 @@ export class CursorPreparer {
     private readonly stageViewService: StageViewService,
   ) {
     this.container = new Container();
+    this.osuClassicCursor = new OsuClassicCursor();
+    this.analysisCursor = new AnalysisCursor();
   }
 
   get time() {
@@ -44,7 +48,7 @@ export class CursorPreparer {
     }
 
     const { time, replay, skin } = this;
-    const cursor = new OsuClassicCursor();
+    const cursor = this.osuClassicCursor;
     const { showTrail, scaleWithCS, scale } = osuCursor;
     if (!replay) return;
     const frames = replay.frames;
@@ -82,7 +86,7 @@ export class CursorPreparer {
 
     if (!replay) return;
     const { frames } = replay;
-    const cursor = new AnalysisCursor();
+    const cursor = this.analysisCursor;
     const pi = findIndexInReplayAtTime(frames, time);
     // we are either before the beginning or after the end of the replay
     if (pi === -1 || pi + 1 >= frames.length) return;
