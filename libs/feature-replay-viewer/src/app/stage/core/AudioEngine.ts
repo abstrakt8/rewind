@@ -77,12 +77,12 @@ export class AudioEngine {
   }
 
   seekTo(toInMs: number) {
-    const wasPlaying = this.isPlaying;
     if (this.song) {
+      // const wasPlaying = this.isPlaying;
       // We also reset the schedulePointer to 0, and maybe possibility to stop samples.
-      if (wasPlaying) this.pause();
+      // if (wasPlaying) this.pause();
       this.song.mediaElement.currentTime = toInMs / 1000;
-      if (wasPlaying) this.start();
+      // if (wasPlaying) this.start();
     }
   }
 
