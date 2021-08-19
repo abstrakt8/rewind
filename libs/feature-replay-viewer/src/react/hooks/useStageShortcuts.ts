@@ -11,7 +11,7 @@ const rightKey = "d";
 // These should stay constant or make them dynamic depending on gameClock speed
 const microscopeJump = 1;
 const frameJump = 16; // Assuming 16fps
-const mediumJump = 3 * 1000; // 3s
+const mediumJump = 1 * 1000; // 3s
 const largeJump = 15 * 1000; // 15s
 
 export function useStageShortcuts() {

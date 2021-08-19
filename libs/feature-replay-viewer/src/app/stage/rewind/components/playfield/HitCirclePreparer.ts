@@ -12,6 +12,7 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import { Skin } from "../../Skin";
 import { SkinTextures } from "@rewind/osu/skin";
+import { GameSimulator } from "../../GameSimulator";
 
 // TODO: Maybe it's even dynamic
 const HIT_CIRCLE_FADE_OUT_DURATION = 300;
@@ -20,6 +21,7 @@ const HIT_CIRCLE_FADE_OUT_DURATION = 300;
 export class HitCirclePreparer {
   constructor(
     private readonly gameClock: GameplayClock,
+    private readonly gameSimulator: GameSimulator,
     private readonly stageViewService: StageViewService,
     private readonly stageSkinService: StageSkinService,
   ) {}
@@ -44,10 +46,11 @@ export class HitCirclePreparer {
 
     if (!isVisible) return undefined;
 
+    const gameplayState = this.gameSimulator.getCurrentState();
+
     const area = this.getOsuClassicHitCircleArea(hitCircle.id);
-    const hitCircleState = { type: "GREAT", judgementTime: hitCircle.hitTime };
-    // TODO:
-    // scene.gameplayState?.hitCircleVerdict[hitCircle.id];
+    const hitCircleState = gameplayState?.hitCircleVerdict[hitCircle.id];
+
     const hitResult = hitCircleState
       ? {
           hit: hitCircleState.type !== "MISS",
