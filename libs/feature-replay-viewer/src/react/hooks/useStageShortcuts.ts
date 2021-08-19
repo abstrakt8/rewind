@@ -24,6 +24,8 @@ export function useStageShortcuts() {
 
   useHotkeys(`shift+${leftKey}`, () => seekBackward(microscopeJump), [seekBackward]);
   useHotkeys(`shift+${rightKey}`, () => seekForward(microscopeJump), [seekForward]);
+  useHotkeys(`shift+alt+${leftKey}`, () => seekBackward(frameJump), [seekBackward]);
+  useHotkeys(`shift+alt+${rightKey}`, () => seekForward(frameJump), [seekForward]);
   useHotkeys(leftKey, () => seekBackward(mediumJump), [seekBackward]);
   useHotkeys(rightKey, () => seekForward(mediumJump), [seekForward]);
 

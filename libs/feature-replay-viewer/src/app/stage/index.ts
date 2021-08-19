@@ -24,6 +24,7 @@ import { GameSimulator } from "./rewind/GameSimulator";
 import { CursorPreparer } from "./rewind/components/playfield/CursorPreparer";
 import { JudgementPreparer } from "./rewind/components/playfield/JudgementPreparer";
 import { Texture } from "pixi.js";
+import { SpinnerPreparer } from "./rewind/components/playfield/SpinnerPreparer";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
@@ -68,6 +69,7 @@ export function createRewindStage(settings: RewindStageSettings) {
   container.bind(HitObjectsPreparer).toSelf();
   container.bind(HitCirclePreparer).toSelf();
   container.bind(SliderPreparer).toSelf();
+  container.bind(SpinnerPreparer).toSelf();
   container.bind(SliderTextureService).toSelf();
   container.bind(CursorPreparer).toSelf();
   container.bind(JudgementPreparer).toSelf();

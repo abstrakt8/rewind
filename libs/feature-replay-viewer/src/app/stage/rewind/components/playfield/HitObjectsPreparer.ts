@@ -1,12 +1,13 @@
-import { Container, Graphics } from "pixi.js";
+import { Container } from "pixi.js";
 import { inject, injectable } from "inversify";
-import { Beatmap, HitCircle, isHitCircle, isSlider, Slider } from "@rewind/osu/core";
+import { Beatmap, HitCircle, isHitCircle, isSlider, Slider, Spinner } from "@rewind/osu/core";
 import { TYPES } from "../../../types";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageViewService } from "../../StageViewService";
 import { StageSkinService } from "../../../StageSkinService";
 import { HitCirclePreparer } from "./HitCirclePreparer";
 import { SliderPreparer } from "./SliderPreparer";
+import { SpinnerPreparer } from "./SpinnerPreparer";
 
 @injectable()
 export class HitObjectsPreparer {
@@ -21,6 +22,7 @@ export class HitObjectsPreparer {
     private readonly stageSkinService: StageSkinService,
     private readonly hitCirclePreparer: HitCirclePreparer,
     private readonly sliderPreparer: SliderPreparer,
+    private readonly spinnerPreparer: SpinnerPreparer,
   ) {
     this.approachCircleContainer = new Container();
     this.hitObjectContainer = new Container();
@@ -39,6 +41,11 @@ export class HitObjectsPreparer {
     this.prepareHitCircle(slider.head);
   }
 
+  private prepareSpinner(spinner: Spinner) {
+    const spinnerGraphic = this.spinnerPreparer.prepare(spinner);
+    if (spinnerGraphic) this.spinnerProxies.addChild(spinnerGraphic.container);
+  }
+
   prepare() {
     this.hitObjectContainer.removeChildren();
     this.spinnerProxies.removeChildren();
@@ -53,8 +60,9 @@ export class HitObjectsPreparer {
         this.prepareHitCircle(hitObject);
       } else if (isSlider(hitObject)) {
         this.prepareSlider(hitObject);
+      } else {
+        this.prepareSpinner(hitObject);
       }
-      // if (isSpinner(hitObject)) this.prepareSpinner(scene, hitObject);
     }
 
     this.sliderPreparer.afterPrepare();
