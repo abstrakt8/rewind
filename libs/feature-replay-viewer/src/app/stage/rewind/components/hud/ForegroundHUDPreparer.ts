@@ -21,7 +21,7 @@ export class ForegroundHUDPreparer {
     private readonly gameSimulator: GameSimulator,
   ) {
     this.container = new Container();
-    this.stats = new Text("", { fontSize: 16, fill: 0xeeeeee, fontFamily: "Arial", align: "center" });
+    this.stats = new Text("", { fontSize: 16, fill: 0xeeeeee, fontFamily: "Arial", align: "left" });
     this.hitErrorBar = new AnalysisHitErrorBar();
   }
 
@@ -62,7 +62,7 @@ export class ForegroundHUDPreparer {
     if (gameplayInfo) {
       const count = gameplayInfo.verdictCounts;
       const maxCombo = gameplayInfo.maxComboSoFar;
-      this.stats.text = `${count[0]}x300, ${count[1]}x100, ${count[2]}x50 ${count[3]}xMisses\nMaxCombo: ${maxCombo}`;
+      this.stats.text = `300: ${count[0]}\n100: ${count[1]}\n50: ${count[2]}\nMisses: ${count[3]}\n\nMaxCombo: ${maxCombo}`;
       this.stats.position.set(25, 50);
       this.container.addChild(this.stats);
     }
@@ -92,7 +92,7 @@ export class ForegroundHUDPreparer {
         //   { timeAgo: 2, offset: +10 },
         // ],
       });
-      this.hitErrorBar.container.position.set(STAGE_WIDTH / 2, STAGE_HEIGHT - 30);
+      this.hitErrorBar.container.position.set(STAGE_WIDTH / 2, STAGE_HEIGHT - 20);
       this.hitErrorBar.container.scale.set(2.0);
       this.container.addChild(this.hitErrorBar.container);
     }
