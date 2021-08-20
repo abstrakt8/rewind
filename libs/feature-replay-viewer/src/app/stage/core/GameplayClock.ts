@@ -69,7 +69,8 @@ export class GameplayClock {
   }
 
   seekTo(timeInMs: number) {
-    this.timeElapsedInMs = Math.min(this.durationInMs, Math.max(0, timeInMs));
+    timeInMs = Math.min(this.durationInMs, Math.max(0, timeInMs));
+    this.timeElapsedInMs = timeInMs;
     this.lastUpdateTimeInMs = getNowInMs();
     this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_SEEK, timeInMs);
   }
