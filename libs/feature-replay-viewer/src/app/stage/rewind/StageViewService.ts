@@ -1,16 +1,13 @@
-import { defaultViewSettings, ViewSettings } from "../../../game/ViewSettings";
-import { injectable } from "inversify";
+import { ViewSettings } from "../../../game/ViewSettings";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../types";
 
 @injectable()
 export class StageViewService {
   private view: ViewSettings;
 
-  // constructor(defaultViewSettings: ViewSettings) {
-  //   this.view = defaultViewSettings;
-  // }
-
-  constructor() {
-    this.view = defaultViewSettings();
+  constructor(@inject(TYPES.INITIAL_VIEW_SETTINGS) initialViewSettings: ViewSettings) {
+    this.view = initialViewSettings;
   }
 
   getView() {

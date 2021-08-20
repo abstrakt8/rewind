@@ -16,15 +16,20 @@ import { useAppSelector } from "../../../../libs/feature-replay-viewer/src/hooks
 function Stage() {
   const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
 
-  const { createStage, isCreatingStage } = useTheaterContext();
+  const { createStage } = useTheaterContext();
   const [stage, setStage] = useState<RewindStage | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (chosenBlueprintId === null) {
       return;
     }
-    console.log(`Creating stage with ${chosenBlueprintId} and ${chosenReplayId}`);
-    createStage(chosenBlueprintId, chosenReplayId).then((createdStage) => setStage(createdStage));
+    console.log(`Creating stage with ${chosenBlueprintId} and ${chosenReplayId}!`);
+    setLoading(true);
+    createStage(chosenBlueprintId, chosenReplayId).then((createdStage) => {
+      setStage(createdStage);
+      setLoading(false);
+    });
   }, [createStage, chosenBlueprintId, chosenReplayId]);
 
   // In case the stage changes, we need to clean it up
@@ -38,9 +43,13 @@ function Stage() {
     return <div>No blueprint chosen, try using F2.</div>;
   }
 
-  if (isCreatingStage || !stage) {
+  if (loading || !stage) {
     return <div>Preparing the stage...</div>;
   }
+
+  /* TODO: This is very hacky right now. The StageProvider is forced to be teared down
+
+  */
 
   return (
     <StageProvider stage={stage}>

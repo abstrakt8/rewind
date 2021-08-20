@@ -4,12 +4,14 @@ import { ViewSettings } from "../../../game/ViewSettings";
 import { useImmer } from "use-immer";
 
 function useStageView(viewService: StageViewService) {
-  const [viewSettings, updateViewSettings] = useImmer<ViewSettings>(viewService.getView());
+  const [viewSettings, updateViewSettings] = useImmer<ViewSettings>(() => {
+    return viewService.getView();
+  });
 
   // Making sure that the stage also gets the viewSettings synchronized on change.
   useEffect(() => {
-    viewService.changeView(viewSettings);
-  }, [viewService, viewSettings]);
+    if (viewSettings !== viewService.getView()) viewService.changeView(viewSettings);
+  }, [viewSettings]);
 
   // ModHidden
   const modHidden = viewSettings.modHidden;

@@ -9,6 +9,7 @@ export const TYPES = {
   SONG_URL: Symbol.for("SONG_URL"),
   EVENT_EMITTER: Symbol.for("EVENT_EMITTER"),
   TEXTURE_MAP: Symbol.for("TEXTURE_MAP"),
+  INITIAL_VIEW_SETTINGS: Symbol.for("INITIAL_VIEW_SETTINGS"),
 };
 
 export type RewindTextureMap = Map<RewindTextureId, Texture>;

@@ -25,6 +25,7 @@ import { CursorPreparer } from "./rewind/components/playfield/CursorPreparer";
 import { JudgementPreparer } from "./rewind/components/playfield/JudgementPreparer";
 import { Texture } from "pixi.js";
 import { SpinnerPreparer } from "./rewind/components/playfield/SpinnerPreparer";
+import { ViewSettings } from "../../game/ViewSettings";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
@@ -46,17 +47,19 @@ interface RewindStageSettings {
   skin: Skin;
   songUrl: string;
   textureMap: Map<RewindTextureId, Texture>;
+  initialView: ViewSettings;
 }
 
 export function createRewindStage(settings: RewindStageSettings) {
   const container = createCoreContainer();
 
-  const { beatmap, replay, skin, songUrl, textureMap } = settings;
+  const { beatmap, replay, skin, songUrl, textureMap, initialView } = settings;
   container.bind(TYPES.BEATMAP).toConstantValue(beatmap);
   container.bind(TYPES.REPLAY).toConstantValue(replay);
   container.bind(TYPES.SONG_URL).toConstantValue(songUrl);
   container.bind(TYPES.THEATER_STAGE_PREPARER).to(GameStagePreparer);
   container.bind(TYPES.TEXTURE_MAP).toConstantValue(textureMap);
+  container.bind(TYPES.INITIAL_VIEW_SETTINGS).toConstantValue(initialView);
 
   container.bind(BackgroundPreparer).toSelf();
   container.bind(PlayfieldBorderPreparer).toSelf();

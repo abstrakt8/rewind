@@ -6,6 +6,7 @@ import { buildBeatmap } from "@rewind/osu/core";
 import { SkinService } from "./SkinService";
 import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
+import { defaultViewSettings } from "../../game/ViewSettings";
 
 @injectable()
 export class RewindStageCreator {
@@ -26,8 +27,12 @@ export class RewindStageCreator {
     ]);
     // If the building is too slow or unbearable, we should push the building to a WebWorker
     const beatmap = buildBeatmap(blueprint, { addStacking: true, mods: replay.mods });
+
+    const initialView = defaultViewSettings();
+    initialView.modHidden = replay.mods.includes("HIDDEN");
+
     const songUrl = this.audioService.getSongUrl(blueprintId);
     const textureMap = this.textureManager.dict;
-    return createRewindStage({ beatmap, replay, skin, songUrl, textureMap });
+    return createRewindStage({ beatmap, replay, skin, songUrl, textureMap, initialView });
   }
 }

@@ -4,7 +4,6 @@ import { RewindStage } from "../../../app/stage";
 
 interface ITheaterContext {
   createStage: (blueprintId: string, replayId: string) => Promise<RewindStage>;
-  isCreatingStage: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -17,24 +16,12 @@ interface TheaterProviderProps {
 
 export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
   const theater = useMemo(() => createRewindTheater({ apiUrl }), [apiUrl]);
-  const [isCreatingStage, setIsCreatingStage] = useState(false);
-
-  const createStage = useCallback(
-    (blueprintId: string, replayId: string) => {
-      setIsCreatingStage(true);
-      return theater.createStage(blueprintId, replayId).then((stage) => {
-        setIsCreatingStage(false);
-        return stage;
-      });
-    },
-    [theater],
-  );
+  const createStage = theater.createStage.bind(theater);
 
   return (
     <TheaterContext.Provider
       value={{
         createStage,
-        isCreatingStage,
       }}
     >
       {children}
