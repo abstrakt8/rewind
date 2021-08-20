@@ -1,6 +1,3 @@
-// TODO: Should only be imported once
-import "reflect-metadata";
-
 import { TheaterProvider } from "@rewind/feature-replay-viewer";
 import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";

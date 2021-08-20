@@ -27,8 +27,11 @@ export class SliderTextureManager {
 
   getTexture(settings: SliderTextureJob): Texture {
     const { id, points, radius, borderColor, resolution } = settings;
-    if (this.textures.has(id)) {
-      return this.textures.get(id);
+    {
+      const cachedTexture = this.textures.get(id);
+      if (cachedTexture !== undefined) {
+        return cachedTexture;
+      }
     }
     const renderTexture = this.renderer.render({
       // The first point of .calculatedPath will be the head and also have the value (0, 0)

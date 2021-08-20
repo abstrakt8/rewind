@@ -2,6 +2,9 @@ import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";
 
 import App from "./app/app";
+import store from "../../../libs/feature-replay-viewer/src/store";
+import { TheaterProvider } from "@rewind/feature-replay-viewer";
+import { Provider } from "react-redux";
 
 interface API {
   send(channel: "toMain", data: unknown): unknown;
@@ -20,7 +23,11 @@ declare global {
 
 ReactDOM.render(
   <StrictMode>
-    <App />
+    <Provider store={store}>
+      <TheaterProvider apiUrl={"http://localhost:7271"}>
+        <App />
+      </TheaterProvider>
+    </Provider>
   </StrictMode>,
   document.getElementById("root"),
 );

@@ -1,15 +1,7 @@
-import { useCallback } from "react";
-import styles from "./app.module.css";
+import { RewindApp } from "@rewind/feature-replay-viewer";
 
 export function App() {
-  const a = useCallback(() => {
-    window.api.send("toMain", "a");
-  }, []);
-  return (
-    <div className={styles.app}>
-      <button onClick={a}>Press me</button>
-    </div>
-  );
+  return <RewindApp />;
 }
 
 export default App;
