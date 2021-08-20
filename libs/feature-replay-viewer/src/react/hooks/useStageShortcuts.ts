@@ -11,8 +11,12 @@ const rightKey = "d";
 // These should stay constant or make them dynamic depending on gameClock speed
 const microscopeJump = 1;
 const frameJump = 16; // Assuming 16fps
-const mediumJump = 1 * 1000; // 3s
-const largeJump = 15 * 1000; // 15s
+const mediumJump = 0.5 * 1000;
+const largeJump = 15 * 1000;
+
+const leftKeys = ["a", "left"];
+const rightKeys = ["d", "right"];
+const generateKeyCombo = (modifier = "", keys: string[]) => keys.map((k) => `${modifier}+${k}`).join(", ");
 
 export function useStageShortcuts() {
   const { toggleClock, increaseSpeed, decreaseSpeed, seekForward, seekBackward } = useGameClockContext();
@@ -22,12 +26,12 @@ export function useStageShortcuts() {
   useHotkeys("s", () => decreaseSpeed(), [decreaseSpeed]);
   useHotkeys("space", () => toggleClock(), [toggleClock]);
 
-  useHotkeys(`shift+${leftKey}`, () => seekBackward(microscopeJump), [seekBackward]);
-  useHotkeys(`shift+${rightKey}`, () => seekForward(microscopeJump), [seekForward]);
-  useHotkeys(`shift+alt+${leftKey}`, () => seekBackward(frameJump), [seekBackward]);
-  useHotkeys(`shift+alt+${rightKey}`, () => seekForward(frameJump), [seekForward]);
-  useHotkeys(leftKey, () => seekBackward(mediumJump), [seekBackward]);
-  useHotkeys(rightKey, () => seekForward(mediumJump), [seekForward]);
+  useHotkeys(generateKeyCombo("shift", leftKeys), () => seekBackward(microscopeJump), [seekBackward]);
+  useHotkeys(generateKeyCombo("shift", rightKeys), () => seekForward(microscopeJump), [seekForward]);
+  useHotkeys(generateKeyCombo("shift+alt", leftKeys), () => seekBackward(frameJump), [seekBackward]);
+  useHotkeys(generateKeyCombo("shift+alt", rightKeys), () => seekForward(frameJump), [seekForward]);
+  useHotkeys(leftKeys.join(", "), () => seekBackward(mediumJump), [seekBackward]);
+  useHotkeys(rightKeys.join(", "), () => seekForward(mediumJump), [seekForward]);
 
   // These have really bad collisions
   // useHotkeys(`alt+${leftKey}`, () => seekBackward(frameJump), [seekBackward]);
