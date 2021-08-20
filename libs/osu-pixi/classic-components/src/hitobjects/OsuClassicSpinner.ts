@@ -7,7 +7,7 @@ import {
 } from "../utils/Pixi";
 import { OsuClassicConstants } from "./OsuClassicConstants";
 import { fadeInT, fadeOutT, scaleToT } from "../utils/Transformations";
-import { OSU_PLAYFIELD_BASE_X, OSU_PLAYFIELD_BASE_Y } from "../playfield/ExtendedPlayfieldContainer";
+import { OSU_PLAYFIELD_WIDTH, OSU_PLAYFIELD_HEIGHT } from "../utils/constants";
 
 // New style
 
@@ -50,7 +50,7 @@ export class OsuClassicSpinner {
     this.container = new Container();
     this.container.addChild((this.approachCircleSprite = new Sprite()));
     this.approachCircleSprite.anchor.set(0.5, 0.5);
-    this.approachCircleSprite.position.set(OSU_PLAYFIELD_BASE_X / 2, OSU_PLAYFIELD_BASE_Y / 2);
+    this.approachCircleSprite.position.set(OSU_PLAYFIELD_WIDTH / 2, OSU_PLAYFIELD_HEIGHT / 2);
   }
 
   prepare(settings: OsuClassicSpinnerSettings) {

@@ -1,8 +1,6 @@
-import * as PIXI from "pixi.js";
 import { Graphics } from "pixi.js";
-import { OSU_PLAYFIELD_BASE_X, OSU_PLAYFIELD_BASE_Y } from "./ExtendedPlayfieldContainer";
 import { circleSizeToScale } from "@rewind/osu/math";
-import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "@rewind/osu/core";
+import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "../utils/constants";
 
 // Thickness in osu!px
 type PlayfieldBorderSettings = {
