@@ -2,22 +2,22 @@ import * as fs from "fs";
 import * as path from "path";
 import { readSync } from "node-osr";
 import { normalizeHitObjects } from "../src/utils";
-import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
+import { formatGameTime, hitWindowsForOD, Position } from "@rewind/osu/math";
 import {
   Blueprint,
   BucketedGameStateTimeMachine,
   buildBeatmap,
+  defaultGameState,
+  GameState,
+  GameStateEvaluator,
+  GameStateEvaluatorOptions,
   modsFromBitmask,
   OsuBlueprintParser,
   OsuClassicMod,
   OsuHitObject,
   parseReplayFramesFromRaw,
   ReplayFrame,
-  GameState,
   Slider,
-  GameStateEvaluator,
-  defaultGameState,
-  GameStateEvaluatorOptions,
 } from "../src";
 import { average, max, median, min } from "simple-statistics";
 
@@ -186,4 +186,9 @@ export function commonStats(frames: ReplayFrame[], outlierMs = 16 * 2) {
   }
 
   console.log(`Max=${mx} , Min=${mn}, Avg=${avg}, Median=${med}`);
+}
+
+export function assertPositionEqual(actual: Position, expected: Position, numDigits?: number) {
+  expect(actual.x).toBeCloseTo(expected.x, numDigits);
+  expect(actual.y).toBeCloseTo(expected.y, numDigits);
 }
