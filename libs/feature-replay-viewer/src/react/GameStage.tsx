@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import Playbar, { PlaybarEvent } from "./Playbar";
 import { formatReplayTime } from "../utils/time";
-import { observer } from "mobx-react-lite";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
 import { GameCanvas } from "./GameCanvas";
@@ -10,6 +9,10 @@ import { useStageShortcuts } from "./hooks/useStageShortcuts";
 import { useGameClockContext } from "./components/StageProvider/StageClockProvider";
 import { Sidebar } from "./Sidebar";
 import { useEnergySaver } from "./hooks/useEnergySaver";
+import { PlaybarSettings } from "../theater/slice";
+import { useStageContext } from "./components/StageProvider/StageProvider";
+import { useAppSelector } from "../hooks";
+import { PlaybarColors } from "./PlaybarColors";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -38,16 +41,7 @@ const PauseIcon = () => (
   </svg>
 );
 
-const PlaybarColors = {
-  MISS: "#ff0000",
-  SLIDER_BREAK: "hsl(351,100%,70%)",
-  OK: "#00ff00",
-  MEH: "#ffa500",
-};
-
 type PlaybarFilter = "showMisses" | "showSliderBreaks" | "show100s" | "show50s";
-
-type PlaybarSettings = Record<PlaybarFilter, boolean>;
 
 function mapToPlaybarEvents(
   replayEvents: ReplayAnalysisEvent[],
@@ -84,12 +78,12 @@ function mapToPlaybarEvents(
   return events;
 }
 
-const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
-  const { settings } = props;
+const EfficientPlaybar = () => {
   const { timeInMs: currentTime, durationInMs: maxTime, seekTo } = useGameClockContext();
-
-  // const scenario = useCurrentScenario();
-  const replayEvents: ReplayAnalysisEvent[] = useMemo(() => [], []);
+  const settings = useAppSelector((state) => state.theater.playbarSettings);
+  const { stage } = useStageContext();
+  const { gameSimulator } = stage;
+  const replayEvents: ReplayAnalysisEvent[] = gameSimulator.replayEvents;
   const loadedPercentage = currentTime / maxTime;
   const handleSeekTo = useCallback(
     (percentage) => {
@@ -101,7 +95,7 @@ const EfficientPlaybar = observer((props: { settings: PlaybarSettings }) => {
   );
   const events = useMemo(() => mapToPlaybarEvents(replayEvents, settings, maxTime), [settings, replayEvents, maxTime]);
   return <Playbar loadedPercentage={loadedPercentage} onClick={handleSeekTo} events={events} />;
-});
+};
 
 export const CurrentTime = () => {
   const { timeInMs: currentTime } = useGameClockContext();
@@ -118,15 +112,6 @@ export const CurrentTime = () => {
 export const GameStage = (props: FeatureReplayViewerProps) => {
   // Canvas / Game
   //
-  const [pbSetting, setPbSetting] = useState<PlaybarSettings>({
-    show50s: false,
-    show100s: false,
-    showMisses: true,
-    showSliderBreaks: true,
-  });
-  const handleTogglePbSetting = (who: PlaybarFilter) => (value: boolean) =>
-    setPbSetting((prevState) => ({ ...prevState, [who]: value }));
-
   const { isPlaying, toggleClock, speed, durationInMs } = useGameClockContext();
   const maxTimeHMS = formatReplayTime(durationInMs);
 
@@ -151,7 +136,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
           </button>
           <CurrentTime />
           <div className={"flex-1"}>
-            <EfficientPlaybar settings={pbSetting} />
+            <EfficientPlaybar />
           </div>
           <span className={"self-center select-all"}>{maxTimeHMS}</span>
           <button className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>

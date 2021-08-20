@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Toggle } from "./Toggle";
 import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { PlaybarColors } from "./PlaybarColors";
+import { PlaybarSettings, playbarSettingsChanged } from "../theater/slice";
 
 function SettingsTitle(props: { title: string }) {
   return <h1 className={"uppercase text-gray-400 text-sm"}>{props.title}</h1>;
@@ -90,39 +93,55 @@ function ReplayAnalysisBox() {
   );
 }
 
+function PlaybarSettingsBox() {
+  const dispatch = useAppDispatch();
+  const pbSetting = useAppSelector((state) => state.theater.playbarSettings);
+  const handleTogglePbSetting = (s: keyof PlaybarSettings) => (value: boolean) =>
+    dispatch(
+      playbarSettingsChanged({
+        ...pbSetting,
+        [s]: value,
+      }),
+    );
+
+  return (
+    <SidebarBox>
+      <SettingsTitle title={"Playbar Events"} />
+      <PlaybarEventsBox>
+        {/*TODO: Colors should correspond to the events */}
+        <div>Misses</div>
+        <Toggle
+          enabled={pbSetting["showMisses"]}
+          setEnabled={handleTogglePbSetting("showMisses")}
+          color={PlaybarColors.MISS}
+        />
+        <div>Slider breaks</div>
+        <Toggle
+          enabled={pbSetting["showSliderBreaks"]}
+          setEnabled={handleTogglePbSetting("showSliderBreaks")}
+          color={PlaybarColors.SLIDER_BREAK}
+        />
+        <div>50s</div>
+        <Toggle
+          enabled={pbSetting["show50s"]}
+          setEnabled={handleTogglePbSetting("show50s")}
+          color={PlaybarColors.MEH}
+        />
+        <div>100s</div>
+        <Toggle
+          enabled={pbSetting["show100s"]}
+          setEnabled={handleTogglePbSetting("show100s")}
+          color={PlaybarColors.OK}
+        />
+      </PlaybarEventsBox>
+    </SidebarBox>
+  );
+}
+
 export function Sidebar() {
   return (
     <div className={"flex flex-col gap-4 flex-none w-52 h-full overflow-y-auto"}>
-      {/*<SidebarBox>*/}
-      {/*  <SettingsTitle title={"Playbar Events"} />*/}
-      {/*  <PlaybarEventsBox>*/}
-      {/*    /!*TODO: Colors should correspond to the events *!/*/}
-      {/*    <div>Misses</div>*/}
-      {/*    <MyToggle*/}
-      {/*      enabled={pbSetting["showMisses"]}*/}
-      {/*      setEnabled={handleTogglePbSetting("showMisses")}*/}
-      {/*      color={PlaybarColors.MISS}*/}
-      {/*    />*/}
-      {/*    <div>Slider breaks</div>*/}
-      {/*    <MyToggle*/}
-      {/*      enabled={pbSetting["showSliderBreaks"]}*/}
-      {/*      setEnabled={handleTogglePbSetting("showSliderBreaks")}*/}
-      {/*      color={PlaybarColors.SLIDER_BREAK}*/}
-      {/*    />*/}
-      {/*    <div>50s</div>*/}
-      {/*    <MyToggle*/}
-      {/*      enabled={pbSetting["show50s"]}*/}
-      {/*      setEnabled={handleTogglePbSetting("show50s")}*/}
-      {/*      color={PlaybarColors.MEH}*/}
-      {/*    />*/}
-      {/*    <div>100s</div>*/}
-      {/*    <MyToggle*/}
-      {/*      enabled={pbSetting["show100s"]}*/}
-      {/*      setEnabled={handleTogglePbSetting("show100s")}*/}
-      {/*      color={PlaybarColors.OK}*/}
-      {/*    />*/}
-      {/*  </PlaybarEventsBox>*/}
-      {/*</SidebarBox>*/}
+      <PlaybarSettingsBox />
       <BeatmapAnalysisBox />
       <ReplayAnalysisBox />
       <CheatSheetBox />

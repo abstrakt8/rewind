@@ -3,3 +3,4 @@ export * from "./react/components/StageProvider/StageProvider";
 export * from "./react/components/TheaterProvider/TheaterProvider";
 export { GameCanvas } from "./react/GameCanvas";
 export { Sidebar } from "./react/Sidebar";
+export { PlaybarColors } from "./react/PlaybarColors";

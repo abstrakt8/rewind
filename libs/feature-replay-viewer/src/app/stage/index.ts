@@ -103,6 +103,7 @@ export function createRewindStage(settings: RewindStageSettings) {
   stageSkinService.setSkin(skin);
 
   const stageViewService = container.get(StageViewService);
+  const gameSimulator = container.get(GameSimulator);
 
   // stageViewService.changeView(...)
 
@@ -122,6 +123,7 @@ export function createRewindStage(settings: RewindStageSettings) {
     stopTicker: gameLoop.stopTicker.bind(gameLoop),
 
     performanceMonitor: gameLoop.getPerformanceMonitor(),
+    gameSimulator,
     stageViewService,
   };
 }
