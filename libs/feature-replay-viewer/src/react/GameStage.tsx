@@ -124,7 +124,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
   useEnergySaver(true);
 
   return (
-    <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4"}>
+    <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4 w-full"}>
       <div className={"flex flex-col gap-4 flex-1 h-full"}>
         {/*<div className={"flex-1 rounded relative"}>*/}
         {/*TODO: Very hacky*/}
