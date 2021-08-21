@@ -36,6 +36,9 @@ const hibanaReplayId = "hallowatcher - DECO27 - HIBANA feat. Hatsune Miku [Lock 
 const centipedeId = "f8a383c1de40613c61aa86f0fcec60f2";
 
 const sunMoonId = "1ff6975c142ac59e4731cb09f5d46bcc";
+const kokoSokoId = "bad6319dcbc8773c17dbf67a8e5ececa";
+const kokoSokoReplayId =
+  "- abstrakt - Smile.dk - Koko Soko (AKIBA KOUBOU Eurobeat Remix) [Couch Mini2a] (2021-04-09) Osu.osr";
 
 const sunMoonReplayId =
   "Varvalian - Aether Realm - The Sun, The Moon, The Star [Mourning Those Things I've Long Left Behind] (2019-05-15) Osu.osr";
@@ -82,8 +85,11 @@ const kasugaMirai = "Kasuga Mirai";
 // const chosenBlueprintId = centipedeId;
 // const chosenReplayId = undefined;
 
-const chosenBlueprintId = sunMoonId;
-const chosenReplayId = sunMoonReplayId;
+// const chosenBlueprintId = sunMoonId;
+// const chosenReplayId = sunMoonReplayId;
+
+const chosenBlueprintId = kokoSokoId;
+const chosenReplayId = kokoSokoReplayId;
 
 // const chosenBlueprintId = akatsukiId;
 // const chosenReplayId = akatsukiReplayId;

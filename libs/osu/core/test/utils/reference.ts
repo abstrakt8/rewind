@@ -76,7 +76,7 @@ export async function compareTimeMachineWithReference(
       console.log(
         `Between ${debugGameTime(timePrev)} and ${debugGameTime(
           timeCur,
-        )} there is a count delta mismatch!\nExpected: ${expectedCountsDelta}\nActual: ${actualCountsDelta}`,
+        )} there is a count delta mismatch!\nExpected: ${expectedCountsDelta} (${countsCur})\nActual: ${actualCountsDelta} (${actualCountsCur})`,
       );
     }
   }
