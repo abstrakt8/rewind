@@ -65,7 +65,7 @@ export class AnalysisCursor {
       this.container.addChild((this.analysisPoints[numberOfFrames - i - 1] = new AnalysisCross()));
     }
     this.container.addChild((this.circle = new Graphics()));
-    this.circle.beginFill(0xdeadbe, 1.0);
+    this.circle.beginFill(0xffff00, 1.0);
     this.circle.drawCircle(0, 0, 2);
     this.circle.endFill();
   }

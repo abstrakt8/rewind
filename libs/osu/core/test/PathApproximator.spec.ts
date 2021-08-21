@@ -56,6 +56,7 @@ SliderTickRate:1
   const tickPosition = slider.ballPositionAt(progress);
 
   console.log(tickPosition);
-  assertPositionEqual(tickPosition, { x: 292.47076, y: 222.67848 }, 5);
+  // TODO: When using floats in Vec2 this will match up to 5 digits which we shoudl also use here.
+  assertPositionEqual(tickPosition, { x: 292.47076, y: 222.67848 }, 4);
   // Expected (292.47076, 222.67848)
 });
