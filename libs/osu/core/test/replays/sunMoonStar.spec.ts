@@ -4,12 +4,11 @@ import {
   defaultStableSettings,
   osuClassicScoreScreenJudgementCount,
   parseReplayFramesFromFS,
-  TEST_MAPS,
-  TEST_REPLAYS,
-} from "../util.spec";
+} from "../utils/others";
 
 import { readSync } from "node-osr";
 import { BucketedGameStateTimeMachine, isSlider, osuStableAccuracy, parseReplayFramesFromRaw, Slider } from "../../src";
+import { TEST_MAPS, TEST_REPLAYS } from "../utils/testBlueprintPath";
 
 describe("Parsing SunMoonStar", function () {
   const r = parseReplayFramesFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);

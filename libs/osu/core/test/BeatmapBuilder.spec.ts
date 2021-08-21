@@ -1,5 +1,7 @@
 import { buildBeatmap, HitCircle, Slider } from "../src";
-import { assertPositionEqual, parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
+import { parseBlueprintFromFS } from "./utils/others";
+import { assertPositionEqual } from "./utils/asserts";
+import { TEST_MAPS } from "./utils/testBlueprintPath";
 
 test("Simple short slider", function () {
   const bluePrint = parseBlueprintFromFS(TEST_MAPS.ONE_SLIDER);

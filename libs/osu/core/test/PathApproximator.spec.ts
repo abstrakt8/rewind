@@ -1,7 +1,7 @@
 import { Vec2 } from "@rewind/osu/math";
 import { PathApproximator } from "../src/hitobjects/slider/PathApproximator";
 import { buildBeatmap, parseBlueprint } from "../src";
-import { assertPositionEqual } from "./util.spec";
+import { assertPositionEqual } from "./utils/asserts";
 
 /**
  * 0 = Vector2 {x: -109,

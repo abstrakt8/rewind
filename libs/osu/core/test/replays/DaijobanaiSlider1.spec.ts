@@ -1,10 +1,4 @@
-import {
-  defaultStableSettings,
-  evaluateWholeReplay,
-  parseReplayFramesFromFS,
-  replayPath,
-  TEST_MAPS,
-} from "../util.spec";
+import { defaultStableSettings, evaluateWholeReplay, parseReplayFramesFromFS } from "../utils/others";
 import {
   CheckPointState,
   GameState,
@@ -15,6 +9,7 @@ import {
   Slider,
 } from "../../src";
 import { GameStateEvaluator } from "../../src/gameplay/GameStateEvaluator";
+import { TEST_MAPS, testReplayPath } from "../utils/testBlueprintPath";
 
 function expectHitCircleToBeNotAMiss(hitCircleState?: HitCircleVerdict) {
   expect(hitCircleState).toBeDefined();
@@ -40,7 +35,7 @@ describe("Daijobanai [Slider 1]", function () {
   //
   describe("Perfect.osr", function () {
     before(function () {
-      replay = parseReplayFramesFromFS(replayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) Perfect.osr"));
+      replay = parseReplayFramesFromFS(testReplayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) Perfect.osr"));
       state = evaluateWholeReplay(evaluator, replay);
       console.log("Read and evaluated perfect", replay.length);
     });
@@ -65,7 +60,7 @@ describe("Daijobanai [Slider 1]", function () {
   describe("SliderHeadMissedButTrackingWtf.osr", function () {
     before(function () {
       replay = parseReplayFramesFromFS(
-        replayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadMissedButTrackingWtf.osr"),
+        testReplayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadMissedButTrackingWtf.osr"),
       );
       state = evaluateWholeReplay(evaluator, replay);
       console.log("Read and evaluated SliderHeadMissedBut", replay.length);
@@ -90,7 +85,7 @@ describe("Daijobanai [Slider 1]", function () {
   describe("SliderHeadTooEarly.osr", function () {
     before(function () {
       replay = parseReplayFramesFromFS(
-        replayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadTooEarly.osr"),
+        testReplayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadTooEarly.osr"),
       );
       state = evaluateWholeReplay(evaluator, replay);
     });
@@ -106,7 +101,7 @@ describe("Daijobanai [Slider 1]", function () {
   describe("SliderHeadTooLate.osr", function () {
     beforeEach(function () {
       replay = parseReplayFramesFromFS(
-        replayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadTooLate.osr"),
+        testReplayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadTooLate.osr"),
       );
       state = evaluateWholeReplay(evaluator, replay);
     });
@@ -128,7 +123,7 @@ describe("Daijobanai [Slider 1]", function () {
   describe("SliderEndMissed.osr", function () {
     beforeEach(function () {
       replay = parseReplayFramesFromFS(
-        replayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderEndMissed.osr"),
+        testReplayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderEndMissed.osr"),
       );
       state = evaluateWholeReplay(evaluator, replay);
     });

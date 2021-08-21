@@ -9,6 +9,7 @@
     ]
   },
   "include": [
+    "test/utils/*.ts",
     "**/*.spec.ts",
     "**/*.spec.tsx",
     "**/*.spec.js",

@@ -3,12 +3,11 @@ import {
   evaluateWholeReplay,
   osuClassicScoreScreenJudgementCount,
   parseReplayFramesFromFS,
-  replayPath,
-  TEST_MAPS,
-} from "./util.spec";
+} from "./utils/others";
 import { GameState, HitCircleVerdict } from "../src/gameplay/GameState";
 import { BucketedGameStateTimeMachine } from "../src/gameplay/GameStateTimeMachine";
 import { Slider } from "../src/hitobjects/Slider";
+import { TEST_MAPS, testReplayPath } from "./utils/testBlueprintPath";
 
 /**
  * Info on [Slider 1]
@@ -25,7 +24,7 @@ describe("Daijobanai [Slider (Repeat = 1)]", function () {
 
   describe("- Perfume - Daijobanai [Slider (Repeat = 1)] (2021-07-07) Perfect.osr", function () {
     const replay = parseReplayFramesFromFS(
-      replayPath("- Perfume - Daijobanai [Slider (Repeat = 1)] (2021-07-07) Perfect.osr"),
+      testReplayPath("- Perfume - Daijobanai [Slider (Repeat = 1)] (2021-07-07) Perfect.osr"),
     );
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must be hit", function () {
@@ -54,7 +53,7 @@ describe("Daijobanai [Short kick slider]", function () {
 
   describe("- Perfume - Daijobanai [Short kick slider] (2021-07-16) Perfect.osr", function () {
     const replay = parseReplayFramesFromFS(
-      replayPath("- Perfume - Daijobanai [Short kick slider] (2021-07-16) Perfect.osr"),
+      testReplayPath("- Perfume - Daijobanai [Short kick slider] (2021-07-16) Perfect.osr"),
     );
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must be hit", function () {
@@ -67,7 +66,7 @@ describe("Daijobanai [Short kick slider]", function () {
 
   describe("- Perfume - Daijobanai [Short kick slider] (2021-07-16) TooLateMissed.osr", function () {
     const replay = parseReplayFramesFromFS(
-      replayPath("- Perfume - Daijobanai [Short kick slider] (2021-07-16) TooLateMissed.osr"),
+      testReplayPath("- Perfume - Daijobanai [Short kick slider] (2021-07-16) TooLateMissed.osr"),
     );
     const state = evaluateWholeReplay(evaluator, replay);
     it("slider head circle must have been missed due to slider too short force miss", function () {
@@ -87,7 +86,9 @@ describe("Daijobanai [Short kick slider]", function () {
 
 describe("OsuStd! ReplayState - Violet Perfume (no sliders/spinners)", function () {
   const { hitObjects, settings, evaluator, beatmap, hitWindows } = defaultStableSettings(TEST_MAPS.VIOLET_PERFUME);
-  const replay = parseReplayFramesFromFS(replayPath("abstrakt - SHK - Violet Perfume [Insane] (2021-03-27) Osu.osr"));
+  const replay = parseReplayFramesFromFS(
+    testReplayPath("abstrakt - SHK - Violet Perfume [Insane] (2021-03-27) Osu.osr"),
+  );
   console.log(hitWindows);
 
   const finalState = evaluateWholeReplay(evaluator, replay);

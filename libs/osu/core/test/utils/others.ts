@@ -1,8 +1,7 @@
 import * as fs from "fs";
-import * as path from "path";
 import { readSync } from "node-osr";
-import { normalizeHitObjects } from "../src/utils";
-import { formatGameTime, hitWindowsForOD, Position } from "@rewind/osu/math";
+import { normalizeHitObjects } from "../../src/utils";
+import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
 import {
   Blueprint,
   BucketedGameStateTimeMachine,
@@ -18,7 +17,7 @@ import {
   parseReplayFramesFromRaw,
   ReplayFrame,
   Slider,
-} from "../src";
+} from "@rewind/osu/core";
 import { average, max, median, min } from "simple-statistics";
 
 // This makes the whole testing module node.js only
@@ -27,16 +26,6 @@ export function parseBlueprintFromFS(name: string): Blueprint {
   const data = fs.readFileSync(name);
   const parser = new OsuBlueprintParser(data.toString());
   return parser.parse();
-}
-
-const rewindTestOsuDir = process.env.REWIND_TEST_OSU_DIR || "";
-
-export function osuMapPath(name: string): string {
-  return path.join(rewindTestOsuDir, "Songs", name);
-}
-
-export function replayPath(name: string): string {
-  return path.join(rewindTestOsuDir, "Replays", name);
 }
 
 export function parseReplayFramesFromFS(replayFile: string) {
@@ -57,33 +46,6 @@ export function parseReplayFromFS(replayFile: string): TestReplay {
     frames: parseReplayFramesFromRaw(r.replay_data),
   };
 }
-
-export const TEST_MAPS = {
-  ONE_SLIDER: osuMapPath("967347 Perfume - Daijobanai/Perfume - Daijobanai (eiri-) [Slider 1].osu"),
-  SLIDER_WITH_ONE_REPEAT: osuMapPath(
-    "967347 Perfume - Daijobanai/Perfume - Daijobanai (eiri-) [Slider (Repeat = 1)].osu",
-  ),
-  SHORT_KICK_SLIDER: osuMapPath("967347 Perfume - Daijobanai/Perfume - Daijobanai (eiri-) [Short kick slider].osu"),
-  VIOLET_PERFUME: osuMapPath("1010865 SHK - Violet Perfume [no video]/SHK - Violet Perfume (ktgster) [Insane].osu"),
-  GERA_GERA: osuMapPath(
-    "1001507 ZUTOMAYO - Kan Saete Kuyashiiwa/ZUTOMAYO - Kan Saete Kuyashiiwa (Nathan) [geragera].osu",
-  ),
-  SUN_MOON_STAR: osuMapPath(
-    "933630 Aether Realm - The Sun, The Moon, The Star/Aether Realm - The Sun, The Moon, The Star (ItsWinter) [Mourning Those Things I've Long Left Behind].osu",
-  ),
-  TOP_RANKER: osuMapPath(
-    "1357624 sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix)/sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) (Nathan) [Senseabel's Extra].osu",
-  ),
-};
-
-export const TEST_REPLAYS = {
-  SUN_MOON_STAR_VARVALIAN: replayPath(
-    "Varvalian - Aether Realm - The Sun, The Moon, The Star [Mourning Those Things I've Long Left Behind] (2019-05-15) Osu.osr",
-  ),
-  ABSTRAKT_TOP_RANKER: replayPath(
-    "abstrakt - sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) [Senseabel's Extra] (2021-08-08) Osu.osr",
-  ),
-};
 
 // this code  is so messy but should be replaced with something else anyways
 export function osuClassicScoreScreenJudgementCount(state: GameState, hitObjects: OsuHitObject[], osuLazer?: boolean) {
@@ -186,9 +148,4 @@ export function commonStats(frames: ReplayFrame[], outlierMs = 16 * 2) {
   }
 
   console.log(`Max=${mx} , Min=${mn}, Avg=${avg}, Median=${med}`);
-}
-
-export function assertPositionEqual(actual: Position, expected: Position, numDigits?: number) {
-  expect(actual.x).toBeCloseTo(expected.x, numDigits);
-  expect(actual.y).toBeCloseTo(expected.y, numDigits);
 }
