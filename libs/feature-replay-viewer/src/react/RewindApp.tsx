@@ -84,7 +84,7 @@ function Sidebar() {
 
 export function RewindApp() {
   return (
-    <div className={"bg-red-400 flex h-screen"}>
+    <div className={"bg-gray-900 flex h-screen"}>
       <Sidebar />
       <Theater />
     </div>

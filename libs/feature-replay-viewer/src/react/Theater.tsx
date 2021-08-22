@@ -4,6 +4,16 @@ import { RewindStage } from "../app/stage";
 import { useTheaterContext } from "./components/TheaterProvider/TheaterProvider";
 import { StageProvider } from "./components/StageProvider/StageProvider";
 import { GameStage } from "./GameStage";
+import { SyncLoader } from "react-spinners";
+
+function TheaterPreparation() {
+  return (
+    <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200"}>
+      <SyncLoader loading={true} color={"white"} />
+      <div>Preparing the stage...</div>
+    </div>
+  );
+}
 
 export function Theater() {
   const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
@@ -36,7 +46,7 @@ export function Theater() {
   }
 
   if (loading || !stage) {
-    return <div>Preparing the stage...</div>;
+    return <TheaterPreparation />;
   }
 
   /* TODO: This is very hacky right now. The StageProvider is forced to be teared down
