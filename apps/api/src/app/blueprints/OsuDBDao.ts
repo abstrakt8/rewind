@@ -1,10 +1,12 @@
-import { readFile } from "fs/promises";
+import { promises } from "fs";
 import { BlueprintInfo } from "./BlueprintInfo";
 import { fileLastModifiedTime, ticksToDate } from "@rewind/osu-local/utils";
 import { Beatmap as DBBeatmap, OsuDBReader } from "@rewind/osu-local/db-reader";
 import { Inject } from "@nestjs/common";
 import { OSU_FOLDER } from "../constants";
 import { join } from "path";
+
+const { readFile } = promises;
 
 const mapToBlueprint = (b: DBBeatmap): BlueprintInfo => {
   return {

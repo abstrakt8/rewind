@@ -15,7 +15,7 @@ import { LocalBlueprintService } from "./app/blueprints/LocalBlueprintService";
 
 const globalPrefix = "api";
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix(globalPrefix);
   app.enableCors();

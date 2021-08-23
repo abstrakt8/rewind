@@ -1,11 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { BlueprintInfo } from "./BlueprintInfo";
 import { OsuDBDao } from "./OsuDBDao";
-import { stat, readFile } from "fs/promises";
+import { promises as fsPromises } from "fs";
 import { join } from "path";
 import { filterFilenamesInDirectory } from "@rewind/osu-local/utils";
 import { Blueprint, BlueprintSection, parseBlueprint } from "@rewind/osu/core";
 import { OSU_FOLDER } from "../constants";
+
+const { stat, readFile } = fsPromises;
 
 const sectionsToRead: BlueprintSection[] = ["General", "Difficulty", "Events", "Metadata"];
 

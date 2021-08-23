@@ -1,4 +1,4 @@
-import { BrowserWindow, shell, screen } from "electron";
+import { BrowserWindow, screen, shell } from "electron";
 import { rendererAppName, rendererAppPort } from "./constants";
 import { environment } from "../environments/environment";
 import { join } from "path";
@@ -8,6 +8,7 @@ export default class App {
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.
   static mainWindow: Electron.BrowserWindow;
+  static apiWindow: Electron.BrowserWindow;
   static application: Electron.App;
   static BrowserWindow;
 
@@ -29,6 +30,7 @@ export default class App {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     App.mainWindow = null;
+    App.BrowserWindow = null;
   }
 
   private static onRedirect(event: any, url: string) {
@@ -43,6 +45,9 @@ export default class App {
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
+    App.initAPIWindow();
+    App.loadAPIWindow();
+    // TODO: Should we wait until the API has finished loading?
     App.initMainWindow();
     App.loadMainWindow();
   }
@@ -68,7 +73,8 @@ export default class App {
       // frame: false, // TODO: to make it look like Discord/VSCode we need custom titlebar
       webPreferences: {
         contextIsolation: true,
-        backgroundThrottling: false,
+        // backgroundThrottling: false,
+        backgroundThrottling: true, // TODO: Should this be true since we want to throttle when it is in the background
         preload: join(__dirname, "preload.js"),
       },
     });
@@ -108,6 +114,33 @@ export default class App {
         }),
       );
     }
+  }
+
+  private static initAPIWindow() {
+    // Since the API is a node.js app we want to include `nodeIntegration`
+    App.apiWindow = new BrowserWindow({
+      show: this.isDevelopmentMode(), // Showing this allows us to access the console
+      webPreferences: {
+        contextIsolation: true,
+        nodeIntegration: true,
+        preload: join(__dirname, "preload.js"),
+      },
+    });
+  }
+
+  private static loadAPIWindow() {
+    // if (!app.application.ispackaged) {
+    //   // app.apiwindow.loadurl(`http://localhost:${rendererapiport}`);
+    // } else {
+    App.apiWindow.loadURL(
+      format({
+        pathname: join(__dirname, "assets", "index.html"),
+        protocol: "file:",
+        slashes: true,
+      }),
+    );
+    // );
+    // }
   }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
