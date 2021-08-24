@@ -78,7 +78,8 @@ export default class App {
         // preload: join(__dirname, "preload.js"),
       },
     });
-    App.mainWindow.setMenu(null);
+    // Settings this to null will not allow you to open up dev tools (ctrl+shift+I)
+    // App.mainWindow.setMenu(null);
     App.mainWindow.center();
 
     // if main window is ready to show, close the splash window and show the main window

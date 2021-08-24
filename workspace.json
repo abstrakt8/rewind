@@ -217,6 +217,7 @@
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
+              "baseHref": "./",
               "budgets": [
                 {
                   "type": "initial",

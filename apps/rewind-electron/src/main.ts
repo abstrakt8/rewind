@@ -20,7 +20,7 @@ class RewindElectronApp {
     const width = Math.min(DEFAULT_WIDTH, workAreaSize.width || DEFAULT_WIDTH);
     const height = Math.min(DEFAULT_HEIGHT, workAreaSize.height || DEFAULT_HEIGHT);
 
-    const mainWindow = new BrowserWindow({
+    this.mainWindow = new BrowserWindow({
       width,
       height,
       show: true,
@@ -30,15 +30,15 @@ class RewindElectronApp {
         // TODO: Preload
       },
     });
-    mainWindow.setMenu(null);
-    mainWindow.center();
-
-    // TODO: on("closed")
-    return mainWindow;
+    // this.mainWindow.setMenu(null);
+    this.mainWindow.center();
+    this.mainWindow.on("closed", () => {
+      this.mainWindow = null;
+    });
   }
 
   createApiWindow() {
-    return new BrowserWindow({
+    this.apiWindow = new BrowserWindow({
       // Showing this allows us to access the console
       // Or maybe find out how to use it with a node.js debugger?
       show: this.isDevMode,
@@ -87,10 +87,10 @@ class RewindElectronApp {
   }
 
   handleReady() {
-    this.apiWindow = this.createApiWindow();
+    this.createApiWindow();
     this.loadApiWindow();
 
-    this.mainWindow = this.createMainWindow();
+    this.createMainWindow();
     this.loadMainWindow();
   }
 
