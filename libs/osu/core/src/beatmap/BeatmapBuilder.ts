@@ -1,12 +1,6 @@
 import { Blueprint } from "../blueprint/Blueprint";
 import { BeatmapDifficulty } from "./BeatmapDifficulty";
-import {
-  HitCircleSettings,
-  HitObjectSettings,
-  HitObjectSettingsType,
-  SliderSettings,
-  SpinnerSettings,
-} from "../blueprint/HitObjectSettings";
+import { HitCircleSettings, HitObjectSettings, SliderSettings, SpinnerSettings } from "../blueprint/HitObjectSettings";
 import { ControlPointInfo } from "./ControlPoints/ControlPointInfo";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { BeatmapDifficultyAdjuster, ModSettings, OsuClassicMod } from "../mods/Mods";

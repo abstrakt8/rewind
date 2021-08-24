@@ -1,20 +1,11 @@
-import {
-  Beatmap,
-  defaultGameState,
-  GameState,
-  HitCircle,
-  HitCircleVerdict,
-  isHitCircle,
-  isSlider,
-  MainHitObjectVerdict,
-  NOT_PRESSING,
-  OsuAction,
-  PressingSinceTimings,
-  ReplayFrame,
-  Slider,
-} from "@rewind/osu/core";
-
 import { hitWindowsForOD, Position, Vec2 } from "@rewind/osu/math";
+import { Beatmap } from "../beatmap/Beatmap";
+import { defaultGameState, GameState, HitCircleVerdict, NOT_PRESSING, PressingSinceTimings } from "./GameState";
+import { isHitCircle, isSlider } from "../hitobjects/Types";
+import { Slider } from "../hitobjects/Slider";
+import { OsuAction, ReplayFrame } from "../replays/Replay";
+import { MainHitObjectVerdict } from "./Verdicts";
+import { HitCircle } from "../hitobjects/HitCircle";
 
 /**
  * In the real osu game, the slider body will be evaluated at every game tick (?), which is something we can not do.

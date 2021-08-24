@@ -69,13 +69,14 @@ export default class App {
     App.mainWindow = new BrowserWindow({
       width: width,
       height: height,
-      show: false,
+      show: true,
       // frame: false, // TODO: to make it look like Discord/VSCode we need custom titlebar
       webPreferences: {
+        devTools: true,
         contextIsolation: true,
         // backgroundThrottling: false,
         backgroundThrottling: true, // TODO: Should this be true since we want to throttle when it is in the background
-        preload: join(__dirname, "preload.js"),
+        // preload: join(__dirname, "preload.js"),
       },
     });
     App.mainWindow.setMenu(null);

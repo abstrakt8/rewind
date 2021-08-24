@@ -2,6 +2,8 @@
   "name": "rewind",
   "version": "0.0.0",
   "license": "MIT",
+  "author": "abstrakt",
+  "description": "Rewind mono repo",
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
@@ -29,7 +31,8 @@
     "postinstall": "exitzero electron-builder install-app-deps",
     "desktop:build": "nx run-many --target=build --projects=desktop-frontend,desktop --parallel",
     "desktop:serve": "nx run-many --target=serve --projects=desktop-frontend,desktop --parallel",
-    "desktop:package": "nx run desktop:package --frontendProject=desktop-frontend"
+    "desktop:package": "nx run desktop:package --frontendProject=desktop-frontend",
+    "desktop:buildpackage": "nx run-many --target=build --projects=desktop-frontend,desktop --parallel --prod && yarn run desktop:package"
   },
   "private": true,
   "dependencies": {
@@ -41,6 +44,7 @@
     "@nestjs/graphql": "^8.0.2",
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/platform-socket.io": "^8.0.6",
+    "@nestjs/websockets": "^8.0.6",
     "@react-hook/mouse-position": "^4.1.0",
     "@reduxjs/toolkit": "^1.6.1",
     "@storybook/addon-postcss": "^2.0.0",
@@ -93,7 +97,6 @@
     "@babel/preset-typescript": "7.12.13",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
-    "@nestjs/websockets": "^8.0.6",
     "@nrwl/cli": "12.6.2",
     "@nrwl/cypress": "12.6.2",
     "@nrwl/eslint-plugin-nx": "12.6.2",
@@ -127,7 +130,7 @@
     "babel-loader": "8.1.0",
     "cypress": "^7.3.0",
     "dotenv": "8.2.0",
-    "electron": "^11.3.0",
+    "electron": "^13.2.1",
     "eslint": "7.22.0",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",

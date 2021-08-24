@@ -2,6 +2,7 @@ import * as fs from "fs";
 import { readSync } from "node-osr";
 import { normalizeHitObjects } from "../../src/utils";
 import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
+import { average, max, median, min } from "simple-statistics";
 import {
   Blueprint,
   BucketedGameStateTimeMachine,
@@ -17,8 +18,7 @@ import {
   parseReplayFramesFromRaw,
   ReplayFrame,
   Slider,
-} from "@rewind/osu/core";
-import { average, max, median, min } from "simple-statistics";
+} from "../../src/";
 
 // This makes the whole testing module node.js only
 

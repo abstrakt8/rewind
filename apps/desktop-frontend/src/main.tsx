@@ -2,8 +2,7 @@ import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";
 
 import App from "./app/app";
-import store from "../../../libs/feature-replay-viewer/src/store";
-import { TheaterProvider } from "@rewind/feature-replay-viewer";
+import { TheaterProvider, store } from "@rewind/feature-replay-viewer";
 import { Provider } from "react-redux";
 
 interface API {

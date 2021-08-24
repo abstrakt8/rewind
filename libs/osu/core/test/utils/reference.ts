@@ -1,6 +1,6 @@
 import { readFile } from "fs/promises";
 import { createTestTimeMachine } from "./others";
-import { GameplayInfoEvaluator } from "@rewind/osu/core";
+import { GameplayInfoEvaluator } from "../../src";
 import { formatGameTime } from "@rewind/osu/math";
 
 // These files have been generated and are used as a reference for the "correct" osu!stable behavior.
