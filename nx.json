@@ -80,6 +80,9 @@
     "osu-stable-test-generator": {
       "tags": []
     },
+    "rewind-electron": {
+      "tags": []
+    },
     "web": {
       "tags": []
     },

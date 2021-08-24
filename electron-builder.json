@@ -1,0 +1,27 @@
+{
+  "appId": "sh.abstrakt.rewind",
+  "productName": "Rewind",
+  "directories": {
+    "output": "dist/electron",
+    "app": "./"
+  },
+  "files": [
+    {
+      "from": "dist/apps/rewind-electron",
+      "to": "rewind-electron",
+      "filter": [
+        "main.js",
+        "preload.js",
+        "assets"
+      ]
+    },
+    {
+      "from": "tools/electron-builder",
+      "to": "",
+      "filter": [
+        "package.json",
+        "index.js"
+      ]
+    }
+  ]
+}

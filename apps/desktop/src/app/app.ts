@@ -30,7 +30,6 @@ export default class App {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     App.mainWindow = null;
-    App.BrowserWindow = null;
   }
 
   private static onRedirect(event: any, url: string) {
@@ -69,7 +68,7 @@ export default class App {
     App.mainWindow = new BrowserWindow({
       width: width,
       height: height,
-      show: true,
+      show: false,
       // frame: false, // TODO: to make it look like Discord/VSCode we need custom titlebar
       webPreferences: {
         devTools: true,
@@ -110,8 +109,8 @@ export default class App {
       App.mainWindow.loadURL(
         format({
           pathname: join(__dirname, "..", rendererAppName, "index.html"),
-          protocol: "file:",
-          slashes: true,
+          // protocol: "file:",
+          // slashes: true,
         }),
       );
     }

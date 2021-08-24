@@ -599,6 +599,56 @@
         }
       }
     },
+    "rewind-electron": {
+      "root": "apps/rewind-electron",
+      "sourceRoot": "apps/rewind-electron/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/rewind-electron",
+            "main": "apps/rewind-electron/src/main.ts",
+            "tsConfig": "apps/rewind-electron/tsconfig.app.json",
+            "assets": ["apps/rewind-electron/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/rewind-electron/src/environments/environment.ts",
+                  "with": "apps/rewind-electron/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "rewind-electron:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/rewind-electron/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/rewind-electron"],
+          "options": {
+            "jestConfig": "apps/rewind-electron/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "web": {
       "root": "apps/web",
       "sourceRoot": "apps/web/src",
