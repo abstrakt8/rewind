@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { defaultViewSettings, ViewSettings } from "../game/ViewSettings";
+import {
+  defaultViewSettings,
+  ViewSettings,
+} from "../../../../../libs/feature-replay-viewer/src/app/stage/rewind/ViewSettings";
 import { RootState } from "../store";
 
 interface Preferences {

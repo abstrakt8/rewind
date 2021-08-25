@@ -15,7 +15,7 @@ import { GameplayClock } from "../../../core/GameplayClock";
 import { StageViewService } from "../../StageViewService";
 import { StageSkinService } from "../../../StageSkinService";
 import { injectable } from "inversify";
-import { TemporaryObjectPool } from "../../../../../pixi/pooling/TemporaryObjectPool";
+import { TemporaryObjectPool } from "../../../../pixi/pooling/TemporaryObjectPool";
 import { SliderTextureService } from "../../SliderTextureService";
 
 const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;

@@ -6,7 +6,7 @@ import { buildBeatmap } from "@rewind/osu/core";
 import { SkinService } from "./SkinService";
 import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
-import { defaultViewSettings } from "../../game/ViewSettings";
+import { defaultViewSettings } from "../stage/rewind/ViewSettings";
 
 @injectable()
 export class RewindStageCreator {

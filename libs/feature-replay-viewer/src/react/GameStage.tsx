@@ -1,7 +1,6 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import Playbar, { PlaybarEvent } from "./Playbar";
-import { formatReplayTime } from "../utils/time";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
 import { GameCanvas } from "./GameCanvas";
@@ -9,10 +8,11 @@ import { useStageShortcuts } from "./hooks/useStageShortcuts";
 import { useGameClockContext } from "./components/StageProvider/StageClockProvider";
 import { Sidebar } from "./Sidebar";
 import { useEnergySaver } from "./hooks/useEnergySaver";
-import { PlaybarSettings } from "../theater/slice";
 import { useStageContext } from "./components/StageProvider/StageProvider";
-import { useAppSelector } from "../hooks";
 import { PlaybarColors } from "./PlaybarColors";
+import { PlaybarSettings } from "../theater/playbarSettings";
+import { formatGameTime } from "@rewind/osu/math";
+import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -79,8 +79,8 @@ function mapToPlaybarEvents(
 }
 
 const EfficientPlaybar = () => {
+  const { playbarSettings: settings } = useStagePlaybarSettingsContext();
   const { timeInMs: currentTime, durationInMs: maxTime, seekTo } = useGameClockContext();
-  const settings = useAppSelector((state) => state.theater.playbarSettings);
   const { stage } = useStageContext();
   const { gameSimulator } = stage;
   const replayEvents: ReplayAnalysisEvent[] = gameSimulator.replayEvents;
@@ -99,7 +99,7 @@ const EfficientPlaybar = () => {
 
 export const CurrentTime = () => {
   const { timeInMs: currentTime } = useGameClockContext();
-  const [timeHMS, timeMS] = formatReplayTime(currentTime, true).split(".");
+  const [timeHMS, timeMS] = formatGameTime(currentTime, true).split(".");
 
   return (
     <span className={"self-center select-all"}>
@@ -113,7 +113,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
   // Canvas / Game
   //
   const { isPlaying, toggleClock, speed, durationInMs } = useGameClockContext();
-  const maxTimeHMS = formatReplayTime(durationInMs);
+  const maxTimeHMS = formatGameTime(durationInMs);
 
   const handlePlayButtonClick = useCallback(() => toggleClock(), [toggleClock]);
 

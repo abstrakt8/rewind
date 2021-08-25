@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect } from "react";
 import { StageViewService } from "../../../app/stage/rewind/StageViewService";
-import { ViewSettings } from "../../../game/ViewSettings";
+import { ViewSettings } from "../../../app/stage/rewind/ViewSettings";
 import { useImmer } from "use-immer";
 
 function useStageView(viewService: StageViewService) {

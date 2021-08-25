@@ -2,8 +2,6 @@ import "tailwindcss/tailwind.css";
 import { useCallback, useMemo, useRef } from "react";
 import useMouse from "@react-hook/mouse-position";
 
-/* eslint-disable-next-line */
-
 export interface PlaybarEvent {
   color: string;
   position: number; // number between 0 and 1

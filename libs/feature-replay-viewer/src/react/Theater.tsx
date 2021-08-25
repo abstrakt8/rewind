@@ -1,4 +1,4 @@
-import { useAppSelector } from "../hooks";
+import { useAppSelector } from "../../../../apps/desktop-frontend/src/app/hooks";
 import { useEffect, useState } from "react";
 import { RewindStage } from "../app/stage";
 import { useTheaterContext } from "./components/TheaterProvider/TheaterProvider";

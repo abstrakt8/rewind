@@ -127,12 +127,6 @@ const store = configureStore({
     theater: {
       chosenBlueprintId,
       chosenReplayId,
-      playbarSettings: {
-        show50s: false,
-        show100s: false,
-        showMisses: true,
-        showSliderBreaks: true,
-      },
     },
   },
 });

@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { GameSimulator } from "../../GameSimulator";
 import { Container, Text } from "pixi.js";
-import { AnalysisHitErrorBar } from "../../../../../pixi/components/HitErrorBar";
+import { AnalysisHitErrorBar } from "../../../../pixi/components/HitErrorBar";
 import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { hitWindowsForOD } from "@rewind/osu/math";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";

@@ -25,7 +25,7 @@ import { CursorPreparer } from "./rewind/components/playfield/CursorPreparer";
 import { JudgementPreparer } from "./rewind/components/playfield/JudgementPreparer";
 import { Texture } from "pixi.js";
 import { SpinnerPreparer } from "./rewind/components/playfield/SpinnerPreparer";
-import { ViewSettings } from "../../game/ViewSettings";
+import { ViewSettings } from "./rewind/ViewSettings";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
