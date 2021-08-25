@@ -30,9 +30,6 @@
     ".-desktop": {
       "tags": []
     },
-    "api": {
-      "tags": []
-    },
     "api-common": {
       "tags": []
     },
@@ -90,6 +87,9 @@
       "tags": []
     },
     "web": {
+      "tags": []
+    },
+    "web-api": {
       "tags": []
     },
     "web-e2e": {
