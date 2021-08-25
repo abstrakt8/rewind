@@ -1,16 +1,24 @@
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import { AppModule } from "../../../../api/src/app/app.module";
 import { OSU_FOLDER } from "../../../../../libs/api/common/src/constants";
 import { join } from "path";
 import { LocalBlueprintService } from "@rewind/api/common";
 import { Logger } from "@nestjs/common";
 import { ReplayWatcher } from "../../../../../libs/api/common/src/replays/ReplayWatcher";
+import { Module } from "@nestjs/common";
+import { ApiCommonModule } from "@rewind/api/common";
+
+@Module({
+  imports: [ApiCommonModule],
+  controllers: [],
+  providers: [],
+})
+export class RewindDesktopModule {}
 
 const globalPrefix = "/api";
 
 export async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(RewindDesktopModule);
   app.setGlobalPrefix(globalPrefix);
   app.enableCors();
 
