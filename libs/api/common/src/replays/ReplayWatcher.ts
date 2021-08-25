@@ -12,6 +12,8 @@ export class ReplayWatcher {
 
   constructor(private eventEmitter: EventEmitter2) {}
 
+  // TODO: onModuleInit -> ok maybe not here , but something that also takes folders to watch
+
   watchForReplays(replaysFolder: string): ReplayWatcher {
     // ignoreInitial must be true otherwise addDir will be triggered for every folder initially.
     const globPattern = join(replaysFolder);

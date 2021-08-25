@@ -1,5 +1,5 @@
-import { contextBridge, ipcRenderer } from "electron";
-import { bootstrap } from "./DesktopAPI";
+import { app, contextBridge, ipcRenderer } from "electron";
+import { bootstrapRewindDesktopBackend } from "@rewind/api/desktop";
 
 // TODO: Clean up this mess
 
@@ -30,7 +30,10 @@ contextBridge.exposeInMainWorld("api", {
 
 contextBridge.exposeInMainWorld("desktopApi", {
   boot: () => {
-    bootstrap().then(() => {
+    const settings = {
+      applicationDataPath: app.getPath("userData"),
+    };
+    bootstrapRewindDesktopBackend(settings).then(() => {
       console.log("Successfully booted");
     });
   },

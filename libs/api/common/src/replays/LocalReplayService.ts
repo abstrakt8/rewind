@@ -2,7 +2,6 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { ReplayReadEvent, ReplayWatchEvents } from "../events/Events";
 import { join } from "path";
-import { UserConfigService } from "../config/UserConfigService";
 import { read as readOsr } from "node-osr";
 import { OSU_FOLDER } from "../constants";
 
@@ -10,7 +9,7 @@ import { OSU_FOLDER } from "../constants";
 export class LocalReplayService {
   private logger = new Logger("LocalReplayService");
 
-  constructor(private userConfigService: UserConfigService, @Inject(OSU_FOLDER) private osuDirectory: string) {}
+  constructor(@Inject(OSU_FOLDER) private osuDirectory: string) {}
 
   exportedPath(fileName?: string) {
     return join(this.osuDirectory, "Replays", fileName);

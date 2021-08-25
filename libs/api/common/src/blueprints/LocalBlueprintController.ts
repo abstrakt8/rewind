@@ -1,7 +1,5 @@
 import { Controller, Get, Param, Res } from "@nestjs/common";
 import { LocalBlueprintService } from "./LocalBlueprintService";
-import { join } from "path";
-import { UserConfigService } from "../config/UserConfigService";
 import { Response } from "express";
 
 /**
@@ -9,10 +7,7 @@ import { Response } from "express";
  */
 @Controller("blueprints")
 export class LocalBlueprintController {
-  constructor(
-    private readonly blueprintService: LocalBlueprintService,
-    private readonly userConfigService: UserConfigService,
-  ) {}
+  constructor(private readonly blueprintService: LocalBlueprintService) {}
 
   async blueprint(md5: string) {
     return this.blueprintService.getBlueprintByMD5(md5);
