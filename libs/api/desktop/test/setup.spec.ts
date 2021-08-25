@@ -1,11 +1,19 @@
 import * as request from "supertest";
 import { setupBootstrap } from "@rewind/api/desktop";
 import { INestApplication } from "@nestjs/common";
+import { DesktopConfigService } from "../src/config/DesktopConfigService";
+import { join } from "path";
+
+const applicationDataPath = "C:\\Users\\me\\AppData\\Roaming\\rewind";
+const rewindCfgPath = join(applicationDataPath, "rewind-test.cfg");
 
 // https://docs.nestjs.com/fundamentals/testing
+describe("DesktopConfigService", () => {
+  const desktopConfigService = new DesktopConfigService(rewindCfgPath);
+  it("save", async () => await desktopConfigService.saveOsuStablePath("E:\\osu!"));
+});
 
 describe("Setup E2E", () => {
-  const applicationDataPath = "C:\\Users\\me\\AppData\\Roaming\\rewind";
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -24,6 +32,7 @@ describe("Setup E2E", () => {
     // .end((err, res) => {
     // });
   });
+
   afterAll(async () => {
     await app.close();
   });
