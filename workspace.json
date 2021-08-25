@@ -118,6 +118,48 @@
         }
       }
     },
+    "api-common": {
+      "root": "libs/api/common",
+      "sourceRoot": "libs/api/common/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/common/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/common"],
+          "options": {
+            "jestConfig": "libs/api/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-desktop": {
+      "root": "libs/api/desktop",
+      "sourceRoot": "libs/api/desktop/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api/desktop/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/desktop"],
+          "options": {
+            "jestConfig": "libs/api/desktop/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "desktop": {
       "root": "apps/desktop",
       "sourceRoot": "apps/desktop/src",
@@ -612,7 +654,8 @@
             "outputPath": "dist/apps/rewind-electron",
             "main": "apps/rewind-electron/src/main.ts",
             "tsConfig": "apps/rewind-electron/tsconfig.app.json",
-            "assets": ["apps/rewind-electron/src/assets"]
+            "assets": ["apps/rewind-electron/src/assets"],
+            "webpackConfig": "apps/rewind-electron/webpack.config.js"
           },
           "configurations": {
             "production": {

@@ -33,6 +33,12 @@
     "api": {
       "tags": []
     },
+    "api-common": {
+      "tags": []
+    },
+    "api-desktop": {
+      "tags": []
+    },
     "desktop": {
       "tags": []
     },

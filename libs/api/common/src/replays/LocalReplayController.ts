@@ -3,7 +3,7 @@ import { Response } from "express";
 import { LocalReplayService } from "./LocalReplayService";
 
 /**
- * This is technically just a temporary solution because parsing the .osr file on a web browser is a challenge that I want to delay a little bit.
+ * This is technically just a temporary solution because parsing the .osr file on a web browser is a challenge that I want to handle in the future.
  */
 @Controller("replays")
 export class LocalReplayController {

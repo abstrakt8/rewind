@@ -6,12 +6,12 @@
 import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import { LocalBlueprintService } from "@rewind/api/common";
 
 import { AppModule } from "./app/app.module";
-import { OSU_FOLDER } from "./app/constants";
-import { ReplayWatcher } from "./app/replays/ReplayWatcher";
+import { OSU_FOLDER } from "../../../libs/api/common/src/constants";
+import { ReplayWatcher } from "../../../libs/api/common/src/replays/ReplayWatcher";
 import { join } from "path";
-import { LocalBlueprintService } from "./app/blueprints/LocalBlueprintService";
 
 const globalPrefix = "api";
 
