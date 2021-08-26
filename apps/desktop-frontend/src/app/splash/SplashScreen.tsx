@@ -8,7 +8,7 @@ interface Props {
 function text(status: BackendState) {
   switch (status) {
     case "LOADING":
-      return "Services are preparing ... ";
+      return "Services are getting ready ... ";
     case "READY":
       return "Ready!";
     case "SETUP_MISSING":
@@ -22,7 +22,7 @@ export function SplashScreen({ status }: Props) {
   const showSpinner = status === "LOADING" || status === "NOT_STARTED";
   const loadingText = text(status);
   return (
-    <div className={"h-screen bg-gray-700 flex items-center justify-center flex-col text-gray-200 gap-4"}>
+    <div className={"h-screen bg-gray-800 flex items-center justify-center flex-col text-gray-200 gap-4"}>
       <HashLoader color={"white"} loading={showSpinner} />
       <div>{loadingText}</div>
     </div>

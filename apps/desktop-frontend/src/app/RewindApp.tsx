@@ -11,7 +11,7 @@ function ConnectedTheater() {
 }
 
 function ConnectedSplashScreen() {
-  return <SplashScreen status={"READY"} />;
+  return <SplashScreen status={"LOADING"} />;
 }
 
 function Home() {
@@ -20,7 +20,7 @@ function Home() {
 
 function NormalView() {
   return (
-    <div className={"bg-gray-900 flex h-screen"}>
+    <div className={"bg-gray-800 flex h-screen"}>
       <LeftMenuSidebar />
 
       <Switch>

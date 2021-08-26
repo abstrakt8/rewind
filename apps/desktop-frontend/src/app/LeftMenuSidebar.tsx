@@ -51,7 +51,7 @@ const RewindLogo = () => (
 
 export function LeftMenuSidebar() {
   return (
-    <nav className={"flex-none w-20 bg-gray-900 p-2"}>
+    <nav className={"flex-none w-20 p-2 border-gray-500 border-r"}>
       <ul className={"flex flex-col items-center text-gray-200 gap-4 h-full"}>
         <li>
           <RewindLogo />
