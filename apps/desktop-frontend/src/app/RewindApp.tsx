@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router"; // react-router v4/v5
 import { LeftMenuSidebar } from "./LeftMenuSidebar";
 import { Theater } from "@rewind/feature-replay-viewer";
 import { SplashScreen } from "./splash/SplashScreen";
+import { SetupScreen } from "./setup/SetupScreen";
 
 function ConnectedTheater() {
   const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
@@ -12,6 +13,10 @@ function ConnectedTheater() {
 
 function ConnectedSplashScreen() {
   return <SplashScreen status={"LOADING"} />;
+}
+
+function ConnectedSetupScreen() {
+  return <SetupScreen />;
 }
 
 function Home() {
@@ -35,6 +40,7 @@ export function RewindApp() {
   return (
     <Switch>
       <Route exact path={"/splash"} render={() => <ConnectedSplashScreen />} />
+      <Route exact path={"/setup"} render={() => <ConnectedSetupScreen />} />
       <Route render={() => <NormalView />} />
     </Switch>
   );

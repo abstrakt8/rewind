@@ -1,3 +1,5 @@
+import { RewindSidebarLogo } from "./RewindSidebarLogo";
+
 const VideoCameraIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -37,24 +39,13 @@ const SettingsIcon = () => (
     />
   </svg>
 );
-const RewindIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="sidebar-icon" viewBox="0 0 20 20" fill="currentColor">
-    <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
-  </svg>
-);
-const RewindLogo = () => (
-  <div className={"flex flex-col items-center"}>
-    <RewindIcon />
-    <span className={"logo-text"}>Rewind</span>
-  </div>
-);
 
 export function LeftMenuSidebar() {
   return (
     <nav className={"flex-none w-20 p-2 border-gray-500 border-r"}>
       <ul className={"flex flex-col items-center text-gray-200 gap-4 h-full"}>
         <li>
-          <RewindLogo />
+          <RewindSidebarLogo />
         </li>
         <li>
           <div className={"border-b-2 border-gray-500 w-6"} />
