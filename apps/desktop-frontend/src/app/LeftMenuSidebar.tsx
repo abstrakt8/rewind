@@ -1,6 +1,3 @@
-import "../main.css";
-import { Theater } from "./Theater";
-
 const VideoCameraIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +14,6 @@ const VideoCameraIcon = () => (
     />
   </svg>
 );
-
 const FilmIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="sidebar-icon" viewBox="0 0 20 20" fill="currentColor">
     <path
@@ -32,7 +28,6 @@ const HomeIcon = () => (
     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
   </svg>
 );
-
 const SettingsIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="sidebar-icon" viewBox="0 0 20 20" fill="currentColor">
     <path
@@ -42,13 +37,11 @@ const SettingsIcon = () => (
     />
   </svg>
 );
-
 const RewindIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="sidebar-icon" viewBox="0 0 20 20" fill="currentColor">
     <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
   </svg>
 );
-
 const RewindLogo = () => (
   <div className={"flex flex-col items-center"}>
     <RewindIcon />
@@ -56,7 +49,7 @@ const RewindLogo = () => (
   </div>
 );
 
-function Sidebar() {
+export function LeftMenuSidebar() {
   return (
     <nav className={"flex-none w-20 bg-gray-900 p-2"}>
       <ul className={"flex flex-col items-center text-gray-200 gap-4 h-full"}>
@@ -79,14 +72,5 @@ function Sidebar() {
         </li>
       </ul>
     </nav>
-  );
-}
-
-export function RewindApp() {
-  return (
-    <div className={"bg-gray-900 flex h-screen"}>
-      <Sidebar />
-      <Theater />
-    </div>
   );
 }

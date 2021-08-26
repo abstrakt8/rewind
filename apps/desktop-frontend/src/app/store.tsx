@@ -3,7 +3,10 @@ import createSagaMiddleware from "redux-saga";
 import localBlueprintInfoReducer from "./blueprints/LocalBlueprintInfo";
 import preferencesReducer from "./preferences/slice";
 import theaterReducer from "./theater/slice";
+import backendReducer from "./backend/slice";
 import { createRewindRootSaga } from "./RootSaga";
+import { createBrowserHistory } from "history";
+import { connectRouter, routerMiddleware } from "connected-react-router";
 
 type Replay = {
   id: string;
@@ -111,10 +114,14 @@ const ALL_SKINS: Record<string, LSkin> = {
   [kasugaMirai]: { id: kasugaMirai, name: "Kasuga Mirai" },
 };
 
+export const history = createBrowserHistory();
+
 const reducer = {
+  router: connectRouter(history),
   localBlueprintInfo: localBlueprintInfoReducer,
   preferences: preferencesReducer,
   theater: theaterReducer,
+  backend: backendReducer,
 };
 
 const sagaMiddleware = createSagaMiddleware();
@@ -122,7 +129,7 @@ const sagaMiddleware = createSagaMiddleware();
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware).concat(routerMiddleware(history)),
   preloadedState: {
     theater: {
       chosenBlueprintId,

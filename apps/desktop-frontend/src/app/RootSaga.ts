@@ -7,6 +7,7 @@ interface Settings {
 
 export function createRewindRootSaga({ url }: Settings) {
   return function* () {
+    // Well you could spawn them, but maybe only after the backend is ready?
     yield spawn(watchReplaysAdded, url);
   };
 }

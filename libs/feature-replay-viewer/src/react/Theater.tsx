@@ -1,4 +1,3 @@
-import { useAppSelector } from "../../../../apps/desktop-frontend/src/app/hooks";
 import { useEffect, useState } from "react";
 import { RewindStage } from "../app/stage";
 import { useTheaterContext } from "./components/TheaterProvider/TheaterProvider";
@@ -15,8 +14,13 @@ function TheaterPreparation() {
   );
 }
 
-export function Theater() {
-  const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
+interface Props {
+  chosenBlueprintId: string | null;
+  chosenReplayId: string | null;
+}
+
+export function Theater({ chosenBlueprintId, chosenReplayId }: Props) {
+  // const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
 
   const { createStage } = useTheaterContext();
   const [stage, setStage] = useState<RewindStage | null>(null);

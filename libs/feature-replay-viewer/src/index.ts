@@ -1,4 +1,5 @@
 export * from "./react/GameStage";
 export * from "./react/components/StageProvider/StageProvider";
 export * from "./react/components/TheaterProvider/TheaterProvider";
-export { RewindApp } from "./react/RewindApp";
+export * from "./app/stage/rewind/ViewSettings";
+export * from "./react/Theater";

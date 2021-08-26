@@ -1,10 +1,12 @@
 import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";
 
-import App from "./app/app";
-import { TheaterProvider } from "@rewind/feature-replay-viewer";
 import { Provider } from "react-redux";
-import { store } from "./app/store";
+import { store, history } from "./app/store";
+import { ConnectedRouter } from "connected-react-router";
+
+import { TheaterProvider } from "@rewind/feature-replay-viewer";
+import { RewindApp } from "./app/RewindApp";
 
 interface API {
   send(channel: "toMain", data: unknown): unknown;
@@ -25,9 +27,12 @@ declare global {
 ReactDOM.render(
   <StrictMode>
     <Provider store={store}>
-      <TheaterProvider apiUrl={"http://localhost:7271"}>
-        <App />
-      </TheaterProvider>
+      <ConnectedRouter history={history}>
+        {/* place ConnectedRouter under Provider */}
+        <TheaterProvider apiUrl={"http://localhost:7271"}>
+          <RewindApp />
+        </TheaterProvider>
+      </ConnectedRouter>
     </Provider>
   </StrictMode>,
   document.getElementById("root"),

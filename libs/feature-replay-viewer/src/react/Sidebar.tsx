@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Toggle } from "./Toggle";
 import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
-// import { useAppDispatch, useAppSelector } from "../../../../apps/desktop-frontend/src/app/hooks";
 import { PlaybarColors } from "./PlaybarColors";
 import { PlaybarSettings } from "../theater/playbarSettings";
 import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
