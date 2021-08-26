@@ -275,6 +275,27 @@
         }
       }
     },
+    "electron-api": {
+      "root": "libs/electron/api",
+      "sourceRoot": "libs/electron/api/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/electron/api/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/electron/api"],
+          "options": {
+            "jestConfig": "libs/electron/api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "feature-replay-viewer": {
       "root": "libs/feature-replay-viewer",
       "sourceRoot": "libs/feature-replay-viewer/src",

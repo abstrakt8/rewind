@@ -7,16 +7,12 @@ import { ConnectedRouter } from "connected-react-router";
 
 import { TheaterProvider } from "@rewind/feature-replay-viewer";
 import { RewindApp } from "./app/RewindApp";
-
-interface API {
-  send(channel: "toMain", data: unknown): unknown;
-
-  receive(channel: "fromMain", func: unknown): unknown;
-}
+import { ElectronAPI, SecureElectronAPI } from "@rewind/electron/api";
 
 declare global {
   interface Window {
-    api: API;
+    electron: ElectronAPI;
+    api: SecureElectronAPI;
   }
 }
 

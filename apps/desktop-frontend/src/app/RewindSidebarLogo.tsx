@@ -7,13 +7,13 @@ import { RewindIcon } from "@heroicons/react/solid";
 export const RewindSidebarLogo = () => (
   <div className={"flex flex-col items-center"}>
     <RewindIcon className={"h-8 w-8"} />
-    <span className={"logo-text"}>Rewind</span>
+    <span className={"logo-text select-none"}>Rewind</span>
   </div>
 );
 
 export const RewindLogo = () => (
   <div className={"flex flex-col items-center"}>
     <RewindIcon className={"h-10 w-10"} />
-    <span className={"text-xl -mt-2"}>Rewind</span>
+    <span className={"text-xl -mt-2 select-none"}>Rewind</span>
   </div>
 );

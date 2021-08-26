@@ -46,6 +46,9 @@
       "tags": [],
       "implicitDependencies": ["desktop-frontend"]
     },
+    "electron-api": {
+      "tags": []
+    },
     "feature-replay-viewer": {
       "tags": []
     },

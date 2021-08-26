@@ -5,7 +5,7 @@ import { join } from "path";
 import { ApiCommonModule, LocalBlueprintService } from "@rewind/api/common";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
 import { ReplayWatcher } from "../../common/src/replays/ReplayWatcher";
-import { ApiDesktopModule } from "@rewind/api/desktop";
+import { ApiDesktopModule } from "./api-desktop.module";
 import { osuFolderSanityCheck } from "./config/utils";
 import { DesktopConfigService, REWIND_CFG_PATH } from "./config/DesktopConfigService";
 import { DesktopConfigController } from "./config/DesktopConfigController";
