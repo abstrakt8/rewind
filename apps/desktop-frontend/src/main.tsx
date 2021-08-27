@@ -50,4 +50,5 @@ ReactDOM.render(
   document.getElementById("root"),
 );
 
-store.dispatch(push("/setup"));
+// TODO: Maybe not here -> initial State ?
+store.dispatch(push("/splash"));

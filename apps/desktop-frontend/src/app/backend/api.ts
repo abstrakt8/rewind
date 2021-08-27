@@ -1,15 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-
-const apiUrl = "http://localhost:7271/api";
+import { API_URL } from "./constants";
 
 interface RewindDesktopConfig {
   osuStablePath: string;
 }
 
+interface BackendState {
+  state: string;
+}
+
 export const rewindDesktopApi = createApi({
   reducerPath: "rewindDesktopApi",
-  baseQuery: fetchBaseQuery({ baseUrl: apiUrl }),
+  baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   endpoints: (builder) => ({
+    status: builder.query<BackendState, void>({
+      query: () => `status`,
+    }),
     updateOsuDirectory: builder.mutation<RewindDesktopConfig, RewindDesktopConfig>({
       query: ({ osuStablePath }) => ({
         url: `desktop`,

@@ -12,7 +12,8 @@ function ConnectedTheater() {
 }
 
 function ConnectedSplashScreen() {
-  return <SplashScreen status={"LOADING"} />;
+  const status = useAppSelector((state) => state.backend.status);
+  return <SplashScreen status={status} />;
 }
 
 function ConnectedSetupScreen() {

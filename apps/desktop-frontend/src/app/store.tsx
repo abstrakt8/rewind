@@ -144,8 +144,7 @@ const store = configureStore({
 
 setupListeners(store.dispatch);
 
-const url = "http://127.0.0.1:7271";
-sagaMiddleware.run(createRewindRootSaga({ url }));
+sagaMiddleware.run(createRewindRootSaga());
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
