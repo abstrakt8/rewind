@@ -1,6 +1,6 @@
 import { call, put, spawn, take, delay } from "redux-saga/effects";
 import { watchReplaysAdded } from "./replays/watchReplaysAdded";
-import { API_BASE_URL } from "./backend/constants";
+import { API_BASE_URL, REWIND_WS_URL } from "./backend/constants";
 import { BackendState, stateChanged } from "./backend/slice";
 import { SagaIterator } from "redux-saga";
 import { push } from "connected-react-router";
@@ -16,7 +16,7 @@ function* waitForBackendState(state: BackendState): SagaIterator {
 
 function* watchForBackendReady(): SagaIterator {
   yield call(waitForBackendState, "READY");
-  yield spawn(watchReplaysAdded, API_BASE_URL);
+  yield spawn(watchReplaysAdded, REWIND_WS_URL);
   yield put(push("/theater"));
 }
 

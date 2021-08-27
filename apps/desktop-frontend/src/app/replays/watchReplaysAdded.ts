@@ -43,6 +43,7 @@ function createSocketChannel(socket: Socket) {
 }
 
 export function* watchReplaysAdded(url: string): SagaIterator {
+  console.log("Starting watchReplaysAdded Saga");
   const socket = yield call(createWebSocketConnection, url);
   const channel = yield call(createSocketChannel, socket);
 
