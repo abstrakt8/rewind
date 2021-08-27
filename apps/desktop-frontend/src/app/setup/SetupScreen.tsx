@@ -45,6 +45,7 @@ export function SetupScreen() {
   const [saveEnabled, setSaveEnabled] = useState(false);
 
   const [updateOsuDirectory, updateState] = useUpdateOsuDirectoryMutation();
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const handleConfirmClick = useCallback(() => {
     if (directoryPath) {
@@ -55,12 +56,20 @@ export function SetupScreen() {
   useEffect(() => {
     if (updateState.isSuccess) {
       window.api.send("reboot");
-    } else {
-      // TODO
+    } else if (updateState.isError) {
+      setShowErrorMessage(true);
     }
-  }, [updateState]);
+  }, [updateState, setShowErrorMessage]);
 
-  // TODO: Maybe refactor?
+  const handleOnDirectoryChange = useCallback(
+    (path: string | null) => {
+      setDirectoryPath(path);
+      setShowErrorMessage(false);
+    },
+    [setShowErrorMessage],
+  );
+
+  // Makes sure that the button is only clickable when it's allowed.
   useEffect(() => {
     setSaveEnabled(directoryPath !== null && !updateState.isLoading);
   }, [directoryPath, updateState.isLoading]);
@@ -72,9 +81,10 @@ export function SetupScreen() {
         <DirectorySelection
           placeHolder={"Select your osu! directory..."}
           value={directoryPath}
-          onChange={setDirectoryPath}
+          onChange={handleOnDirectoryChange}
           pulseOnEmpty
         />
+        {showErrorMessage && <div className={"text-red-500"}>Does not look like a valid osu! directory.</div>}
         <div className={"flex flex-row-reverse"}>
           <button
             className={`${
