@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { RewindLogo } from "../RewindSidebarLogo";
 import { FolderOpenIcon } from "@heroicons/react/solid";
 import { useUpdateOsuDirectoryMutation } from "../backend/api";
-import { MoonLoader } from "react-spinners";
 
 interface DirectorySelectionProps {
   value: string | null;
@@ -20,7 +19,10 @@ function DirectorySelection({ value, onChange, placeHolder, pulseOnEmpty }: Dire
 
   useEffect(() => {
     const unsubscribe = window.api.receive("directorySelected", (path: string | null) => {
-      onChange(path);
+      // Otherwise it's weird, if the user suddenly loses their input on cancelling
+      if (path !== null) {
+        onChange(path);
+      }
     });
     return () => unsubscribe();
   }, [onChange]);
