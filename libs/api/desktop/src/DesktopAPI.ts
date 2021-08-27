@@ -5,7 +5,6 @@ import { join } from "path";
 import { ApiCommonModule, LocalBlueprintService } from "@rewind/api/common";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
 import { ReplayWatcher } from "../../common/src/replays/ReplayWatcher";
-import { ApiDesktopModule } from "./api-desktop.module";
 import { osuFolderSanityCheck } from "./config/utils";
 import { DesktopConfigService, REWIND_CFG_PATH } from "./config/DesktopConfigService";
 import { DesktopConfigController } from "./config/DesktopConfigController";
@@ -41,7 +40,7 @@ async function normalBootstrap(osuFolder: string) {
   };
 
   @Module({
-    imports: [ApiCommonModule, ApiDesktopModule],
+    imports: [ApiCommonModule],
     providers: [osuFolderProvider],
   })
   class RewindDesktopModule implements OnModuleInit {
@@ -106,7 +105,7 @@ export async function setupBootstrap({ applicationDataPath }: SetupBootstrapSett
 }
 
 export async function bootstrapRewindDesktopBackend({ applicationDataPath }: Settings) {
-  const osuFolder = "E:\\osu!";
+  const osuFolder = "E:\\!";
   const folderSanityCheckPassed = await osuFolderSanityCheck(osuFolder);
 
   if (folderSanityCheckPassed) {

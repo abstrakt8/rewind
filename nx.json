@@ -39,6 +39,9 @@
     "desktop": {
       "tags": []
     },
+    "desktop-backend": {
+      "tags": []
+    },
     "desktop-frontend": {
       "tags": []
     },

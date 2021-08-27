@@ -175,6 +175,56 @@
         }
       }
     },
+    "desktop-backend": {
+      "root": "apps/desktop-backend",
+      "sourceRoot": "apps/desktop-backend/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/desktop-backend",
+            "main": "apps/desktop-backend/src/main.ts",
+            "tsConfig": "apps/desktop-backend/tsconfig.app.json",
+            "assets": ["apps/desktop-backend/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/desktop-backend/src/environments/environment.ts",
+                  "with": "apps/desktop-backend/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "desktop-backend:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/desktop-backend/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/desktop-backend"],
+          "options": {
+            "jestConfig": "apps/desktop-backend/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "desktop-frontend": {
       "root": "apps/desktop-frontend",
       "sourceRoot": "apps/desktop-frontend/src",
@@ -224,7 +274,8 @@
           "executor": "@nrwl/web:dev-server",
           "options": {
             "buildTarget": "desktop-frontend:build",
-            "hmr": true
+            "hmr": true,
+            "proxyConfig": "apps/desktop-frontend/proxy.conf.json"
           },
           "configurations": {
             "production": {

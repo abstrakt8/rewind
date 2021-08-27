@@ -1,6 +1,11 @@
-import { Controller, Get, Logger, Param, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, Logger, Post, Res } from "@nestjs/common";
 import { DesktopConfigService } from "./DesktopConfigService";
 import { Response } from "express";
+import { osuFolderSanityCheck } from "@rewind/api/desktop";
+
+interface UpdateOsuStablePathDto {
+  osuStablePath: string;
+}
 
 @Controller("/desktop")
 export class DesktopConfigController {
@@ -9,10 +14,17 @@ export class DesktopConfigController {
   constructor(private readonly desktopConfigService: DesktopConfigService) {}
 
   @Post()
-  async saveOsuStablePath(@Param("osuStablePath") osuStablePath: string) {
+  async saveOsuStablePath(@Res() res: Response, @Body() { osuStablePath }: UpdateOsuStablePathDto) {
+    // this.logger.log(`${JSON.stringify(body)}`);
     this.logger.log(`Update OsuStablePath to ${osuStablePath}`);
-    // TODO: Sanity check
-    return this.desktopConfigService.saveOsuStablePath(osuStablePath);
+
+    const sanityCheckPassed = await osuFolderSanityCheck(osuStablePath);
+    if (sanityCheckPassed) {
+      await this.desktopConfigService.saveOsuStablePath(osuStablePath);
+      res.sendStatus(200);
+    } else {
+      res.status(400).json({ error: `Given folder '${osuStablePath}' does not seem to be a valid osu!stable folder` });
+    }
   }
 
   @Get()
