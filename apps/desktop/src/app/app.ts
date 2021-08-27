@@ -43,6 +43,7 @@ export class RewindElectronApp {
       // Or maybe find out how to use it with a node.js debugger?
       show: this.isDevMode,
       webPreferences: {
+        devTools: true,
         contextIsolation: true,
         nodeIntegration: true,
         preload: join(__dirname, "preload.js"),

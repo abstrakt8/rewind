@@ -7,6 +7,8 @@ import backendReducer from "./backend/slice";
 import { createRewindRootSaga } from "./RootSaga";
 import { createBrowserHistory } from "history";
 import { connectRouter, routerMiddleware } from "connected-react-router";
+import { rewindDesktopApi } from "./backend/api";
+import { setupListeners } from "@reduxjs/toolkit/query";
 
 type Replay = {
   id: string;
@@ -122,6 +124,7 @@ const reducer = {
   preferences: preferencesReducer,
   theater: theaterReducer,
   backend: backendReducer,
+  [rewindDesktopApi.reducerPath]: rewindDesktopApi.reducer,
 };
 
 const sagaMiddleware = createSagaMiddleware();
@@ -129,7 +132,8 @@ const sagaMiddleware = createSagaMiddleware();
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware).concat(routerMiddleware(history)),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(sagaMiddleware).concat(routerMiddleware(history)).concat(rewindDesktopApi.middleware),
   preloadedState: {
     theater: {
       chosenBlueprintId,
@@ -137,6 +141,8 @@ const store = configureStore({
     },
   },
 });
+
+setupListeners(store.dispatch);
 
 const url = "http://127.0.0.1:7271";
 sagaMiddleware.run(createRewindRootSaga({ url }));

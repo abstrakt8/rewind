@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import { Provider } from "react-redux";
 import { store, history } from "./app/store";
-import { ConnectedRouter } from "connected-react-router";
+import { ConnectedRouter, push } from "connected-react-router";
 
 import { TheaterProvider } from "@rewind/feature-replay-viewer";
 import { RewindApp } from "./app/RewindApp";
@@ -14,6 +14,16 @@ declare global {
     electron: ElectronAPI;
     api: SecureElectronAPI;
   }
+}
+
+// This "polyfill" is only done so that desktop-frontend can also be opened in the browser (for testing).
+if (!window.api) {
+  window.api = {
+    send: () => {},
+    receive: (...args) => {
+      return () => {};
+    },
+  };
 }
 
 // window.api.receive("fromMain", (data: string) => {
@@ -33,3 +43,5 @@ ReactDOM.render(
   </StrictMode>,
   document.getElementById("root"),
 );
+
+store.dispatch(push("/setup"));

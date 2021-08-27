@@ -3,14 +3,17 @@ import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { RewindLogo } from "../RewindSidebarLogo";
 import { FolderOpenIcon } from "@heroicons/react/solid";
+import { useUpdateOsuDirectoryMutation } from "../backend/api";
+import { MoonLoader } from "react-spinners";
 
 interface DirectorySelectionProps {
   value: string | null;
   onChange: (value: string | null) => void;
   placeHolder: string;
+  pulseOnEmpty?: boolean;
 }
 
-function DirectorySelection({ value, onChange, placeHolder }: DirectorySelectionProps) {
+function DirectorySelection({ value, onChange, placeHolder, pulseOnEmpty }: DirectorySelectionProps) {
   const handleSelectFolderClick = useCallback(() => {
     window.api.send("openDirectorySelect", value ?? "");
   }, [value]);
@@ -22,39 +25,53 @@ function DirectorySelection({ value, onChange, placeHolder }: DirectorySelection
     return () => unsubscribe();
   }, [onChange]);
 
+  const showAnimatePulse = pulseOnEmpty && value === null;
+
   return (
-    <div className={"rounded flex flex-row px-4 py-2 justify-between bg-gray-600 items-center"}>
-      <span className={"text-gray-400 select-none"}>{value ?? placeHolder}</span>
+    <div className={"rounded flex flex-row px-4 py-2 justify-between bg-gray-600 items-center gap-4"}>
+      <span className={"text-gray-400 select-none w-96"}>{value ?? placeHolder}</span>
       <button onClick={handleSelectFolderClick}>
-        <FolderOpenIcon className={"h-6 w-6"} />
+        <FolderOpenIcon className={`h-6 w-6  ${showAnimatePulse && "animate-pulse"}`} />
       </button>
     </div>
   );
 }
 
 export function SetupScreen() {
+  // TODO: Add a guess for directory path
   const [directoryPath, setDirectoryPath] = useState<string | null>(null);
   const [saveEnabled, setSaveEnabled] = useState(false);
 
-  const handleConfirmClick = useCallback(() => {
-    // TODO: Send this to backend
+  const [updateOsuDirectory, updateState] = useUpdateOsuDirectoryMutation();
 
-    window.api.send("reboot");
-  }, [directoryPath]);
+  const handleConfirmClick = useCallback(() => {
+    if (directoryPath) {
+      updateOsuDirectory({ osuStablePath: directoryPath });
+    }
+  }, [updateOsuDirectory, directoryPath]);
+
+  useEffect(() => {
+    if (updateState.isSuccess) {
+      window.api.send("reboot");
+    } else {
+      // TODO
+    }
+  }, [updateState.isSuccess]);
 
   // TODO: Maybe refactor?
   useEffect(() => {
-    setSaveEnabled(directoryPath !== null);
-  }, [directoryPath]);
+    setSaveEnabled(directoryPath !== null && !updateState.isLoading);
+  }, [directoryPath, updateState.isLoading]);
 
   return (
     <div className={"h-screen bg-gray-800 flex flex-item items-center justify-center text-gray-200"}>
-      <div className={"bg-gray-700 w-96 py-4 px-6 rounded flex flex-col gap-8"}>
+      <div className={"bg-gray-700 w-auto py-4 px-6 rounded flex flex-col gap-8"}>
         <RewindLogo />
         <DirectorySelection
           placeHolder={"Select your osu! directory..."}
           value={directoryPath}
           onChange={setDirectoryPath}
+          pulseOnEmpty
         />
         <div className={"flex flex-row-reverse"}>
           <button
@@ -64,7 +81,7 @@ export function SetupScreen() {
             disabled={!saveEnabled}
             onClick={handleConfirmClick}
           >
-            Save & Restart
+            <span>Save & Restart</span>
           </button>
         </div>
       </div>
