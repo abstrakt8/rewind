@@ -1,13 +1,25 @@
 import { ModuleRef, NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import { OSU_FOLDER } from "../../common/src/constants";
+import {
+  EventsGateway,
+  LocalBlueprintController,
+  LocalBlueprintService,
+  LocalReplayController,
+  LocalReplayService,
+  OSU_FOLDER,
+  OsuDBDao,
+  ReplayWatcher,
+  SkinController,
+  SkinResolver,
+  SkinService,
+} from "@rewind/api/common";
 import { join } from "path";
-import { ApiCommonModule, LocalBlueprintService } from "@rewind/api/common";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
-import { ReplayWatcher } from "../../common/src/replays/ReplayWatcher";
 import { osuFolderSanityCheck } from "./config/utils";
 import { DesktopConfigService, REWIND_CFG_PATH } from "./config/DesktopConfigService";
 import { DesktopConfigController } from "./config/DesktopConfigController";
+import { NormalStatusController, SetupStatusController } from "./status/SetupStatusController";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 
 const globalPrefix = "/api";
 const REWIND_CFG_NAME = "rewind.cfg";
@@ -31,7 +43,7 @@ function listenCallback() {
  * The usual bootstrap happens with the concrete knowledge of the osu! folder. Only at the first start up of the
  * application we will have to refer to boot differently.
  */
-async function normalBootstrap(osuFolder: string) {
+async function normalBootstrap({ osuFolder, applicationDataPath }: { osuFolder: string; applicationDataPath: string }) {
   Logger.log("Bootstrapping normally");
   // Find out osu! folder through settings
   const osuFolderProvider = {
@@ -39,9 +51,33 @@ async function normalBootstrap(osuFolder: string) {
     useValue: osuFolder,
   };
 
+  const rewindCfgPath = getRewindCfgPath(applicationDataPath);
+  const rewindCfgProvider = {
+    provide: REWIND_CFG_PATH,
+    useValue: rewindCfgPath,
+  };
+
   @Module({
-    imports: [ApiCommonModule],
-    providers: [osuFolderProvider],
+    imports: [EventEmitterModule.forRoot()],
+    controllers: [
+      LocalReplayController,
+      SkinController,
+      LocalBlueprintController,
+      NormalStatusController,
+      DesktopConfigController,
+    ],
+    providers: [
+      rewindCfgProvider,
+      osuFolderProvider,
+      SkinResolver,
+      SkinService,
+      EventsGateway,
+      ReplayWatcher,
+      LocalReplayService,
+      LocalBlueprintService,
+      OsuDBDao,
+      DesktopConfigService,
+    ],
   })
   class RewindDesktopModule implements OnModuleInit {
     constructor(private moduleRef: ModuleRef) {}
@@ -83,10 +119,14 @@ interface SetupBootstrapSettings {
   applicationDataPath: string;
 }
 
+function getRewindCfgPath(applicationDataPath: string) {
+  return join(applicationDataPath, REWIND_CFG_NAME);
+}
+
 export async function setupBootstrap({ applicationDataPath }: SetupBootstrapSettings) {
   Logger.log("Setup bootstrap started");
 
-  const rewindCfgPath = join(applicationDataPath, REWIND_CFG_NAME);
+  const rewindCfgPath = getRewindCfgPath(applicationDataPath);
   const rewindCfgProvider = {
     provide: REWIND_CFG_PATH,
     useValue: rewindCfgPath,
@@ -94,7 +134,7 @@ export async function setupBootstrap({ applicationDataPath }: SetupBootstrapSett
 
   @Module({
     providers: [rewindCfgProvider, DesktopConfigService],
-    controllers: [DesktopConfigController],
+    controllers: [DesktopConfigController, SetupStatusController],
   })
   class SetupModule {}
 
@@ -105,13 +145,22 @@ export async function setupBootstrap({ applicationDataPath }: SetupBootstrapSett
   return app;
 }
 
-export async function bootstrapRewindDesktopBackend({ applicationDataPath }: Settings) {
-  const osuFolder = "E:\\!";
-  const folderSanityCheckPassed = await osuFolderSanityCheck(osuFolder);
+async function readOsuFolder(applicationDataPath: string): Promise<string | undefined> {
+  try {
+    const service = new DesktopConfigService(getRewindCfgPath(applicationDataPath));
+    const config = await service.loadConfig();
+    return config.osuPath;
+  } catch (err) {
+    return undefined;
+  }
+}
 
-  if (folderSanityCheckPassed) {
-    return normalBootstrap(osuFolder);
-  } else {
+export async function bootstrapRewindDesktopBackend({ applicationDataPath }: Settings) {
+  const osuFolder = await readOsuFolder(applicationDataPath);
+  const requiresSetup = osuFolder === undefined || !(await osuFolderSanityCheck(osuFolder));
+  if (requiresSetup) {
     return setupBootstrap({ applicationDataPath });
+  } else {
+    return normalBootstrap({ applicationDataPath, osuFolder });
   }
 }

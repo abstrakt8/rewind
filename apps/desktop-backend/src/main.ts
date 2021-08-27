@@ -6,6 +6,6 @@
 import { bootstrapRewindDesktopBackend, setupBootstrap } from "@rewind/api/desktop";
 
 const applicationDataPath = "C:\\Users\\me\\";
-// bootstrapRewindDesktopBackend({ applicationDataPath });
+bootstrapRewindDesktopBackend({ applicationDataPath });
 
-setupBootstrap({ applicationDataPath });
+// setupBootstrap({ applicationDataPath });

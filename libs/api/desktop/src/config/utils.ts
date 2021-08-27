@@ -9,9 +9,11 @@ import { Logger } from "@nestjs/common";
 
 const filesToCheck = ["osu!.db", "scores.db", "Replays", "Skins", "Songs"];
 
+/**
+ * Checks certain files to see if Rewind can be booted without any problems with the given `osuFolderPath`.
+ * @param osuFolderPath the folder path to check the files in
+ */
 export async function osuFolderSanityCheck(osuFolderPath: string) {
-  // Check if osu!.db exists
-  // Check if Songs, Replays, Skins exists
   try {
     await Promise.all(filesToCheck.map((f) => access(join(osuFolderPath, f), constants.R_OK)));
   } catch (err) {
