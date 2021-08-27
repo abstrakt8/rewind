@@ -36,8 +36,13 @@ export function SetupScreen() {
   const [directoryPath, setDirectoryPath] = useState<string | null>(null);
   const [saveEnabled, setSaveEnabled] = useState(false);
 
-  // TODO: Maybe refactor?
+  const handleConfirmClick = useCallback(() => {
+    // TODO: Send this to backend
 
+    window.api.send("reboot");
+  }, [directoryPath]);
+
+  // TODO: Maybe refactor?
   useEffect(() => {
     setSaveEnabled(directoryPath !== null);
   }, [directoryPath]);
@@ -57,6 +62,7 @@ export function SetupScreen() {
               saveEnabled ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 cursor-default text-gray-500"
             } py-2 px-4 rounded select-none`}
             disabled={!saveEnabled}
+            onClick={handleConfirmClick}
           >
             Save & Restart
           </button>

@@ -32,6 +32,11 @@ ipcMain.on("openDirectorySelect", (event, args) => {
   });
 });
 
+ipcMain.on("reboot", (event, args) => {
+  app.relaunch();
+  app.quit();
+});
+
 // static bootstrapAppEvents() {
 //
 //   // initialize auto updater service

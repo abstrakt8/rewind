@@ -3,7 +3,7 @@ export interface ElectronAPI {
   platform: string;
 }
 
-export const validSendChannels = ["openDirectorySelect"] as const;
+export const validSendChannels = ["openDirectorySelect", "reboot"] as const;
 export type ValidSendChannel = typeof validSendChannels[number];
 
 export const validReceiveChannels = ["directorySelected"] as const;
