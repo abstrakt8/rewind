@@ -100,6 +100,7 @@ export async function setupBootstrap({ applicationDataPath }: SetupBootstrapSett
 
   const app = await NestFactory.create<NestExpressApplication>(SetupModule);
   app.setGlobalPrefix(globalPrefix);
+  app.enableCors();
   await app.listen(port, listenCallback);
   return app;
 }

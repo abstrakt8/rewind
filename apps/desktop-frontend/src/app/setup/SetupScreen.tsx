@@ -56,7 +56,7 @@ export function SetupScreen() {
     } else {
       // TODO
     }
-  }, [updateState.isSuccess]);
+  }, [updateState]);
 
   // TODO: Maybe refactor?
   useEffect(() => {
