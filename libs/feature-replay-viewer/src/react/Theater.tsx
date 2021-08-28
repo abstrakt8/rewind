@@ -4,12 +4,22 @@ import { useTheaterContext } from "./components/TheaterProvider/TheaterProvider"
 import { StageProvider } from "./components/StageProvider/StageProvider";
 import { GameStage } from "./GameStage";
 import { SyncLoader } from "react-spinners";
+import { LightningBoltIcon } from "@heroicons/react/solid";
 
 function TheaterPreparation() {
   return (
     <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200"}>
       <SyncLoader loading={true} color={"white"} />
       <div>Preparing the stage...</div>
+    </div>
+  );
+}
+
+function TheaterEmpty() {
+  return (
+    <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200"}>
+      <LightningBoltIcon className={"h-16 w-16"} />
+      <div>Press F2 during an osu! score/fail screen to load the replay</div>
     </div>
   );
 }
@@ -46,7 +56,7 @@ export function Theater({ chosenBlueprintId, chosenReplayId }: Props) {
   }, [stage]);
 
   if (chosenBlueprintId === null) {
-    return <div>No blueprint chosen, try using F2.</div>;
+    return <TheaterEmpty />;
   }
 
   if (loading || !stage) {

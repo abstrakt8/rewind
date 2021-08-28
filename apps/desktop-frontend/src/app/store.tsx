@@ -129,17 +129,21 @@ const reducer = {
 
 const sagaMiddleware = createSagaMiddleware();
 
+const isDev = process.env.NODE_ENV !== "production" && false;
+const preloadedState = isDev
+  ? {
+      theater: {
+        chosenBlueprintId,
+        chosenReplayId,
+      },
+    }
+  : {};
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   reducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware).concat(routerMiddleware(history)).concat(rewindDesktopApi.middleware),
-  preloadedState: {
-    theater: {
-      chosenBlueprintId,
-      chosenReplayId,
-    },
-  },
+  preloadedState,
 });
 
 setupListeners(store.dispatch);
