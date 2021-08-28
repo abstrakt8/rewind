@@ -9,13 +9,13 @@ const youtubeUrl = "https://www.youtube.com/channel/UCzW2Z--fEw0LWKgVTmO-b6w";
 function Socials() {
   return (
     <div className={"flex gap-4"}>
-      <a href={discordUrl}>
+      <a href={discordUrl} target={"_blank"}>
         <FaDiscord className={"socials"} />
       </a>
-      <a href={twitterUrl}>
+      <a href={twitterUrl} target={"_blank"}>
         <FaTwitter className={"socials"} />
       </a>
-      <a href={youtubeUrl}>
+      <a href={youtubeUrl} target={"_blank"}>
         <FaYoutube className={"socials"} />
       </a>
     </div>

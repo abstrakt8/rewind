@@ -1,4 +1,4 @@
-import { BrowserWindow, screen, app, dialog, ipcMain } from "electron";
+import { BrowserWindow, screen, app, dialog, ipcMain, shell } from "electron";
 import { join } from "path";
 import { format } from "url";
 import { environment } from "./environments/environment";
@@ -38,6 +38,12 @@ export class RewindElectronApp {
     this.mainWindow.on("closed", () => {
       this.mainWindow = null;
     });
+
+    // Open external links such as socials in the default browser.
+    this.mainWindow.webContents.setWindowOpenHandler((details) => {
+      shell.openExternal(details.url);
+      return { action: "deny" };
+    });
   }
 
   createApiWindow() {
@@ -53,7 +59,9 @@ export class RewindElectronApp {
         preload: desktopBackendPreload,
       },
     });
-    this.apiWindow.webContents.openDevTools();
+    if (this.isDevMode) {
+      this.apiWindow.webContents.openDevTools();
+    }
   }
 
   loadApiWindow() {
@@ -71,7 +79,7 @@ export class RewindElectronApp {
 
     // In DEV mode we want to utilize hot reloading, therefore we are going to connect a development server.
     // Therefore `nx run desktop-frontend:serve` must be run first before this is executed.
-    if (this.isDevMode && false) {
+    if (this.isDevMode) {
       this.mainWindow.loadURL(`http://localhost:${rendererAppDevPort}`).then(handleFinishedLoading);
     } else {
       this.mainWindow
@@ -116,8 +124,13 @@ export class RewindElectronApp {
 
 // TODO: Squirrel events
 // TODO: Electron events (?) -> gives app version and exit
+function isDevelopmentMode() {
+  const isEnvironmentSet: boolean = "ELECTRON_IS_DEV" in process.env;
+  const getFromEnvironment: boolean = parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;
+  return isEnvironmentSet ? getFromEnvironment : !environment.production;
+}
 
-const rewindElectronApp = new RewindElectronApp(app, true);
+const rewindElectronApp = new RewindElectronApp(app, isDevelopmentMode());
 rewindElectronApp.boot();
 
 async function selectDirectory(defaultPath: string) {

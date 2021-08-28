@@ -12,8 +12,8 @@ const isDevMode = process.env.NODE_ENV !== "production";
 async function getSettings() {
   if (isDevMode) {
     return {
-      userDataPath: "C:\\Users\\me\\Roaming\\AppData\\rewind",
-      appDataPath: "C:\\Users\\me\\Roaming\\AppData",
+      userDataPath: "C:\\Users\\me\\AppData\\Roaming\\rewind",
+      appDataPath: "C:\\Users\\me\\AppData\\Roaming",
     };
   } else {
     const [userDataPath, appDataPath] = await Promise.all([
