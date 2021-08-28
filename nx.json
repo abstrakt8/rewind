@@ -42,6 +42,9 @@
     "desktop-backend": {
       "tags": []
     },
+    "desktop-backend-preload": {
+      "tags": []
+    },
     "desktop-frontend": {
       "tags": []
     },
@@ -49,7 +52,7 @@
       "tags": [],
       "implicitDependencies": ["desktop-frontend"]
     },
-    "desktop-preload": {
+    "desktop-frontend-preload": {
       "tags": []
     },
     "electron-api": {

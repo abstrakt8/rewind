@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: "desktop-preload",
+  displayName: "desktop-backend-preload",
   preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -11,5 +11,5 @@ module.exports = {
     "^.+\\.[tj]s$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "js", "html"],
-  coverageDirectory: "../../coverage/apps/desktop-preload",
+  coverageDirectory: "../../coverage/apps/desktop-backend-preload",
 };

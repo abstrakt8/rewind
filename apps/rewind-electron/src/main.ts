@@ -9,7 +9,8 @@ const DEFAULT_HEIGHT = 720;
 const rendererAppName = "desktop-frontend";
 const rendererAppDevPort = 4200;
 
-const preloadPath = join(__dirname, "..", "desktop-preload", "main.js");
+const desktopFrontendPreload = join(__dirname, "..", "desktop-frontend-preload", "main.js");
+const desktopBackendPreload = join(__dirname, "..", "desktop-backend-preload", "main.js");
 
 export class RewindElectronApp {
   mainWindow: BrowserWindow;
@@ -29,7 +30,7 @@ export class RewindElectronApp {
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: true, // This MUST be true in order for PageVisibility API to work.
-        preload: preloadPath,
+        preload: desktopFrontendPreload,
       },
     });
     // this.mainWindow.setMenu(null);
@@ -46,9 +47,10 @@ export class RewindElectronApp {
       show: this.isDevMode,
       webPreferences: {
         devTools: true,
-        contextIsolation: true,
+        // We can be a little bit reckless here because we don't load remote content in the backend.
+        contextIsolation: false,
         nodeIntegration: true,
-        preload: preloadPath,
+        preload: desktopBackendPreload,
       },
     });
     this.apiWindow.webContents.openDevTools();
