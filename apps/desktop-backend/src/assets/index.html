@@ -10,6 +10,12 @@ This window (Renderer) is only opened while in development mode.
 
 Open the console (Ctrl+Shift+I) to see the API logs.
 
-<script type="text/javascript" src="../main.js"></script>
+<!--
+https://github.com/electron/electron/issues/2863#issuecomment-142158983
+Can't use  <script src="...">, we MUST use `require`.
+-->
+<script>
+  require("../main.js");
+</script>
 </body>
 </html>

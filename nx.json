@@ -49,6 +49,9 @@
       "tags": [],
       "implicitDependencies": ["desktop-frontend"]
     },
+    "desktop-preload": {
+      "tags": []
+    },
     "electron-api": {
       "tags": []
     },

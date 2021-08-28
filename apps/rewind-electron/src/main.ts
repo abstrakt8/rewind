@@ -9,7 +9,9 @@ const DEFAULT_HEIGHT = 720;
 const rendererAppName = "desktop-frontend";
 const rendererAppDevPort = 4200;
 
-class RewindElectronApp {
+const preloadPath = join(__dirname, "..", "desktop-preload", "main.js");
+
+export class RewindElectronApp {
   mainWindow: BrowserWindow;
   apiWindow: BrowserWindow;
 
@@ -26,8 +28,8 @@ class RewindElectronApp {
       show: true,
       webPreferences: {
         contextIsolation: true,
-        backgroundThrottling: true, // TODO: Should this be enabled?
-        // TODO: Preload
+        backgroundThrottling: true, // This MUST be true in order for PageVisibility API to work.
+        preload: preloadPath,
       },
     });
     // this.mainWindow.setMenu(null);
@@ -43,17 +45,19 @@ class RewindElectronApp {
       // Or maybe find out how to use it with a node.js debugger?
       show: this.isDevMode,
       webPreferences: {
+        devTools: true,
         contextIsolation: true,
         nodeIntegration: true,
-        preload: join(__dirname, "preload.js"),
+        preload: preloadPath,
       },
     });
+    this.apiWindow.webContents.openDevTools();
   }
 
   loadApiWindow() {
     this.apiWindow.loadURL(
       format({
-        pathname: join(__dirname, "assets", "index.html"),
+        pathname: join(__dirname, "..", "desktop-backend", "assets", "index.html"),
         protocol: "file:",
         slashes: true,
       }),
@@ -65,7 +69,7 @@ class RewindElectronApp {
 
     // In DEV mode we want to utilize hot reloading, therefore we are going to connect a development server.
     // Therefore `nx run desktop-frontend:serve` must be run first before this is executed.
-    if (this.isDevMode) {
+    if (this.isDevMode && false) {
       this.mainWindow.loadURL(`http://localhost:${rendererAppDevPort}`).then(handleFinishedLoading);
     } else {
       this.mainWindow
@@ -87,11 +91,10 @@ class RewindElectronApp {
   }
 
   handleReady() {
-    this.createApiWindow();
-    this.loadApiWindow();
-
     this.createMainWindow();
     this.loadMainWindow();
+    this.createApiWindow();
+    this.loadApiWindow();
   }
 
   handleActivate() {
@@ -109,14 +112,8 @@ class RewindElectronApp {
   }
 }
 
-function isDevelopmentMode() {
-  const isEnvironmentSet: boolean = "ELECTRON_IS_DEV" in process.env;
-  const getFromEnvironment: boolean = parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;
-  return isEnvironmentSet ? getFromEnvironment : !environment.production;
-}
-
 // TODO: Squirrel events
 // TODO: Electron events (?) -> gives app version and exit
 
-const rewindElectronApp = new RewindElectronApp(app, isDevelopmentMode());
+const rewindElectronApp = new RewindElectronApp(app, true);
 rewindElectronApp.boot();

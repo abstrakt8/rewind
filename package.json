@@ -30,6 +30,7 @@
     "build-storybook": "build-storybook",
     "postinstall": "exitzero electron-builder install-app-deps",
     "electron:build": "electron-builder",
+    "desktop:build2": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-preload,rewind-electron --parallel",
     "desktop:build": "nx run-many --target=build --projects=desktop-frontend,desktop --parallel",
     "desktop:serve": "nx run-many --target=serve --projects=desktop-frontend,desktop --parallel",
     "desktop:package": "nx run desktop:package --frontendProject=desktop-frontend",
