@@ -26,7 +26,7 @@ export class RewindElectronApp {
       show: true,
       webPreferences: {
         contextIsolation: true,
-        backgroundThrottling: true, // TODO: Should this be enabled?
+        backgroundThrottling: true, // This MUST be true in order for PageVisibility API to work.
         preload: join(__dirname, "preload.js"),
       },
     });
@@ -88,11 +88,10 @@ export class RewindElectronApp {
   }
 
   handleReady() {
-    this.createApiWindow();
-    this.loadApiWindow();
-
     this.createMainWindow();
     this.loadMainWindow();
+    this.createApiWindow();
+    this.loadApiWindow();
   }
 
   handleActivate() {
