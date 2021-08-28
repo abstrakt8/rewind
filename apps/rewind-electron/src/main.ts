@@ -1,4 +1,4 @@
-import { BrowserWindow, screen, app } from "electron";
+import { BrowserWindow, screen, app, dialog, ipcMain } from "electron";
 import { join } from "path";
 import { format } from "url";
 import { environment } from "./environments/environment";
@@ -119,3 +119,31 @@ export class RewindElectronApp {
 
 const rewindElectronApp = new RewindElectronApp(app, true);
 rewindElectronApp.boot();
+
+async function selectDirectory(defaultPath: string) {
+  const { canceled, filePaths } = await dialog.showOpenDialog({ defaultPath, properties: ["openDirectory"] });
+  if (canceled || filePaths.length === 0) {
+    return null;
+  } else {
+    return filePaths[0];
+  }
+}
+
+ipcMain.handle("getUserDataPath", (event, args) => {
+  return app.getPath("userData");
+});
+
+ipcMain.handle("getAppDataPath", (event, args) => {
+  return app.getPath("appData");
+});
+
+ipcMain.on("openDirectorySelect", (event, args) => {
+  selectDirectory(args[0]).then((choice) => {
+    rewindElectronApp.mainWindow.webContents.send("directorySelected", choice);
+  });
+});
+
+ipcMain.on("reboot", (event, args) => {
+  app.relaunch();
+  app.quit();
+});

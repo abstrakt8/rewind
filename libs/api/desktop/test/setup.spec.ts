@@ -17,7 +17,7 @@ describe("Setup E2E", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await setupBootstrap({ applicationDataPath });
+    app = await setupBootstrap({ userDataPath: applicationDataPath });
   });
 
   it("/GET desktop", () => {

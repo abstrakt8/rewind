@@ -15,3 +15,8 @@ export interface SecureElectronAPI {
   send: (channel: ValidSendChannel, ...args: string[]) => void;
   receive: (channel: ValidReceiveChannel, func: (...args: any[]) => void) => Destroyer;
 }
+
+export interface BackendPreloadAPI {
+  getAppDataPath: () => Promise<string>;
+  getUserDataPath: () => Promise<string>;
+}

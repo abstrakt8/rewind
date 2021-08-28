@@ -25,8 +25,10 @@ const globalPrefix = "/api";
 const REWIND_CFG_NAME = "rewind.cfg";
 
 interface Settings {
-  // Usually %APPDATA% on Windows
-  applicationDataPath: string;
+  // Usually %APPDATA%
+  appDataPath: string;
+  // Usually %APPDATA%/rewind
+  userDataPath: string;
 }
 
 interface NormalBootstrapSettings {
@@ -43,7 +45,7 @@ function listenCallback() {
  * The usual bootstrap happens with the concrete knowledge of the osu! folder. Only at the first start up of the
  * application we will have to refer to boot differently.
  */
-async function normalBootstrap({ osuFolder, applicationDataPath }: { osuFolder: string; applicationDataPath: string }) {
+async function normalBootstrap({ osuFolder, userDataPath }: { osuFolder: string; userDataPath: string }) {
   Logger.log("Bootstrapping normally");
   // Find out osu! folder through settings
   const osuFolderProvider = {
@@ -51,7 +53,7 @@ async function normalBootstrap({ osuFolder, applicationDataPath }: { osuFolder: 
     useValue: osuFolder,
   };
 
-  const rewindCfgPath = getRewindCfgPath(applicationDataPath);
+  const rewindCfgPath = getRewindCfgPath(userDataPath);
   const rewindCfgProvider = {
     provide: REWIND_CFG_PATH,
     useValue: rewindCfgPath,
@@ -116,17 +118,17 @@ async function normalBootstrap({ osuFolder, applicationDataPath }: { osuFolder: 
 }
 
 interface SetupBootstrapSettings {
-  applicationDataPath: string;
+  userDataPath: string;
 }
 
 function getRewindCfgPath(applicationDataPath: string) {
   return join(applicationDataPath, REWIND_CFG_NAME);
 }
 
-export async function setupBootstrap({ applicationDataPath }: SetupBootstrapSettings) {
+export async function setupBootstrap({ userDataPath }: SetupBootstrapSettings) {
   Logger.log("Setup bootstrap started");
 
-  const rewindCfgPath = getRewindCfgPath(applicationDataPath);
+  const rewindCfgPath = getRewindCfgPath(userDataPath);
   const rewindCfgProvider = {
     provide: REWIND_CFG_PATH,
     useValue: rewindCfgPath,
@@ -155,12 +157,12 @@ async function readOsuFolder(applicationDataPath: string): Promise<string | unde
   }
 }
 
-export async function bootstrapRewindDesktopBackend({ applicationDataPath }: Settings) {
-  const osuFolder = await readOsuFolder(applicationDataPath);
+export async function bootstrapRewindDesktopBackend({ appDataPath, userDataPath }: Settings) {
+  const osuFolder = await readOsuFolder(userDataPath);
   const requiresSetup = osuFolder === undefined || !(await osuFolderSanityCheck(osuFolder));
   if (requiresSetup) {
-    return setupBootstrap({ applicationDataPath });
+    return setupBootstrap({ userDataPath });
   } else {
-    return normalBootstrap({ applicationDataPath, osuFolder });
+    return normalBootstrap({ userDataPath, osuFolder });
   }
 }
