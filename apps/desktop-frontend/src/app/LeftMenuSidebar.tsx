@@ -1,4 +1,5 @@
 import { RewindSidebarLogo } from "./RewindSidebarLogo";
+import { Link } from "react-router-dom";
 
 const VideoCameraIcon = () => (
   <svg
@@ -51,10 +52,14 @@ export function LeftMenuSidebar() {
           <div className={"border-b-2 border-gray-500 w-6"} />
         </li>
         <li className={""}>
-          <HomeIcon />
+          <Link to={"/home"}>
+            <HomeIcon />
+          </Link>
         </li>
         <li className={""}>
-          <FilmIcon />
+          <Link to={"/theater"}>
+            <FilmIcon />
+          </Link>
         </li>
         {/* Gap */}
         <li className={"flex-1"} />

@@ -51,4 +51,4 @@ ReactDOM.render(
 );
 
 // TODO: Maybe not here -> initial State ?
-store.dispatch(push("/splash"));
+store.dispatch(push("/home"));

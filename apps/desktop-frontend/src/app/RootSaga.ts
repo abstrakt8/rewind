@@ -17,7 +17,7 @@ function* waitForBackendState(state: BackendState): SagaIterator {
 function* watchForBackendReady(): SagaIterator {
   yield call(waitForBackendState, "READY");
   yield spawn(watchReplaysAdded, REWIND_WS_URL);
-  yield put(push("/theater"));
+  yield put(push("/home")); // Theater
 }
 
 function* watchForBackendMissingSetup(): SagaIterator {

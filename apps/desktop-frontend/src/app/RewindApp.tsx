@@ -1,11 +1,12 @@
 import "./main.css";
 import { useAppSelector } from "./hooks";
-import { Route, Switch } from "react-router"; // react-router v4/v5
+import { Route, Switch } from "react-router-dom"; // react-router v4/v5
 import { LeftMenuSidebar } from "./LeftMenuSidebar";
 import { Theater } from "@rewind/feature-replay-viewer";
 import { SplashScreen } from "./splash/SplashScreen";
 import { SetupScreen } from "./setup/SetupScreen";
 import { useEffect } from "react";
+import { HomeScreen } from "./home/HomeScreen";
 
 function ConnectedTheater() {
   const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
@@ -24,10 +25,6 @@ function ConnectedSetupScreen() {
   return <SetupScreen />;
 }
 
-function Home() {
-  return <div>Home</div>;
-}
-
 function NormalView() {
   const { status } = useAppSelector((state) => state.backend);
 
@@ -39,7 +36,7 @@ function NormalView() {
       <LeftMenuSidebar />
 
       <Switch>
-        <Route exact path={"/"} render={() => <Home />} />
+        <Route exact path={"/home"} render={() => <HomeScreen />} />
         <Route exact path={"/theater"} render={() => <ConnectedTheater />} />
       </Switch>
     </div>
