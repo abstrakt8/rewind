@@ -5,9 +5,13 @@ import { LeftMenuSidebar } from "./LeftMenuSidebar";
 import { Theater } from "@rewind/feature-replay-viewer";
 import { SplashScreen } from "./splash/SplashScreen";
 import { SetupScreen } from "./setup/SetupScreen";
+import { useEffect } from "react";
 
 function ConnectedTheater() {
   const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
+  useEffect(() => {
+    console.log(`Theater is now constructing a stage with blueprintId=${chosenBlueprintId} replayId=${chosenReplayId}`);
+  }, [chosenReplayId, chosenBlueprintId]);
   return <Theater chosenBlueprintId={chosenBlueprintId} chosenReplayId={chosenReplayId} />;
 }
 
@@ -25,6 +29,11 @@ function Home() {
 }
 
 function NormalView() {
+  const { status } = useAppSelector((state) => state.backend);
+
+  if (status !== "READY") {
+    return <div>You should not be here</div>;
+  }
   return (
     <div className={"bg-gray-800 flex h-screen"}>
       <LeftMenuSidebar />
