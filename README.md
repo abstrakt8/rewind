@@ -32,4 +32,11 @@ Set environment variable appropriately, e.g.:
 REWIND_TEST_DIR=E:\RewindTests\osu!
 ```
 
+# Building
+
+The default skin (currently "- YUGEN - ") should be put into `resources/`
+
+
+```
+```
 

@@ -39,5 +39,11 @@
         "index.js"
       ]
     }
+  ],
+  "extraResources": [
+    {
+      "from": "resources/Skins",
+      "to": "Skins"
+    }
   ]
 }
