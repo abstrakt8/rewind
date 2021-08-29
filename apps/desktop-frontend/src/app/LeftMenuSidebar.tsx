@@ -63,9 +63,9 @@ export function LeftMenuSidebar() {
         </li>
         {/* Gap */}
         <li className={"flex-1"} />
-        <li className={""}>
-          <SettingsIcon />
-        </li>
+        {/*<li className={""}>*/}
+        {/*  <SettingsIcon />*/}
+        {/*</li>*/}
       </ul>
     </nav>
   );
