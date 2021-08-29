@@ -29,9 +29,8 @@ export class LocalReplayService {
 
   @OnEvent(ReplayWatchEvents.ReplayRead)
   onReplayRead(event: ReplayReadEvent) {
-    const { replay, filename } = event.payload;
-    this.logger.log(`Replay with name '${filename}' detected -> going to broadcast.`);
-
+    // const { replay, filename } = event.payload;
+    // this.logger.log(`Replay with name '${filename}' detected -> going to broadcast.`);
     // TODO: Maybe emit ReplayAdded and then the WebSocket will broadcast it to everybody
   }
 }

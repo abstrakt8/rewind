@@ -17,9 +17,9 @@ function TheaterPreparation() {
 
 function TheaterEmpty() {
   return (
-    <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200"}>
+    <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200 p-4"}>
       <LightningBoltIcon className={"h-16 w-16"} />
-      <div>Press F2 during an osu! score/fail screen to load the replay</div>
+      <div>In osu! press F2 while being at a score/fail screen to load the replay</div>
     </div>
   );
 }

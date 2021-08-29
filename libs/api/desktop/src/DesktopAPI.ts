@@ -103,18 +103,8 @@ async function normalBootstrap({ osuFolder, userDataPath }: { osuFolder: string;
 
   app.useStaticAssets(join(osuFolder, "Skins"), { prefix: "/static/skins" });
   app.useStaticAssets(join(osuFolder, "Songs"), { prefix: "/static/songs" });
-  // app.useStaticAssets("E:\\osu!\\Replays", { prefix: "/static/replays" });
-  // app.useStaticAssets("E:\\osu!\\Data\\r", { prefix: "/static/replays" });
-
-  // TODO TODO TODO getAllBlueprints() should store a state "IS_LOADING"
-  // const localBlueprintService = app.get(LocalBlueprintService);
-  // localBlueprintService.getAllBlueprints().then(() => Logger.log("Loaded all blueprints."));
-
-  // const replayWatcher = app.get(ReplayWatcher);
-  // replayWatcher.watchForReplays(join(osuFolder, "Replays"));
 
   await app.listen(port, listenCallback);
-  // return () => app.close();
 }
 
 interface SetupBootstrapSettings {

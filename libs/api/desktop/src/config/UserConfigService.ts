@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { DEFAULT_SKIN_ID } from "../../../common/src/constants";
 
-// TODO: API Key, ...
 interface Config {
   skinId: string;
   // apiKey: string;
 }
 
+const NO_SKIN_ID = "";
+
 const defaultConfig: Config = {
-  skinId: DEFAULT_SKIN_ID,
+  skinId: NO_SKIN_ID,
   // apiKey: "",
 };
 

@@ -33,8 +33,8 @@ export class RewindElectronApp {
         preload: desktopFrontendPreload,
       },
     });
-    // this.mainWindow.setMenu(null);
     this.mainWindow.center();
+    this.mainWindow.setMenuBarVisibility(false);
     this.mainWindow.on("closed", () => {
       this.mainWindow = null;
     });
