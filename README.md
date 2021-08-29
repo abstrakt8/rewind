@@ -16,10 +16,27 @@
 * `osu-local`: `nrwl/nodejs:library`
 * `osu-pixi`: `@nrwl/workspace:library`
 
+
+# Running the desktop app
+
+
+```shell
+yarn run desktop:serve
+```
+
 # Testing
 
 Set environment variable appropriately, e.g.:
 
 ```
-REWIND_OSU_TEST_DIR=E:\RewindTests\osu!
+REWIND_TEST_DIR=E:\RewindTests\osu!
 ```
+
+# Building
+
+The default skin (currently "- YUGEN - ") should be put into `resources/`
+
+
+```
+```
+

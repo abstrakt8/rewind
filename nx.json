@@ -30,10 +30,19 @@
     ".-desktop": {
       "tags": []
     },
-    "api": {
+    "api-common": {
+      "tags": []
+    },
+    "api-desktop": {
       "tags": []
     },
     "desktop": {
+      "tags": []
+    },
+    "desktop-backend": {
+      "tags": []
+    },
+    "desktop-backend-preload": {
       "tags": []
     },
     "desktop-frontend": {
@@ -42,6 +51,12 @@
     "desktop-frontend-e2e": {
       "tags": [],
       "implicitDependencies": ["desktop-frontend"]
+    },
+    "desktop-frontend-preload": {
+      "tags": []
+    },
+    "electron-api": {
+      "tags": []
     },
     "feature-replay-viewer": {
       "tags": []
@@ -80,7 +95,13 @@
     "osu-stable-test-generator": {
       "tags": []
     },
+    "rewind-electron": {
+      "tags": []
+    },
     "web": {
+      "tags": []
+    },
+    "web-api": {
       "tags": []
     },
     "web-e2e": {

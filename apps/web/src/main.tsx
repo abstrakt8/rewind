@@ -1,24 +1,17 @@
-// TODO: Should only be imported once
-import "reflect-metadata";
-
 import { TheaterProvider } from "@rewind/feature-replay-viewer";
 import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";
 
 import App from "./app/app";
-import { Provider } from "react-redux";
-import store from "../../../libs/feature-replay-viewer/src/store";
 
 // TODO: process.env.URL
 const url = "http://localhost:7271";
 
 ReactDOM.render(
   <StrictMode>
-    <Provider store={store}>
-      <TheaterProvider apiUrl={url}>
-        <App />
-      </TheaterProvider>
-    </Provider>
+    <TheaterProvider apiUrl={url}>
+      <App />
+    </TheaterProvider>
   </StrictMode>,
 
   document.getElementById("root"),

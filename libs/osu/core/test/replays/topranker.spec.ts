@@ -1,5 +1,6 @@
-import { commonStats, createTestTimeMachine, TEST_MAPS, TEST_REPLAYS } from "../util.spec";
+import { commonStats, createTestTimeMachine } from "../utils/others";
 import { retrieveEvents } from "../../src";
+import { TEST_MAPS, TEST_REPLAYS } from "../utils/testBlueprintPath";
 
 test("abstrakt - Top Ranker", () => {
   // md5 3be542cdcfbad11d922f05f1a7df8463

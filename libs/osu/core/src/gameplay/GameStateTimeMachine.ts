@@ -2,7 +2,6 @@ import { cloneGameState, defaultGameState, GameState } from "./GameState";
 import { ReplayFrame } from "../replays/Replay";
 import { Vec2 } from "@rewind/osu/math";
 import { Beatmap } from "../beatmap/Beatmap";
-import { GameplayInfo } from "./GameplayInfo";
 import { GameStateEvaluator, GameStateEvaluatorOptions } from "./GameStateEvaluator";
 
 export interface GameStateTimeMachine {
@@ -13,8 +12,9 @@ export interface GameStateTimeMachine {
  * By default O(R sqrt n) memory and O(sqrt n) time, where R is the size of a replay state.
  * Stores replays at the indices [0, sqrt n, 2 *sqrt n, ..., sqrt n * sqrt n] and the others are inferred.
  *
- * TODO: We could do caching like described in method 4 of https://gamedev.stackexchange.com/questions/6080/how-to-design-a-replay-system/8372#8372
- * TODO: Should we Object.freeze(...) the cached ones in order to prevent accidental mutations?
+ * TODO: We could do caching like described in method 4 of
+ * https://gamedev.stackexchange.com/questions/6080/how-to-design-a-replay-system/8372#8372 TODO: Should we
+ * Object.freeze(...) the cached ones in order to prevent accidental mutations?
  */
 export class BucketedGameStateTimeMachine implements GameStateTimeMachine {
   // 0 stands for initial state

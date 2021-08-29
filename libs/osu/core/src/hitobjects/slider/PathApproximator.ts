@@ -9,6 +9,16 @@ const circularArcTolerance = 0.1;
 // The amount of pieces to calculate for each control point quadruplet.
 const catmullDetail = 50;
 
+interface CircularArcProperties {
+  thetaStart: number;
+  thetaRange: number;
+  direction: number;
+  radius: number;
+  center: Vec2;
+}
+
+const toFloat = (x: number) => Math.fround(x);
+
 /**
  * Helper methods to approximate a path by interpolating a sequence of control points.
  */
@@ -124,82 +134,74 @@ export class PathApproximator {
     return result;
   }
 
-  /**
-   * Creates a piecewise-linear approximation of a circular arc curve.
-   * @returns A list of vectors representing the piecewise-linear approximation.
-   */
-  static approximateCircularArc(controlPoints: Vec2[]): Vec2[] {
+  // TODO: Use Math.fround maybe
+  static circularArcProperties(controlPoints: Vec2[]): CircularArcProperties | undefined {
     const a = controlPoints[0];
     const b = controlPoints[1];
     const c = controlPoints[2];
+    if (floatEqual(0, (b.y - a.y) * (c.x - a.x) - (b.x - a.x) * (c.y - a.y))) return undefined; // = invalid
 
-    const aSq = b.sub(c).lengthSquared();
-    const bSq = a.sub(c).lengthSquared();
-    const cSq = a.sub(b).lengthSquared();
+    const d = toFloat(2 * (a.x * b.sub(c).y + b.x * c.sub(a).y + c.x * a.sub(b).y));
+    const aSq = toFloat(a.lengthSquared());
+    const bSq = toFloat(b.lengthSquared());
+    const cSq = toFloat(c.lengthSquared());
 
-    // If we have a degenerate triangle where a side-length is almost zero, then give up and fall
-    // back to a more numerically stable method.
-    if (floatEqual(aSq, 0) || floatEqual(bSq, 0) || floatEqual(cSq, 0)) return [];
+    const center = new Vec2(
+      toFloat(aSq * b.sub(c).y + bSq * c.sub(a).y + cSq * a.sub(b).y),
+      toFloat(aSq * c.sub(b).x + bSq * a.sub(c).x + cSq * b.sub(a).x),
+    ).divide(d);
 
-    const s = Math.fround(aSq * (bSq + cSq - aSq));
-    const t = Math.fround(bSq * (aSq + cSq - bSq));
-    const u = Math.fround(cSq * (aSq + bSq - cSq));
+    const dA = a.sub(center);
+    const dC = c.sub(center);
 
-    const sum = Math.fround(s + t + u);
-
-    // If we have a degenerate triangle with an almost-zero size, then give up and fall
-    // back to a more numerically stable method.
-    if (floatEqual(sum, 0)) {
-      return [];
-    }
-
-    const centre = a.scale(s).add(b.scale(t)).add(c.scale(u)).divide(sum);
-    const dA = a.sub(centre);
-    const dC = c.sub(centre);
-
-    const r = Math.sqrt(dA.lengthSquared());
-
+    const r = toFloat(dA.length());
     const thetaStart = Math.atan2(dA.y, dA.x);
     let thetaEnd = Math.atan2(dC.y, dC.x);
-
-    while (thetaEnd < thetaStart) {
-      thetaEnd += 2 * Math.PI;
-    }
+    while (thetaEnd < thetaStart) thetaEnd += 2 * Math.PI;
 
     let dir = 1;
     let thetaRange = thetaEnd - thetaStart;
-
-    // Decide in which direction to draw the circle, depending on which side of
-    // AC B lies.
     let orthoAtoC = c.sub(a);
-
     orthoAtoC = new Vec2(orthoAtoC.y, -orthoAtoC.x);
 
     if (Vec2.dot(orthoAtoC, b.sub(a)) < 0) {
       dir = -dir;
       thetaRange = 2 * Math.PI - thetaRange;
     }
+    return { thetaStart, thetaRange, direction: dir, radius: r, center };
+  }
+
+  /**
+   * Creates a piecewise-linear approximation of a circular arc curve.
+   * @returns A list of vectors representing the piecewise-linear approximation.
+   */
+  static approximateCircularArc(controlPoints: Vec2[]): Vec2[] {
+    const properties = PathApproximator.circularArcProperties(controlPoints);
+    if (!properties) {
+      return PathApproximator.approximateBezier(controlPoints);
+    }
+
+    const { radius, center, thetaRange, thetaStart, direction } = properties;
+    const amountPoints =
+      2 * radius <= circularArcTolerance
+        ? 2
+        : Math.max(2, Math.ceil(thetaRange / (2 * Math.acos(1 - circularArcTolerance / radius))));
 
     // We select the amount of points for the approximation by requiring the discrete curvature
     // to be smaller than the provided tolerance. The exact angle required to meet the tolerance
     // is: 2 * Math.Acos(1 - TOLERANCE / r)
     // The special case is required for extremely short sliders where the radius is smaller than
     // the tolerance. This is a pathological rather than a realistic case.
-    const amountPoints =
-      2 * r <= circularArcTolerance
-        ? 2
-        : Math.max(2, Math.ceil(thetaRange / (2 * Math.acos(1 - circularArcTolerance / r))));
 
     const output = [];
-    let fract, theta, o;
 
     for (let i = 0; i < amountPoints; ++i) {
-      fract = i / (amountPoints - 1);
-      theta = thetaStart + dir * fract * thetaRange;
+      const fract = i / (amountPoints - 1);
+      const theta = thetaStart + direction * fract * thetaRange;
 
-      o = new Vec2(Math.fround(Math.cos(theta)), Math.fround(Math.sin(theta))).scale(r);
+      const o = new Vec2(toFloat(Math.cos(theta)), toFloat(Math.sin(theta))).scale(radius);
 
-      output.push(centre.add(o));
+      output.push(center.add(o));
     }
 
     return output;
@@ -271,7 +273,8 @@ export class PathApproximator {
   }
 
   /**
-   * Calculates the Lagrange basis polynomial for a given set of x coordinates based on previously computed barycentric weights.
+   * Calculates the Lagrange basis polynomial for a given set of x coordinates based on previously computed barycentric
+   * weights.
    * @param points An array of coordinates. No two x should be the same.
    * @param weights An array of precomputed barycentric weights.
    * @param time The x coordinate to calculate the basis polynomial for.
@@ -352,8 +355,9 @@ export class PathApproximator {
   }
 
   /**
-   * This uses <a href="https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm De Casteljau's algorithm</a> to obtain an optimal
-   * piecewise-linear approximation of the bezier curve with the same amount of points as there are control points.
+   * This uses <a href="https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm De Casteljau's algorithm</a> to obtain
+   * an optimal piecewise-linear approximation of the bezier curve with the same amount of points as there are control
+   * points.
    * @param controlPoints The control points describing the bezier curve to be approximated.
    * @param output The points representing the resulting piecewise-linear approximation.
    * @param count The number of control points in the original list.

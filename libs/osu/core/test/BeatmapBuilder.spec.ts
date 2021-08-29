@@ -1,11 +1,7 @@
-import { Position } from "@rewind/osu/math";
 import { buildBeatmap, HitCircle, Slider } from "../src";
-import { parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
-
-function assertPositionEqual(actual: Position, expected: Position, numDigits?: number) {
-  expect(actual.x).toBeCloseTo(expected.x, numDigits);
-  expect(actual.y).toBeCloseTo(expected.y, numDigits);
-}
+import { parseBlueprintFromFS } from "./utils/others";
+import { assertPositionEqual } from "./utils/asserts";
+import { TEST_MAPS } from "./utils/testBlueprintPath";
 
 test("Simple short slider", function () {
   const bluePrint = parseBlueprintFromFS(TEST_MAPS.ONE_SLIDER);

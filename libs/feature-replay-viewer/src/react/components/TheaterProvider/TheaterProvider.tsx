@@ -1,5 +1,5 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { createRewindTheater, Theater } from "../../../app/theater";
+import React, { createContext, useContext, useMemo } from "react";
+import { createRewindTheater } from "../../../app/theater";
 import { RewindStage } from "../../../app/stage";
 
 interface ITheaterContext {

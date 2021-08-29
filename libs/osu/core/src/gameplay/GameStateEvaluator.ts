@@ -1,20 +1,11 @@
-import {
-  Beatmap,
-  defaultGameState,
-  GameState,
-  HitCircle,
-  HitCircleVerdict,
-  isHitCircle,
-  isSlider,
-  MainHitObjectVerdict,
-  NOT_PRESSING,
-  OsuAction,
-  PressingSinceTimings,
-  ReplayFrame,
-  Slider,
-} from "@rewind/osu/core";
-
 import { hitWindowsForOD, Position, Vec2 } from "@rewind/osu/math";
+import { Beatmap } from "../beatmap/Beatmap";
+import { defaultGameState, GameState, HitCircleVerdict, NOT_PRESSING, PressingSinceTimings } from "./GameState";
+import { isHitCircle, isSlider } from "../hitobjects/Types";
+import { Slider } from "../hitobjects/Slider";
+import { OsuAction, ReplayFrame } from "../replays/Replay";
+import { MainHitObjectVerdict } from "./Verdicts";
+import { HitCircle } from "../hitobjects/HitCircle";
 
 /**
  * In the real osu game, the slider body will be evaluated at every game tick (?), which is something we can not do.
@@ -32,7 +23,8 @@ import { hitWindowsForOD, Position, Vec2 } from "@rewind/osu/math";
  *  Evaluates the next game state based on the current one and the next frame.
  *
  *  Let the times of the frames be t[1...n]. osu! stores about 60FPS, this means
- *  that in between t[i] and t[i+1] there is no precise information available, which might be problematic for slider checkpoint evaluations.
+ *  that in between t[i] and t[i+1] there is no precise information available, which might be problematic for slider
+ * checkpoint evaluations.
  *
  * So the following assumption is made for t[i] < t < t[i+1]:
  *  - If the player is still holding a click at t[i], then it's also at time t.
@@ -287,8 +279,13 @@ export class GameStateEvaluator {
       // TODO: Force miss other notes less than i
       if (judged) break;
 
-      // Technically speaking this can only be too early, since the too late case would be caught above.
       if (isWithinHitWindow(this.hitWindows, delta, "MISS")) {
+        // TODO: Add a "HIT_TOO_LATE" (even though it's kinda unfair, but this is osu!stable behavior)
+        // For some reason in osu!stable the HitCircle that has a MEH time of let's say +-109.5ms is still alive at t+110ms and can
+        // be "clicked" by the user at time t+110ms, but it will just result in a miss.
+        // The problem is that the underlying note will then be ignored because the click is "wasted" for the already
+        // expired hit circle.
+        // => This might be a stable bug or feature?
         this.judgeHitCircle(hitCircle.id, { judgementTime: currentTime, type: "MISS", missReason: "HIT_TOO_EARLY" });
         judged = true;
       }
@@ -320,20 +317,27 @@ export class GameStateEvaluator {
     }
   }
 
-  evaluate(gameState: GameState, frame: ReplayFrame) {
-    this.gameState = gameState;
-    this.frame = frame;
-
-    // 1. Deal with hit objects that are only affected with movement (sliders, spinners)
-    while (gameState.eventIndex < this.events.length) {
-      const event = this.events[gameState.eventIndex];
-      // We haven't reached the time yet
-      if (frame.time < event.time) {
+  // Process the events until event[i].time <= maxTimeInclusive is no longer valid.
+  handleEventsUntilTime(maxTimeInclusive: number) {
+    const { gameState, events } = this;
+    while (gameState.eventIndex < events.length) {
+      const event = events[gameState.eventIndex];
+      if (event.time > maxTimeInclusive) {
         break;
       }
       gameState.eventIndex += 1;
       this.handleEvent(event);
     }
+  }
+
+  evaluate(gameState: GameState, frame: ReplayFrame) {
+    this.gameState = gameState;
+    this.frame = frame;
+
+    // 1. Deal with hit objects that are only affected with movement (sliders, spinners)
+    // Tbh in my first version I have this.handleEventsUntilTime(frame.time) right now, which makes more sense.
+
+    this.handleEventsUntilTime(frame.time - 1);
 
     // 2. Now consider things that get affected by releasing / clicking at this particular time.
     this.gameState.cursorPosition = frame.position;
@@ -343,6 +347,9 @@ export class GameStateEvaluator {
 
     this.handleAliveHitCircles();
     this.updateSliderBodyTracking(frame.time, frame.position, this.gameState.pressingSince);
+
+    // 3. Deal with events after the click such as force killing a HitCircle
+    this.handleEventsUntilTime(frame.time);
   }
 }
 
@@ -367,9 +374,9 @@ const sliderProgress = (slider: Slider, time: number) => (time - slider.startTim
  * In osu!lazer the tracking follows the visual tracking:
  * https://discord.com/channels/188630481301012481/188630652340404224/865648740810883112
  * https://github.com/ppy/osu/blob/6cec1145e3510eb27c6fbeb0f93967d2d872e600/osu.Game.Rulesets.Osu/Mods/OsuModClassic.cs#L61
- * The slider ball actually gradually scales to 2.4 (duration: 300ms, method: Easing.OutQuint) which means that at the beginning
- * the cursor has less leeway than after 300ms, while in osu!stable you instantly have the maximum leeway.
- * In osu!lazer it's actually a little bit harder than osu!stable.
+ * The slider ball actually gradually scales to 2.4 (duration: 300ms, method: Easing.OutQuint) which means that at the
+ * beginning the cursor has less leeway than after 300ms, while in osu!stable you instantly have the maximum leeway. In
+ * osu!lazer it's actually a little bit harder than osu!stable.
  */
 
 function determineTracking(

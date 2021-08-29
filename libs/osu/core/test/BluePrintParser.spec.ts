@@ -7,8 +7,9 @@ import {
   SliderSettings,
   SpinnerSettings,
 } from "../src";
-import { parseBlueprintFromFS, TEST_MAPS } from "./util.spec";
+import { parseBlueprintFromFS } from "./utils/others";
 import { Position } from "@rewind/osu/math";
+import { TEST_MAPS } from "./utils/testBlueprintPath";
 
 describe("Test *.osu blue print parsing", function () {
   describe("Map: ZUTOMAYO - Kan Saete Kuyashiiwa (Nathan) [geragera].osu", function () {

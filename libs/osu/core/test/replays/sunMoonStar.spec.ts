@@ -4,12 +4,12 @@ import {
   defaultStableSettings,
   osuClassicScoreScreenJudgementCount,
   parseReplayFramesFromFS,
-  TEST_MAPS,
-  TEST_REPLAYS,
-} from "../util.spec";
+} from "../utils/others";
 
 import { readSync } from "node-osr";
 import { BucketedGameStateTimeMachine, isSlider, osuStableAccuracy, parseReplayFramesFromRaw, Slider } from "../../src";
+import { TEST_MAPS, TEST_REPLAYS } from "../utils/testBlueprintPath";
+import { compareTimeMachineWithReference } from "../utils/reference";
 
 describe("Parsing SunMoonStar", function () {
   const r = parseReplayFramesFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
@@ -135,3 +135,11 @@ describe("OsuStd! ReplayTimeMachine - The Sun, The Moon, The Stars", function ()
 
 // TODO: Create testcase
 // -> Releasing, but sliderCheckPoint is like before release
+
+// +1.5 is definitely not clean
+test("TSTMTS Reference", async () => {
+  // const reference = readStableReferenceJson(referenceFile);
+  // const timeMachine = createTestTimeMachine(blueprintFile, replayFile);
+  // We only check for misses
+  // await compareTimeMachineWithReference(TEST_MAPS.SUN_MOON_STAR, TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN, "", { countsToCheck: [3] });
+});

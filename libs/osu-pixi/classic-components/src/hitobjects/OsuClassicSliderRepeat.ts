@@ -4,7 +4,7 @@ import {
   DisplayObjectTransformationProcess,
   evaluateTransformationsToProperties,
 } from "../utils/Pixi";
-import { AnimationTimeSetting, HitResult, PositionSetting, ScaleSetting } from "../DrawableSettings";
+import { AnimationTimeSetting, PositionSetting, ScaleSetting } from "../DrawableSettings";
 import { PrepareSetting } from "../utils/Preparable";
 import { fadeInT, fadeOutT, scaleToT, Transformation } from "../utils/Transformations";
 import { Easing } from "@rewind/osu/math";

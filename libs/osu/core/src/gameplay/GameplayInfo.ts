@@ -143,7 +143,6 @@ export class GameplayInfoEvaluator {
       this.comboInfo = { maxComboSoFar: 0, currentCombo: 0 };
       this.verdictCount = { MISS: 0, MEH: 0, GREAT: 0, OK: 0 };
       this.judgedObjectsIndex = 0;
-      console.log("Reset");
     }
 
     while (this.judgedObjectsIndex < replayState.judgedObjects.length) {

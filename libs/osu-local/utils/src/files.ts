@@ -1,4 +1,6 @@
-import { readdir, stat } from "fs/promises";
+import { promises } from "fs";
+
+const { readdir, stat } = promises;
 
 export const fileLastModifiedTime = async (path: string): Promise<number> => {
   const s = await stat(path);
@@ -16,7 +18,7 @@ const filterUndefined = (p: any) => p !== undefined;
 
 export async function filterFilenamesInDirectory(
   dirName: string,
-  condition: (fileName: string) => Promise<boolean>
+  condition: (fileName: string) => Promise<boolean>,
 ): Promise<string[]> {
   const fileNamesInFolder = await readdir(dirName);
   return (
@@ -27,7 +29,7 @@ export async function filterFilenamesInDirectory(
         } else {
           return undefined;
         }
-      })
+      }),
     )
   ).filter(filterUndefined) as string[];
 }

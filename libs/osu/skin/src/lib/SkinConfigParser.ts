@@ -96,9 +96,8 @@ export class SkinConfigParser {
       case "SpinnerNoBlink":
         general.spinnerNoBlink = parseToBool(val);
         break;
-
       default:
-        console.log(`key=${key} not recognized`);
+      // console.log(`key=${key} not recognized`);
     }
   }
 

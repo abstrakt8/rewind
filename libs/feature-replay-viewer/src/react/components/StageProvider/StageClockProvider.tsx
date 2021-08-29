@@ -35,6 +35,7 @@ function useGameClockControls(clock: GameplayClock) {
   // TODO: Immediately sync time again
   const seekTo = useCallback((timeInMs) => clock.seekTo(timeInMs), [clock]);
 
+  // TODO: Move following timeInMs code to useGameTime
   const [timeInMs, setTimeInMs] = useState(clock.timeElapsedInMs);
 
   // The gameClock.tick() is handled in the game loop and we will only "listen/sync" to what ever the game clock is

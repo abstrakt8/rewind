@@ -1,4 +1,4 @@
-import { ViewSettings } from "../../../game/ViewSettings";
+import { ViewSettings } from "./ViewSettings";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 

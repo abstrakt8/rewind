@@ -6,8 +6,9 @@ import { buildBeatmap } from "@rewind/osu/core";
 import { SkinService } from "./SkinService";
 import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
-import { defaultViewSettings } from "../../game/ViewSettings";
+import { defaultViewSettings } from "../stage/rewind/ViewSettings";
 
+const defaultSkinName = "rewind/RewindDefaultSkin";
 @injectable()
 export class RewindStageCreator {
   constructor(
@@ -22,7 +23,7 @@ export class RewindStageCreator {
     const [blueprint, replay, skin] = await Promise.all([
       this.blueprintService.retrieveBlueprint(blueprintId),
       this.replayService.retrieveReplay(replayId),
-      this.skinService.loadSkin("- Aristia(Edit)+trail"),
+      this.skinService.loadSkin(defaultSkinName),
       this.textureManager.loadTexture("BACKGROUND", this.blueprintService.blueprintBgUrl(blueprintId)),
     ]);
     // If the building is too slow or unbearable, we should push the building to a WebWorker

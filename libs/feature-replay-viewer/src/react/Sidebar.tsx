@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Toggle } from "./Toggle";
 import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
-import { useAppDispatch, useAppSelector } from "../hooks";
 import { PlaybarColors } from "./PlaybarColors";
-import { PlaybarSettings, playbarSettingsChanged } from "../theater/slice";
+import { PlaybarSettings } from "../theater/playbarSettings";
+import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
 
 function SettingsTitle(props: { title: string }) {
   return <h1 className={"uppercase text-gray-400 text-sm"}>{props.title}</h1>;
@@ -94,15 +94,13 @@ function ReplayAnalysisBox() {
 }
 
 function PlaybarSettingsBox() {
-  const dispatch = useAppDispatch();
-  const pbSetting = useAppSelector((state) => state.theater.playbarSettings);
+  // TODO: Don't use Redux
+  const { playbarSettings: pbSetting, setPlaybarSettings } = useStagePlaybarSettingsContext();
   const handleTogglePbSetting = (s: keyof PlaybarSettings) => (value: boolean) =>
-    dispatch(
-      playbarSettingsChanged({
-        ...pbSetting,
-        [s]: value,
-      }),
-    );
+    setPlaybarSettings((pbSetting) => ({
+      ...pbSetting,
+      [s]: value,
+    }));
 
   return (
     <SidebarBox>

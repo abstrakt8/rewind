@@ -39,19 +39,19 @@ export class SkinService {
   }
 
   // force such like reloading
-  async loadSkin(folderPath: string, forceReload?: boolean): Promise<Skin> {
-    if (this.skins[folderPath] && !forceReload) {
-      console.info(`Skin ${folderPath} is already loaded, using the one in cache`);
-      return this.skins[folderPath];
+  async loadSkin(name: string, forceReload?: boolean): Promise<Skin> {
+    if (this.skins[name] && !forceReload) {
+      console.info(`Skin ${name} is already loaded, using the one in cache`);
+      return this.skins[name];
     }
     const loader = new Loader();
 
-    const skinInfoUrl = urljoin(this.apiUrl, "api", "skins", folderPath);
-    const skinStaticUrl = urljoin(this.apiUrl, "static", "skins", folderPath);
+    const skinInfoUrl = urljoin(this.apiUrl, "api", "skins");
+    const skinStaticUrl = urljoin(this.apiUrl, "static", "skins", name);
 
     // We could also put some GET parameters
     const res = await axios
-      .get(skinInfoUrl, { data: { animatedIfExists: 1, hdIfExists: 1 } })
+      .get(skinInfoUrl, { params: { animatedIfExists: 1, hdIfExists: 1, name: name } })
       .then((value) => value.data);
 
     // Yeah ...
@@ -86,6 +86,6 @@ export class SkinService {
       textures[file.key]?.push(loader.resources[file.name].texture as Texture);
     });
 
-    return (this.skins[folderPath] = new Skin(config, textures));
+    return (this.skins[name] = new Skin(config, textures));
   }
 }
