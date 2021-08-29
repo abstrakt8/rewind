@@ -1,4 +1,4 @@
-import { bootstrapRewindDesktopBackend } from "@rewind/api/desktop";
+import { bootstrapRewindDesktopBackend, RewindBootstrapSettings } from "@rewind/api/desktop";
 import { BackendPreloadAPI } from "@rewind/electron/api";
 
 declare global {
@@ -9,21 +9,24 @@ declare global {
 
 const isDevMode = process.env.NODE_ENV !== "production";
 
-async function getSettings() {
+async function getSettings(): Promise<RewindBootstrapSettings> {
   if (isDevMode) {
     return {
       userDataPath: "C:\\Users\\me\\AppData\\Roaming\\rewind",
       appDataPath: "C:\\Users\\me\\AppData\\Roaming",
+      appResourcesPath: "C:\\Users\\me\\Dev\\rewind\\resources",
     };
   } else {
-    const [userDataPath, appDataPath] = await Promise.all([
+    const [userDataPath, appDataPath, appResourcesPath] = await Promise.all([
       window.settings.getUserDataPath(),
       window.settings.getAppDataPath(),
+      window.settings.getAppResourcesPath(),
     ]);
 
     return {
       userDataPath,
       appDataPath,
+      appResourcesPath,
     };
   }
 }

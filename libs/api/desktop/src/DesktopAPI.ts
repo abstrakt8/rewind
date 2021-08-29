@@ -9,9 +9,11 @@ import {
   OSU_FOLDER,
   OsuDBDao,
   ReplayWatcher,
+  SkinNameResolver,
   SkinController,
-  SkinResolver,
   SkinService,
+  SKIN_NAME_RESOLVER_CONFIG,
+  SkinNameResolverConfig,
 } from "@rewind/api/common";
 import { join } from "path";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
@@ -24,11 +26,13 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 const globalPrefix = "/api";
 const REWIND_CFG_NAME = "rewind.cfg";
 
-interface Settings {
+export interface RewindBootstrapSettings {
   // Usually %APPDATA%
   appDataPath: string;
   // Usually %APPDATA%/rewind
   userDataPath: string;
+  // Usually where `${rewind_installation_path}/resources`
+  appResourcesPath: string;
 }
 
 interface NormalBootstrapSettings {
@@ -45,19 +49,22 @@ function listenCallback() {
  * The usual bootstrap happens with the concrete knowledge of the osu! folder. Only at the first start up of the
  * application we will have to refer to boot differently.
  */
-async function normalBootstrap({ osuFolder, userDataPath }: { osuFolder: string; userDataPath: string }) {
+async function normalBootstrap({
+  osuFolder,
+  userDataPath,
+  appResourcesPath,
+}: {
+  osuFolder: string;
+  userDataPath: string;
+  appResourcesPath: string;
+}) {
   Logger.log("Bootstrapping normally");
   // Find out osu! folder through settings
-  const osuFolderProvider = {
-    provide: OSU_FOLDER,
-    useValue: osuFolder,
-  };
-
   const rewindCfgPath = getRewindCfgPath(userDataPath);
-  const rewindCfgProvider = {
-    provide: REWIND_CFG_PATH,
-    useValue: rewindCfgPath,
-  };
+  const skinNameResolverConfig: SkinNameResolverConfig = [
+    { prefix: "osu", path: join(osuFolder, "Skins") },
+    { prefix: "rewind", path: join(appResourcesPath, "Skins") },
+  ];
 
   @Module({
     imports: [EventEmitterModule.forRoot()],
@@ -69,9 +76,10 @@ async function normalBootstrap({ osuFolder, userDataPath }: { osuFolder: string;
       DesktopConfigController,
     ],
     providers: [
-      rewindCfgProvider,
-      osuFolderProvider,
-      SkinResolver,
+      { provide: OSU_FOLDER, useValue: osuFolder },
+      { provide: REWIND_CFG_PATH, useValue: rewindCfgPath },
+      { provide: SKIN_NAME_RESOLVER_CONFIG, useValue: skinNameResolverConfig },
+      SkinNameResolver,
       SkinService,
       EventsGateway,
       ReplayWatcher,
@@ -101,7 +109,10 @@ async function normalBootstrap({ osuFolder, userDataPath }: { osuFolder: string;
   app.setGlobalPrefix(globalPrefix);
   app.enableCors();
 
-  app.useStaticAssets(join(osuFolder, "Skins"), { prefix: "/static/skins" });
+  // So that "rewind" skins are also accessible
+  skinNameResolverConfig.forEach((config) => {
+    app.useStaticAssets(config.path, { prefix: `/static/skins/${config.prefix}` });
+  });
   app.useStaticAssets(join(osuFolder, "Songs"), { prefix: "/static/songs" });
 
   await app.listen(port, listenCallback);
@@ -147,12 +158,16 @@ async function readOsuFolder(applicationDataPath: string): Promise<string | unde
   }
 }
 
-export async function bootstrapRewindDesktopBackend({ appDataPath, userDataPath }: Settings) {
+export async function bootstrapRewindDesktopBackend({
+  appDataPath,
+  userDataPath,
+  appResourcesPath,
+}: RewindBootstrapSettings) {
   const osuFolder = await readOsuFolder(userDataPath);
   const requiresSetup = osuFolder === undefined || !(await osuFolderSanityCheck(osuFolder));
   if (requiresSetup) {
     return setupBootstrap({ userDataPath });
   } else {
-    return normalBootstrap({ userDataPath, osuFolder });
+    return normalBootstrap({ userDataPath, osuFolder, appResourcesPath });
   }
 }

@@ -24,7 +24,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const { replay, filename } = event.payload;
     const blueprintMetaData = await this.blueprintService.getBlueprintByMD5(replay.beatmapMD5);
 
-    console.log("Replay added ", replay.replayMD5);
+    this.logger.log("Replay added ", replay.replayMD5);
     this.server.emit("replayAdded", { filename }, blueprintMetaData);
   }
 

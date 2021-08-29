@@ -19,4 +19,5 @@ export interface SecureElectronAPI {
 export interface BackendPreloadAPI {
   getAppDataPath: () => Promise<string>;
   getUserDataPath: () => Promise<string>;
+  getAppResourcesPath: () => Promise<string>;
 }

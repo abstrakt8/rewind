@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Logger, Param, Query } from "@nestjs/common";
+import { Controller, Get, Logger, Query, Res } from "@nestjs/common";
 import { Response } from "express";
 import { SkinService } from "./SkinService";
 
@@ -8,19 +8,15 @@ export class SkinController {
 
   constructor(private skinService: SkinService) {}
 
-  @Get(":folderName")
-  async getSkinInfo(
-    @Res() res: Response,
-    @Param("folderName") folderName: string,
-    @Query() query: { hd: number; animated: number },
-  ) {
+  @Get()
+  async getSkinInfo(@Res() res: Response, @Query() query: { hd: number; animated: number; name: string }) {
     // We can take these in case user config does not exist
-    const { hd, animated } = query;
+    const { hd, animated, name } = query;
     const hdIfExists = hd === 1;
     const animatedIfExists = animated === 1;
-    this.logger.log(`Skin requested ${folderName} with hd=${hdIfExists} animated=${animatedIfExists}`);
+    this.logger.log(`Skin requested ${name} with hd=${hdIfExists} animated=${animatedIfExists}`);
     // TODO: Inject these parameters ...
-    const info = await this.skinService.getSkinInfo(folderName);
+    const info = await this.skinService.getSkinInfo(name);
     res.json(info);
   }
 }

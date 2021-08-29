@@ -150,6 +150,11 @@ ipcMain.handle("getAppDataPath", (event, args) => {
   return app.getPath("appData");
 });
 
+ipcMain.handle("getAppResourcesPath", (event, args) => {
+  console.log("process.resourcesPath ", process.resourcesPath);
+  return process.resourcesPath;
+});
+
 ipcMain.on("openDirectorySelect", (event, args) => {
   selectDirectory(args[0]).then((choice) => {
     rewindElectronApp.mainWindow.webContents.send("directorySelected", choice);

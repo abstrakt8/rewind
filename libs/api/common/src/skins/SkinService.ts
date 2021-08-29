@@ -1,21 +1,23 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { SkinFolderReader } from "@rewind/osu-local/skin-reader";
-import { join } from "path";
-import { Skin } from "./skin.model";
-import { OSU_FOLDER } from "../constants";
+import { SkinNameResolver } from "./SkinNameResolver";
 
 @Injectable()
 export class SkinService {
   private logger = new Logger("SkinService");
 
-  constructor(@Inject(OSU_FOLDER) private osuDirectory: string) {}
+  constructor(private readonly skinNameResolver: SkinNameResolver) {}
 
-  skinsFolder(path?: string) {
-    return join(this.osuDirectory, "Skins", path);
-  }
-
-  async getSkinInfo(folder: string) {
-    const skinReader = await SkinFolderReader.getSkinReader(this.skinsFolder(folder));
+  /**
+   * @param skinName will be resolved through the given skin name resolver.
+   */
+  async getSkinInfo(skinName: string) {
+    const path = this.skinNameResolver.resolveNameToPath(skinName);
+    if (path === null) {
+      this.logger.error(`Skin ${skinName} could not be resolved to a path.`);
+      throw new Error("Skin not found");
+    }
+    const skinReader = await SkinFolderReader.getSkinReader(path);
     const { config } = skinReader;
 
     // Load from local config ?
@@ -24,15 +26,5 @@ export class SkinService {
     const files = await skinReader.getAllTextureFiles({ hdIfExists, animatedIfExists });
 
     return { config, files };
-  }
-
-  async allSkinsInFolder(): Promise<Skin[]> {
-    const skinIds = await SkinFolderReader.listSkinsInFolder(this.skinsFolder(), { skinIniRequired: true });
-    return skinIds.map((id) => {
-      const skin = new Skin();
-      skin.id = id;
-      // skin.files = []; // ?
-      return skin;
-    });
   }
 }
