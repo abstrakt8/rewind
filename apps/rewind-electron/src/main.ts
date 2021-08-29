@@ -13,8 +13,8 @@ const desktopFrontendPreload = join(__dirname, "..", "desktop-frontend-preload",
 const desktopBackendPreload = join(__dirname, "..", "desktop-backend-preload", "main.js");
 
 export class RewindElectronApp {
-  mainWindow: BrowserWindow;
-  apiWindow: BrowserWindow;
+  mainWindow?: BrowserWindow;
+  apiWindow?: BrowserWindow;
 
   constructor(private application: Electron.App, private readonly isDevMode = false) {}
 
@@ -36,7 +36,9 @@ export class RewindElectronApp {
     this.mainWindow.center();
     this.mainWindow.setMenuBarVisibility(false);
     this.mainWindow.on("closed", () => {
-      this.mainWindow = null;
+      this.mainWindow = undefined;
+      // Otherwise we won't trigger all windows closed
+      this.apiWindow?.close();
     });
 
     // Open external links such as socials in the default browser.
@@ -59,13 +61,16 @@ export class RewindElectronApp {
         preload: desktopBackendPreload,
       },
     });
+    this.apiWindow.on("close", () => {
+      this.apiWindow = undefined;
+    });
     if (this.isDevMode) {
       this.apiWindow.webContents.openDevTools();
     }
   }
 
   loadApiWindow() {
-    this.apiWindow.loadURL(
+    this.apiWindow?.loadURL(
       format({
         pathname: join(__dirname, "..", "desktop-backend", "assets", "index.html"),
         protocol: "file:",
@@ -80,10 +85,10 @@ export class RewindElectronApp {
     // In DEV mode we want to utilize hot reloading, therefore we are going to connect a development server.
     // Therefore `nx run desktop-frontend:serve` must be run first before this is executed.
     if (this.isDevMode) {
-      this.mainWindow.loadURL(`http://localhost:${rendererAppDevPort}`).then(handleFinishedLoading);
+      this.mainWindow?.loadURL(`http://localhost:${rendererAppDevPort}`).then(handleFinishedLoading);
     } else {
       this.mainWindow
-        .loadURL(
+        ?.loadURL(
           format({
             pathname: join(__dirname, "..", rendererAppName, "index.html"),
             protocol: "file:",
@@ -125,9 +130,10 @@ export class RewindElectronApp {
 // TODO: Squirrel events
 // TODO: Electron events (?) -> gives app version and exit
 function isDevelopmentMode() {
-  const isEnvironmentSet: boolean = "ELECTRON_IS_DEV" in process.env;
-  const getFromEnvironment: boolean = parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;
-  return isEnvironmentSet ? getFromEnvironment : !environment.production;
+  if (process.env.ELECTRON_IS_DEV) {
+    return true;
+  }
+  return !environment.production;
 }
 
 const rewindElectronApp = new RewindElectronApp(app, isDevelopmentMode());
@@ -157,7 +163,7 @@ ipcMain.handle("getAppResourcesPath", (event, args) => {
 
 ipcMain.on("openDirectorySelect", (event, args) => {
   selectDirectory(args[0]).then((choice) => {
-    rewindElectronApp.mainWindow.webContents.send("directorySelected", choice);
+    if (rewindElectronApp.mainWindow) rewindElectronApp.mainWindow.webContents.send("directorySelected", choice);
   });
 });
 

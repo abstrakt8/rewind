@@ -158,11 +158,9 @@ async function readOsuFolder(applicationDataPath: string): Promise<string | unde
   }
 }
 
-export async function bootstrapRewindDesktopBackend({
-  appDataPath,
-  userDataPath,
-  appResourcesPath,
-}: RewindBootstrapSettings) {
+export async function bootstrapRewindDesktopBackend(settings: RewindBootstrapSettings) {
+  Logger.log(`Bootstrapping with settings: ${JSON.stringify(settings)}`);
+  const { appDataPath, userDataPath, appResourcesPath } = settings;
   const osuFolder = await readOsuFolder(userDataPath);
   const requiresSetup = osuFolder === undefined || !(await osuFolderSanityCheck(osuFolder));
   if (requiresSetup) {
