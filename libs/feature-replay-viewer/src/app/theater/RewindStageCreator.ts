@@ -7,6 +7,7 @@ import { SkinService } from "./SkinService";
 import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
 import { defaultViewSettings } from "../stage/rewind/ViewSettings";
+import { determineDefaultPlaybackSpeed } from "../../utils";
 
 const defaultSkinName = "rewind/RewindDefaultSkin";
 @injectable()
@@ -31,9 +32,10 @@ export class RewindStageCreator {
 
     const initialView = defaultViewSettings();
     initialView.modHidden = replay.mods.includes("HIDDEN");
+    const initialSpeed = determineDefaultPlaybackSpeed(replay.mods);
 
     const songUrl = this.audioService.getSongUrl(blueprintId);
     const textureMap = this.textureManager.dict;
-    return createRewindStage({ beatmap, replay, skin, songUrl, textureMap, initialView });
+    return createRewindStage({ beatmap, replay, skin, songUrl, textureMap, initialView, initialSpeed });
   }
 }

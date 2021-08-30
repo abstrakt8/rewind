@@ -48,12 +48,13 @@ interface RewindStageSettings {
   songUrl: string;
   textureMap: Map<RewindTextureId, Texture>;
   initialView: ViewSettings;
+  initialSpeed: number;
 }
 
 export function createRewindStage(settings: RewindStageSettings) {
+  const { beatmap, replay, skin, songUrl, textureMap, initialView, initialSpeed } = settings;
   const container = createCoreContainer();
 
-  const { beatmap, replay, skin, songUrl, textureMap, initialView } = settings;
   container.bind(TYPES.BEATMAP).toConstantValue(beatmap);
   container.bind(TYPES.REPLAY).toConstantValue(replay);
   container.bind(TYPES.SONG_URL).toConstantValue(songUrl);
@@ -89,6 +90,7 @@ export function createRewindStage(settings: RewindStageSettings) {
 
   // Clock config
   const clock = container.get<GameplayClock>(GameplayClock);
+  clock.setSpeed(initialSpeed);
 
   // If for some reason the meta data got loaded really fast then set it here
   if (!isNaN(audioEngine.song.mediaElement.duration)) {

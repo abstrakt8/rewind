@@ -7,5 +7,9 @@ const chosenBlueprintId = akatsukiId;
 const chosenReplayId = akatsukiReplayId;
 
 export function WebTestApp() {
-  return <Theater chosenBlueprintId={chosenBlueprintId} chosenReplayId={chosenReplayId} />;
+  return (
+    <div className={"h-screen bg-gray-800"}>
+      <Theater chosenBlueprintId={chosenBlueprintId} chosenReplayId={chosenReplayId} />
+    </div>
+  );
 }
