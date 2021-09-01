@@ -7,7 +7,7 @@ export type TextureConfig = {
 // https://osu.ppy.sh/wiki/en/Skinning/Interface (normal)
 // https://osu.ppy.sh/wiki/el/Skinning/osu%21 (osu!std)
 // Others are not supported
-// TODO TODO TODO
+// TODO: Refactor to type?
 export enum SkinTextures {
   // HitCircle
   APPROACH_CIRCLE = "approachcircle",
@@ -325,6 +325,6 @@ export const DefaultTextureConfig: DefaultTextureConfigType = {
     filePrefix: "spinner-middle",
   },
 
-  // Spinner (old) TODO: Someday
+  // Spinner (old)
   // spinner-background, circle, metre, osu
 };

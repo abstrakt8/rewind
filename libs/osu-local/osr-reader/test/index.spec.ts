@@ -1,5 +1,5 @@
 import { readSync } from "../src";
-// xd -> todo
+// TODO: Maybe make a common module
 import { TEST_REPLAYS } from "../../../osu/core/test/utils/testBlueprintPath";
 
 test("Large file", () => {

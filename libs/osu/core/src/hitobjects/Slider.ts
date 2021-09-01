@@ -82,7 +82,6 @@ export class Slider implements HasId {
   }
 
   /**
-   *  TODO:
    * Returns the position given the (time) progress. Basically it just tells you where the slider ball should be after
    * p% of time has passed.
    *

@@ -88,7 +88,7 @@ export class OsuLegacySkinReader implements SkinReader {
     const { useHD, animationIndex, extension } = opt;
     const texConfig = DefaultTextureConfig[skinTexture];
     if (!texConfig) {
-      throw Error("What u doing");
+      throw Error("Config for given texture not found");
     }
     const { skipHyphen, animationFrameRate } = texConfig;
     let s = this.getPrefix(skinTexture);
@@ -101,7 +101,6 @@ export class OsuLegacySkinReader implements SkinReader {
       s += animationIndex;
     }
     if (useHD) {
-      // TODO: Check idke 1.2 skin, it has 2x files without the '@'
       s += "@2x";
     }
     s += "." + extension;
