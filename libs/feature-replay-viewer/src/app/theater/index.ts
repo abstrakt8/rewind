@@ -4,7 +4,6 @@ import { TYPES } from "./types";
 import { ReplayService } from "./ReplayService";
 import { RewindStageCreator } from "./RewindStageCreator";
 import { SkinService } from "./SkinService";
-import { OsuClassicMod, ReplayFrame } from "@rewind/osu/core";
 import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
 
@@ -32,11 +31,3 @@ export function createRewindTheater(settings: Settings) {
 }
 
 export type Theater = ReturnType<typeof createRewindTheater>;
-// TODO: Rename this to replay or something
-export type OsuReplay = {
-  md5hash: string;
-  gameVersion: number;
-  mods: OsuClassicMod[];
-  player: string; // Could be useful to draw
-  frames: ReplayFrame[];
-};

@@ -6,10 +6,10 @@ import { AnalysisCursor } from "../../../../pixi/components/AnalysisCursor";
 import { OsuAction } from "@rewind/osu/core";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../types";
-import { OsuReplay } from "../../../../theater";
 import { StageSkinService } from "../../../StageSkinService";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageViewService } from "../../StageViewService";
+import type { OsuReplay } from "../../../../theater/osuReplay";
 
 @injectable()
 export class CursorPreparer {

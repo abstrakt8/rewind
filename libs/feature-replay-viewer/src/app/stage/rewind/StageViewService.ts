@@ -1,4 +1,4 @@
-import { ViewSettings } from "./ViewSettings";
+import type { ViewSettings } from "./ViewSettings";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 

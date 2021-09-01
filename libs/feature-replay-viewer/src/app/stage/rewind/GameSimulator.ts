@@ -12,7 +12,7 @@ import {
 } from "@rewind/osu/core";
 import { injectable, inject } from "inversify";
 import { TYPES } from "../types";
-import { OsuReplay } from "../../theater";
+import type { OsuReplay } from "../../theater/osuReplay";
 
 @injectable()
 export class GameSimulator {

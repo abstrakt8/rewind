@@ -1,9 +1,9 @@
 import { Sprite, Texture } from "pixi.js";
 import { inject, injectable } from "inversify";
-import { TextureManager } from "../../../../theater/TextureManager";
 import { StageViewService } from "../../StageViewService";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";
-import { RewindTextureMap, TYPES } from "../../../types";
+import type { RewindTextureMap } from "../../../types";
+import { TYPES } from "../../../types";
 
 @injectable()
 export class BackgroundPreparer {

@@ -15,7 +15,6 @@ import { StageViewService } from "./rewind/StageViewService";
 import { HitObjectsPreparer } from "./rewind/components/playfield/HitObjectsPreparer";
 import { StageSkinService } from "./StageSkinService";
 import { Skin } from "./rewind/Skin";
-import { OsuReplay } from "../theater";
 import { HitCirclePreparer } from "./rewind/components/playfield/HitCirclePreparer";
 import { SliderTextureService } from "./rewind/SliderTextureService";
 import { SliderPreparer } from "./rewind/components/playfield/SliderPreparer";
@@ -26,6 +25,7 @@ import { JudgementPreparer } from "./rewind/components/playfield/JudgementPrepar
 import { Texture } from "pixi.js";
 import { SpinnerPreparer } from "./rewind/components/playfield/SpinnerPreparer";
 import { ViewSettings } from "./rewind/ViewSettings";
+import { OsuReplay } from "../theater/osuReplay";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 

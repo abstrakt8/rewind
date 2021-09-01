@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GameplayClock } from "./GameplayClock";
 import { PixiRendererService } from "./PixiRendererService";
-import { TheaterStagePreparer } from "./TheaterStagePreparer";
+import type { TheaterStagePreparer } from "./TheaterStagePreparer";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import MrDoobStats from "stats.js";
