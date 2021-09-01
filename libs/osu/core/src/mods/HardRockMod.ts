@@ -13,14 +13,13 @@ function flipY(position: Position) {
 }
 
 export class HardRockMod {
-  static difficultyAdjuster: BeatmapDifficultyAdjuster = (d: BeatmapDifficulty): BeatmapDifficulty => {
-    return produce(d, (state) => {
-      state.overallDifficulty = Math.min(10, state.overallDifficulty * 1.4);
-      state.approachRate = Math.min(10, state.approachRate * 1.4);
-      state.drainRate = Math.min(10, state.drainRate * 1.4);
-      state.circleSize = Math.min(10, state.circleSize * 1.3);
-    });
-  };
+  static difficultyAdjuster: BeatmapDifficultyAdjuster = (base: BeatmapDifficulty): BeatmapDifficulty => ({
+    ...base, // SliderDiffs
+    overallDifficulty: Math.min(10, base.overallDifficulty * 1.4),
+    approachRate: Math.min(10, base.approachRate * 1.4),
+    drainRate: Math.min(10, base.drainRate * 1.4),
+    circleSize: Math.min(10, base.circleSize * 1.3),
+  });
 
   static hitObjectsAdjuster: HitObjectsAdjuster = (h: OsuHitObject[]): OsuHitObject[] => {
     return produce(h, (list) => {
