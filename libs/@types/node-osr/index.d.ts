@@ -22,7 +22,6 @@ export class Replay {
   timestamp: number;
   replay_length: number;
   replay_data: string;
-  // TODO: Write and Serialize ...
 }
 
 /**

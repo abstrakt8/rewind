@@ -11,6 +11,7 @@ export class SliderCheckPoint implements HasId, HasPosition, HasHitTime {
   id = "";
   type: SliderCheckPointType = "TICK";
   spanIndex = 0;
+  // The `spanProgress` is a number between 0 and 1 that determines the position on the slider path.
   spanProgress = 0;
   spanStartTime = 0;
   offset: Position = { x: 0, y: 0 };

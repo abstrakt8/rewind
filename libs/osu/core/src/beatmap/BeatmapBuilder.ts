@@ -46,14 +46,14 @@ function createHitCircle(
 
 function createSliderCheckPoint(slider: Slider, id: string, descriptor: SliderCheckPointDescriptor) {
   const checkPoint = new SliderCheckPoint(slider);
-  const { time, spanStartTime, spanIndex, pathProgress } = descriptor;
+  const { time, spanStartTime, spanIndex, spanProgress } = descriptor;
   checkPoint.id = id;
-  checkPoint.offset = slider.path.positionAt(pathProgress);
+  checkPoint.offset = slider.path.positionAt(spanProgress);
   checkPoint.type = descriptor.type;
   checkPoint.hitTime = time;
   checkPoint.spanIndex = spanIndex;
   checkPoint.spanStartTime = spanStartTime;
-  checkPoint.spanProgress = pathProgress; // TODO rename pathProgress or add some doc idk what it is
+  checkPoint.spanProgress = spanProgress;
   return checkPoint;
 }
 

@@ -6,7 +6,7 @@ export class TimingControlPoint extends ControlPoint {
   static TYPE = "TimingControlPoint";
 
   beatLength = 1000;
-  // TODO: ? Default ?
+  // TODO: Is this the default value?
   timeSignature: TimeSignatures = TimeSignatures.SimpleQuadruple;
 
   // The BPM at this control point
