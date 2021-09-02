@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { createRewindTheater } from "../../../app/theater";
-import { RewindStage } from "../../../app/stage";
+import { createRewindTheater, Theater } from "../../../app/theater/createRewindTheater";
 
 interface ITheaterContext {
-  createStage: (blueprintId: string, replayId: string) => Promise<RewindStage>;
+  theater: Theater;
+  // createStage: (blueprintId: string, replayId: string) => Promise<RewindStage>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -16,17 +16,7 @@ interface TheaterProviderProps {
 
 export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
   const theater = useMemo(() => createRewindTheater({ apiUrl }), [apiUrl]);
-  const createStage = theater.createStage.bind(theater);
-
-  return (
-    <TheaterContext.Provider
-      value={{
-        createStage,
-      }}
-    >
-      {children}
-    </TheaterContext.Provider>
-  );
+  return <TheaterContext.Provider value={{ theater }}>{children}</TheaterContext.Provider>;
 }
 
 export function useTheaterContext() {

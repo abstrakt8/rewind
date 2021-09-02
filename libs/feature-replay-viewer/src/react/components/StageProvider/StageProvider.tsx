@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext } from "react";
-import { RewindStage } from "../../../app/stage";
+import { RewindStage } from "../../../app/stage/createRewindStage";
 import { GameClockProvider } from "./StageClockProvider";
 import { StageViewProvider } from "./StageViewProvider";
 import { StagePlaybarSettingsProvider } from "./StagePlaybarSettingsProvider";

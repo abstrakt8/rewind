@@ -1,12 +1,13 @@
 import type { ViewSettings } from "./ViewSettings";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
+import { STAGE_TYPES } from "../STAGE_TYPES";
 
+// TODO: LocalStorage ?
 @injectable()
 export class StageViewService {
   private view: ViewSettings;
 
-  constructor(@inject(TYPES.INITIAL_VIEW_SETTINGS) initialViewSettings: ViewSettings) {
+  constructor(@inject(STAGE_TYPES.INITIAL_VIEW_SETTINGS) initialViewSettings: ViewSettings) {
     this.view = initialViewSettings;
   }
 

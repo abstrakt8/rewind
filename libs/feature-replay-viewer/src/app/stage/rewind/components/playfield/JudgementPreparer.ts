@@ -6,7 +6,7 @@ import { Beatmap, MainHitObjectVerdict } from "@rewind/osu/core";
 import { SkinTextures } from "@rewind/osu/skin";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageSkinService } from "../../../StageSkinService";
-import { TYPES } from "../../../types";
+import { STAGE_TYPES } from "../../../STAGE_TYPES";
 import { GameSimulator } from "../../GameSimulator";
 
 function texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {
@@ -29,7 +29,7 @@ export class JudgementPreparer {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly stageSkinService: StageSkinService,
-    @inject(TYPES.BEATMAP) private readonly beatmap: Beatmap,
+    @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
     private readonly gameSimulator: GameSimulator,
   ) {
     this.container = new Container();

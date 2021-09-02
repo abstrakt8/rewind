@@ -1,7 +1,7 @@
 import { Texture } from "pixi.js";
 import { RewindTextureId } from "../theater/TextureManager";
 
-export const TYPES = {
+export const STAGE_TYPES = {
   THEATER_STAGE_PREPARER: Symbol.for("THEATER_STAGE_PREPARER"),
   REPLAY: Symbol.for("REPLAY"),
   BEATMAP: Symbol.for("BEATMAP"),

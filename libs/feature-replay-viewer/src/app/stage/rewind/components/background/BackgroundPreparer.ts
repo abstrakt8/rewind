@@ -2,15 +2,15 @@ import { Sprite, Texture } from "pixi.js";
 import { inject, injectable } from "inversify";
 import { StageViewService } from "../../StageViewService";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";
-import type { RewindTextureMap } from "../../../types";
-import { TYPES } from "../../../types";
+import type { RewindTextureMap } from "../../../STAGE_TYPES";
+import { STAGE_TYPES } from "../../../STAGE_TYPES";
 
 @injectable()
 export class BackgroundPreparer {
   private readonly background: Sprite;
 
   constructor(
-    @inject(TYPES.TEXTURE_MAP) private textureMap: RewindTextureMap,
+    @inject(STAGE_TYPES.TEXTURE_MAP) private textureMap: RewindTextureMap,
     private theaterViewService: StageViewService,
   ) {
     this.background = new Sprite();

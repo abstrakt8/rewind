@@ -2,7 +2,7 @@ import { Container } from "inversify";
 import { EventEmitter } from "../events";
 import { AudioEngine } from "./core/AudioEngine";
 import { GameplayClock } from "./core/GameplayClock";
-import { TYPES } from "./types";
+import { STAGE_TYPES } from "./STAGE_TYPES";
 import { GameStagePreparer } from "./rewind/components/stage/GameStagePreparer";
 import { BackgroundPreparer } from "./rewind/components/background/BackgroundPreparer";
 import { Beatmap } from "@rewind/osu/core";
@@ -26,20 +26,14 @@ import { Texture } from "pixi.js";
 import { SpinnerPreparer } from "./rewind/components/playfield/SpinnerPreparer";
 import { ViewSettings } from "./rewind/ViewSettings";
 import { OsuReplay } from "../theater/osuReplay";
+import { AudioSettingsService } from "./rewind/AudioSettingsService";
 
 // https://github.com/inversify/InversifyJS/blob/master/wiki/scope.md
 
-function createCoreContainer() {
-  const container = new Container();
-  container.bind<AudioEngine>(AudioEngine).toSelf().inSingletonScope();
-  container.bind<GameplayClock>(GameplayClock).toSelf().inSingletonScope();
-  container.bind<PixiRendererService>(PixiRendererService).toSelf().inSingletonScope();
-  container.bind<GameLoop>(GameLoop).toSelf().inSingletonScope();
-  container.bind(GameSimulator).toSelf().inSingletonScope();
-  container.bind(TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter());
-  container.bind(TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
-  return container;
-}
+/**
+ * This is the main application / entrypoint to the RewindStage.
+ * The theater is just a "helper" to create various other stage types.
+ */
 
 interface RewindStageSettings {
   beatmap: Beatmap;
@@ -53,22 +47,35 @@ interface RewindStageSettings {
 
 export function createRewindStage(settings: RewindStageSettings) {
   const { beatmap, replay, skin, songUrl, textureMap, initialView, initialSpeed } = settings;
-  const container = createCoreContainer();
 
-  container.bind(TYPES.BEATMAP).toConstantValue(beatmap);
-  container.bind(TYPES.REPLAY).toConstantValue(replay);
-  container.bind(TYPES.SONG_URL).toConstantValue(songUrl);
-  container.bind(TYPES.THEATER_STAGE_PREPARER).to(GameStagePreparer);
-  container.bind(TYPES.TEXTURE_MAP).toConstantValue(textureMap);
-  container.bind(TYPES.INITIAL_VIEW_SETTINGS).toConstantValue(initialView);
+  const container = new Container();
+
+  container.bind(STAGE_TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter());
+  container.bind(STAGE_TYPES.BEATMAP).toConstantValue(beatmap);
+  container.bind(STAGE_TYPES.REPLAY).toConstantValue(replay);
+  container.bind(STAGE_TYPES.SONG_URL).toConstantValue(songUrl);
+  container.bind(STAGE_TYPES.TEXTURE_MAP).toConstantValue(textureMap);
+  container.bind(STAGE_TYPES.INITIAL_VIEW_SETTINGS).toConstantValue(initialView);
+
+  // Maybe pass this down since there should only be one?
+  container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
+
+  container.bind(STAGE_TYPES.THEATER_STAGE_PREPARER).to(GameStagePreparer);
+
+  container.bind(AudioSettingsService).toSelf().inSingletonScope();
+  container.bind(StageViewService).toSelf().inSingletonScope();
+  container.bind(StageSkinService).toSelf().inSingletonScope();
+
+  container.bind(AudioEngine).toSelf().inSingletonScope();
+  container.bind(GameplayClock).toSelf().inSingletonScope();
+  container.bind(PixiRendererService).toSelf().inSingletonScope();
+  container.bind(GameLoop).toSelf().inSingletonScope();
+  container.bind(GameSimulator).toSelf().inSingletonScope();
 
   container.bind(BackgroundPreparer).toSelf();
   container.bind(PlayfieldBorderPreparer).toSelf();
   container.bind(ForegroundHUDPreparer).toSelf();
   container.bind(PlayfieldPreparer).toSelf();
-
-  container.bind(StageViewService).toSelf().inSingletonScope();
-  container.bind(StageSkinService).toSelf().inSingletonScope();
 
   container.bind(HitObjectsPreparer).toSelf();
   container.bind(HitCirclePreparer).toSelf();
@@ -78,26 +85,25 @@ export function createRewindStage(settings: RewindStageSettings) {
   container.bind(CursorPreparer).toSelf();
   container.bind(JudgementPreparer).toSelf();
 
-  // TODO: Setup listeners?
-  // Maybe only return what we want to expose
-  const eventEmitter = container.get<EventEmitter>(TYPES.EVENT_EMITTER);
-
   const audioEngine = container.get<AudioEngine>(AudioEngine);
-  audioEngine.setupListeners(eventEmitter);
+  // audioEngine.setupListeners(eventEmitter);
 
   const pixiRenderService = container.get<PixiRendererService>(PixiRendererService);
   const gameLoop = container.get<GameLoop>(GameLoop);
+
+  // TODO: Maybe set the speed after loading the song
+  audioEngine.loadSong(songUrl);
 
   // Clock config
   const clock = container.get<GameplayClock>(GameplayClock);
   clock.setSpeed(initialSpeed);
 
-  // If for some reason the meta data got loaded really fast then set it here
-  if (!isNaN(audioEngine.song.mediaElement.duration)) {
-    clock.setDuration(audioEngine.song.mediaElement.duration * 1000);
-  }
-  audioEngine.song.mediaElement.addEventListener("loadedmetadata", () => {
-    clock.setDuration(audioEngine.song.mediaElement.duration * 1000);
+  // // If for some reason the meta data got loaded really fast then set it here
+  // if (!isNaN(audioEngine.song?.mediaElement.duration ?? NaN)) {
+  //   clock.setDuration(audioEngine.song.mediaElement.duration * 1000);
+  // }
+  audioEngine.song?.mediaElement.addEventListener("loadedmetadata", () => {
+    clock.setDuration((audioEngine.song?.mediaElement.duration ?? 0) * 1000);
   });
 
   // Config

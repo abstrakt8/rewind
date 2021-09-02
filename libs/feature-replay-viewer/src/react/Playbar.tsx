@@ -86,15 +86,15 @@ export function Playbar(props: PlaybarProps) {
   const heights = 0.727;
   const ref = useRef(null);
   const mouse = useMouse(ref, {});
-  useCallback(() => {
-    console.log(`mouse at ${mouse.x} ${mouse.y}`);
-  }, [mouse.x, mouse.y]);
+  // useCallback(() => {
+  //   console.log(`mouse at ${mouse.x} ${mouse.y}`);
+  // }, [mouse.x, mouse.y]);
 
   const mousePercentage = mouse.x !== null ? Math.max(0, (mouse.x ?? 0) / (mouse.elementWidth ?? 1)) : null;
 
   const handleClick = useCallback(() => {
     if (onClick) onClick(mousePercentage ?? 0); // Should not happen to be null
-    console.log(`mouse at ${mousePercentage} `);
+    // console.log(`mouse at ${mousePercentage} `);
   }, [onClick, mousePercentage]);
 
   let darkP, lightP;

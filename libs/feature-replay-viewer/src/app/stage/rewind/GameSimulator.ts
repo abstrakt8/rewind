@@ -11,7 +11,7 @@ import {
   retrieveEvents,
 } from "@rewind/osu/core";
 import { injectable, inject } from "inversify";
-import { TYPES } from "../types";
+import { STAGE_TYPES } from "../STAGE_TYPES";
 import type { OsuReplay } from "../../theater/osuReplay";
 
 @injectable()
@@ -24,8 +24,8 @@ export class GameSimulator {
   public judgements: HitObjectJudgement[];
 
   constructor(
-    @inject(TYPES.BEATMAP) private readonly beatmap: Beatmap,
-    @inject(TYPES.REPLAY) private readonly replay: OsuReplay,
+    @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
+    @inject(STAGE_TYPES.REPLAY) private readonly replay: OsuReplay,
   ) {
     this.gameplayTimeMachine = new BucketedGameStateTimeMachine(replay.frames, beatmap, {
       hitWindowStyle: "OSU_STABLE",

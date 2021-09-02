@@ -1,10 +1,18 @@
 import { parseBlueprint } from "@rewind/osu/core";
 import { inject, injectable } from "inversify";
 import { TYPES } from "./types";
+import { TextureManager } from "./TextureManager";
+
+interface BlueprintResources {
+  blueprintRaw: string;
+  // Audio
+  // (?) Skin, hitsounds
+  // (??) Storyboard
+}
 
 @injectable()
 export class BlueprintService {
-  constructor(@inject(TYPES.API_URL) private apiUrl: string) {}
+  constructor(@inject(TYPES.API_URL) private apiUrl: string, private readonly textureManager: TextureManager) {}
 
   async retrieveBlueprint(blueprintId: string) {
     const url = `${this.apiUrl}/api/blueprints/${blueprintId}/osu`;
@@ -14,7 +22,14 @@ export class BlueprintService {
     return parseBlueprint(data);
   }
 
-  blueprintBgUrl(blueprintId: string) {
-    return `${this.apiUrl}/api/blueprints/${blueprintId}/bg`;
+  // Blueprint resources
+  // - Background
+  // - Audio
+  // - (?) Skin, hitsounds
+  // - (?) Storyboard
+
+  async retrieveBlueprintResources(blueprintId: string) {
+    const url = `${this.apiUrl}/api/blueprints/${blueprintId}/bg`;
+    return this.textureManager.loadTexture("BACKGROUND", url);
   }
 }

@@ -7,7 +7,7 @@ import { hitWindowsForOD } from "@rewind/osu/math";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";
 import { StageSkinService } from "../../../StageSkinService";
 import { Beatmap } from "@rewind/osu/core";
-import { TYPES } from "../../../types";
+import { STAGE_TYPES } from "../../../STAGE_TYPES";
 
 @injectable()
 export class ForegroundHUDPreparer {
@@ -16,7 +16,7 @@ export class ForegroundHUDPreparer {
   hitErrorBar: AnalysisHitErrorBar;
 
   constructor(
-    @inject(TYPES.BEATMAP) private readonly beatmap: Beatmap,
+    @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
     private readonly stageSkinService: StageSkinService,
     private readonly gameSimulator: GameSimulator,
   ) {

@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { BlueprintService } from "./BlueprintService";
 import { ReplayService } from "./ReplayService";
-import { createRewindStage } from "../stage";
+import { createRewindStage } from "../stage/createRewindStage";
 import { buildBeatmap } from "@rewind/osu/core";
 import { SkinService } from "./SkinService";
 import { AudioService } from "./AudioService";
@@ -10,6 +10,7 @@ import { defaultViewSettings } from "../stage/rewind/ViewSettings";
 import { determineDefaultPlaybackSpeed } from "../../utils";
 
 const defaultSkinName = "rewind/RewindDefaultSkin";
+
 @injectable()
 export class RewindStageCreator {
   constructor(
@@ -25,8 +26,9 @@ export class RewindStageCreator {
       this.blueprintService.retrieveBlueprint(blueprintId),
       this.replayService.retrieveReplay(replayId),
       this.skinService.loadSkin(defaultSkinName),
-      this.textureManager.loadTexture("BACKGROUND", this.blueprintService.blueprintBgUrl(blueprintId)),
+      this.blueprintService.retrieveBlueprintResources(blueprintId),
     ]);
+
     // If the building is too slow or unbearable, we should push the building to a WebWorker
     const beatmap = buildBeatmap(blueprint, { addStacking: true, mods: replay.mods });
 
