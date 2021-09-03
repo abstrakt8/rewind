@@ -13,6 +13,7 @@ import { PlaybarColors } from "./PlaybarColors";
 import { PlaybarSettings } from "../theater/playbarSettings";
 import { formatGameTime } from "@rewind/osu/math";
 import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
+import { AudioSettingButton } from "./AudioSettingButton";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -146,6 +147,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
               className={`filter ${modHidden ? "grayscale-0" : "grayscale"} `}
             />
           </button>
+          <AudioSettingButton />
           <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{speed}x</button>
         </div>
       </div>

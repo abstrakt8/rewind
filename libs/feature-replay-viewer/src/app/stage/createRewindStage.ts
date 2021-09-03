@@ -112,6 +112,7 @@ export function createRewindStage(settings: RewindStageSettings) {
 
   const stageViewService = container.get(StageViewService);
   const gameSimulator = container.get(GameSimulator);
+  const audioSettingsService = container.get(AudioSettingsService);
 
   // stageViewService.changeView(...)
 
@@ -122,6 +123,7 @@ export function createRewindStage(settings: RewindStageSettings) {
   }
 
   return {
+    audioSettingsService,
     destroy,
     clock,
     initializeRenderer: pixiRenderService.initializeRenderer.bind(pixiRenderService),
