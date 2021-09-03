@@ -1,10 +1,7 @@
 import "./HomeScreen.css";
 import { RewindLogo } from "../RewindSidebarLogo";
 import { FaDiscord, FaTwitter, FaYoutube } from "react-icons/fa";
-
-const discordUrl = "https://discord.gg/QubdHdnBVg";
-const twitterUrl = "https://twitter.com/osuuniversity";
-const youtubeUrl = "https://www.youtube.com/channel/UCzW2Z--fEw0LWKgVTmO-b6w";
+import { discordUrl, twitterUrl, youtubeUrl } from "../../react/Constants";
 
 function Socials() {
   return (

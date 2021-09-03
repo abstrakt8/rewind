@@ -10,14 +10,6 @@ function SettingsTitle(props: { title: string }) {
   return <h1 className={"uppercase text-gray-400 text-sm"}>{props.title}</h1>;
 }
 
-const ShortcutHelper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr min-content;
-  grid-column-gap: 1em;
-  grid-row-gap: 0.5em;
-  align-items: center;
-  justify-content: space-between;
-`;
 const PlaybarEventsBox = styled.div`
   display: grid;
   grid-template-columns: 1fr min-content;
@@ -52,28 +44,6 @@ function BeatmapAnalysisBox() {
         <div>Slider Debug</div>
         <Toggle enabled={sliderAnalysisFlag} setEnabled={setSliderAnalysisFlag} />
       </GenericToggleSettingsBox>
-    </SidebarBox>
-  );
-}
-
-function CheatSheetBox() {
-  return (
-    <SidebarBox>
-      <SettingsTitle title={"shortcuts"} />
-      <ShortcutHelper>
-        <span>Start / Pause</span>
-        <span className={"font-mono bg-gray-800 px-2"}>␣</span>
-        <span>Previous frame</span>
-        <span className={"font-mono bg-gray-800 px-2"}>a</span>
-        <span>Next frame</span>
-        <span className={"font-mono bg-gray-800 px-2"}>d</span>
-        <span>Speed decrease</span>
-        <span className={"font-mono bg-gray-800 px-2"}>s</span>
-        <span>Speed increase</span>
-        <span className={"font-mono bg-gray-800 px-2"}>w</span>
-        <span>Toggle Hidden</span>
-        <span className={"font-mono bg-gray-800 px-2"}>f</span>
-      </ShortcutHelper>
     </SidebarBox>
   );
 }
@@ -142,7 +112,7 @@ export function Sidebar() {
       <PlaybarSettingsBox />
       <BeatmapAnalysisBox />
       <ReplayAnalysisBox />
-      <CheatSheetBox />
+      {/*<CheatSheetBox />*/}
     </div>
   );
 }
