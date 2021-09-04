@@ -14,6 +14,19 @@ const DEFAULT_NUMBER_SETTINGS: OsuClassicNumberSettings = {
   overlap: 0,
 };
 
+function calculateDigits(x: number) {
+  if (x === 0) {
+    return [0];
+  }
+  const d = [];
+  while (x > 0) {
+    d.push(x % 10);
+    x = Math.floor(x / 10);
+  }
+  d.reverse();
+  return d;
+}
+
 /**
  * This number can be used for hitCircleCombo, currentCombo and score
  */
@@ -31,8 +44,9 @@ export class OsuClassicNumber extends Container {
 
     const { number, overlap, textures } = this.settings;
 
-    // TODO: Currently we only cache by number, but need to change with other params as well, otherwise we won't see any changes
-    // if the overlap or the textures change
+    // TODO: Currently we only cache by number, but need to change with other params as well, otherwise we won't see
+    // any changes if the overlap or the textures change
+    // MAybe instead of Number pass araray of digits
     if (this.lastNumber === number) {
       return;
     }
@@ -44,25 +58,19 @@ export class OsuClassicNumber extends Container {
     let totalWidth = 0;
     const digitSprites: Sprite[] = [];
 
-    let x = number;
-    let atLeastOne = false; // So that we can also represent the number 0
-
-    while (x > 0 || !atLeastOne) {
-      const digit = Math.floor(x % 10);
+    const digits = calculateDigits(number);
+    for (let i = 0; i < digits.length; i++) {
+      const digit = digits[i];
       const texture = textures[digit];
       const sprite = new Sprite(texture);
-      const addOverlap = digitSprites.length > 0 ? +overlap : 0;
-      sprite.anchor.set(1, 0.5);
-      sprite.position.set(-totalWidth + addOverlap, 0);
-      totalWidth += texture.width;
+      const addOverlap = i > 0 ? -overlap : 0; //
+      sprite.anchor.set(0, 0.5);
+      sprite.position.set(totalWidth + addOverlap, 0);
+      totalWidth += texture.width + addOverlap;
       digitSprites.push(sprite);
-      x = Math.floor(x / 10);
-      atLeastOne = true;
     }
-
-    if (digitSprites.length > 1) totalWidth -= overlap;
-    // Now shift everything to the center since we started from 0 and worked our way to -totalWidth
-    digitSprites.forEach((sprite) => sprite.position.set(sprite.position.x + totalWidth / 2, 0));
+    // Now shift everything to the center since we started from 0 and worked our way to totalWidth
+    digitSprites.forEach((sprite) => sprite.position.set(sprite.position.x - totalWidth / 2, 0));
     this.addChild(...digitSprites);
   }
 }
