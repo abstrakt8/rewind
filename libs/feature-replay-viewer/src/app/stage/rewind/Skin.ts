@@ -1,6 +1,6 @@
 import { rgbToInt } from "@rewind/osu/math";
 import { Texture } from "@pixi/core";
-import { getComboFontKeys, getDefaultSkinConfig, HIT_CIRCLE_FONT, SkinTextures } from "@rewind/osu/skin";
+import { getComboFontKeys, generateDefaultSkinConfig, HIT_CIRCLE_FONT, SkinTextures } from "@rewind/osu/skin";
 import { SkinConfig } from "@rewind/osu/skin";
 
 export type SkinTexturesByKey = Partial<Record<SkinTextures, Texture[]>>;
@@ -44,7 +44,7 @@ export class EmptySkin implements ISkin {
  * A simple skin that can provide the basic information a beatmap needs.
  */
 export class Skin implements ISkin {
-  static EMPTY = new Skin(getDefaultSkinConfig(false), {});
+  static EMPTY = new Skin(generateDefaultSkinConfig(false), {});
 
   constructor(public readonly config: SkinConfig, public readonly textures: SkinTexturesByKey) {}
 

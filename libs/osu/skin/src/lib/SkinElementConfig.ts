@@ -1,13 +1,7 @@
-export type TextureConfig = {
-  filePrefix: string;
-  animationFrameRate?: number;
-  skipHyphen?: boolean; // Most of the animated textures use hyphen '-' , but some do not such as sliderb0.png.
-};
-
 // https://osu.ppy.sh/wiki/en/Skinning/Interface (normal)
 // https://osu.ppy.sh/wiki/el/Skinning/osu%21 (osu!std)
-// Others are not supported
-// TODO: Refactor to type?
+// Other game modes not supported
+
 export enum SkinTextures {
   // HitCircle
   APPROACH_CIRCLE = "approachcircle",
@@ -147,6 +141,12 @@ export function getComboFontKeys() {
     SkinTextures.COMBO_9,
   ];
 }
+
+export type TextureConfig = {
+  filePrefix: string;
+  animationFrameRate?: number;
+  skipHyphen?: boolean; // Most of the animated textures use hyphen '-' , but some do not such as sliderb0.png.
+};
 
 // Default configs taken from the osu!wiki
 // https://osu.ppy.sh/wiki/el/Skinning/osu%21
