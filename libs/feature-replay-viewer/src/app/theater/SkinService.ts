@@ -19,7 +19,7 @@ async function startLoading(loader: Loader, skinName: string): Promise<boolean> 
       resolve(true);
     });
 
-    loader.onError.once((loader: Loader, resource: ILoaderResource) => {
+    loader.onError.once((resource) => {
       console.error(`Could not load resource ${resource.name}`);
     });
     loader.load();

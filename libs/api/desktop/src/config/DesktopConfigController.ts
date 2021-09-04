@@ -9,7 +9,7 @@ interface UpdateOsuStablePathDto {
 
 @Controller("/desktop")
 export class DesktopConfigController {
-  private logger = new Logger("DesktopConfigController");
+  private logger = new Logger(DesktopConfigController.name);
 
   constructor(private readonly desktopConfigService: DesktopConfigService) {}
 
