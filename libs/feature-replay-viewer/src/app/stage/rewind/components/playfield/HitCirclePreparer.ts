@@ -11,7 +11,6 @@ import {
   OsuClassicHitCircleAreaSettings,
 } from "@rewind/osu-pixi/classic-components";
 import { Skin } from "../../Skin";
-import { SkinTextures } from "@rewind/osu/skin";
 import { GameSimulator } from "../../GameSimulator";
 
 // TODO: Maybe it's even dynamic
@@ -78,7 +77,7 @@ export function settingsApproachCircle(s: {
   const { hitCircle, skin, gameTime, modHidden } = s;
   return {
     time: gameTime - hitCircle.hitTime,
-    texture: skin.getTexture(SkinTextures.APPROACH_CIRCLE),
+    texture: skin.getTexture("APPROACH_CIRCLE"),
     approachDuration: hitCircle.approachDuration,
     scale: hitCircle.scale,
     position: hitCircle.position,
@@ -102,8 +101,8 @@ function settingsHitCircleArea(s: {
     numberOverlap: skin.config.fonts.hitCircleOverlap,
     hitCircleOverlayAboveNumber: skin.config.general.hitCircleOverlayAboveNumber,
 
-    hitCircleTexture: skin.getTexture(SkinTextures.HIT_CIRCLE),
-    hitCircleOverlayTexture: skin.getTexture(SkinTextures.HIT_CIRCLE_OVERLAY),
+    hitCircleTexture: skin.getTexture("HIT_CIRCLE"),
+    hitCircleOverlayTexture: skin.getTexture("HIT_CIRCLE_OVERLAY"),
 
     tint: skin.getComboColorForIndex(hitCircle.comboSetIndex),
 

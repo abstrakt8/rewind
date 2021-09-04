@@ -1,18 +1,24 @@
 import { rgbToInt } from "@rewind/osu/math";
 import { Texture } from "@pixi/core";
-import { getComboFontKeys, generateDefaultSkinConfig, HIT_CIRCLE_FONT, SkinTextures } from "@rewind/osu/skin";
-import { SkinConfig } from "@rewind/osu/skin";
+import {
+  comboDigitFonts,
+  defaultDigitFonts,
+  generateDefaultSkinConfig,
+  hitCircleDigitFonts,
+  OsuSkinTextures,
+  SkinConfig,
+} from "@rewind/osu/skin";
 
-export type SkinTexturesByKey = Partial<Record<SkinTextures, Texture[]>>;
+export type SkinTexturesByKey = Partial<Record<OsuSkinTextures, Texture[]>>;
 
 // Read
 // https://github.com/pixijs/pixi.js/blob/dev/packages/loaders/src/TextureLoader.ts
 export interface ISkin {
   getComboColorForIndex(i: number): number;
 
-  getTexture(key: SkinTextures): Texture;
+  getTexture(key: OsuSkinTextures): Texture;
 
-  getTextures(key: SkinTextures): Texture[];
+  getTextures(key: OsuSkinTextures): Texture[];
 
   getHitCircleNumberTextures(): Texture[];
 
@@ -32,14 +38,15 @@ export class EmptySkin implements ISkin {
     return [];
   }
 
-  getTexture(key: SkinTextures) {
+  getTexture(key: OsuSkinTextures) {
     return Texture.EMPTY;
   }
 
-  getTextures(key: SkinTextures): Texture[] {
+  getTextures(key: OsuSkinTextures): Texture[] {
     return [Texture.EMPTY];
   }
 }
+
 /**
  * A simple skin that can provide the basic information a beatmap needs.
  */
@@ -53,11 +60,11 @@ export class Skin implements ISkin {
     return rgbToInt(comboColors[i % comboColors.length]);
   }
 
-  getTexture(key: SkinTextures): Texture {
+  getTexture(key: OsuSkinTextures): Texture {
     return this.getTextures(key)[0];
   }
 
-  getTextures(key: SkinTextures): Texture[] {
+  getTextures(key: OsuSkinTextures): Texture[] {
     if (!(key in this.textures)) {
       return [Texture.EMPTY];
       // throw new Error("Texture key not found");
@@ -71,16 +78,15 @@ export class Skin implements ISkin {
   }
 
   getHitCircleNumberTextures(): Texture[] {
-    return HIT_CIRCLE_FONT.map((h) => this.getTexture(h));
+    return hitCircleDigitFonts.map((h) => this.getTexture(h));
   }
 
-  // TODO
   getComboNumberTextures(): Texture[] {
-    return getComboFontKeys().map((h) => this.getTexture(h));
+    return comboDigitFonts.map((h) => this.getTexture(h));
   }
 
   // The textures that are used for every other numbers on the interface (except combo)
   getScoreTextures(): Texture[] {
-    return getComboFontKeys().map((h) => this.getTexture(h));
+    return defaultDigitFonts.map((h) => this.getTexture(h));
   }
 }

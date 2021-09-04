@@ -17,13 +17,13 @@ export class SkinService {
       this.logger.error(`Skin ${skinName} could not be resolved to a path.`);
       throw new Error("Skin not found");
     }
-    const skinReader = await SkinFolderReader.getSkinReader(path);
-    const { config } = skinReader;
+    const skinResolver = await SkinFolderReader.getSkinResolver(path);
+    const { config } = skinResolver;
 
     // Load from local config ?
     const { hdIfExists, animatedIfExists } = { hdIfExists: true, animatedIfExists: true };
 
-    const files = await skinReader.getAllTextureFiles({ hdIfExists, animatedIfExists });
+    const files = await skinResolver.resolveAllTextureFiles({ hdIfExists, animatedIfExists });
 
     return { config, files };
   }

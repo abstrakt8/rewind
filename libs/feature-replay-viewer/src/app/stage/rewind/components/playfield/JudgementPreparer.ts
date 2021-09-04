@@ -3,7 +3,6 @@ import { Container } from "pixi.js";
 import { OsuClassicJudgement } from "@rewind/osu-pixi/classic-components";
 import { circleSizeToScale } from "@rewind/osu/math";
 import { Beatmap, MainHitObjectVerdict } from "@rewind/osu/core";
-import { SkinTextures } from "@rewind/osu/skin";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageSkinService } from "../../../StageSkinService";
 import { STAGE_TYPES } from "../../../STAGE_TYPES";
@@ -12,13 +11,13 @@ import { GameSimulator } from "../../GameSimulator";
 function texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {
   switch (t) {
     case "GREAT":
-      return lastInComboSet ? SkinTextures.HIT_300K : SkinTextures.HIT_300;
+      return lastInComboSet ? "HIT_300K" : "HIT_300";
     case "OK":
-      return lastInComboSet ? SkinTextures.HIT_100K : SkinTextures.HIT_100;
+      return lastInComboSet ? "HIT_100K" : "HIT_100";
     case "MEH":
-      return SkinTextures.HIT_50;
+      return "HIT_50";
     case "MISS":
-      return SkinTextures.HIT_0;
+      return "HIT_0";
   }
 }
 

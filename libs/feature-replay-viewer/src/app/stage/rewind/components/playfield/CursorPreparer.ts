@@ -1,7 +1,6 @@
 import { Container } from "pixi.js";
 import { OsuClassicCursor } from "@rewind/osu-pixi/classic-components";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../../../../../utils/Replay";
-import { SkinTextures } from "@rewind/osu/skin";
 import { AnalysisCursor } from "../../../../pixi/components/AnalysisCursor";
 import { OsuAction } from "@rewind/osu/core";
 import { inject, injectable } from "inversify";
@@ -70,8 +69,8 @@ export class CursorPreparer {
       position,
       trailPositions,
       cursorScale: scale,
-      cursorTexture: skin.getTexture(SkinTextures.CURSOR),
-      cursorTrailTexture: skin.getTexture(SkinTextures.CURSOR_TRAIL),
+      cursorTexture: skin.getTexture("CURSOR"),
+      cursorTrailTexture: skin.getTexture("CURSOR_TRAIL"),
     });
 
     this.container.addChild(cursor.container);
