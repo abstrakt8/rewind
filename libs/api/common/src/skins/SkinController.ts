@@ -4,7 +4,7 @@ import { SkinService } from "./SkinService";
 
 @Controller("skins")
 export class SkinController {
-  private logger = new Logger("SkinController");
+  private logger = new Logger(SkinController.name);
 
   constructor(private skinService: SkinService) {}
 

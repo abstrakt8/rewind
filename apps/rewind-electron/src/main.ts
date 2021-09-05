@@ -2,6 +2,7 @@ import { BrowserWindow, screen, app, dialog, ipcMain, shell } from "electron";
 import { join } from "path";
 import { format } from "url";
 import { environment } from "./environments/environment";
+import { BackendPreloadAPI } from "@rewind/electron/api";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
@@ -148,17 +149,26 @@ async function selectDirectory(defaultPath: string) {
   }
 }
 
-ipcMain.handle("getUserDataPath", (event, args) => {
-  return app.getPath("userData");
-});
+const backendPreloadAPI: BackendPreloadAPI = {
+  getPath(type) {
+    const result = (function () {
+      switch (type) {
+        case "appData":
+          return app.getPath("appData");
+        case "userData":
+          return app.getPath("userData");
+        case "logs":
+          return app.getPath("logs");
+        case "appResources":
+          return process.resourcesPath;
+      }
+    })();
+    return Promise.resolve(result);
+  },
+};
 
-ipcMain.handle("getAppDataPath", (event, args) => {
-  return app.getPath("appData");
-});
-
-ipcMain.handle("getAppResourcesPath", (event, args) => {
-  console.log("process.resourcesPath ", process.resourcesPath);
-  return process.resourcesPath;
+ipcMain.handle("getPath", (event, type) => {
+  return backendPreloadAPI.getPath(type);
 });
 
 ipcMain.on("openDirectorySelect", (event, args) => {

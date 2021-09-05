@@ -38,3 +38,6 @@ testem.log
 .DS_Store
 Thumbs.db
 /resources/Skins/
+
+# Custom
+/logs/

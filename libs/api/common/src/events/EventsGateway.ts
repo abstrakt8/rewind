@@ -11,9 +11,9 @@ import { LocalBlueprintService } from "../blueprints/LocalBlueprintService";
 export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() private server: Server;
 
-  constructor(private blueprintService: LocalBlueprintService) {}
+  constructor(private readonly blueprintService: LocalBlueprintService) {}
 
-  private logger: Logger = new Logger("EventsGateway");
+  private logger: Logger = new Logger(EventsGateway.name);
 
   afterInit(server: Server) {
     this.logger.log("WebSocket Gateway initialized");

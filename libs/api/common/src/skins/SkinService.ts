@@ -4,7 +4,7 @@ import { SkinNameResolver } from "./SkinNameResolver";
 
 @Injectable()
 export class SkinService {
-  private logger = new Logger("SkinService");
+  private logger = new Logger(SkinService.name);
 
   constructor(private readonly skinNameResolver: SkinNameResolver) {}
 
