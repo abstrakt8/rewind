@@ -32,6 +32,8 @@ function coloredSprite(color: number) {
   return sprite;
 }
 
+// TODO: Move to osu-classic ?
+// We can have a more advanced one here
 export class AnalysisHitErrorBar {
   container: Container;
   bg50: Sprite;

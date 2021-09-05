@@ -64,6 +64,7 @@ type SpinnerTextures =
   | "SPINNER_TOP";
 type JudgementTextures = "HIT_0" | "HIT_50" | "HIT_100" | "HIT_100K" | "HIT_300" | "HIT_300K";
 type CursorTextures = "CURSOR" | "CURSOR_TRAIL";
+type ScoreTextures = "SCORE_X" | "SCORE_DOT" | "SCORE_PERCENT";
 export type OsuSkinTextures =
   | HitCircleTextures
   | SliderTextures
@@ -73,6 +74,7 @@ export type OsuSkinTextures =
   | DefaultDigitFont
   // | ScoreDigitFont
   | ComboDigitFont
-  | HitCircleDigitFont;
+  | HitCircleDigitFont
+  | ScoreTextures;
 
 // export const isHitCircleFont = (h: OsuSkinTextures) : h is HitCircleDigitFont =>

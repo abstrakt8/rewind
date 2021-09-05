@@ -2,12 +2,13 @@ import { inject, injectable } from "inversify";
 import { GameSimulator } from "../../GameSimulator";
 import { Container, Text } from "pixi.js";
 import { AnalysisHitErrorBar } from "../../../../pixi/components/HitErrorBar";
-import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
+import { calculateDigits, OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { hitWindowsForOD } from "@rewind/osu/math";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";
 import { StageSkinService } from "../../../StageSkinService";
 import { Beatmap } from "@rewind/osu/core";
 import { STAGE_TYPES } from "../../../STAGE_TYPES";
+import { OsuClassicAccuracy } from "../../../../../../../osu-pixi/classic-components/src/hud/OsuClassicAccuracy";
 
 @injectable()
 export class ForegroundHUDPreparer {
@@ -38,8 +39,8 @@ export class ForegroundHUDPreparer {
       const comboNumber = new OsuClassicNumber();
       const textures = skin.getComboNumberTextures();
       const overlap = skin.config.fonts.comboOverlap;
-      comboNumber.prepare({ number: gameplayInfo.currentCombo, textures, overlap });
-      comboNumber.position.set(50, STAGE_HEIGHT - 25);
+      comboNumber.prepare({ digits: calculateDigits(gameplayInfo.currentCombo), textures, overlap });
+      comboNumber.position.set(0, STAGE_HEIGHT - 50);
       this.container.addChild(comboNumber);
     }
 
@@ -47,14 +48,14 @@ export class ForegroundHUDPreparer {
 
     if (gameplayInfo) {
       // const text
-      const accNumber = new OsuClassicNumber();
-      const textures = skin.getScoreTextures();
+      const accNumber = new OsuClassicAccuracy();
+      const digitTextures = skin.getScoreTextures();
+      const dotTexture = skin.getTexture("SCORE_DOT");
+      const percentageTexture = skin.getTexture("SCORE_PERCENT");
       const overlap = skin.config.fonts.scoreOverlap;
-      // TODO: Add % sign and comma
-      const number = Math.round(gameplayInfo.accuracy * 10000);
-      accNumber.prepare({ number, textures, overlap });
-      accNumber.position.set(STAGE_WIDTH - 50, 25);
-      this.container.addChild(accNumber);
+      accNumber.prepare({ accuracy: gameplayInfo.accuracy, digitTextures, dotTexture, percentageTexture, overlap });
+      accNumber.container.position.set(STAGE_WIDTH - 15, 25);
+      this.container.addChild(accNumber.container);
     }
 
     // verdict counts: 300, 100, 50, miss

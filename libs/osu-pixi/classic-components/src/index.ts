@@ -9,7 +9,8 @@ export * from "./hitobjects/OsuClassicJudgements"; // TODO: Move
 export * from "./hitobjects/OsuClassicSliderTick";
 export * from "./hitobjects/OsuClassicCursor";
 export * from "./hitobjects/OsuClassicSpinner";
-export * from "./hitobjects/OsuClassicNumber";
+export * from "./hud/OsuClassicNumber";
 export * from "./DrawableSettings";
 
 export * from "./renderers/BasicSliderTextureRenderer";
+export { calculateDigits } from "./utils/numbers";
