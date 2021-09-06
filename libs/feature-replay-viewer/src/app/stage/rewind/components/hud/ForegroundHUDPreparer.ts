@@ -2,13 +2,12 @@ import { inject, injectable } from "inversify";
 import { GameSimulator } from "../../GameSimulator";
 import { Container, Text } from "pixi.js";
 import { AnalysisHitErrorBar } from "../../../../pixi/components/HitErrorBar";
-import { calculateDigits, OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
+import { calculateDigits, OsuClassicAccuracy, OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { hitWindowsForOD } from "@rewind/osu/math";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";
 import { StageSkinService } from "../../../StageSkinService";
 import { Beatmap } from "@rewind/osu/core";
 import { STAGE_TYPES } from "../../../STAGE_TYPES";
-import { OsuClassicAccuracy } from "../../../../../../../osu-pixi/classic-components/src/hud/OsuClassicAccuracy";
 
 @injectable()
 export class ForegroundHUDPreparer {
