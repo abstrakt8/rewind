@@ -29,4 +29,12 @@ test("acc digits", () => {
   ]);
 
   expect(calculateAccuracyDigits(0.0001)).toEqual([[0], [0, 1]]);
+
+  const a = 0.9875776397515528;
+  console.log(Math.floor(a * 10000) / 10000);
+  expect(calculateAccuracyDigits(0.9875776397515528)).toEqual([
+    [9, 8],
+    [7, 5],
+    // [7, 6], In stable it's 98.76% OK
+  ]);
 });
