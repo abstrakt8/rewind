@@ -1,5 +1,5 @@
 import { Container, Sprite, Texture } from "pixi.js";
-import { OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
+import { OsuClassicNumber } from "./OsuClassicNumber";
 import { calculateAccuracyDigits } from "../utils/numbers";
 
 interface OsuClassicAccuracySettings {
