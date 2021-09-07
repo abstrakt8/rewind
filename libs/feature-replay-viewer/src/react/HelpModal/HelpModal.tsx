@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { FaBug, FaDiscord, FaGraduationCap, FaQuestion, IoClose } from "react-icons/all";
+import { FaBug, FaDiscord, FaGraduationCap, IoClose } from "react-icons/all";
 import { Dialog } from "@headlessui/react";
+import { RewindLinks } from "../Constants";
 
 export function Key({ text }: { text: string }) {
   return (
@@ -64,26 +65,21 @@ function PlaybarNavigationShortcuts() {
 
 function OtherResources() {
   return (
-    <div className={"pl-4 pr-4 flex flex-col gap-4"}>
+    <div className={"pl-8 pr-4 flex flex-col gap-4"}>
       <Title>Other resources</Title>
       <ul>
         <li>
-          <a href={"#"}>
-            <FaQuestion className={"inline"} /> FAQ
-          </a>
-        </li>
-        <li>
-          <a href={"#"}>
+          <a href={RewindLinks.Guide}>
             <FaGraduationCap className={"inline"} /> Tutorial
           </a>
         </li>
         <li>
-          <a href={"#"}>
+          <a href={RewindLinks.OsuUniDiscord}>
             <FaBug className={"inline"} /> Report a bug
           </a>
         </li>
         <li>
-          <a href={"#"}>
+          <a href={RewindLinks.OsuUniDiscord}>
             <FaDiscord className={"inline"} /> osu! University
           </a>
         </li>
