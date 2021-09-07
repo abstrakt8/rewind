@@ -69,17 +69,17 @@ function OtherResources() {
       <Title>Other resources</Title>
       <ul>
         <li>
-          <a href={RewindLinks.Guide}>
+          <a href={RewindLinks.Guide} target={"_blank"}>
             <FaGraduationCap className={"inline"} /> Tutorial
           </a>
         </li>
         <li>
-          <a href={RewindLinks.OsuUniDiscord}>
+          <a href={RewindLinks.OsuUniDiscord} target={"_blank"}>
             <FaBug className={"inline"} /> Report a bug
           </a>
         </li>
         <li>
-          <a href={RewindLinks.OsuUniDiscord}>
+          <a href={RewindLinks.OsuUniDiscord} target={"_blank"}>
             <FaDiscord className={"inline"} /> osu! University
           </a>
         </li>
