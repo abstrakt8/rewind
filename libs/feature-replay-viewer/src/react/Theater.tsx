@@ -8,7 +8,7 @@ import { LightningBoltIcon } from "@heroicons/react/solid";
 
 function TheaterPreparation() {
   return (
-    <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200"}>
+    <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200 h-full"}>
       <SyncLoader loading={true} color={"white"} />
       <div>Preparing the stage...</div>
     </div>
