@@ -1,13 +1,15 @@
 import { bootstrapRewindDesktopBackend, RewindBootstrapSettings } from "@rewind/api/desktop";
 import { BackendPreloadAPI } from "@rewind/electron/api";
 
+import { environment } from "./environments/environment";
+
 declare global {
   interface Window {
     settings: BackendPreloadAPI;
   }
 }
 
-const isDevMode = process.env.NODE_ENV !== "production";
+const isDevMode = !environment.production;
 
 async function getSettings(): Promise<RewindBootstrapSettings> {
   if (isDevMode) {
