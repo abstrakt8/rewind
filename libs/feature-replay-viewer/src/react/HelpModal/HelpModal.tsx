@@ -21,14 +21,17 @@ const ShortcutBox = styled.div`
   justify-content: center;
 `;
 
-const left = "←";
-const right = "→";
+const leftArrowKey = "←";
+const rightArrowKey = "→";
+const upArrowKey = "↑";
+const downArrowKey = "↓";
 
-// ↓  ↑
+const leftKeys = [leftArrowKey, "a"];
+const rightKeys = [rightArrowKey, "d"];
 
-function KeyBindings({ separator = "+", keys }: { separator?: string; keys: string[] }) {
+function KeyBindings({ separator = "+", keys, inline }: { separator?: string; keys: string[]; inline?: boolean }) {
   return (
-    <div>
+    <div className={inline ? "inline" : ""}>
       {keys.map((k, i) => (
         <React.Fragment key={i}>
           <Key text={k} />
@@ -43,22 +46,44 @@ function Title({ children }: any) {
   return <h1 className={"text-xl"}>{children}</h1>;
 }
 
+// Which one?
+const orSeparator = " or ";
+
+// const orSeparator = " , ";
+
 function PlaybarNavigationShortcuts() {
   return (
     <div className={"flex flex-col gap-4"}>
       <Title>Shortcuts</Title>
       <ShortcutBox>
         <KeyBindings keys={["Spacebar"]} /> <span>Start / Pause</span>
-        <KeyBindings separator={","} keys={[left, "a"]} /> <span>Small jump back</span>
-        <KeyBindings separator={","} keys={[right, "d"]} /> <span>Small jump forward</span>
-        <KeyBindings separator={"+"} keys={["Ctrl", left]} /> <span>Micro jump back</span>
-        <KeyBindings separator={"+"} keys={["Ctrl", right]} /> <span>Micro jump forward</span>
-        <KeyBindings separator={"+"} keys={["Shift", left]} /> <span>Large jump back</span>
-        <KeyBindings separator={"+"} keys={["Shift", right]} /> <span>Large jump forward</span>
-        <KeyBindings keys={["w"]} /> <span>Increase speed</span>
-        <KeyBindings keys={["s"]} /> <span>Decrease speed</span>
+        <KeyBindings separator={orSeparator} keys={[upArrowKey, "w"]} /> <span>Increase speed</span>
+        <KeyBindings separator={orSeparator} keys={[downArrowKey, "s"]} /> <span>Decrease speed</span>
+        <KeyBindings separator={orSeparator} keys={leftKeys} /> <span>Small jump back</span>
+        <KeyBindings separator={orSeparator} keys={rightKeys} /> <span>Small jump forward</span>
+        {/*<div>*/}
+        {/*  <KeyBindings keys={["Ctrl"]} inline /> + <KeyBindings separator={orSeparator} keys={leftKeys} inline />*/}
+        {/*</div>*/}
+        <KeyBindings separator={"+"} keys={["Ctrl", leftArrowKey]} />
+        <span>Micro jump back</span>
+        {/*<div>*/}
+        {/*  <KeyBindings keys={["Ctrl"]} inline /> + <KeyBindings separator={orSeparator} keys={rightKeys} inline />*/}
+        {/*</div>*/}
+        <KeyBindings separator={"+"} keys={["Ctrl", rightArrowKey]} />
+        <span>Micro jump forward</span>
+        {/*<div>*/}
+        {/*  <KeyBindings keys={["Shift"]} inline /> + <KeyBindings separator={orSeparator} keys={leftKeys} inline />*/}
+        {/*</div>*/}
+        <KeyBindings separator={"+"} keys={["Shift", leftArrowKey]} />
+        <span>Large jump back</span>
+        {/*<div>*/}
+        {/*  <KeyBindings keys={["Shift"]} inline /> + <KeyBindings separator={orSeparator} keys={rightKeys} inline />*/}
+        {/*</div>*/}
+        <KeyBindings separator={"+"} keys={["Shift", rightArrowKey]} />
+        <span>Large jump forward</span>
         <KeyBindings keys={["f"]} /> <span>Toggle hidden</span>
       </ShortcutBox>
+      <span className={"text-sm text-gray-500"}>More shortcuts and customizability soon...</span>
     </div>
   );
 }
