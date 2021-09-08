@@ -16,6 +16,7 @@ import { useStagePlaybarSettingsContext } from "./components/StageProvider/Stage
 import { AudioSettingButton } from "./AudioSettingButton";
 import { FaQuestion } from "react-icons/all";
 import { HelpModalDialog } from "./HelpModal/HelpModal";
+import { handleButtonFocus } from "./HandleButtonFocus";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -137,7 +138,12 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
           <GameCanvas />
           {/*</div>*/}
           <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
-            <button className={"transition-colors hover:text-gray-400"} tabIndex={-1} onClick={handlePlayButtonClick}>
+            <button
+              onFocus={handleButtonFocus}
+              className={"transition-colors hover:text-gray-400"}
+              tabIndex={-1}
+              onClick={handlePlayButtonClick}
+            >
               {isPlaying ? <PauseIcon /> : <PlayIcon />}
             </button>
             <CurrentTime />
@@ -145,7 +151,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
               <EfficientPlaybar />
             </div>
             <span className={"self-center select-all"}>{maxTimeHMS}</span>
-            <button className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>
+            <button onFocus={handleButtonFocus} className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>
               <img
                 src={modHiddenImg}
                 alt={"ModHidden"}
@@ -153,8 +159,10 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
               />
             </button>
             <AudioSettingButton />
-            <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{speed}x</button>
-            <button onClick={() => setHelpModalOpen(true)}>
+            <button onFocus={handleButtonFocus} className={"transition-colors hover:text-gray-400 text-lg bg-500"}>
+              {speed}x
+            </button>
+            <button onFocus={handleButtonFocus} onClick={() => setHelpModalOpen(true)}>
               <FaQuestion className={"w-4 h-4"} />
             </button>
           </div>
