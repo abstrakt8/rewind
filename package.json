@@ -160,6 +160,7 @@
     "lint-staged": "^11.1.2",
     "nx-electron": "^11.1.3",
     "prettier": "^2.3.1",
+    "storybook-css-modules-preset": "^1.1.1",
     "supertest": "^6.1.6",
     "ts-jest": "27.0.5",
     "ts-node": "~10.2.1",
