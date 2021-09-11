@@ -13,7 +13,7 @@ import { PlaybarColors } from "./PlaybarColors";
 import { PlaybarSettings } from "../theater/playbarSettings";
 import { formatGameTime } from "@rewind/osu/math";
 import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
-import { AudioSettingButton } from "./AudioSettingButton";
+import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";
 import { FaQuestion } from "react-icons/all";
 import { HelpModalDialog } from "./HelpModal/HelpModal";
 import { handleButtonFocus } from "./HandleButtonFocus";
@@ -158,7 +158,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
                 className={`filter ${modHidden ? "grayscale-0" : "grayscale"} `}
               />
             </button>
-            <AudioSettingButton />
+            <AudioSettingsButton />
             <button onFocus={handleButtonFocus} className={"transition-colors hover:text-gray-400 text-lg bg-500"}>
               {speed}x
             </button>
