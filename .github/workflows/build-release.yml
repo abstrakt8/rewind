@@ -1,14 +1,21 @@
-name: Build/release
+name: Build & Release (Windows, Linux)
 
-on: push
-
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
 jobs:
   release:
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ ubuntu-latest, windows-latest ]
 
     steps:
       - name: Check out Git repository
