@@ -14,6 +14,7 @@ const desktopBackendPreload = join(__dirname, "..", "desktop-backend-preload", "
 export class RewindElectronApp {
   mainWindow?: BrowserWindow;
   apiWindow?: BrowserWindow;
+  isQuitting = false;
 
   constructor(readonly application: Electron.App, private readonly isDevMode = false) {}
 
@@ -38,11 +39,43 @@ export class RewindElectronApp {
       Menu.buildFromTemplate([
         {
           label: "File",
-          submenu: [{ label: "Open Replay", accelerator: "CommandOrControl+O", enabled: false }, { role: "close" }],
+          submenu: [
+            { label: "Open Replay", accelerator: "CommandOrControl+O", enabled: false },
+            { type: "separator" },
+            {
+              label: "Open Rewind Folder",
+              click: async () => {
+                await shell.openPath(this.application.getPath("userData"));
+              },
+            },
+            {
+              label: "Open Logs Folder",
+              click: async () => {
+                await shell.openPath(this.application.getPath("logs"));
+              },
+            },
+            { type: "separator" },
+            {
+              label: "Open osu! Folder",
+              click: async () => {
+                // TODO: !!!
+                await shell.openPath("E:\\osu!");
+              },
+              enabled: false,
+            },
+            { type: "separator" },
+            { role: "close" },
+          ],
         },
         {
           label: "View",
-          submenu: [{ role: "reload" }, { role: "forceReload" }, { type: "separator" }, { role: "toggleDevTools" }],
+          submenu: [
+            { role: "reload" },
+            { role: "forceReload" },
+            { type: "separator" },
+            { role: "toggleDevTools" },
+            { label: "Open Backend", click: async () => this.apiWindow?.show() },
+          ],
         },
         {
           label: "Help",
@@ -50,13 +83,13 @@ export class RewindElectronApp {
             {
               label: "Documentation",
               click: async () => {
-                shell.openExternal("https://bit.ly/3BOF3P2");
+                await shell.openExternal("https://bit.ly/3BOF3P2");
               },
             },
             {
               label: "Discord",
               click: async () => {
-                shell.openExternal("https://discord.gg/QubdHdnBVg");
+                await shell.openExternal("https://discord.gg/QubdHdnBVg");
               },
             },
             {
@@ -71,6 +104,7 @@ export class RewindElectronApp {
 
     this.mainWindow.on("closed", () => {
       this.mainWindow = undefined;
+      this.application.quit();
       // Otherwise we won't trigger all windows closed
       this.apiWindow?.close();
     });
@@ -95,12 +129,18 @@ export class RewindElectronApp {
         preload: desktopBackendPreload,
       },
     });
-    this.apiWindow.on("close", () => {
-      this.apiWindow = undefined;
+    this.apiWindow.on("close", (e) => {
+      // We don't close
+      this.apiWindow?.hide();
+      if (!this.isQuitting) {
+        e.preventDefault();
+      } else {
+        this.apiWindow = undefined;
+      }
     });
-    if (this.isDevMode) {
-      this.apiWindow.webContents.openDevTools();
-    }
+    // if (this.isDevMode) {
+    this.apiWindow.webContents.openDevTools();
+    // }
   }
 
   loadApiWindow() {
@@ -158,5 +198,6 @@ export class RewindElectronApp {
     this.application.on("window-all-closed", () => this.handleWindowAllClosed());
     this.application.on("ready", () => this.handleReady());
     this.application.on("activate", () => this.handleActivate());
+    this.application.on("before-quit", () => (this.isQuitting = true));
   }
 }
