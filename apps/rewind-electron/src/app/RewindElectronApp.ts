@@ -1,4 +1,4 @@
-import { BrowserWindow, screen, shell } from "electron";
+import { BrowserWindow, Menu, screen, shell } from "electron";
 import { join } from "path";
 import { format } from "url";
 
@@ -33,7 +33,42 @@ export class RewindElectronApp {
       },
     });
     this.mainWindow.center();
-    this.mainWindow.setMenuBarVisibility(false);
+
+    this.mainWindow.setMenu(
+      Menu.buildFromTemplate([
+        {
+          label: "File",
+          submenu: [{ label: "Open Replay", accelerator: "CommandOrControl+O", enabled: false }, { role: "close" }],
+        },
+        {
+          label: "View",
+          submenu: [{ role: "reload" }, { role: "forceReload" }, { type: "separator" }, { role: "toggleDevTools" }],
+        },
+        {
+          label: "Help",
+          submenu: [
+            {
+              label: "Documentation",
+              click: async () => {
+                shell.openExternal("https://bit.ly/3BOF3P2");
+              },
+            },
+            {
+              label: "Discord",
+              click: async () => {
+                shell.openExternal("https://discord.gg/QubdHdnBVg");
+              },
+            },
+            {
+              label: `Version: ${this.application.getVersion()}`,
+              enabled: false,
+            },
+          ],
+        },
+      ]),
+    );
+    // this.mainWindow.setMenuBarVisibility(false);
+
     this.mainWindow.on("closed", () => {
       this.mainWindow = undefined;
       // Otherwise we won't trigger all windows closed
