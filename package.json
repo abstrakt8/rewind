@@ -1,9 +1,10 @@
 {
   "name": "rewind",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "main": "index.js",
+  "description": "An osu! replay analyzer",
   "license": "MIT",
   "author": "abstrakt",
-  "description": "Rewind mono repo",
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
@@ -31,7 +32,7 @@
     "postinstall": "exitzero electron-builder install-app-deps",
     "electron:build": "electron-builder",
     "desktop:build:dev": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --parallel",
-    "desktop:build:prod": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --prod --parallel --force",
+    "desktop:build:prod": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --prod --force",
     "desktop:build-package:prod": "yarn run desktop:build:prod && yarn run electron:build",
     "desktop:build": "nx run-many --target=build --projects=desktop-frontend,desktop --parallel",
     "desktop:serve": "nx run-many --target=serve --projects=desktop-frontend,desktop --parallel",
