@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - workflow
+#      - workflow #
 jobs:
   release:
     runs-on: ${{ matrix.os }}
