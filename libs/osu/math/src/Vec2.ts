@@ -14,6 +14,11 @@ export class Vec2 {
     this.y = y;
   }
 
+  // This should be preferred since it avoids using sqrt
+  static withinDistance(a: Position, b: Position, d: number): boolean {
+    return (a.x - b.x) ** 2 + (a.y - b.y) ** 2 <= d ** 2;
+  }
+
   static distance(a: Position, b: Position): number {
     return Math.sqrt(Vec2.distanceSquared(a, b));
   }
