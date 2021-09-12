@@ -22,15 +22,8 @@ jobs:
         with:
           node-version: 16.9.1
 
-      - name: Download RewindDefaultSkin
-        uses: wei/wget@v1
-        with:
-          args: -O RewindDefaultSkin.zip "https://drive.google.com/uc?id=1ftm6PDXGoe1Q3dlyZgejC4nnWKI21ZXd&export=download"
-
-      - name: Unzipping the Skin to `resources/Skins` dir
-        uses: montudor/action-zip@v1
-        with:
-          args: unzip -qq RewindDefaultSkin.zip -d resources/Skins
+      - name: Downloading and unzipp the default Rewind skin
+        run: node tools/downloadDefaultSkin.js
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
