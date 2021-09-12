@@ -246,7 +246,11 @@ export class GameStateEvaluator {
     for (let i = 0; i < hitCircleIds.length; i++) {
       const id = hitCircleIds[i];
       const hitCircle = this.beatmap.getHitCircle(id);
-      const cursorInside = Vec2.distance(hitCircle.position, this.gameState.cursorPosition) <= hitCircle.radius;
+      const cursorInside = Vec2.withinDistance(
+        hitCircle.position,
+        this.gameState.cursorPosition,
+        Math.fround(hitCircle.radius),
+      );
 
       if (!cursorInside) {
         // We put a lock on the other circles because the first alive HitCircle is the only circle we can interact with.
