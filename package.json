@@ -7,7 +7,7 @@
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
-    "build": "nx build",
+    "build": "yarn run desktop:build:prod",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
