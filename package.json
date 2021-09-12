@@ -35,7 +35,7 @@
     "desktop:build:prod": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --prod --force",
     "desktop:build-package:prod": "yarn run desktop:build:prod && yarn run electron:build",
     "desktop:build": "nx run-many --target=build --projects=desktop-frontend,desktop --parallel",
-    "desktop:serve": "nx run-many --target=serve --projects=desktop-frontend,desktop --parallel",
+    "desktop:serve": "electron dist/apps/rewind-electron/main.js",
     "desktop:package": "nx run desktop:package --frontendProject=desktop-frontend",
     "desktop:buildpackage": "nx run-many --target=build --projects=desktop-frontend,desktop --parallel --prod && yarn run desktop:package"
   },

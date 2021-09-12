@@ -14,18 +14,12 @@ interface DirectorySelectionProps {
 
 function DirectorySelection({ value, onChange, placeHolder, pulseOnEmpty }: DirectorySelectionProps) {
   const handleSelectFolderClick = useCallback(() => {
-    window.api.send("openDirectorySelect", value ?? "");
-  }, [value]);
-
-  useEffect(() => {
-    const unsubscribe = window.api.receive("directorySelected", (path: string | null) => {
-      // Otherwise it's weird, if the user suddenly loses their input on cancelling
+    window.api.selectDirectory(value ?? "").then((path) => {
       if (path !== null) {
         onChange(path);
       }
     });
-    return () => unsubscribe();
-  }, [onChange]);
+  }, [onChange, value]);
 
   const showAnimatePulse = pulseOnEmpty && value === null;
 
@@ -55,7 +49,7 @@ export function SetupScreen() {
 
   useEffect(() => {
     if (updateState.isSuccess) {
-      window.api.send("reboot");
+      window.api.reboot();
     } else if (updateState.isError) {
       setShowErrorMessage(true);
     }
