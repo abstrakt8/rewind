@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
 import { inject, injectable } from "inversify";
 import { Beatmap, HitCircle, isHitCircle, isSlider, Slider, Spinner } from "@rewind/osu/core";
-import { TYPES } from "../../../types";
+import { STAGE_TYPES } from "../../../STAGE_TYPES";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageViewService } from "../../StageViewService";
 import { StageSkinService } from "../../../StageSkinService";
@@ -16,7 +16,7 @@ export class HitObjectsPreparer {
   hitObjectContainer: Container;
 
   constructor(
-    @inject(TYPES.BEATMAP) private readonly beatmap: Beatmap,
+    @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
     private readonly gameClock: GameplayClock,
     private readonly stageViewService: StageViewService,
     private readonly stageSkinService: StageSkinService,

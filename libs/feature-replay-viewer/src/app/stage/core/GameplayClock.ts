@@ -1,7 +1,7 @@
 import { EventEmitter, GameClockEvents } from "../../events";
 import { ListenerFn } from "eventemitter2";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
+import { STAGE_TYPES } from "../STAGE_TYPES";
 
 const getNowInMs = () => performance.now();
 
@@ -15,7 +15,7 @@ export class GameplayClock {
 
   // private eventEmitter: EventEmitter;
 
-  constructor(@inject(TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter) {
+  constructor(@inject(STAGE_TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter) {
     // this.eventEmitter = new EventEmitter();
   }
 

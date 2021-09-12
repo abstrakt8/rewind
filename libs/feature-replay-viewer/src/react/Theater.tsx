@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RewindStage } from "../app/stage";
+import { RewindStage } from "../app/stage/createRewindStage";
 import { useTheaterContext } from "./components/TheaterProvider/TheaterProvider";
 import { StageProvider } from "./components/StageProvider/StageProvider";
 import { GameStage } from "./GameStage";
@@ -8,7 +8,7 @@ import { LightningBoltIcon } from "@heroicons/react/solid";
 
 function TheaterPreparation() {
   return (
-    <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200"}>
+    <div className={"flex flex-col items-center gap-4 justify-center text-white m-auto text-gray-200 h-full"}>
       <SyncLoader loading={true} color={"white"} />
       <div>Preparing the stage...</div>
     </div>
@@ -32,7 +32,7 @@ interface Props {
 export function Theater({ chosenBlueprintId, chosenReplayId }: Props) {
   // const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
 
-  const { createStage } = useTheaterContext();
+  const { theater } = useTheaterContext();
   const [stage, setStage] = useState<RewindStage | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -42,11 +42,11 @@ export function Theater({ chosenBlueprintId, chosenReplayId }: Props) {
     }
     console.log(`Creating stage with ${chosenBlueprintId} and ${chosenReplayId}!`);
     setLoading(true);
-    createStage(chosenBlueprintId, chosenReplayId).then((createdStage) => {
+    theater.createStage(chosenBlueprintId, chosenReplayId).then((createdStage) => {
       setStage(createdStage);
       setLoading(false);
     });
-  }, [createStage, chosenBlueprintId, chosenReplayId]);
+  }, [theater, chosenBlueprintId, chosenReplayId]);
 
   // In case the stage changes, we need to clean it up
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { Color, getDefaultSkinConfig, SkinConfig, SkinIniSection } from "./SkinConfig";
+import { Color, generateDefaultSkinConfig, SkinConfig, SkinIniSection } from "./SkinConfig";
 
 function parseToBool(val: string): boolean {
   const v = parseInt(val);
@@ -14,7 +14,7 @@ export class SkinConfigParser {
 
   constructor(data: string) {
     this.data = data;
-    this.skinConfig = getDefaultSkinConfig(true);
+    this.skinConfig = generateDefaultSkinConfig(true);
     this.section = SkinIniSection.NONE;
   }
 

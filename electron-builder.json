@@ -3,7 +3,8 @@
   "productName": "Rewind",
   "directories": {
     "output": "dist/electron",
-    "app": "./"
+    "buildResources": "tools/electron-builder/build-resources",
+    "app": "."
   },
   "files": [
     {
@@ -35,10 +36,10 @@
       "from": "tools/electron-builder",
       "to": "",
       "filter": [
-        "package.json",
         "index.js"
       ]
-    }
+    },
+    "package.json"
   ],
   "extraResources": [
     {

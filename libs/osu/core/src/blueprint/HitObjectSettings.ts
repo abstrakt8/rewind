@@ -2,7 +2,9 @@
 import { Position } from "@rewind/osu/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 
-// TODO: In the future I want the blue print structured like
+/**
+ * Basically these settings are used as a
+ */
 
 export type HitObjectSettingsType = "HIT_CIRCLE" | "SLIDER" | "SPINNER" | "MANIA_HOLD";
 

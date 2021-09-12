@@ -9,7 +9,6 @@ import {
   SliderBodySettings,
 } from "@rewind/osu-pixi/classic-components";
 import { RGB, Vec2 } from "@rewind/osu/math";
-import { SkinTextures } from "@rewind/osu/skin";
 import { sliderRepeatAngle } from "../../../../../utils/Sliders";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageViewService } from "../../StageViewService";
@@ -88,7 +87,7 @@ export class SliderPreparer {
       const graphic = new OsuClassicSliderTick();
       const time = gameTime - t.hitTime;
       const hit = true; // TODO
-      const texture = skin.getTexture(SkinTextures.SLIDER_TICK);
+      const texture = skin.getTexture("SLIDER_TICK");
       graphic.prepare({ time, position, scale, hit, approachDuration, texture });
       sprites.push(graphic.sprite);
     });
@@ -118,7 +117,7 @@ export class SliderPreparer {
       // See DrawableSliderRepeat -> `animDuration`
       const fadeInOutDuration = Math.min(300, slider.spanDuration);
       const time = gameTime - hitTime;
-      const texture = skin.getTexture(SkinTextures.SLIDER_REPEAT);
+      const texture = skin.getTexture("SLIDER_REPEAT");
       repeat.prepare({
         position,
         scale,
@@ -148,8 +147,8 @@ export class SliderPreparer {
     const sliderBall = new OsuClassicSliderBall();
     sliderBall.prepare({
       ballTint: null, // TODO
-      ballTexture: skin.getTexture(SkinTextures.SLIDER_BALL),
-      followCircleTexture: skin.getTexture(SkinTextures.SLIDER_FOLLOW_CIRCLE),
+      ballTexture: skin.getTexture("SLIDER_BALL"),
+      followCircleTexture: skin.getTexture("SLIDER_FOLLOW_CIRCLE"),
       position,
       scale: slider.scale,
     });

@@ -1,12 +1,12 @@
-import { ILoaderResource, Loader } from "@pixi/loaders";
+import { Loader } from "@pixi/loaders";
 import { Texture } from "pixi.js";
 import axios from "axios";
-import { SkinConfig, SkinTextures } from "@rewind/osu/skin";
+import { OsuSkinTextures, SkinConfig } from "@rewind/osu/skin";
 import { inject, injectable } from "inversify";
 import { TYPES } from "./types";
 import { Skin, SkinTexturesByKey } from "../stage/rewind/Skin";
 
-export type SkinTextureLocation = { key: SkinTextures; paths: string[] };
+export type SkinTextureLocation = { key: OsuSkinTextures; paths: string[] };
 
 async function startLoading(loader: Loader, skinName: string): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
@@ -19,7 +19,7 @@ async function startLoading(loader: Loader, skinName: string): Promise<boolean> 
       resolve(true);
     });
 
-    loader.onError.once((loader: Loader, resource: ILoaderResource) => {
+    loader.onError.once((resource) => {
       console.error(`Could not load resource ${resource.name}`);
     });
     loader.load();
@@ -63,7 +63,7 @@ export class SkinService {
     // Every file, even non-animatable files have the index in their name
     // For example "WhiteCat/hitcircle-0" would be one key name
 
-    const queueFiles: { key: SkinTextures; name: string }[] = [];
+    const queueFiles: { key: OsuSkinTextures; name: string }[] = [];
     files.forEach((stl) => {
       stl.paths.forEach((path, index) => {
         // `Loader` will die if the same `name` gets used twice therefore the unique skinElementCounter

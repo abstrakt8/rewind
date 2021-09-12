@@ -3,7 +3,8 @@ import { Response } from "express";
 import { LocalReplayService } from "./LocalReplayService";
 
 /**
- * This is technically just a temporary solution because parsing the .osr file on a web browser is a challenge that I want to handle in the future.
+ * This is technically just a temporary solution because parsing the .osr file on a web browser is a challenge that I
+ * want to handle in the future.
  */
 @Controller("replays")
 export class LocalReplayController {
@@ -16,6 +17,7 @@ export class LocalReplayController {
     const replay = await this.localReplayService.exportedReplay(filename);
     res.json(replay);
   }
+
   @Get("/local/:filename")
   async decodeInternalReplay(@Res() res: Response, @Param("filename") filename: string) {
     const replay = await this.localReplayService.internalReplay(filename);

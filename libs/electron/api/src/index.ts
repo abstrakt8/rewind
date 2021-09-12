@@ -16,8 +16,8 @@ export interface SecureElectronAPI {
   receive: (channel: ValidReceiveChannel, func: (...args: any[]) => void) => Destroyer;
 }
 
+type PathType = "appData" | "userData" | "appResources" | "logs";
+
 export interface BackendPreloadAPI {
-  getAppDataPath: () => Promise<string>;
-  getUserDataPath: () => Promise<string>;
-  getAppResourcesPath: () => Promise<string>;
+  getPath: (type: PathType) => Promise<string>;
 }

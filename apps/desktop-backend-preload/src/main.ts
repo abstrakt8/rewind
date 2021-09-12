@@ -8,7 +8,5 @@ declare global {
 }
 
 window.settings = {
-  getAppDataPath: () => ipcRenderer.invoke("getAppDataPath"),
-  getUserDataPath: () => ipcRenderer.invoke("getUserDataPath"),
-  getAppResourcesPath: () => ipcRenderer.invoke("getAppResourcesPath"),
+  getPath: (type) => ipcRenderer.invoke("getPath", type),
 };

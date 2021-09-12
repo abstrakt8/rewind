@@ -40,3 +40,10 @@ The default skin (currently "- YUGEN - ") should be put into `resources/`
 ```
 ```
 
+# Dependencies
+
+History should stay at `4.10.1` due to incompatibility issues with react-router-dom
+
+```
+"history": "4.10.1",
+```

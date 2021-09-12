@@ -25,8 +25,7 @@ export type SkinConfig = {
     spinnerFadePlayfield: boolean;
     spinnerFrequencyModulate: boolean;
     spinnerNoBlink: boolean;
-
-    // TODO: What is sliderStyle?  1 | 2 ?
+    // sliderStyle is mentioned somewhere, but IDK what it stands for
   };
   // Technically speaking it's only RGB (but we also allow RGBA)
   colors: {
@@ -61,7 +60,7 @@ export enum SkinIniSection {
 }
 
 // Using the default settings from https://osu.ppy.sh/wiki/el/Skinning/skin.ini
-export const getDefaultSkinConfig = (didFileExist: boolean): SkinConfig => ({
+export const generateDefaultSkinConfig = (didFileExist: boolean): SkinConfig => ({
   general: {
     name: "",
     author: "",

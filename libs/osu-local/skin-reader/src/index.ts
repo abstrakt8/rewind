@@ -1,2 +1,2 @@
-export * from "./SkinReader";
 export * from "./SkinFolderReader";
+export * from "./SkinTextureResolver";

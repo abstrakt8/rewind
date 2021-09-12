@@ -7,7 +7,7 @@ import { OSU_FOLDER } from "../constants";
 
 @Injectable()
 export class LocalReplayService {
-  private logger = new Logger("LocalReplayService");
+  private logger = new Logger(LocalReplayService.name);
 
   constructor(@Inject(OSU_FOLDER) private osuDirectory: string) {}
 

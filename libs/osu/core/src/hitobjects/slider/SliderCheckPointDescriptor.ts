@@ -12,6 +12,6 @@ export type SliderCheckPointDescriptor = {
   // The startTime of the span is useful for calculating visual stuff.
   spanStartTime: number;
 
-  // The progress in ONE span. So first SliderRepeat would have pathProgress=1, second one would have pathProgress = 0 and so on.
-  pathProgress: number;
+  // The progress in ONE span. So first SliderRepeat would have spanProgress=1, second one would have spanProgress = 0 and so on.
+  spanProgress: number;
 };

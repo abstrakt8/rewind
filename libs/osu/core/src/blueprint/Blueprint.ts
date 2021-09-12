@@ -3,7 +3,6 @@ import { BlueprintInfo } from "./BlueprintInfo";
 import { HitObjectSettings } from "./HitObjectSettings";
 import { DEFAULT_BEATMAP_DIFFICULTY, BeatmapDifficulty } from "../beatmap/BeatmapDifficulty";
 
-// Make this kinda nicely usable
 export class Blueprint {
   blueprintInfo: BlueprintInfo = new BlueprintInfo();
   defaultDifficulty: BeatmapDifficulty = DEFAULT_BEATMAP_DIFFICULTY;

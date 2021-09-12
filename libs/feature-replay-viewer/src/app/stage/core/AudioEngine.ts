@@ -1,6 +1,7 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable, postConstruct } from "inversify";
 import { EventEmitter, GameClockEvents } from "../../events";
-import { TYPES } from "../types";
+import { STAGE_TYPES } from "../STAGE_TYPES";
+import { AUDIO_SETTINGS_CHANGED, AudioSettings, AudioSettingsService } from "../rewind/AudioSettingsService";
 
 // HTML5 Audio supports time stretching without pitch changing (otherwise sounds like night core)
 // Chromium's implementation of <audio> is the best.
@@ -17,15 +18,16 @@ export class AudioEngine {
   musicUrl?: string;
   musicBuffer?: AudioBuffer;
 
-  song: MediaElementAudioSourceNode;
+  song?: MediaElementAudioSourceNode;
 
   // In seconds
   sampleWindow = 0.1;
   schedulePointer = 0;
 
   constructor(
-    @inject(TYPES.AUDIO_CONTEXT) private readonly audioContext: AudioContext,
-    @inject(TYPES.SONG_URL) private readonly songUrl: string,
+    private readonly audioSettingService: AudioSettingsService,
+    @inject(STAGE_TYPES.AUDIO_CONTEXT) private readonly audioContext: AudioContext,
+    @inject(STAGE_TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter,
   ) {
     this.masterGain = this.audioContext.createGain();
     this.musicGain = this.audioContext.createGain();
@@ -34,11 +36,16 @@ export class AudioEngine {
     this.samplesGain.connect(this.masterGain);
     this.masterGain.connect(this.audioContext.destination);
 
-    // TODO: Make it changeable
-    this.masterGain.gain.value = 0.8;
-    this.musicGain.gain.value = 0.35;
-    this.samplesGain.gain.value = 1.0;
+    this.handleAudioSettingsChanged(this.audioSettingService.getSettings());
+  }
 
+  @postConstruct()
+  postConstruct() {
+    this.setupListeners(this.eventEmitter);
+  }
+
+  async loadSong(songUrl: string) {
+    // Disconnect other one?
     const audio = new Audio();
     audio.crossOrigin = "anonymous";
     audio.src = songUrl;
@@ -51,10 +58,11 @@ export class AudioEngine {
     eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, () => this.pause());
     eventEmitter.on(GameClockEvents.GAME_CLOCK_STARTED, () => this.start());
     eventEmitter.on(GameClockEvents.GAME_CLOCK_SPEED_CHANGED, (speed) => this.changePlaybackRate(speed));
+    eventEmitter.on(AUDIO_SETTINGS_CHANGED, (settings) => this.handleAudioSettingsChanged(settings));
   }
 
   start() {
-    // TODO: ?
+    // TODO: ???
     this.audioContext.resume();
     this.song?.mediaElement.play();
   }
@@ -67,11 +75,8 @@ export class AudioEngine {
   }
 
   changePlaybackRate(newPlaybackRate: number) {
-    // const wasPlaying = this.isPlaying;
     if (this.song) {
-      // if (wasPlaying) this.pause();
       this.song.mediaElement.playbackRate = newPlaybackRate;
-      // if (wasPlaying) this.start();
     }
   }
 
@@ -82,11 +87,7 @@ export class AudioEngine {
 
   seekTo(toInMs: number) {
     if (this.song) {
-      // const wasPlaying = this.isPlaying;
-      // We also reset the schedulePointer to 0, and maybe possibility to stop samples.
-      // if (wasPlaying) this.pause();
       this.song.mediaElement.currentTime = toInMs / 1000;
-      // if (wasPlaying) this.start();
     }
   }
 
@@ -104,10 +105,18 @@ export class AudioEngine {
     return (this.song?.mediaElement.duration ?? 1) * 1000;
   }
 
+  // TODO: @preDestroy ?
   destroy() {
     this.pause();
     // this.audioContext.close().then(() => {
     //   console.log("Audio context closed.");
     // });
+  }
+
+  private handleAudioSettingsChanged(settings: AudioSettings) {
+    const { muted, volume } = settings;
+    this.masterGain.gain.value = muted ? 0 : volume.master;
+    this.musicGain.gain.value = volume.music;
+    this.samplesGain.gain.value = volume.effects;
   }
 }

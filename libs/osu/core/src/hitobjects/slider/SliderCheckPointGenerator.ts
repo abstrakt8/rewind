@@ -14,14 +14,14 @@ function* generateTicks(
     if (d >= length - minDistanceFromEnd) {
       break;
     }
-    const pathProgress = d / length;
-    const timeProgress = reversed ? 1.0 - pathProgress : pathProgress;
+    const spanProgress = d / length;
+    const timeProgress = reversed ? 1.0 - spanProgress : spanProgress;
     yield {
       type: "TICK",
       spanIndex,
       spanStartTime,
       time: spanStartTime + timeProgress * spanDuration,
-      pathProgress,
+      spanProgress,
     };
   }
 }
@@ -59,7 +59,7 @@ export function* generateSliderCheckpoints(
           spanIndex: span,
           spanStartTime,
           time: spanStartTime + spanDuration,
-          pathProgress: (span + 1) % 2,
+          spanProgress: (span + 1) % 2,
         };
       }
     }
@@ -79,7 +79,7 @@ export function* generateSliderCheckpoints(
     spanIndex: finalSpanIndex,
     spanStartTime: finalSpanStartTime,
     time: finalSpanEndTime,
-    pathProgress: finalProgress,
+    spanProgress: finalProgress,
   };
 
   // Technically speaking the tail has no real relevancy for gameplay, it is just a visual element.

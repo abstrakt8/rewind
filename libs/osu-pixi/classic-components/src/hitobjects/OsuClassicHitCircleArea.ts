@@ -1,7 +1,7 @@
 import { Container } from "@pixi/display";
 import { Texture } from "@pixi/core";
 import { Sprite } from "@pixi/sprite";
-import { OsuClassicNumber } from "./OsuClassicNumber";
+import { OsuClassicNumber } from "../hud/OsuClassicNumber";
 import {
   applyPropertiesToDisplayObject,
   createCenteredSprite,
@@ -20,6 +20,7 @@ import { fadeInT, fadeOutT, scaleToT } from "../utils/Transformations";
 import { OsuClassicConstants } from "./OsuClassicConstants";
 import { PrepareSetting } from "../utils/Preparable";
 import { Easing } from "@rewind/osu/math";
+import { calculateDigits } from "../utils/numbers";
 
 // Legacy, in osu!lazer there is a bunch of more stuff such as triangles
 
@@ -42,8 +43,8 @@ export interface OsuClassicHitCircleAreaSettings
   numberTextures: Texture[]; // digit `i` has `numberTextures[i]`
   hitCircleOverlayTexture: Texture;
 
-  // Usually the HitCircleArea is like a sandwich with the hitCircleTexture on the bottom and the overlay on the top with
-  // the number in between, except if hitCircleOverlayAboveNumber is false, then the number is on the top.
+  // Usually the HitCircleArea is like a sandwich with the hitCircleTexture on the bottom and the overlay on the top
+  // with the number in between, except if hitCircleOverlayAboveNumber is false, then the number is on the top.
   hitCircleOverlayAboveNumber: boolean;
 
   // Animation relevant properties
@@ -115,10 +116,12 @@ export class OsuClassicHitCircleArea implements PrepareSetting<OsuClassicHitCirc
   }
 
   private prepareNumber(): void {
-    const { number, numberTextures: textures, numberOverlap: overlap } = this.settings;
+    const { number, numberTextures: textures, numberOverlap: overlap, scale } = this.settings;
     const hideNumber = false; // TODO: Maybe as a setting?
     if (hideNumber) this.number.renderable = false; // ??
-    this.number.prepare({ number, textures, overlap });
+    this.number.prepare({ digits: calculateDigits(number), textures, overlap });
+    this.number.anchorX = 0.5;
+    this.number.anchorY = 0.5;
   }
 
   private prepareSpriteOrder(): void {

@@ -1,8 +1,13 @@
-// Chooses the correct texture file for the given one
-
-import * as Path from "path";
+import {
+  comboDigitFonts,
+  DEFAULT_SKIN_TEXTURE_CONFIG,
+  defaultDigitFonts,
+  hitCircleDigitFonts,
+  OsuSkinTextures,
+  SkinConfig,
+} from "@rewind/osu/skin";
 import { promises as fs } from "fs";
-import { DefaultTextureConfig, getComboFontKeys, SkinConfig, SkinTextures, HIT_CIRCLE_FONT } from "@rewind/osu/skin";
+import * as Path from "path";
 
 export type GetTextureFileOption = {
   hdIfExists?: boolean;
@@ -10,15 +15,8 @@ export type GetTextureFileOption = {
   tryWithFallback?: boolean;
 };
 
-const join = Path.posix.join;
-
 // If F is fallback skin for main skin S
 // First check S/circle@2x.png then S/circle.png then F/circle@2x.png then F/circle.png.
-
-export interface SkinReader {
-  getTextureFiles(skinTexture: SkinTextures, option: GetTextureFileOption): Promise<string[]>;
-}
-
 export type OsuFileNameOptions = {
   useHD: boolean;
   extension: string;
@@ -30,51 +28,58 @@ export type TextureFileLocation = {
   paths: string[];
 };
 
-const findHitCircleFontIndex = (skinTexture: SkinTextures): number => {
-  return HIT_CIRCLE_FONT.indexOf(skinTexture);
-};
+export interface OsuSkinTextureResolver {
+  /**
+   * Resolves the paths to the given skin texture. In case the given skin texture is animated, multiple paths
+   * will be returned.
+   *
+   * @param osuSkinTexture
+   * @param option
+   */
+  resolve(osuSkinTexture: OsuSkinTextures, option: GetTextureFileOption): Promise<string[]>;
+}
 
-const findComboFontIndex = (skinTexture: SkinTextures): number => {
-  return getComboFontKeys().indexOf(skinTexture);
-};
+const join = Path.posix.join;
 
-export class OsuLegacySkinReader implements SkinReader {
-  folderPath: string;
-  config: SkinConfig;
-  fallbackSkin?: SkinReader;
-
-  constructor(folderPath: string, config: SkinConfig, fallbackSkin?: SkinReader) {
-    this.folderPath = folderPath;
-    this.config = config;
-    this.fallbackSkin = fallbackSkin;
-  }
+export class OsuLegacySkinTextureResolver implements OsuSkinTextureResolver {
+  constructor(
+    readonly folderPath: string,
+    readonly config: SkinConfig,
+    readonly fallbackSkin?: OsuSkinTextureResolver,
+  ) {}
 
   // Special case for font textures since their `prefix` can be changed.
-  // Best example would be WhiteCat 1.0 Skin where for example the combo prefix is `Assets\combo` -> even different folder
-  getFontPrefix(skinTexture: SkinTextures): string | undefined {
+  // Best example would be WhiteCat 1.0 Skin where for example the combo prefix is `Assets\combo` -> even different
+  // folder
+  getFontPrefix(skinTexture: OsuSkinTextures): string | undefined {
     {
-      const hitCircleId = findHitCircleFontIndex(skinTexture);
+      const hitCircleId = hitCircleDigitFonts.indexOf(skinTexture as any);
       if (hitCircleId !== -1) {
         // join will also convert / to \\ if it's in Windows.
-        // This will be then Assets/combo/default0 for excample
+        // This will be then Assets/combo/default0 for example
         return join(`${this.config.fonts.hitCirclePrefix}-${hitCircleId}`);
       }
     }
     {
-      const comboId = findComboFontIndex(skinTexture);
+      const comboId = comboDigitFonts.indexOf(skinTexture as any);
       if (comboId !== -1) {
         return join(`${this.config.fonts.comboPrefix}-${comboId}`);
       }
     }
+    {
+      const scoreId = defaultDigitFonts.indexOf(skinTexture as any);
+      if (scoreId !== -1) {
+        return join(`${this.config.fonts.scorePrefix}-${scoreId}`);
+      }
+    }
     return undefined;
-    // TODO: Score is also different
   }
 
-  getPrefix(skinTexture: SkinTextures) {
+  getPrefix(skinTexture: OsuSkinTextures) {
     const fontPrefix = this.getFontPrefix(skinTexture);
     if (fontPrefix !== undefined) return fontPrefix;
 
-    const texConfig = DefaultTextureConfig[skinTexture];
+    const texConfig = DEFAULT_SKIN_TEXTURE_CONFIG[skinTexture];
     if (!texConfig) {
       throw Error("what u doing");
     }
@@ -84,11 +89,11 @@ export class OsuLegacySkinReader implements SkinReader {
   }
 
   // No fallback, just straight up returns the filename
-  getFilename(skinTexture: SkinTextures, opt: OsuFileNameOptions) {
+  getFilename(skinTexture: OsuSkinTextures, opt: OsuFileNameOptions) {
     const { useHD, animationIndex, extension } = opt;
-    const texConfig = DefaultTextureConfig[skinTexture];
+    const texConfig = DEFAULT_SKIN_TEXTURE_CONFIG[skinTexture];
     if (!texConfig) {
-      throw Error("What u doing");
+      throw Error("Config for given texture not found");
     }
     const { skipHyphen, animationFrameRate } = texConfig;
     let s = this.getPrefix(skinTexture);
@@ -101,7 +106,6 @@ export class OsuLegacySkinReader implements SkinReader {
       s += animationIndex;
     }
     if (useHD) {
-      // TODO: Check idke 1.2 skin, it has 2x files without the '@'
       s += "@2x";
     }
     s += "." + extension;
@@ -129,18 +133,18 @@ export class OsuLegacySkinReader implements SkinReader {
     return null;
   }
 
-  async checkForTextureWithFallback(skinTexture: SkinTextures, options: OsuFileNameOptions) {
+  async checkForTextureWithFallback(skinTexture: OsuSkinTextures, options: OsuFileNameOptions) {
     const filesToCheck = [this.getFilename(skinTexture, options)];
     if (options.useHD) filesToCheck.push(this.getFilename(skinTexture, { ...options, useHD: false }));
     return this.checkForFirstAppearanceInFolder(filesToCheck);
   }
 
   // We are not going to return the absolute path, just the relative path in the skin folder.
-  async getTextureFiles(skinTexture: SkinTextures, option: GetTextureFileOption = {}): Promise<string[]> {
+  async resolve(skinTexture: OsuSkinTextures, option: GetTextureFileOption = {}): Promise<string[]> {
     const { animatedIfExists, hdIfExists } = option;
-    const texConfig = DefaultTextureConfig[skinTexture];
+    const texConfig = DEFAULT_SKIN_TEXTURE_CONFIG[skinTexture];
     if (!texConfig) {
-      throw Error("What you doing");
+      throw Error(`Skin texture ${skinTexture} not found in config`);
     }
     // TODO: I think only menu-background.jpg uses jpg.
     const extension = "png";
@@ -191,19 +195,17 @@ export class OsuLegacySkinReader implements SkinReader {
     if (!this.fallbackSkin) {
       return [];
     } else {
-      return this.fallbackSkin.getTextureFiles(skinTexture, option);
+      return this.fallbackSkin.resolve(skinTexture, option);
     }
   }
 
-  async getAllTextureFiles(option: GetTextureFileOption = {}): Promise<TextureFileLocation[]> {
-    const values = Object.keys(DefaultTextureConfig);
+  async resolveAllTextureFiles(option: GetTextureFileOption = {}): Promise<TextureFileLocation[]> {
+    const skinTextureKeys = Object.keys(DEFAULT_SKIN_TEXTURE_CONFIG);
     return Promise.all(
-      values.map(async (key) => ({
+      skinTextureKeys.map(async (key) => ({
         key,
-        paths: await this.getTextureFiles(key as SkinTextures, option),
+        paths: await this.resolve(key as OsuSkinTextures, option),
       })),
     );
   }
 }
-
-// Later we can do OsuLazerSkin ...

@@ -1,15 +1,14 @@
 import { Container } from "pixi.js";
 import { OsuClassicCursor } from "@rewind/osu-pixi/classic-components";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../../../../../utils/Replay";
-import { SkinTextures } from "@rewind/osu/skin";
 import { AnalysisCursor } from "../../../../pixi/components/AnalysisCursor";
 import { OsuAction } from "@rewind/osu/core";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../../../types";
-import { OsuReplay } from "../../../../theater";
+import { STAGE_TYPES } from "../../../STAGE_TYPES";
 import { StageSkinService } from "../../../StageSkinService";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageViewService } from "../../StageViewService";
+import type { OsuReplay } from "../../../../theater/osuReplay";
 
 @injectable()
 export class CursorPreparer {
@@ -18,7 +17,7 @@ export class CursorPreparer {
   private readonly analysisCursor: AnalysisCursor;
 
   constructor(
-    @inject(TYPES.REPLAY) private readonly replay: OsuReplay,
+    @inject(STAGE_TYPES.REPLAY) private readonly replay: OsuReplay,
     private readonly stageSkinService: StageSkinService,
     private readonly gameClock: GameplayClock,
     private readonly stageViewService: StageViewService,
@@ -70,8 +69,8 @@ export class CursorPreparer {
       position,
       trailPositions,
       cursorScale: scale,
-      cursorTexture: skin.getTexture(SkinTextures.CURSOR),
-      cursorTrailTexture: skin.getTexture(SkinTextures.CURSOR_TRAIL),
+      cursorTexture: skin.getTexture("CURSOR"),
+      cursorTrailTexture: skin.getTexture("CURSOR_TRAIL"),
     });
 
     this.container.addChild(cursor.container);

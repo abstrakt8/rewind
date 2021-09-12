@@ -8,9 +8,9 @@ import { ReplayReadEvent, ReplayWatchEvents } from "../events/Events";
 @Injectable()
 export class ReplayWatcher {
   // Can be used for osu!/Data/r/ and osu!/Replays
-  private logger = new Logger("ReplayWatcher");
+  private logger = new Logger(ReplayWatcher.name);
 
-  constructor(private eventEmitter: EventEmitter2) {}
+  constructor(private readonly eventEmitter: EventEmitter2) {}
 
   // TODO: onModuleInit -> ok maybe not here , but something that also takes folders to watch
 

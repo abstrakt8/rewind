@@ -13,6 +13,10 @@ import { PlaybarColors } from "./PlaybarColors";
 import { PlaybarSettings } from "../theater/playbarSettings";
 import { formatGameTime } from "@rewind/osu/math";
 import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
+import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";
+import { FaQuestion } from "react-icons/all";
+import { HelpModalDialog } from "./HelpModal/HelpModal";
+import { handleButtonFocus } from "./HandleButtonFocus";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -50,7 +54,7 @@ function mapToPlaybarEvents(
 ): PlaybarEvent[] {
   const { showSliderBreaks, show100s, show50s, showMisses } = settings;
   const events: PlaybarEvent[] = [];
-  console.log("Remapping???");
+  console.log("Remapping playbar events");
   // TODO: Refactor -> maybe filter afterwards
   replayEvents.forEach((e) => {
     const position = e.time / maxTime;
@@ -119,38 +123,53 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
 
   const { modHidden, toggleModHidden } = useStageViewContext();
   const handleHiddenButtonClicked = useCallback(() => toggleModHidden(), [toggleModHidden]);
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
 
   useStageShortcuts();
   useEnergySaver(true);
 
   return (
-    <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4 w-full"}>
-      <div className={"flex flex-col gap-4 flex-1 h-full"}>
-        {/*<div className={"flex-1 rounded relative"}>*/}
-        {/*TODO: Very hacky*/}
-        <GameCanvas />
-        {/*</div>*/}
-        <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
-          <button className={"transition-colors hover:text-gray-400"} tabIndex={-1} onClick={handlePlayButtonClick}>
-            {isPlaying ? <PauseIcon /> : <PlayIcon />}
-          </button>
-          <CurrentTime />
-          <div className={"flex-1"}>
-            <EfficientPlaybar />
+    <>
+      <HelpModalDialog isOpen={helpModalOpen} onClose={() => setHelpModalOpen(false)} />
+      <div className={"flex flex-row bg-gray-800 text-gray-200 h-screen p-4 gap-4 w-full"}>
+        <div className={"flex flex-col gap-4 flex-1 h-full"}>
+          {/*<div className={"flex-1 rounded relative"}>*/}
+          {/*TODO: Very hacky*/}
+          <GameCanvas />
+          {/*</div>*/}
+          <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
+            <button
+              onFocus={handleButtonFocus}
+              className={"transition-colors hover:text-gray-400"}
+              tabIndex={-1}
+              onClick={handlePlayButtonClick}
+            >
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            </button>
+            <CurrentTime />
+            <div className={"flex-1"}>
+              <EfficientPlaybar />
+            </div>
+            <span className={"self-center select-all"}>{maxTimeHMS}</span>
+            <button onFocus={handleButtonFocus} className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>
+              <img
+                src={modHiddenImg}
+                alt={"ModHidden"}
+                className={`filter ${modHidden ? "grayscale-0" : "grayscale"} `}
+              />
+            </button>
+            <AudioSettingsButton />
+            <button onFocus={handleButtonFocus} className={"transition-colors hover:text-gray-400 text-lg bg-500"}>
+              {speed}x
+            </button>
+            <button onFocus={handleButtonFocus} onClick={() => setHelpModalOpen(true)}>
+              <FaQuestion className={"w-4 h-4"} />
+            </button>
           </div>
-          <span className={"self-center select-all"}>{maxTimeHMS}</span>
-          <button className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>
-            <img
-              src={modHiddenImg}
-              alt={"ModHidden"}
-              className={`filter ${modHidden ? "grayscale-0" : "grayscale"} `}
-            />
-          </button>
-          <button className={"transition-colors hover:text-gray-400 text-lg bg-500"}>{speed}x</button>
         </div>
+        <Sidebar />
       </div>
-      <Sidebar />
-    </div>
+    </>
   );
 };
 

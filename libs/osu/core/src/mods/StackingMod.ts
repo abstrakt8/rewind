@@ -49,45 +49,6 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
     }
   }
 
-  // if (endIndex < hitObjects.length - 1) {
-  //   // Extend the end index to include objects they are stacked on
-  //   for (let i = endIndex; i >= startIndex; i--) {
-  //     let stackBaseIndex = i;
-  //
-  //     for (let n = stackBaseIndex + 1; n < hitObjects.length; n++) {
-  //       const stackBaseObject = hitObjects[stackBaseIndex];
-  //       const stackBaseHitCircle = getHitCircle(hitObjects[stackBaseIndex]);
-  //       if (!stackBaseHitCircle) break;
-  //
-  //       const objectN = getHitCircle(hitObjects[n]);
-  //       if (!objectN) break;
-  //
-  //       // TODO: Check if this is correct for sliders
-  //       const endTime = endTimeOf(stackBaseHitCircle);
-  //       const stackThreshold = objectN.approachDuration * stackLeniency;
-  //
-  //       if (objectN.hitTime - endTime > stackThreshold)
-  //         // no longer within stacking range of the next object
-  //         break;
-  //
-  //       if (
-  //         Vec2.distance(stackBaseHitCircle.position, objectN.position) < STACK_DISTANCE ||
-  //         (stackBaseObject.type === "SLIDER" &&
-  //           Vec2.distance(endPosition(stackBaseHitCircle), objectN.position) < STACK_DISTANCE)
-  //       ) {
-  //         stackBaseIndex = n;
-  //         // HitObjects after the specified update range haven't been reset yet
-  //         stackingHeights.set(objectN.id, 0);
-  //       }
-  //     }
-  //
-  //     if (stackBaseIndex > extendedEndIndex) {
-  //       extendedEndIndex = stackBaseIndex;
-  //       if (extendedEndIndex === hitObjects.length - 1) break;
-  //     }
-  //   }
-  // }
-
   // Reverse pass for stack calculation
   let extendedStartIndex = startIndex;
 

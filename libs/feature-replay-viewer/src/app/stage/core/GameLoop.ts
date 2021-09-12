@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 import { GameplayClock } from "./GameplayClock";
 import { PixiRendererService } from "./PixiRendererService";
-import { TheaterStagePreparer } from "./TheaterStagePreparer";
+import type { TheaterStagePreparer } from "./TheaterStagePreparer";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
+import { STAGE_TYPES } from "../STAGE_TYPES";
 import MrDoobStats from "stats.js";
 import { GameSimulator } from "../rewind/GameSimulator";
 
@@ -32,13 +32,14 @@ export class GameLoop {
     private gameClock: GameplayClock, // Maybe also inject?
     private gameSimulator: GameSimulator,
     private pixiRendererService: PixiRendererService,
-    @inject(TYPES.THEATER_STAGE_PREPARER) private theaterStagePreparer: TheaterStagePreparer,
+    @inject(STAGE_TYPES.THEATER_STAGE_PREPARER) private theaterStagePreparer: TheaterStagePreparer,
   ) {
     this.ticker = new PIXI.Ticker();
     this.performanceMonitor = defaultMonitor();
   }
 
   setupListeners() {
+    // If we are going to use those, then use page visibility API
     // window.addEventListener("blur", this.onWindowBlur.bind(this));
     // window.addEventListener("focus", this.onWindowFocus.bind(this));
   }
@@ -74,6 +75,7 @@ export class GameLoop {
       return;
     }
 
+    // Maybe this should be in TheaterStagePreparer ?
     this.gameSimulator.simulate(this.gameClock.timeElapsedInMs);
 
     this.pixiRendererService.resizeRendererToCanvasSize();
@@ -82,14 +84,5 @@ export class GameLoop {
     const stage = this.theaterStagePreparer.prepare();
     renderer.render(stage);
     this.performanceMonitor.end();
-  }
-
-  onWindowBlur() {
-    // this.gameClock.stop();
-    this.ticker.stop();
-  }
-
-  onWindowFocus() {
-    this.ticker.start();
   }
 }
