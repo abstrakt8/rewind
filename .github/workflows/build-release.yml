@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 16.9.1
 
+      - run: yarn
       - name: Downloading and unzipp the default Rewind skin
         run: node tools/downloadDefaultSkin.js
 
