@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, screen, shell } from "electron";
+import { BrowserWindow, dialog, Menu, screen, shell, ipcMain } from "electron";
 import { join } from "path";
 import { format } from "url";
 
@@ -43,7 +43,13 @@ export class RewindElectronApp {
             { label: "Open Replay", accelerator: "CommandOrControl+O", enabled: false },
             { type: "separator" },
             {
-              label: "Open Rewind Folder",
+              label: "Open Installation Folder",
+              click: async () => {
+                await shell.showItemInFolder(this.application.getPath("exe"));
+              },
+            },
+            {
+              label: "Open User Config Folder",
               click: async () => {
                 await shell.openPath(this.application.getPath("userData"));
               },
@@ -92,9 +98,18 @@ export class RewindElectronApp {
                 await shell.openExternal("https://discord.gg/QubdHdnBVg");
               },
             },
+            { type: "separator" },
             {
-              label: `Version: ${this.application.getVersion()}`,
-              enabled: false,
+              label: "About",
+              click: async () => {
+                const aboutMessage = `Rewind ${this.application.getVersion()}\nDeveloped by abstrakt\nPartnered with osu! University`;
+                await dialog.showMessageBox({
+                  title: "About Rewind",
+                  type: "info",
+                  message: aboutMessage,
+                  // TODO: icon: NativeImage (RewindIcon)
+                });
+              },
             },
           ],
         },
