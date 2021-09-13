@@ -43,7 +43,13 @@ export class RewindElectronApp {
             { label: "Open Replay", accelerator: "CommandOrControl+O", enabled: false },
             { type: "separator" },
             {
-              label: "Open Rewind Folder",
+              label: "Open Installation Folder",
+              click: async () => {
+                await shell.showItemInFolder(this.application.getPath("exe"));
+              },
+            },
+            {
+              label: "Open User Config Folder",
               click: async () => {
                 await shell.openPath(this.application.getPath("userData"));
               },
