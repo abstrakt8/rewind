@@ -1,6 +1,10 @@
 {
   "appId": "sh.abstrakt.rewind",
   "productName": "Rewind",
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  },
   "directories": {
     "output": "dist/electron",
     "buildResources": "tools/electron-builder/build-resources",
