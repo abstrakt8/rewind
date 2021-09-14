@@ -42,7 +42,7 @@ export class LocalBlueprintController {
   async redirectToFolder(@Res() res: Response, @Param("md5hash") md5hash: string, @Param("file") file: string) {
     const blueprintMetaData = await this.blueprint(md5hash);
     const { folderName } = blueprintMetaData;
-    const url = `/static/songs/${folderName}/${file}`;
+    const url = `/static/songs/${encodeURIComponent(folderName)}/${encodeURIComponent(file)}`;
     res.redirect(url);
   }
 }
