@@ -42,6 +42,9 @@ export class LocalBlueprintController {
   async redirectToFolder(@Res() res: Response, @Param("md5hash") md5hash: string, @Param("file") file: string) {
     const blueprintMetaData = await this.blueprint(md5hash);
     const { folderName } = blueprintMetaData;
+    // We need to encode the URI components for cases such as:
+    // "E:\osu!\Songs\1192060 Camellia - #1f1e33\Camellia - #1f1e33 (Realazy) [Amethyst Storm].osu"
+    // The two `#` characters need to be encoded to `%23` in both cases.
     const url = `/static/songs/${encodeURIComponent(folderName)}/${encodeURIComponent(file)}`;
     res.redirect(url);
   }
