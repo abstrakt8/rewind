@@ -10,7 +10,8 @@ export class ReplayService {
   constructor(@inject(TYPES.API_URL) private apiUrl: string) {}
 
   async retrieveReplay(replayId: string): Promise<OsuReplay> {
-    const url = [this.apiUrl, "api", "replays", "exported", replayId].join("/");
+    const url = [this.apiUrl, "api", "replays", "exported", encodeURIComponent(replayId)].join("/");
+    console.log(url);
     // const url = "";
     const res = (await axios
       .get(url)

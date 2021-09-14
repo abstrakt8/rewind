@@ -8,7 +8,7 @@ import { LocalReplayService } from "./LocalReplayService";
  */
 @Controller("replays")
 export class LocalReplayController {
-  private logger = new Logger("LocalReplayController");
+  private logger = new Logger(LocalReplayController.name);
 
   constructor(private localReplayService: LocalReplayService) {}
 

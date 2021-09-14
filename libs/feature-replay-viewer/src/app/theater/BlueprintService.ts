@@ -15,7 +15,7 @@ export class BlueprintService {
   constructor(@inject(TYPES.API_URL) private apiUrl: string, private readonly textureManager: TextureManager) {}
 
   async retrieveBlueprint(blueprintId: string) {
-    const url = `${this.apiUrl}/api/blueprints/${blueprintId}/osu`;
+    const url = `${this.apiUrl}/api/blueprints/${encodeURIComponent(blueprintId)}/osu`;
     const res = await fetch(url);
     const data = await res.text();
     // TODO: Emit
@@ -29,7 +29,7 @@ export class BlueprintService {
   // - (?) Storyboard
 
   async retrieveBlueprintResources(blueprintId: string) {
-    const url = `${this.apiUrl}/api/blueprints/${blueprintId}/bg`;
+    const url = `${this.apiUrl}/api/blueprints/${encodeURIComponent(blueprintId)}/bg`;
     return this.textureManager.loadTexture("BACKGROUND", url);
   }
 }
