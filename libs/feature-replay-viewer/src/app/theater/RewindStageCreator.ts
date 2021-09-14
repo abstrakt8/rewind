@@ -26,8 +26,9 @@ export class RewindStageCreator {
       this.blueprintService.retrieveBlueprint(blueprintId),
       this.replayService.retrieveReplay(replayId),
       this.skinService.loadSkin(defaultSkinName),
-      this.blueprintService.retrieveBlueprintResources(blueprintId),
     ]);
+
+    await this.blueprintService.retrieveBlueprintResources(blueprintId);
 
     // If the building is too slow or unbearable, we should push the building to a WebWorker
     const beatmap = buildBeatmap(blueprint, { addStacking: true, mods: replay.mods });
