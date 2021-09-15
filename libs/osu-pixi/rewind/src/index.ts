@@ -1,1 +1,1 @@
-export * from "./lib/osu-pixi-rewind";
+export * from "./lib/AnalysisCursor";
