@@ -22,9 +22,8 @@ export class BackgroundPreparer {
   }
 
   prepare() {
-    // this.background.texture = this.textureManager.getTexture("BACKGROUND");
-    this.background.width = STAGE_WIDTH;
-    this.background.height = STAGE_HEIGHT;
+    const scaling = STAGE_WIDTH / this.background.texture.width;
+    this.background.scale.set(scaling, scaling);
 
     this.background.alpha = this.theaterViewService.getView().backgroundDim;
     return this.background;
