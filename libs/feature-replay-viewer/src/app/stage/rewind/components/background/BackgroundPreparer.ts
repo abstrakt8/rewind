@@ -1,7 +1,7 @@
 import { Sprite, Texture } from "pixi.js";
 import { inject, injectable } from "inversify";
 import { StageViewService } from "../../StageViewService";
-import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";
+import { STAGE_WIDTH } from "../stage/GameStagePreparer";
 import type { RewindTextureMap } from "../../../STAGE_TYPES";
 import { STAGE_TYPES } from "../../../STAGE_TYPES";
 
