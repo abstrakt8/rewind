@@ -1,6 +1,6 @@
 import { posix } from "path";
 import { promises as fs } from "fs";
-import { SkinConfigParser } from "@rewind/osu/skin";
+import { generateDefaultSkinConfig, SkinConfigParser } from "@rewind/osu/skin";
 import { OsuLegacySkinTextureResolver } from "./SkinTextureResolver";
 
 const join = posix.join;
@@ -54,12 +54,18 @@ export class SkinFolderReader {
 
   /**
    * Reads the config file in the given skin folder and prepares a skin reader based on the given config.
+   * In case no config files exists, a default one will be generated according to https://osu.ppy.sh/wiki/el/Skinning/skin.ini
    * @param skinFolderPath path to the folder
    */
   static async getSkinResolver(skinFolderPath: string): Promise<OsuLegacySkinTextureResolver> {
-    const data = await fs.readFile(join(skinFolderPath, SKIN_CONFIG_FILENAME), { encoding: "utf-8" });
-    const parser = new SkinConfigParser(data);
-    const config = parser.parse();
+    let config;
+    try {
+      const data = await fs.readFile(join(skinFolderPath, SKIN_CONFIG_FILENAME), { encoding: "utf-8" });
+      const parser = new SkinConfigParser(data);
+      config = parser.parse();
+    } catch (err) {
+      config = generateDefaultSkinConfig(false);
+    }
     return new OsuLegacySkinTextureResolver(skinFolderPath, config);
   }
 }
