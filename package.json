@@ -31,7 +31,7 @@
     "build-storybook": "build-storybook",
     "postinstall": "exitzero electron-builder install-app-deps",
     "electron:build": "electron-builder",
-    "downloadDefaultSkin": "node tools/downloadDefaultSkin.js",
+    "downloadDefaultSkins": "node tools/downloadDefaultSkin.js",
     "desktop:build:dev": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --parallel",
     "desktop:build:prod": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --prod --force",
     "desktop:build-package:prod": "yarn run desktop:build:prod && yarn run electron:build",
