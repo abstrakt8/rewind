@@ -8,8 +8,9 @@ import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
 import { defaultViewSettings } from "../stage/rewind/ViewSettings";
 import { determineDefaultPlaybackSpeed } from "../../utils";
+import { defaultSkinId } from "./SkinId";
 
-const defaultSkinName = "rewind/RewindDefaultSkin";
+// There will also be a default osu! std skin
 
 @injectable()
 export class RewindStageCreator {
@@ -25,7 +26,9 @@ export class RewindStageCreator {
     const [blueprint, replay, skin] = await Promise.all([
       this.blueprintService.retrieveBlueprint(blueprintId),
       this.replayService.retrieveReplay(replayId),
-      this.skinService.loadSkin(defaultSkinName),
+
+      // TODO: Loading the beatmap specific skin
+      this.skinService.loadSkin(defaultSkinId),
     ]);
 
     await this.blueprintService.retrieveBlueprintResources(blueprintId);

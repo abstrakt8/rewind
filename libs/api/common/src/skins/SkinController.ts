@@ -14,9 +14,10 @@ export class SkinController {
     const { hd, animated, name } = query;
     const hdIfExists = hd === 1;
     const animatedIfExists = animated === 1;
-    this.logger.log(`Skin requested ${name} with hd=${hdIfExists} animated=${animatedIfExists}`);
+    const decodedName = decodeURIComponent(name);
+    this.logger.log(`Skin requested ${decodedName} with hd=${hdIfExists} animated=${animatedIfExists}`);
     // TODO: Inject these parameters ...
-    const info = await this.skinService.getSkinInfo(name);
+    const info = await this.skinService.getSkinInfo(decodedName);
     res.json(info);
   }
 }

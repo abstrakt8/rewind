@@ -14,12 +14,12 @@ export const SKIN_NAME_RESOLVER_CONFIG = "SkinsFolderConfig";
 export class SkinNameResolver {
   constructor(@Inject(SKIN_NAME_RESOLVER_CONFIG) private readonly skinNameResolverConfig: SkinNameResolverConfig) {}
 
-  resolveNameToPath(name: string): string | null {
-    const [prefix, ...path] = name.split("/");
-    const folderPath = this.skinNameResolverConfig.find((c) => c.prefix === prefix);
+  resolveNameToPath(name: string) {
+    const [source, folder] = name.split("/");
+    const folderPath = this.skinNameResolverConfig.find((c) => c.prefix === source);
     if (folderPath === undefined) {
       return null;
     }
-    return join(folderPath.path, ...path);
+    return { source, name: folder, path: join(folderPath.path, folder) };
   }
 }
