@@ -71,6 +71,17 @@ export class OsuLegacySkinTextureResolver implements OsuSkinTextureResolver {
         return combine(scorePrefix, scoreId);
       }
     }
+
+    // Special cases
+    const texConfig = DEFAULT_SKIN_TEXTURE_CONFIG[skinTexture];
+    switch (skinTexture) {
+      case "SCORE_PERCENT":
+      case "SCORE_DOT":
+        return texConfig.filePrefix.replace("score", scorePrefix);
+      case "SCORE_X":
+        return texConfig.filePrefix.replace("score", comboPrefix);
+    }
+
     return undefined;
   }
 
@@ -84,6 +95,7 @@ export class OsuLegacySkinTextureResolver implements OsuSkinTextureResolver {
     }
     // Maybe there is something with prefix in config in between (for numbers for example)
     // FilePrefix could be overridden by skin config
+    // TODO: ??? join ???
     return join(texConfig.filePrefix);
   }
 

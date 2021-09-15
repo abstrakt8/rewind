@@ -162,7 +162,6 @@ export const DEFAULT_SKIN_TEXTURE_CONFIG: Record<OsuSkinTextures, OsuSkinTexture
   SPINNER_CIRCLE: {
     filePrefix: "spinner-circle",
   },
-
   SCORE_X: {
     filePrefix: "score-x",
   },

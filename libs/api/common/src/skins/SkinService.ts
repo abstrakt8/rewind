@@ -3,6 +3,8 @@ import { GetTextureFileOption, OsuSkinTextureResolver, SkinFolderReader } from "
 import { SkinNameResolver } from "./SkinNameResolver";
 import { DEFAULT_SKIN_TEXTURE_CONFIG, OsuSkinTextures } from "@rewind/osu/skin";
 
+const OSU_DEFAULT_SKIN_ID = "rewind/OsuDefaultSkin";
+
 @Injectable()
 export class SkinService {
   private logger = new Logger(SkinService.name);
@@ -43,6 +45,9 @@ export class SkinService {
     }
     const { name, path, source } = resolved;
 
+    const osuDefaultSkinResolver = await SkinFolderReader.getSkinResolver(
+      this.skinNameResolver.resolveNameToPath(OSU_DEFAULT_SKIN_ID)?.path,
+    );
     const skinResolver = await SkinFolderReader.getSkinResolver(path);
     // TODO: Include default osu! skin
     // const defaultSkinResolver = await SkinFolderReader.getSkinResolver("");
@@ -61,6 +66,10 @@ export class SkinService {
           {
             prefix: ["static", "skins", source, name].map(encodeURIComponent).join("/"),
             resolver: skinResolver,
+          },
+          {
+            prefix: ["static", "skins", "rewind", "OsuDefaultSkin"].map(encodeURIComponent).join("/"),
+            resolver: osuDefaultSkinResolver,
           },
           // {
           //   prefix: `/static/skins/${encodeURIComponent(skinName)}`,
