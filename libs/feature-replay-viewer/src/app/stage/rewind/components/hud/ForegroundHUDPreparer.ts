@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { GameSimulator } from "../../GameSimulator";
 import { Container, Text } from "pixi.js";
-import { AnalysisHitErrorBar } from "../../../../pixi/components/HitErrorBar";
+import { OsuClassicHitErrorBar } from "@rewind/osu-pixi/classic-components";
 import { calculateDigits, OsuClassicAccuracy, OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
 import { hitWindowsForOD } from "@rewind/osu/math";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";
@@ -13,7 +13,7 @@ import { STAGE_TYPES } from "../../../STAGE_TYPES";
 export class ForegroundHUDPreparer {
   container: Container;
   stats: Text;
-  hitErrorBar: AnalysisHitErrorBar;
+  hitErrorBar: OsuClassicHitErrorBar;
 
   constructor(
     @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
@@ -22,7 +22,7 @@ export class ForegroundHUDPreparer {
   ) {
     this.container = new Container();
     this.stats = new Text("", { fontSize: 16, fill: 0xeeeeee, fontFamily: "Arial", align: "left" });
-    this.hitErrorBar = new AnalysisHitErrorBar();
+    this.hitErrorBar = new OsuClassicHitErrorBar();
   }
 
   prepare() {

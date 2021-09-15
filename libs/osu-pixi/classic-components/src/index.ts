@@ -9,6 +9,7 @@ export * from "./hitobjects/OsuClassicSliderTick";
 export * from "./hitobjects/OsuClassicCursor";
 export * from "./hitobjects/OsuClassicSpinner";
 
+export * from "./hud/HitErrorBar";
 export * from "./hud/OsuClassicNumber";
 export * from "./hud/OsuClassicAccuracy";
 export * from "./hud/OsuClassicJudgement";
