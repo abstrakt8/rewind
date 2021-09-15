@@ -1,5 +1,4 @@
 import * as request from "supertest";
-import { setupBootstrap } from "@rewind/api/desktop";
 import { INestApplication } from "@nestjs/common";
 import { DesktopConfigService } from "../src/config/DesktopConfigService";
 import { join } from "path";
@@ -17,7 +16,7 @@ describe("Setup E2E", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await setupBootstrap({ userDataPath: applicationDataPath });
+    // app = await setupBootstrap({ userDataPath: applicationDataPath });
   });
 
   it("/GET desktop", () => {
