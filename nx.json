@@ -110,6 +110,9 @@
     "web-e2e": {
       "tags": [],
       "implicitDependencies": ["web"]
+    },
+    "web-player-rewind": {
+      "tags": []
     }
   }
 }
