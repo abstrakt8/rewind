@@ -1011,6 +1011,28 @@
           "outputs": ["{options.outputFile}"]
         }
       }
+    },
+    "web-player-rewind": {
+      "root": "libs/web-player/rewind",
+      "sourceRoot": "libs/web-player/rewind/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/web-player/rewind/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/web-player/rewind"],
+          "options": {
+            "jestConfig": "libs/web-player/rewind/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

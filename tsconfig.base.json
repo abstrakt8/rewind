@@ -30,7 +30,8 @@
       "@rewind/osu/core": ["libs/osu/core/src/index.ts"],
       "@rewind/osu/math": ["libs/osu/math/src/index.ts"],
       "@rewind/osu/skin": ["libs/osu/skin/src/index.ts"],
-      "@rewind/ui": ["libs/ui/src/index.ts"]
+      "@rewind/ui": ["libs/ui/src/index.ts"],
+      "@rewind/web-player/rewind": ["libs/web-player/rewind/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
