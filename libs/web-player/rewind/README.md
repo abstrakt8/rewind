@@ -1,7 +1,38 @@
-# web-player-rewind
+This whole `./app` should probably be moved into a separate library.
 
-This library was generated with [Nx](https://nx.dev).
+Theater:
+-> Create a new scenario
 
-## Running unit tests
+Probably the PIXI components should be included in the dependency injection. Will make the code way cleaner:
 
-Run `nx test web-player-rewind` to execute the unit tests via [Jest](https://jestjs.io).
+```
+@injectable()
+class HUDPreparer {
+  constructor(@inject() preferencesService: PreferencesService) {
+  
+  }
+  
+  prepare() {
+  
+  
+  }
+
+}
+```
+
+```
+
+class SliderPreparer {
+  constructor(@inject() sliderTextureManager: SliderTextureManager, 
+             @inject() skinManager: SkinManager) {
+  
+  }
+  prepareSlider(sliderContainer: SliderContainer, slider: Slider) {
+     skinManager.getCurrentSkin().sliderBorderColor ... 
+     ...
+  }
+}
+
+```
+
+

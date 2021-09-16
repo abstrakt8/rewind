@@ -1,9 +1,9 @@
 import { createContext, ReactNode, useContext, useEffect } from "react";
-import { StageViewService } from "../../../app/stage/rewind/StageViewService";
-import { ViewSettings } from "../../../app/stage/rewind/ViewSettings";
+import { StageViewSettingsService } from "../../../../../web-player/rewind/src/settings/StageViewSettingsService";
+import { ViewSettings } from "../../../../../web-player/rewind/src/model/ViewSettings";
 import { useImmer } from "use-immer";
 
-function useStageView(viewService: StageViewService) {
+function useStageView(viewService: StageViewSettingsService) {
   const [viewSettings, updateViewSettings] = useImmer<ViewSettings>(() => {
     return viewService.getView();
   });
@@ -57,7 +57,7 @@ function useStageView(viewService: StageViewService) {
 }
 
 interface StageViewProviderProps {
-  viewService: StageViewService;
+  viewService: StageViewSettingsService;
   children: ReactNode;
 }
 

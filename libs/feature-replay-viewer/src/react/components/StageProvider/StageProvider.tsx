@@ -1,9 +1,12 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
-import { RewindStage } from "../../../app/stage/createRewindStage";
+import { RewindStage } from "../../../../../web-player/rewind/src/createRewindStage";
 import { GameClockProvider } from "./StageClockProvider";
 import { StageViewProvider } from "./StageViewProvider";
 import { StagePlaybarSettingsProvider } from "./StagePlaybarSettingsProvider";
-import { AudioSettings, AudioSettingsService } from "../../../app/stage/rewind/AudioSettingsService";
+import {
+  AudioSettings,
+  AudioSettingsService,
+} from "../../../../../web-player/rewind/src/settings/AudioSettingsService";
 import { makeAutoObservable } from "mobx";
 
 interface IStage {
