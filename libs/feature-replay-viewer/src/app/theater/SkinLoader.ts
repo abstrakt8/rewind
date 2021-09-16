@@ -30,7 +30,7 @@ async function startLoading(loader: Loader, skinName: string): Promise<boolean> 
 const urljoin = (...s: string[]) => s.join("/");
 
 @injectable()
-export class SkinService {
+export class SkinLoader {
   skins: { [key: string]: Skin };
   skinElementCounter = 0;
 
@@ -50,8 +50,6 @@ export class SkinService {
     const loader = new Loader();
 
     const skinInfoUrl = urljoin(this.apiUrl, "api", "skins");
-    // TODO: This needs also encodeUriComponent or similar for skin names such as : '-            #(SK) Mathi 1.0 - NM'
-    // But we can't just use "
 
     // We could also put some GET parameters
     const res = await axios

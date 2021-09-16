@@ -3,7 +3,7 @@ import { Container } from "inversify";
 import { TYPES } from "./types";
 import { ReplayService } from "./ReplayService";
 import { RewindStageCreator } from "./RewindStageCreator";
-import { SkinService } from "./SkinService";
+import { SkinLoader } from "./SkinLoader";
 import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
 
@@ -18,7 +18,7 @@ export function createRewindTheater(settings: Settings) {
   container.bind(TYPES.API_URL).toConstantValue(apiUrl);
   container.bind<BlueprintService>(BlueprintService).toSelf();
   container.bind<ReplayService>(ReplayService).toSelf();
-  container.bind<SkinService>(SkinService).toSelf();
+  container.bind<SkinLoader>(SkinLoader).toSelf();
   container.bind<AudioService>(AudioService).toSelf();
   container.bind<RewindStageCreator>(RewindStageCreator).toSelf();
   container.bind<TextureManager>(TextureManager).toSelf().inSingletonScope();

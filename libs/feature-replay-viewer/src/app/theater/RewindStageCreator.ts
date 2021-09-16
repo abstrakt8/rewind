@@ -3,7 +3,7 @@ import { BlueprintService } from "./BlueprintService";
 import { ReplayService } from "./ReplayService";
 import { createRewindStage } from "../stage/createRewindStage";
 import { buildBeatmap, determineDefaultPlaybackSpeed } from "@rewind/osu/core";
-import { SkinService } from "./SkinService";
+import { SkinLoader } from "./SkinLoader";
 import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
 import { defaultViewSettings } from "../stage/rewind/ViewSettings";
@@ -16,7 +16,7 @@ export class RewindStageCreator {
   constructor(
     private readonly blueprintService: BlueprintService,
     private readonly replayService: ReplayService,
-    private readonly skinService: SkinService,
+    private readonly skinService: SkinLoader,
     private readonly audioService: AudioService,
     private readonly textureManager: TextureManager,
   ) {}
