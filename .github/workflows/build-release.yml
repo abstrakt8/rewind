@@ -24,7 +24,7 @@ jobs:
 
       - run: yarn
       - name: Downloading and unzipping the default Rewind skin
-        run: yarn run downloadDefaultSkin
+        run: yarn run downloadDefaultSkins
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
