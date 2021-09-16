@@ -2,12 +2,11 @@ import { injectable } from "inversify";
 import { BlueprintService } from "./BlueprintService";
 import { ReplayService } from "./ReplayService";
 import { createRewindStage } from "../stage/createRewindStage";
-import { buildBeatmap } from "@rewind/osu/core";
+import { buildBeatmap, determineDefaultPlaybackSpeed } from "@rewind/osu/core";
 import { SkinService } from "./SkinService";
 import { AudioService } from "./AudioService";
 import { TextureManager } from "./TextureManager";
 import { defaultViewSettings } from "../stage/rewind/ViewSettings";
-import { determineDefaultPlaybackSpeed } from "../../utils";
 import { defaultSkinId } from "./SkinId";
 
 // There will also be a default osu! std skin
