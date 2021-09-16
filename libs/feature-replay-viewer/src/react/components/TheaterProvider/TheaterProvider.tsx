@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { createRewindTheater, Theater } from "../../../app/theater/createRewindTheater";
+import { createRewindTheater, Theater } from "../../../../../web-player/rewind/src/createRewindTheater";
 
 interface ITheaterContext {
   theater: Theater;

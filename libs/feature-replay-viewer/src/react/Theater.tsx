@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RewindStage } from "../app/stage/createRewindStage";
+import { RewindStage } from "../../../web-player/rewind/src/createRewindStage";
 import { useTheaterContext } from "./components/TheaterProvider/TheaterProvider";
 import { StageProvider } from "./components/StageProvider/StageProvider";
 import { GameStage } from "./GameStage";

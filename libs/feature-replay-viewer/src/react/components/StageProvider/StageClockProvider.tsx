@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { useInterval } from "../../hooks/useInterval";
-import { GameplayClock } from "../../../app/stage/core/GameplayClock";
+import { GameplayClock } from "../../../../../web-player/rewind/src/game/GameplayClock";
 
 const speedsAllowed = [0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
 // TODO: FLOATING POINT EQUALITY ALERT
