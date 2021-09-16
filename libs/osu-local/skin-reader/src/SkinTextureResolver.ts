@@ -42,36 +42,46 @@ export interface OsuSkinTextureResolver {
 const join = Path.posix.join;
 
 export class OsuLegacySkinTextureResolver implements OsuSkinTextureResolver {
-  constructor(
-    readonly folderPath: string,
-    readonly config: SkinConfig,
-    readonly fallbackSkin?: OsuSkinTextureResolver,
-  ) {}
+  constructor(readonly folderPath: string, readonly config: SkinConfig) {}
 
   // Special case for font textures since their `prefix` can be changed.
   // Best example would be WhiteCat 1.0 Skin where for example the combo prefix is `Assets\combo` -> even different
   // folder
   getFontPrefix(skinTexture: OsuSkinTextures): string | undefined {
+    const { hitCirclePrefix, comboPrefix, scorePrefix } = this.config.fonts;
+
+    // join will also convert / to \\ if it's in Windows.
+    // This will be then Assets/combo/default0 for example
+    const combine = (prefix: string, id: number) => `${prefix}-${id}`;
     {
       const hitCircleId = hitCircleDigitFonts.indexOf(skinTexture as any);
       if (hitCircleId !== -1) {
-        // join will also convert / to \\ if it's in Windows.
-        // This will be then Assets/combo/default0 for example
-        return join(`${this.config.fonts.hitCirclePrefix}-${hitCircleId}`);
+        return combine(hitCirclePrefix, hitCircleId);
       }
     }
     {
       const comboId = comboDigitFonts.indexOf(skinTexture as any);
       if (comboId !== -1) {
-        return join(`${this.config.fonts.comboPrefix}-${comboId}`);
+        return combine(comboPrefix, comboId);
       }
     }
     {
       const scoreId = defaultDigitFonts.indexOf(skinTexture as any);
       if (scoreId !== -1) {
-        return join(`${this.config.fonts.scorePrefix}-${scoreId}`);
+        return combine(scorePrefix, scoreId);
       }
     }
+
+    // Special cases
+    const texConfig = DEFAULT_SKIN_TEXTURE_CONFIG[skinTexture];
+    switch (skinTexture) {
+      case "SCORE_PERCENT":
+      case "SCORE_DOT":
+        return texConfig.filePrefix.replace("score", scorePrefix);
+      case "SCORE_X":
+        return texConfig.filePrefix.replace("score", comboPrefix);
+    }
+
     return undefined;
   }
 
@@ -85,6 +95,7 @@ export class OsuLegacySkinTextureResolver implements OsuSkinTextureResolver {
     }
     // Maybe there is something with prefix in config in between (for numbers for example)
     // FilePrefix could be overridden by skin config
+    // TODO: ??? join ???
     return join(texConfig.filePrefix);
   }
 
@@ -191,21 +202,7 @@ export class OsuLegacySkinTextureResolver implements OsuSkinTextureResolver {
       }
     }
 
-    // If here we find nothing, we go ask for fallback skin
-    if (!this.fallbackSkin) {
-      return [];
-    } else {
-      return this.fallbackSkin.resolve(skinTexture, option);
-    }
-  }
-
-  async resolveAllTextureFiles(option: GetTextureFileOption = {}): Promise<TextureFileLocation[]> {
-    const skinTextureKeys = Object.keys(DEFAULT_SKIN_TEXTURE_CONFIG);
-    return Promise.all(
-      skinTextureKeys.map(async (key) => ({
-        key,
-        paths: await this.resolve(key as OsuSkinTextures, option),
-      })),
-    );
+    // If here we find nothing, we don't ask for fallbackSkin
+    return [];
   }
 }

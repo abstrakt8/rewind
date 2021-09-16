@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
 import { OsuClassicCursor } from "@rewind/osu-pixi/classic-components";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../../../../../utils/Replay";
-import { AnalysisCursor } from "../../../../pixi/components/AnalysisCursor";
+import { AnalysisCursor } from "@rewind/osu-pixi/rewind";
 import { OsuAction } from "@rewind/osu/core";
 import { inject, injectable } from "inversify";
 import { STAGE_TYPES } from "../../../STAGE_TYPES";

@@ -1,4 +1,4 @@
-import { Position, Vec2 } from "@rewind/osu/math";
+import { Position, Vec2 } from "./Vec2";
 
 // TODO: Maybe move this to osu/Math
 

@@ -8,13 +8,12 @@ import {
   OsuClassicSliderTick,
   SliderBodySettings,
 } from "@rewind/osu-pixi/classic-components";
-import { RGB, Vec2 } from "@rewind/osu/math";
-import { sliderRepeatAngle } from "../../../../../utils/Sliders";
+import { RGB, sliderRepeatAngle, Vec2 } from "@rewind/osu/math";
 import { GameplayClock } from "../../../core/GameplayClock";
 import { StageViewService } from "../../StageViewService";
 import { StageSkinService } from "../../../StageSkinService";
 import { injectable } from "inversify";
-import { TemporaryObjectPool } from "../../../../pixi/pooling/TemporaryObjectPool";
+import { TemporaryObjectPool } from "../../../pooling/TemporaryObjectPool";
 import { SliderTextureService } from "../../SliderTextureService";
 
 const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;

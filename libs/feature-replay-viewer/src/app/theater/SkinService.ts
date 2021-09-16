@@ -5,6 +5,7 @@ import { OsuSkinTextures, SkinConfig } from "@rewind/osu/skin";
 import { inject, injectable } from "inversify";
 import { TYPES } from "./types";
 import { Skin, SkinTexturesByKey } from "../stage/rewind/Skin";
+import { SkinId } from "./SkinId";
 
 export type SkinTextureLocation = { key: OsuSkinTextures; paths: string[] };
 
@@ -34,24 +35,27 @@ export class SkinService {
   skinElementCounter = 0;
 
   // Maybe generalize it to skinSource or something
+  // TODO: Maybe just load into TextureManager
   constructor(@inject(TYPES.API_URL) private readonly apiUrl: string) {
     this.skins = {};
   }
 
   // force such like reloading
-  async loadSkin(name: string, forceReload?: boolean): Promise<Skin> {
-    if (this.skins[name] && !forceReload) {
-      console.info(`Skin ${name} is already loaded, using the one in cache`);
-      return this.skins[name];
+  async loadSkin(skinId: SkinId, forceReload?: boolean): Promise<Skin> {
+    const id = `${skinId.source}/${encodeURIComponent(skinId.name)}`;
+    if (this.skins[id] && !forceReload) {
+      console.info(`Skin ${id} is already loaded, using the one in cache`);
+      return this.skins[id];
     }
     const loader = new Loader();
 
     const skinInfoUrl = urljoin(this.apiUrl, "api", "skins");
-    const skinStaticUrl = urljoin(this.apiUrl, "static", "skins", name);
+    // TODO: This needs also encodeUriComponent or similar for skin names such as : '-            #(SK) Mathi 1.0 - NM'
+    // But we can't just use "
 
     // We could also put some GET parameters
     const res = await axios
-      .get(skinInfoUrl, { params: { animatedIfExists: 1, hdIfExists: 1, name: name } })
+      .get(skinInfoUrl, { params: { animatedIfExists: 1, hdIfExists: 1, name: id } })
       .then((value) => value.data);
 
     // Yeah ...
@@ -69,7 +73,7 @@ export class SkinService {
         // `Loader` will die if the same `name` gets used twice therefore the unique skinElementCounter
         // Maybe even use a timestamp
         const name = `${this.skinElementCounter++}/${skinName}/${stl.key}-${index}`;
-        const url = urljoin(skinStaticUrl, path);
+        const url = urljoin(this.apiUrl, path);
         loader.add(name, url);
         queueFiles.push({ key: stl.key, name });
       });
@@ -86,6 +90,6 @@ export class SkinService {
       textures[file.key]?.push(loader.resources[file.name].texture as Texture);
     });
 
-    return (this.skins[name] = new Skin(config, textures));
+    return (this.skins[id] = new Skin(config, textures));
   }
 }

@@ -1,7 +1,5 @@
-import { Container, Graphics, Sprite, Texture } from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 import { applyInterpolation, rgbToInt } from "@rewind/osu/math";
-
-// fixed width
 
 type HitEvent = {
   offset: number;
@@ -32,9 +30,7 @@ function coloredSprite(color: number) {
   return sprite;
 }
 
-// TODO: Move to osu-classic ?
-// We can have a more advanced one here
-export class AnalysisHitErrorBar {
+export class OsuClassicHitErrorBar {
   container: Container;
   bg50: Sprite;
   bg100: Sprite;
