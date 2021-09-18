@@ -4,22 +4,22 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../types/types";
 import { OsuReplay } from "../model/OsuReplay";
 
+/**
+ * Currently this service retrieves the raw replay from the backend.
+ *
+ * In the future it is planned that the client retrieves the `.osr` file directly:
+ * * Less data transferred since `.osr` is compressed
+ * * Relieves the backend since it does not have to decode the `.osr` file
+ */
 @injectable()
 export class ReplayService {
-  // retrieve and parse
   constructor(@inject(TYPES.API_URL) private apiUrl: string) {}
 
   async retrieveReplay(replayId: string): Promise<OsuReplay> {
-    const url = [this.apiUrl, "api", "replays", "exported", encodeURIComponent(replayId)].join("/");
-    console.log(url);
-    // const url = "";
-    const res = (await axios
-      .get(url)
-      .then((value) => value.data)
-      .catch((err) => {
-        console.error(err);
-        return null;
-      })) as RawReplayData;
+    const url = [this.apiUrl, "api", "replays", encodeURIComponent(replayId)].join("/");
+    console.log(`Retrieving replay=${replayId} from ${url}`);
+
+    const res = (await axios.get(url)).data as RawReplayData;
 
     // TODO: Emit ...
 
