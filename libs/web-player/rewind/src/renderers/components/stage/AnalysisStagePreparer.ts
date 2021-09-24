@@ -74,7 +74,7 @@ export class AnalysisStagePreparer {
     this.resizeTo();
     this.backgroundPreparer.update();
     // this.playfieldPreparer.prepare();
-    this.foregroundHUDPreparer.prepare();
+    this.foregroundHUDPreparer.update();
   }
 
   destroy(): void {

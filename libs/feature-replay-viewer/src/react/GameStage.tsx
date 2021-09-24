@@ -132,7 +132,7 @@ export const GameStage = () => {
   useEffect(() => {
     analysisApp.initialize();
     return () => analysisApp.destroy();
-  });
+  }, [analysisApp]);
 
   useStageShortcuts();
   // useEnergySaver(true);

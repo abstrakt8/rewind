@@ -25,7 +25,7 @@ export class ForegroundHUDPreparer {
     this.hitErrorBar = new OsuClassicHitErrorBar();
   }
 
-  prepare() {
+  update() {
     // const skin = this.stageSkinService.getSkin();
     const gameplayInfo = this.gameSimulator.getCurrentInfo();
     const gameplayState = this.gameSimulator.getCurrentState();

@@ -7,7 +7,15 @@ export const GameCanvas = () => {
   const analysisApp = useAnalysisApp();
 
   useEffect(() => {
-    if (canvas.current) analysisApp.initializeRenderer(canvas.current);
+    if (containerRef.current) {
+      containerRef.current.append(analysisApp.stats());
+    }
+  }, [analysisApp]);
+  useEffect(() => {
+    if (canvas.current) {
+      console.log("Initializing renderer to the canvas");
+      analysisApp.initializeRenderer(canvas.current);
+    }
     return () => analysisApp.destroyRenderer();
   }, [analysisApp]);
 
