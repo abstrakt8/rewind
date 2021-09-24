@@ -30,7 +30,7 @@ export interface ISkin {
 export class EmptySkin implements ISkin {
   config = generateDefaultSkinConfig(false);
 
-  getComboColorForIndex(i: number): number {
+  getComboColorForIndex(): number {
     return 0;
   }
 
@@ -42,11 +42,11 @@ export class EmptySkin implements ISkin {
     return [];
   }
 
-  getTexture(key: OsuSkinTextures) {
+  getTexture() {
     return Texture.EMPTY;
   }
 
-  getTextures(key: OsuSkinTextures): Texture[] {
+  getTextures(): Texture[] {
     return [Texture.EMPTY];
   }
 }

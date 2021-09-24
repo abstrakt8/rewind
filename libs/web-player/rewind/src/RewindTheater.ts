@@ -6,6 +6,8 @@ import { AudioService } from "./core/audio/AudioService";
 import { TextureManager } from "./textures/TextureManager";
 import { TYPES } from "./types/types";
 import { createAnalysisApp } from "./creators/createAnalysisApp";
+import { SkinId } from "./model/SkinId";
+import { SkinManager } from "./core/skins/SkinManager";
 
 /**
  * Creates the Rewind app that serves multiple tools.
@@ -22,7 +24,8 @@ export class RewindTheater {
     this.container.bind(BlueprintService).toSelf().inSingletonScope();
     this.container.bind(ReplayService).toSelf().inSingletonScope();
     this.container.bind(SkinLoader).toSelf().inSingletonScope();
-    this.container.bind(AudioService).toSelf();
+    this.container.bind(SkinManager).toSelf().inSingletonScope();
+    this.container.bind(AudioService).toSelf().inSingletonScope();
   }
 
   createAnalysisApp() {
@@ -38,6 +41,14 @@ export class RewindTheater {
 
   async loadPreferredSkin() {
     // From
+  }
+
+  async changeSkin(skinId: SkinId) {
+    const skinLoader = this.container.get(SkinLoader);
+    const skin = await skinLoader.loadSkin(skinId);
+
+    const skinManager = this.container.get(SkinManager);
+    skinManager.setSkin(skin);
   }
 }
 

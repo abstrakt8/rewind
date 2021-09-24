@@ -1,8 +1,8 @@
-import { Skin } from "./model/Skin";
+import { Skin } from "../../model/Skin";
 import { injectable } from "inversify";
 
 @injectable()
-export class StageSkinService {
+export class SkinManager {
   private skin: Skin;
 
   constructor() {

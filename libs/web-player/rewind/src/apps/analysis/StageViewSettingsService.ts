@@ -1,6 +1,6 @@
 import type { ViewSettings } from "../../model/ViewSettings";
-import { inject, injectable } from "inversify";
-import { STAGE_TYPES } from "../../types/STAGE_TYPES";
+import { defaultViewSettings } from "../../model/ViewSettings";
+import { injectable } from "inversify";
 
 // TODO: LocalStorage ?
 // rxjs?
@@ -8,8 +8,8 @@ import { STAGE_TYPES } from "../../types/STAGE_TYPES";
 export class StageViewSettingsService {
   private view: ViewSettings;
 
-  constructor(@inject(STAGE_TYPES.INITIAL_VIEW_SETTINGS) initialViewSettings: ViewSettings) {
-    this.view = initialViewSettings;
+  constructor() {
+    this.view = defaultViewSettings();
   }
 
   getView() {

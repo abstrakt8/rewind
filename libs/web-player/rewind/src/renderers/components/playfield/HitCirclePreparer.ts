@@ -12,6 +12,7 @@ import {
 import type { ISkin } from "../../../model/Skin";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
+import { SkinManager } from "../../../core/skins/SkinManager";
 
 // TODO: Maybe it's even dynamic
 const HIT_CIRCLE_FADE_OUT_DURATION = 300;
@@ -22,7 +23,7 @@ export class HitCirclePreparer {
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
     private readonly stageViewService: StageViewSettingsService,
-    @inject(STAGE_TYPES.SKIN) private readonly skin: ISkin,
+    private readonly stageSkinService: SkinManager, // @inject(STAGE_TYPES.SKIN) private readonly skin: ISkin,
   ) {}
 
   // TODO: Pooling
@@ -37,7 +38,7 @@ export class HitCirclePreparer {
   prepare(hitCircle: HitCircle) {
     const time = this.gameClock.timeElapsedInMs;
     const view = this.stageViewService.getView();
-    const skin = this.skin;
+    const skin = this.stageSkinService.getSkin();
 
     const { modHidden } = view;
 

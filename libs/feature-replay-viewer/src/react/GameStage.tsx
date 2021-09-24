@@ -17,7 +17,8 @@ import { formatGameTime } from "@rewind/osu/math";
 import { FaQuestion } from "react-icons/all";
 import { HelpModalDialog } from "./HelpModal/HelpModal";
 import { handleButtonFocus } from "./HandleButtonFocus";
-import { useAnalysisApp } from "@rewind/feature-replay-viewer";
+import { useAnalysisApp, useTheater } from "@rewind/feature-replay-viewer";
+import { DEFAULT_SKIN_ID } from "../../../web-player/rewind/src/model/SkinId";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -127,9 +128,11 @@ export const GameStage = () => {
   // const handleHiddenButtonClicked = useCallback(() => toggleModHidden(), [toggleModHidden]);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
 
+  const rewindTheater = useTheater();
   const analysisApp = useAnalysisApp();
 
   useEffect(() => {
+    rewindTheater.changeSkin(DEFAULT_SKIN_ID);
     analysisApp.initialize();
     return () => analysisApp.destroy();
   }, [analysisApp]);

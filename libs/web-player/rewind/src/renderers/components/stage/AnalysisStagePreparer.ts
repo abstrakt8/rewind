@@ -20,36 +20,35 @@ export class AnalysisStagePreparer {
   public stage: Container;
 
   constructor(
-    private rendererService: PixiRendererManager,
+    private rendererManager: PixiRendererManager,
     private backgroundPreparer: BeatmapBackground,
-    // private playfieldPreparer: PlayfieldPreparer,
+    private playfieldPreparer: PlayfieldPreparer,
     private foregroundHUDPreparer: ForegroundHUDPreparer,
   ) {
     const background = backgroundPreparer.getSprite();
-    // const playfield = this.playfieldPreparer.getContainer();
-    // const foregroundHUD = this.foregroundHUDPreparer.container;
+    const playfield = this.playfieldPreparer.getContainer();
+    const foregroundHUD = this.foregroundHUDPreparer.container;
 
     this.stage = new PIXI.Container();
-    this.stage.addChild(background, foregroundHUDPreparer.container);
-    // this.stage.addChild(background, playfield, foregroundHUD);
+    this.stage.addChild(background, playfield, foregroundHUD);
     // this.stage.interactiveChildren = false;
     // this.stage.interactive = false;
     const playfieldScaling = (STAGE_HEIGHT * 0.8) / OSU_PLAYFIELD_HEIGHT;
 
-    // playfield.position.set(
-    //   (STAGE_WIDTH - OSU_PLAYFIELD_WIDTH * playfieldScaling) / 2,
-    //   (STAGE_HEIGHT - OSU_PLAYFIELD_HEIGHT * playfieldScaling) / 2,
-    // );
-    // playfield.scale.set(playfieldScaling);
+    playfield.position.set(
+      (STAGE_WIDTH - OSU_PLAYFIELD_WIDTH * playfieldScaling) / 2,
+      (STAGE_HEIGHT - OSU_PLAYFIELD_HEIGHT * playfieldScaling) / 2,
+    );
+    playfield.scale.set(playfieldScaling);
   }
 
   /**
    *  So the virtual screen is supposed to have the dimensions 1600x900.
    */
   resizeTo() {
-    if (!this.rendererService.resizeRendererToCanvasSize()) return;
+    if (!this.rendererManager.resizeRendererToCanvasSize()) return;
 
-    const screen = this.rendererService.getRenderer()?.screen;
+    const screen = this.rendererManager.getRenderer()?.screen;
     // Should not be possible
     if (!screen) return;
     // Unchanged
@@ -67,13 +66,13 @@ export class AnalysisStagePreparer {
     const scale = this.widthInPx / STAGE_WIDTH;
     this.stage.scale.set(scale, scale);
     this.stage.position.set((screen.width - this.widthInPx) / 2, (screen.height - this.heightInPx) / 2);
-    console.log(`Resizing screen.dimensions = ${screen.width} x ${screen.height}, scale = ${scale}`);
+    console.debug(`Resizing screen.dimensions = ${screen.width} x ${screen.height}, scale = ${scale}`);
   }
 
   update() {
     this.resizeTo();
     this.backgroundPreparer.update();
-    // this.playfieldPreparer.prepare();
+    this.playfieldPreparer.update();
     this.foregroundHUDPreparer.update();
   }
 

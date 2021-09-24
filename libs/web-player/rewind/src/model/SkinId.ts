@@ -5,7 +5,7 @@ export interface SkinId {
   name: string;
 }
 
-export const defaultSkinId: SkinId = { source: "rewind", name: "RewindDefaultSkin" };
+export const DEFAULT_SKIN_ID: SkinId = { source: "rewind", name: "RewindDefaultSkin" };
 // export const defaultSkinId: SkinId = { source: "osu", name: "-         《CK》 WhiteCat 2.1 _ old -lite" };
 // export const defaultSkinId: SkinId = { source: "osu", name: "idke+1.2" };
 // export const defaultSkinId: SkinId = { source: "osu", name: "Millhiore Lite" };

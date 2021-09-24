@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 import { Spinner } from "@rewind/osu/core";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
-import { StageSkinService } from "../../../StageSkinService";
+import { SkinManager } from "../../../core/skins/SkinManager";
 import { OsuClassicSpinner } from "@rewind/osu-pixi/classic-components";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 
@@ -15,7 +15,7 @@ export class SpinnerPreparer {
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
     private readonly stageViewService: StageViewSettingsService,
-    private readonly stageSkinService: StageSkinService,
+    private readonly stageSkinService: SkinManager,
   ) {}
 
   prepare(spinner: Spinner) {
