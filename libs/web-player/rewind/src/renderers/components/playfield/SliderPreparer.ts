@@ -11,7 +11,7 @@ import {
 import { RGB, sliderRepeatAngle, Vec2 } from "@rewind/osu/math";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
-import { StageSkinService } from "../../../StageSkinService";
+import { SkinManager } from "../../../core/skins/SkinManager";
 import { injectable } from "inversify";
 import { TemporaryObjectPool } from "../../../utils/pooling/TemporaryObjectPool";
 import { SliderTextureManager } from "../../managers/SliderTextureManager";
@@ -28,7 +28,7 @@ export class SliderPreparer {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly stageViewService: StageViewSettingsService,
-    private readonly stageSkinService: StageSkinService,
+    private readonly stageSkinService: SkinManager,
     private readonly sliderTextureService: SliderTextureManager,
   ) {
     // TODO: Inject
@@ -225,7 +225,7 @@ export class SliderPreparer {
   }
 
   // TODO: ...
-  afterPrepare() {
+  postUpdate() {
     this.graphicsPool.releaseUntouched();
   }
 }

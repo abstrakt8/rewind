@@ -3,7 +3,7 @@ import { GameSimulator } from "../../../core/game/GameSimulator";
 import { Container, Text } from "pixi.js";
 import { OsuClassicHitErrorBar } from "@rewind/osu-pixi/classic-components";
 import { calculateDigits, OsuClassicAccuracy, OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
-import { StageSkinService } from "../../../StageSkinService";
+import { SkinManager } from "../../../core/skins/SkinManager";
 import { Beatmap } from "@rewind/osu/core";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";

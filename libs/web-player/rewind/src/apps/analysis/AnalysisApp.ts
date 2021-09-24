@@ -8,7 +8,6 @@ import { ReplayManager } from "./manager/ReplayManager";
 import { GameSimulator } from "../../core/game/GameSimulator";
 import { injectable } from "inversify";
 import { PixiRendererManager } from "../../renderers/PixiRendererManager";
-import { SceneManager } from "../../core/scenes/SceneManager";
 import { AnalysisSceneManager } from "./manager/AnalysisSceneManager";
 import { GameLoop } from "../../core/game/GameLoop";
 
@@ -27,6 +26,9 @@ import { GameLoop } from "../../core/game/GameLoop";
  * <button onclick="app.start()"/>
  *
  * ```
+ *
+ * This is a facade that does not contain all the functions, so you have to directly call the underlying objects
+ * to make changes happen in case implementation is missing.
  */
 @injectable()
 export class AnalysisApp {

@@ -4,5 +4,13 @@ import { injectable } from "inversify";
 
 @injectable()
 export class BeatmapManager {
-  setBeatmap(beatmap: Beatmap) {}
+  beatmap: Beatmap = Beatmap.EMPTY_BEATMAP;
+
+  setBeatmap(beatmap: Beatmap) {
+    this.beatmap = beatmap;
+  }
+
+  getBeatmap() {
+    return this.beatmap;
+  }
 }

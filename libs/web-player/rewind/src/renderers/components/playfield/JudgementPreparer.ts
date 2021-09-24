@@ -4,7 +4,7 @@ import { OsuClassicJudgement } from "@rewind/osu-pixi/classic-components";
 import { circleSizeToScale } from "@rewind/osu/math";
 import { Beatmap, MainHitObjectVerdict } from "@rewind/osu/core";
 import { GameplayClock } from "../../../core/game/GameplayClock";
-import { StageSkinService } from "../../../StageSkinService";
+import { SkinManager } from "../../../core/skins/SkinManager";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 
@@ -27,7 +27,7 @@ export class JudgementPreparer {
 
   constructor(
     private readonly gameClock: GameplayClock,
-    private readonly stageSkinService: StageSkinService,
+    private readonly stageSkinService: SkinManager,
     @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
     private readonly gameSimulator: GameSimulator,
   ) {

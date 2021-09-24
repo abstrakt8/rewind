@@ -16,6 +16,15 @@ import { BeatmapBackground } from "../renderers/components/background/BeatmapBac
 import { TextureManager } from "../textures/TextureManager";
 import { AnalysisStagePreparer } from "../renderers/components/stage/AnalysisStagePreparer";
 import { ForegroundHUDPreparer } from "../renderers/components/hud/ForegroundHUDPreparer";
+import { PlayfieldPreparer } from "../renderers/components/playfield/PlayfieldPreparer";
+import { PlayfieldBorderPreparer } from "../renderers/components/playfield/PlayfieldBorderPreparer";
+import { StageViewSettingsService } from "../apps/analysis/StageViewSettingsService";
+import { HitObjectsPreparer } from "../renderers/components/playfield/HitObjectsPreparer";
+import { HitCirclePreparer } from "../renderers/components/playfield/HitCirclePreparer";
+import { SliderPreparer } from "../renderers/components/playfield/SliderPreparer";
+import { SpinnerPreparer } from "../renderers/components/playfield/SpinnerPreparer";
+import { SkinManager } from "../core/skins/SkinManager";
+import { SliderTextureManager } from "../renderers/managers/SliderTextureManager";
 
 /**
  * This is a Rewind specific creation of the "Analysis" app.
@@ -40,11 +49,30 @@ export function createAnalysisApp(rewindTheaterContainer: Container) {
   // Scenes
   container.bind(AnalysisSceneManager).toSelf().inSingletonScope();
   container.bind(SceneManager).toSelf().inSingletonScope();
+
+  // Skin is given by above
+  // container.bind(SkinManager).toSelf();
+
   // AnalysisScene
   container.bind(AnalysisScene).toSelf().inSingletonScope();
-  container.bind(BeatmapBackground).toSelf().inSingletonScope();
-  container.bind(AnalysisStagePreparer).toSelf().inSingletonScope();
-  container.bind(ForegroundHUDPreparer).toSelf();
+
+  // Sliders
+  container.bind(SliderTextureManager).toSelf();
+
+  container.bind(StageViewSettingsService).toSelf();
+  container.bind(AnalysisStagePreparer).toSelf();
+  {
+    container.bind(BeatmapBackground).toSelf();
+    container.bind(ForegroundHUDPreparer).toSelf();
+    container.bind(PlayfieldPreparer).toSelf();
+    {
+      container.bind(PlayfieldBorderPreparer).toSelf();
+      container.bind(HitObjectsPreparer).toSelf();
+      container.bind(HitCirclePreparer).toSelf();
+      container.bind(SliderPreparer).toSelf();
+      container.bind(SpinnerPreparer).toSelf();
+    }
+  }
 
   // AnalysisScene
 

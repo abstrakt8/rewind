@@ -11,18 +11,16 @@ export class PlayfieldPreparer {
 
   constructor(
     private playfieldBorderPreparer: PlayfieldBorderPreparer,
-    private hitObjectsPreparer: HitObjectsPreparer,
-    private cursorPreparer: CursorPreparer,
-    private judgementPreparer: JudgementPreparer,
+    private hitObjectsPreparer: HitObjectsPreparer, // private cursorPreparer: CursorPreparer, // private judgementPreparer: JudgementPreparer,
   ) {
     this.container = new PIXI.Container();
     this.container.addChild(
       this.playfieldBorderPreparer.getGraphics(),
       this.hitObjectsPreparer.spinnerProxies,
-      this.judgementPreparer.getContainer(),
+      // this.judgementPreparer.getContainer(),
       this.hitObjectsPreparer.hitObjectContainer,
       this.hitObjectsPreparer.approachCircleContainer,
-      this.cursorPreparer.getContainer(),
+      // this.cursorPreparer.getContainer(),
     );
   }
 
@@ -30,10 +28,10 @@ export class PlayfieldPreparer {
     return this.container;
   }
 
-  prepare() {
+  update() {
     this.playfieldBorderPreparer.prepare();
-    this.hitObjectsPreparer.prepare();
-    this.cursorPreparer.prepare();
-    this.judgementPreparer.prepare();
+    this.hitObjectsPreparer.update();
+    // this.cursorPreparer.prepare();
+    // this.judgementPreparer.prepare();
   }
 }

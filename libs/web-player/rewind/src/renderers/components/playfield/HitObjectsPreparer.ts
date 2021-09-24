@@ -1,13 +1,10 @@
 import { Container } from "pixi.js";
-import { inject, injectable } from "inversify";
-import { Beatmap, HitCircle, isHitCircle, isSlider, Slider, Spinner } from "@rewind/osu/core";
-import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
-import { GameplayClock } from "../../../core/game/GameplayClock";
-import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
-import { StageSkinService } from "../../../StageSkinService";
+import { injectable } from "inversify";
+import { HitCircle, isHitCircle, isSlider, Slider, Spinner } from "@rewind/osu/core";
 import { HitCirclePreparer } from "./HitCirclePreparer";
 import { SliderPreparer } from "./SliderPreparer";
 import { SpinnerPreparer } from "./SpinnerPreparer";
+import { BeatmapManager } from "../../../apps/analysis/manager/BeatmapManager";
 
 @injectable()
 export class HitObjectsPreparer {
@@ -16,9 +13,7 @@ export class HitObjectsPreparer {
   hitObjectContainer: Container;
 
   constructor(
-    @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
-    private readonly gameClock: GameplayClock,
-    private readonly stageViewService: StageViewSettingsService,
+    private readonly beatmapManager: BeatmapManager,
     private readonly hitCirclePreparer: HitCirclePreparer,
     private readonly sliderPreparer: SliderPreparer,
     private readonly spinnerPreparer: SpinnerPreparer,
@@ -45,12 +40,12 @@ export class HitObjectsPreparer {
     if (spinnerGraphic) this.spinnerProxies.addChild(spinnerGraphic.container);
   }
 
-  prepare() {
+  update() {
     this.hitObjectContainer.removeChildren();
     this.spinnerProxies.removeChildren();
     this.approachCircleContainer.removeChildren();
 
-    const { hitObjects } = this.beatmap;
+    const { hitObjects } = this.beatmapManager.getBeatmap();
 
     // TODO: This assumes that they are ordered by some time
     for (let i = hitObjects.length - 1; i >= 0; i--) {
@@ -64,6 +59,6 @@ export class HitObjectsPreparer {
       }
     }
 
-    this.sliderPreparer.afterPrepare();
+    this.sliderPreparer.postUpdate();
   }
 }
