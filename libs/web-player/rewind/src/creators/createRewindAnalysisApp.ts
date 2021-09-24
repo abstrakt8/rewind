@@ -26,6 +26,7 @@ import { SpinnerPreparer } from "../renderers/components/playfield/SpinnerPrepar
 import { SliderTextureManager } from "../renderers/managers/SliderTextureManager";
 import { CursorPreparer } from "../renderers/components/playfield/CursorPreparer";
 import { JudgementPreparer } from "../renderers/components/playfield/JudgementPreparer";
+import { AudioEngine } from "../core/audio/AudioEngine";
 
 /**
  * This is a Rewind specific constructor of the "Analysis" tool (not to be used outside of Rewind).
@@ -50,6 +51,7 @@ export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
 
   // Assets
   container.bind(TextureManager).toSelf();
+  container.bind(AudioEngine).toSelf();
 
   // Scenes
   container.bind(AnalysisSceneManager).toSelf();
