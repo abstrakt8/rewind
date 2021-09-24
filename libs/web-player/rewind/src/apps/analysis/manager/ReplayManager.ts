@@ -4,9 +4,13 @@ import { OsuReplay } from "../../../model/OsuReplay";
 
 @injectable()
 export class ReplayManager {
-  replay: OsuReplay | null = null;
+  mainReplay: OsuReplay | null = null;
+
+  getMainReplay() {
+    return this.mainReplay;
+  }
 
   setMainReplay(replay: OsuReplay | null) {
-    this.replay = replay;
+    this.mainReplay = replay;
   }
 }

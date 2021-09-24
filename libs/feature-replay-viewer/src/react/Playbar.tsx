@@ -92,6 +92,8 @@ export function Playbar(props: PlaybarProps) {
 
   const mousePercentage = mouse.x !== null ? Math.max(0, (mouse.x ?? 0) / (mouse.elementWidth ?? 1)) : null;
 
+  // const mousePercentage = 0.2;
+
   const handleClick = useCallback(() => {
     if (onClick) onClick(mousePercentage ?? 0); // Should not happen to be null
     // console.log(`mouse at ${mousePercentage} `);

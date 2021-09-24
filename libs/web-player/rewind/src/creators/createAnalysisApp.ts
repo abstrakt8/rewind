@@ -25,6 +25,8 @@ import { SliderPreparer } from "../renderers/components/playfield/SliderPreparer
 import { SpinnerPreparer } from "../renderers/components/playfield/SpinnerPreparer";
 import { SkinManager } from "../core/skins/SkinManager";
 import { SliderTextureManager } from "../renderers/managers/SliderTextureManager";
+import { CursorPreparer } from "../renderers/components/playfield/CursorPreparer";
+import { JudgementPreparer } from "../renderers/components/playfield/JudgementPreparer";
 
 /**
  * This is a Rewind specific creation of the "Analysis" app.
@@ -36,25 +38,25 @@ export function createAnalysisApp(rewindTheaterContainer: Container) {
   container.parent = rewindTheaterContainer;
   container.bind(STAGE_TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter2());
 
-  container.bind(ReplayManager).toSelf().inSingletonScope();
-  container.bind(BeatmapManager).toSelf().inSingletonScope();
-  container.bind(ModSettingsManager).toSelf().inSingletonScope();
-  container.bind(GameplayClock).toSelf().inSingletonScope();
-  container.bind(GameSimulator).toSelf().inSingletonScope();
-  container.bind(PixiRendererManager).toSelf().inSingletonScope();
+  container.bind(ReplayManager).toSelf();
+  container.bind(BeatmapManager).toSelf();
+  container.bind(ModSettingsManager).toSelf();
+  container.bind(GameplayClock).toSelf();
+  container.bind(GameSimulator).toSelf();
+  container.bind(PixiRendererManager).toSelf();
 
   // Assets
-  container.bind(TextureManager).toSelf().inSingletonScope();
+  container.bind(TextureManager).toSelf();
 
   // Scenes
-  container.bind(AnalysisSceneManager).toSelf().inSingletonScope();
-  container.bind(SceneManager).toSelf().inSingletonScope();
+  container.bind(AnalysisSceneManager).toSelf();
+  container.bind(SceneManager).toSelf();
 
   // Skin is given by above
   // container.bind(SkinManager).toSelf();
 
   // AnalysisScene
-  container.bind(AnalysisScene).toSelf().inSingletonScope();
+  container.bind(AnalysisScene).toSelf();
 
   // Sliders
   container.bind(SliderTextureManager).toSelf();
@@ -71,6 +73,9 @@ export function createAnalysisApp(rewindTheaterContainer: Container) {
       container.bind(HitCirclePreparer).toSelf();
       container.bind(SliderPreparer).toSelf();
       container.bind(SpinnerPreparer).toSelf();
+
+      container.bind(CursorPreparer).toSelf();
+      container.bind(JudgementPreparer).toSelf();
     }
   }
 
