@@ -8,6 +8,7 @@ import { Beatmap } from "@rewind/osu/core";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
 import { formatGameTime } from "@rewind/osu/math";
+import { GameplayClock } from "../../../core/game/GameplayClock";
 
 @injectable()
 export class ForegroundHUDPreparer {
@@ -19,6 +20,7 @@ export class ForegroundHUDPreparer {
     // @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
     // private readonly stageSkinService: StageSkinService,
     private readonly gameSimulator: GameSimulator,
+    private readonly gameplayClock: GameplayClock,
   ) {
     this.container = new Container();
     this.stats = new Text("", { fontSize: 16, fill: 0xeeeeee, fontFamily: "Arial", align: "left" });
@@ -29,7 +31,7 @@ export class ForegroundHUDPreparer {
     // const skin = this.stageSkinService.getSkin();
     const gameplayInfo = this.gameSimulator.getCurrentInfo();
     const gameplayState = this.gameSimulator.getCurrentState();
-    // const time = gameplayState.currentTime;
+    const time = this.gameplayClock.timeElapsedInMs;
     // const beatmap = this.beatmap;
 
     this.container.removeChildren();
@@ -62,9 +64,8 @@ export class ForegroundHUDPreparer {
     if (gameplayInfo && gameplayState) {
       const count = gameplayInfo.verdictCounts;
       const maxCombo = gameplayInfo.maxComboSoFar;
-      const { currentTime } = gameplayState;
 
-      this.stats.text = `Time: ${formatGameTime(currentTime, true)}\n300: ${count[0]}\n100: ${count[1]}\n50: ${
+      this.stats.text = `Time: ${formatGameTime(time, true)}\n300: ${count[0]}\n100: ${count[1]}\n50: ${
         count[2]
       }\nMisses: ${count[3]}\n\nMaxCombo: ${maxCombo}`;
       this.stats.position.set(25, 50);
