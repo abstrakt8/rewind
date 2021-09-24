@@ -1,5 +1,5 @@
 import { useHotkeys } from "react-hotkeys-hook";
-import { useGameClockContext } from "../components/StageProvider/StageClockProvider";
+import { useGameClock } from "../components/StageProvider/StageClockProvider";
 import { useStageViewContext } from "../components/StageProvider/StageViewProvider";
 
 // TODO: Configurable
@@ -20,8 +20,8 @@ const generateKeyComboSimple = (keys: string[]) => keys.join(", ");
 const generateKeyCombo = (modifier = "", keys: string[]) => keys.map((k) => `${modifier}+${k}`).join(", ");
 
 export function useStageShortcuts() {
-  const { toggleClock, increaseSpeed, decreaseSpeed, seekForward, seekBackward } = useGameClockContext();
-  const { toggleModHidden } = useStageViewContext();
+  const { toggleClock, increaseSpeed, decreaseSpeed, seekForward, seekBackward } = useGameClock();
+  // const { toggleModHidden } = useStageViewContext();
 
   useHotkeys(generateKeyComboSimple(upKeys), () => increaseSpeed(), [increaseSpeed]);
   useHotkeys(generateKeyComboSimple(downKeys), () => decreaseSpeed(), [decreaseSpeed]);
@@ -39,5 +39,6 @@ export function useStageShortcuts() {
   // useHotkeys(`alt+${rightKey}`, () => seekForward(frameJump), [seekForward]);
   // useHotkeys(`ctrl+${leftKey}`, () => seekBackward(largeJump), [seekBackward]);
   // useHotkeys(`ctrl+${rightKey}`, () => seekForward(largeJump), [seekForward]);
-  useHotkeys("f", () => toggleModHidden(), [toggleModHidden]);
+
+  // useHotkeys("f", () => toggleModHidden(), [toggleModHidden]);
 }

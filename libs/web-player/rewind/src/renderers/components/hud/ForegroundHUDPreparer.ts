@@ -1,13 +1,12 @@
 import { inject, injectable } from "inversify";
-import { GameSimulator } from "../../../game/GameSimulator";
+import { GameSimulator } from "../../../core/game/GameSimulator";
 import { Container, Text } from "pixi.js";
 import { OsuClassicHitErrorBar } from "@rewind/osu-pixi/classic-components";
 import { calculateDigits, OsuClassicAccuracy, OsuClassicNumber } from "@rewind/osu-pixi/classic-components";
-import { hitWindowsForOD } from "@rewind/osu/math";
-import { STAGE_HEIGHT, STAGE_WIDTH } from "../stage/GameStagePreparer";
 import { StageSkinService } from "../../../StageSkinService";
 import { Beatmap } from "@rewind/osu/core";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
+import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
 
 @injectable()
 export class ForegroundHUDPreparer {
@@ -28,9 +27,9 @@ export class ForegroundHUDPreparer {
   prepare() {
     const skin = this.stageSkinService.getSkin();
     const gameplayInfo = this.gameSimulator.getCurrentInfo();
-    const gameplayState = this.gameSimulator.getCurrentState();
-    const time = gameplayState.currentTime;
-    const beatmap = this.beatmap;
+    // const gameplayState = this.gameSimulator.getCurrentState();
+    // const time = gameplayState.currentTime;
+    // const beatmap = this.beatmap;
 
     this.container.removeChildren();
 
@@ -67,34 +66,34 @@ export class ForegroundHUDPreparer {
       this.container.addChild(this.stats);
     }
 
-    // hit error
-    {
-      // TODO: optimize
-      const hits = [];
-      if (gameplayState) {
-        for (const id in gameplayState.hitCircleVerdict) {
-          const s = gameplayState.hitCircleVerdict[id];
-          const hitCircle = beatmap.getHitCircle(id);
-          const offset = s.judgementTime - hitCircle.hitTime;
-          const timeAgo = time - s.judgementTime;
-          if (timeAgo >= 0 && timeAgo < 3000) hits.push({ offset, timeAgo, miss: s.type === "MISS" });
-        }
-      }
-
-      const [hitWindow300, hitWindow100, hitWindow50] = hitWindowsForOD(beatmap.difficulty.overallDifficulty);
-      this.hitErrorBar.prepare({
-        hitWindow50,
-        hitWindow100,
-        hitWindow300,
-        hits,
-        // hits: [
-        //   { timeAgo: 100, offset: -2 },
-        //   { timeAgo: 2, offset: +10 },
-        // ],
-      });
-      this.hitErrorBar.container.position.set(STAGE_WIDTH / 2, STAGE_HEIGHT - 20);
-      this.hitErrorBar.container.scale.set(2.0);
-      this.container.addChild(this.hitErrorBar.container);
-    }
+    // // hit error
+    // {
+    //   // TODO: optimize
+    //   const hits = [];
+    //   if (gameplayState) {
+    //     for (const id in gameplayState.hitCircleVerdict) {
+    //       const s = gameplayState.hitCircleVerdict[id];
+    //       const hitCircle = beatmap.getHitCircle(id);
+    //       const offset = s.judgementTime - hitCircle.hitTime;
+    //       const timeAgo = time - s.judgementTime;
+    //       if (timeAgo >= 0 && timeAgo < 3000) hits.push({ offset, timeAgo, miss: s.type === "MISS" });
+    //     }
+    //   }
+    //
+    //   const [hitWindow300, hitWindow100, hitWindow50] = hitWindowsForOD(beatmap.difficulty.overallDifficulty);
+    //   this.hitErrorBar.prepare({
+    //     hitWindow50,
+    //     hitWindow100,
+    //     hitWindow300,
+    //     hits,
+    //     // hits: [
+    //     //   { timeAgo: 100, offset: -2 },
+    //     //   { timeAgo: 2, offset: +10 },
+    //     // ],
+    //   });
+    //   this.hitErrorBar.container.position.set(STAGE_WIDTH / 2, STAGE_HEIGHT - 20);
+    //   this.hitErrorBar.container.scale.set(2.0);
+    //   this.container.addChild(this.hitErrorBar.container);
+    // }
   }
 }

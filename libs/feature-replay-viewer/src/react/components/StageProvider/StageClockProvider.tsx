@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useInterval } from "../../hooks/useInterval";
-import { GameplayClock } from "../../../../../web-player/rewind/src/game/GameplayClock";
+import { useAnalysisApp } from "../TheaterProvider/TheaterProvider";
+import { GameplayClock } from "@rewind/web-player/rewind";
 
 const speedsAllowed = [0.25, 0.75, 1.0, 1.5, 2.0, 4.0];
 // TODO: FLOATING POINT EQUALITY ALERT
@@ -66,22 +67,7 @@ function useGameClockControls(clock: GameplayClock) {
   };
 }
 
-const GameClockContext = createContext<ReturnType<typeof useGameClockControls>>(null!);
-
-interface GameClockProviderProps {
-  clock: GameplayClock;
-  children: ReactNode;
-}
-
-export function GameClockProvider({ clock, children }: GameClockProviderProps) {
-  const controls = useGameClockControls(clock);
-  return <GameClockContext.Provider value={controls}>{children}</GameClockContext.Provider>;
-}
-
-export function useGameClockContext() {
-  const context = useContext(GameClockContext);
-  if (!context) {
-    throw Error("useGameClockContext can only be used within a GameClockProvider");
-  }
-  return context;
+export function useGameClock() {
+  const app = useAnalysisApp();
+  return useGameClockControls(app.gameClock);
 }

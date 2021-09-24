@@ -3,10 +3,10 @@ import { Container } from "pixi.js";
 import { OsuClassicJudgement } from "@rewind/osu-pixi/classic-components";
 import { circleSizeToScale } from "@rewind/osu/math";
 import { Beatmap, MainHitObjectVerdict } from "@rewind/osu/core";
-import { GameplayClock } from "../../../game/GameplayClock";
+import { GameplayClock } from "../../../core/game/GameplayClock";
 import { StageSkinService } from "../../../StageSkinService";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
-import { GameSimulator } from "../../../game/GameSimulator";
+import { GameSimulator } from "../../../core/game/GameSimulator";
 
 function texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {
   switch (t) {

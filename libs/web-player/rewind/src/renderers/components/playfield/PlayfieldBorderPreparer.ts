@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { PlayfieldBorder } from "@rewind/osu-pixi/classic-components";
-import { StageViewSettingsService } from "../../../settings/StageViewSettingsService";
+import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
 
 @injectable()
 export class PlayfieldBorderPreparer {

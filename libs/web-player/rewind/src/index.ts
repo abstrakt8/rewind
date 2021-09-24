@@ -1,1 +1,3 @@
-export * from "./lib/web-player-rewind";
+export { createRewindTheater } from "./RewindTheater";
+export { AnalysisApp } from "./apps/analysis/AnalysisApp";
+export * from "./core/game/GameplayClock";

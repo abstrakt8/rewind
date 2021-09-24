@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useMemo } from "react";
-import { createRewindTheater, Theater } from "../../../../../web-player/rewind/src/createRewindTheater";
+import React, { createContext, useContext, useState } from "react";
+import { AnalysisApp, createRewindTheater } from "@rewind/web-player/rewind";
 
 interface ITheaterContext {
-  theater: Theater;
-  // createStage: (blueprintId: string, replayId: string) => Promise<RewindStage>;
+  theater: ReturnType<typeof createRewindTheater>;
+  analysis: AnalysisApp;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -15,8 +15,9 @@ interface TheaterProviderProps {
 }
 
 export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
-  const theater = useMemo(() => createRewindTheater({ apiUrl }), [apiUrl]);
-  return <TheaterContext.Provider value={{ theater }}>{children}</TheaterContext.Provider>;
+  const [theater] = useState(() => createRewindTheater({ apiUrl }));
+  const [analysis] = useState(() => theater.createAnalysisApp());
+  return <TheaterContext.Provider value={{ theater, analysis }}>{children}</TheaterContext.Provider>;
 }
 
 export function useTheaterContext() {
@@ -25,4 +26,14 @@ export function useTheaterContext() {
     throw Error("useTheaterContext can only be used within a TheaterProvider");
   }
   return context;
+}
+
+export function useTheater() {
+  const { theater } = useTheaterContext();
+  return theater;
+}
+
+export function useAnalysisApp() {
+  const { analysis } = useTheaterContext();
+  return analysis;
 }
