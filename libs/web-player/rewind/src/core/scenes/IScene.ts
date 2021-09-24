@@ -60,7 +60,7 @@ export class ManagedScene implements UserScene {
 
   update(deltaTimeInMs: number): void {
     if (this.state === "PLAYING") {
-      console.log(`Scene ${this.key} is getting updated with dt=${deltaTimeInMs}ms`);
+      // console.log(`Scene ${this.key} is getting updated with dt=${deltaTimeInMs}ms`);
       return this.scene.update(deltaTimeInMs);
     }
   }
