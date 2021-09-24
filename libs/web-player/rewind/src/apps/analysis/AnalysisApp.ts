@@ -43,6 +43,10 @@ export class AnalysisApp {
     private readonly pixiRenderer: PixiRendererManager,
   ) {}
 
+  stats() {
+    return this.gameLoop.stats();
+  }
+
   initialize() {
     this.gameLoop.initializeTicker();
     this.gameLoop.startTicker();

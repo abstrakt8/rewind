@@ -3,6 +3,17 @@ import { GameplayClock } from "./GameplayClock";
 import { PixiRendererManager } from "../../renderers/PixiRendererManager";
 import { injectable } from "inversify";
 import { SceneManager } from "../scenes/SceneManager";
+import MrDoobStats from "stats.js";
+
+function defaultMonitor() {
+  const s = new MrDoobStats();
+  s.dom.style.position = "absolute";
+  s.dom.style.left = "0px";
+  s.dom.style.top = "0px";
+  s.dom.style.zIndex = "9000";
+  // if (props.initialPanel !== undefined) s.showPanel(props.initialPanel);
+  return s;
+}
 
 // Game loop does not have to stop if the game clock is paused.
 // For example we could still toggle hidden on/off and need to see the changes on the canvas.
@@ -13,8 +24,7 @@ import { SceneManager } from "../scenes/SceneManager";
 @injectable()
 export class GameLoop {
   private ticker: PIXI.Ticker;
-
-  // private readonly performanceMonitor: MrDoobStats;
+  private readonly performanceMonitor: MrDoobStats;
 
   constructor(
     private gameClock: GameplayClock, // Maybe also inject?
@@ -22,7 +32,11 @@ export class GameLoop {
     private pixiRendererService: PixiRendererManager,
   ) {
     this.ticker = new PIXI.Ticker();
-    // this.performanceMonitor = defaultMonitor();
+    this.performanceMonitor = defaultMonitor();
+  }
+
+  stats() {
+    return this.performanceMonitor.dom;
   }
 
   initializeTicker() {
@@ -56,7 +70,9 @@ export class GameLoop {
   tickHandler(deltaTimeMs: number) {
     // Maybe we can measure the `.update()` and the `.render()` independently
     // console.debug(`Updating with timeDelta=${deltaTimeMs}ms`);
+    this.performanceMonitor.begin();
     this.update(deltaTimeMs);
     this.render();
+    this.performanceMonitor.end();
   }
 }
