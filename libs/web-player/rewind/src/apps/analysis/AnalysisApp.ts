@@ -12,6 +12,7 @@ import { AnalysisSceneManager } from "./manager/AnalysisSceneManager";
 import { GameLoop } from "../../core/game/GameLoop";
 import { AudioEngine } from "../../core/audio/AudioEngine";
 import { AudioService } from "../../core/audio/AudioService";
+import { AnalysisScene } from "./scenes/AnalysisScene";
 
 /**
  * Usage:
@@ -47,6 +48,7 @@ export class AnalysisApp {
     private readonly sceneManager: AnalysisSceneManager,
     private readonly pixiRenderer: PixiRendererManager,
     private readonly audioEngine: AudioEngine,
+    private readonly analysisScene: AnalysisScene,
   ) {}
 
   stats() {
@@ -80,6 +82,24 @@ export class AnalysisApp {
 
   destroyRenderer() {
     this.pixiRenderer.destroy();
+  }
+
+  takeScreenshot() {
+    const renderer = this.pixiRenderer.getRenderer();
+    if (!renderer) return;
+
+    const canvas: HTMLCanvasElement = renderer.plugins.extract.canvas(this.analysisScene.stage);
+    canvas.toBlob(
+      (blob) => {
+        const a = document.createElement("a");
+        a.download = `Rewind Screenshot ${new Date().toISOString()}.jpg`;
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        a.remove();
+      },
+      "image/jpeg",
+      0.9,
+    );
   }
 
   // If no replay is loaded, then an empty "perfect" replay is used as simulation

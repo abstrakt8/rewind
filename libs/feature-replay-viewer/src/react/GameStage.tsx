@@ -14,7 +14,7 @@ import { PlaybarSettings } from "../theater/playbarSettings";
 import { formatGameTime } from "@rewind/osu/math";
 // import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
 // import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";
-import { FaQuestion } from "react-icons/all";
+import { FaQuestion, RiScreenshot2Fill } from "react-icons/all";
 import { HelpModalDialog } from "./HelpModal/HelpModal";
 import { handleButtonFocus } from "./HandleButtonFocus";
 import { useAnalysisApp, useTheater } from "@rewind/feature-replay-viewer";
@@ -171,6 +171,9 @@ export const GameStage = () => {
             {/*  />*/}
             {/*</button>*/}
             {/*<AudioSettingsButton />*/}
+            <button onFocus={handleButtonFocus} onClick={() => analysisApp.takeScreenshot()}>
+              <RiScreenshot2Fill />
+            </button>
             <button onFocus={handleButtonFocus} className={"transition-colors hover:text-gray-400 text-lg bg-500"}>
               {speed}x
             </button>
