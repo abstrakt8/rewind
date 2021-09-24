@@ -5,7 +5,7 @@ import { SkinLoader } from "./core/api/SkinLoader";
 import { AudioService } from "./core/audio/AudioService";
 import { TextureManager } from "./textures/TextureManager";
 import { TYPES } from "./types/types";
-import { createAnalysisApp } from "./creators/createAnalysisApp";
+import { createRewindAnalysisApp } from "./creators/createRewindAnalysisApp";
 import { SkinId } from "./model/SkinId";
 import { SkinManager } from "./core/skins/SkinManager";
 
@@ -29,7 +29,7 @@ export class RewindTheater {
   }
 
   createAnalysisApp() {
-    return createAnalysisApp(this.container);
+    return createRewindAnalysisApp(this.container);
   }
 
   // @PostConstruct

@@ -23,17 +23,20 @@ import { HitObjectsPreparer } from "../renderers/components/playfield/HitObjects
 import { HitCirclePreparer } from "../renderers/components/playfield/HitCirclePreparer";
 import { SliderPreparer } from "../renderers/components/playfield/SliderPreparer";
 import { SpinnerPreparer } from "../renderers/components/playfield/SpinnerPreparer";
-import { SkinManager } from "../core/skins/SkinManager";
 import { SliderTextureManager } from "../renderers/managers/SliderTextureManager";
 import { CursorPreparer } from "../renderers/components/playfield/CursorPreparer";
 import { JudgementPreparer } from "../renderers/components/playfield/JudgementPreparer";
 
 /**
- * This is a Rewind specific creation of the "Analysis" app.
+ * This is a Rewind specific constructor of the "Analysis" tool (not to be used outside of Rewind).
+ *
+ * Reason is that many "Rewind" tools share the same services in order to provide smoother experiences.
+ *
+ * Example: If I use the "Cutter" tool then I want to use the same preferred skin that is used across Rewind.
+ *
+ * The analysis tool can be used as a standalone app though.
  */
-
-// This is a Rewind specific creator of the analysis stage (not to be used outside of Rewind)
-export function createAnalysisApp(rewindTheaterContainer: Container) {
+export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
   const container = new Container({ defaultScope: "Singleton" });
   container.parent = rewindTheaterContainer;
   container.bind(STAGE_TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter2());
@@ -79,10 +82,8 @@ export function createAnalysisApp(rewindTheaterContainer: Container) {
     }
   }
 
-  // AnalysisScene
-
   container.bind(GameLoop).toSelf();
-  container.bind(AnalysisApp).toSelf();
 
+  container.bind(AnalysisApp).toSelf();
   return container.get(AnalysisApp);
 }

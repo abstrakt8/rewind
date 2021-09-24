@@ -104,7 +104,6 @@ export class AnalysisApp {
     this.modSettingsManager.setHidden(modHidden);
     this.gameClock.setSpeed(initialSpeed);
     this.gameClock.seekTo(0);
-    // TODO: Set duration
     this.beatmapManager.setBeatmap(beatmap);
     this.replayManager.setMainReplay(replay);
 

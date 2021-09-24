@@ -34,6 +34,7 @@ export class GameSimulator {
     // this.currentState = finalState...
     this.replayEvents = retrieveEvents(this.currentState, beatmap.hitObjects);
     this.judgements = this.replayEvents.filter(isHitObjectJudgement);
+    console.log("Judgements ", this.judgements.length);
   }
 
   // Simulates the game to be at the given time
