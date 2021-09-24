@@ -18,11 +18,12 @@ export class BeatmapBackground {
   }
 
   update() {
-    const scaling = STAGE_WIDTH / this.background.texture.width;
     this.background.texture = this.textureManager.getTexture("BACKGROUND");
-    console.log("Texture ", this.background.texture);
+    const scaling = STAGE_WIDTH / this.background.texture.width;
     this.background.scale.set(scaling, scaling);
+
     // TODO
+    this.background.alpha = 0.2;
     // this.background.alpha = this.theaterViewService.getView().backgroundDim;
   }
 }
