@@ -22,7 +22,7 @@ import { AnalysisStagePreparer } from "../renderers/components/stage/AnalysisSta
 
 // This is a Rewind specific creator of the analysis stage (not to be used outside of Rewind)
 export function createAnalysisApp(rewindTheaterContainer: Container) {
-  const container = new Container();
+  const container = new Container({ defaultScope: "Singleton" });
   container.parent = rewindTheaterContainer;
   container.bind(STAGE_TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter2());
 
@@ -40,9 +40,9 @@ export function createAnalysisApp(rewindTheaterContainer: Container) {
   container.bind(AnalysisSceneManager).toSelf().inSingletonScope();
   container.bind(SceneManager).toSelf().inSingletonScope();
   // AnalysisScene
-  container.bind(AnalysisScene).toSelf();
-  container.bind(BeatmapBackground).toSelf();
-  container.bind(AnalysisStagePreparer).toSelf();
+  container.bind(AnalysisScene).toSelf().inSingletonScope();
+  container.bind(BeatmapBackground).toSelf().inSingletonScope();
+  container.bind(AnalysisStagePreparer).toSelf().inSingletonScope();
 
   // AnalysisScene
 
