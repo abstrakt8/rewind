@@ -3,11 +3,12 @@ import { BlueprintService } from "./core/api/BlueprintService";
 import { ReplayService } from "./core/api/ReplayService";
 import { SkinLoader } from "./core/api/SkinLoader";
 import { AudioService } from "./core/audio/AudioService";
-import { TextureManager } from "./textures/TextureManager";
 import { TYPES } from "./types/types";
 import { createRewindAnalysisApp } from "./creators/createRewindAnalysisApp";
 import { SkinId } from "./model/SkinId";
 import { SkinManager } from "./core/skins/SkinManager";
+import { AudioSettingsService } from "./settings/AudioSettingsService";
+import { STAGE_TYPES } from "./types/STAGE_TYPES";
 
 /**
  * Creates the Rewind app that serves multiple tools.
@@ -19,13 +20,15 @@ export class RewindTheater {
   private readonly container: Container;
 
   constructor(private apiUrl: string) {
-    this.container = new Container();
+    this.container = new Container({ defaultScope: "Singleton" });
     this.container.bind(TYPES.API_URL).toConstantValue(apiUrl);
-    this.container.bind(BlueprintService).toSelf().inSingletonScope();
-    this.container.bind(ReplayService).toSelf().inSingletonScope();
-    this.container.bind(SkinLoader).toSelf().inSingletonScope();
-    this.container.bind(SkinManager).toSelf().inSingletonScope();
-    this.container.bind(AudioService).toSelf().inSingletonScope();
+    this.container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
+    this.container.bind(BlueprintService).toSelf();
+    this.container.bind(ReplayService).toSelf();
+    this.container.bind(SkinLoader).toSelf();
+    this.container.bind(SkinManager).toSelf();
+    this.container.bind(AudioService).toSelf();
+    this.container.bind(AudioSettingsService).toSelf();
   }
 
   createAnalysisApp() {

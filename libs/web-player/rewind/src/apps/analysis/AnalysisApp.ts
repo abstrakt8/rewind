@@ -10,6 +10,8 @@ import { injectable } from "inversify";
 import { PixiRendererManager } from "../../renderers/PixiRendererManager";
 import { AnalysisSceneManager } from "./manager/AnalysisSceneManager";
 import { GameLoop } from "../../core/game/GameLoop";
+import { AudioEngine } from "../../core/audio/AudioEngine";
+import { AudioService } from "../../core/audio/AudioService";
 
 /**
  * Usage:
@@ -33,6 +35,7 @@ import { GameLoop } from "../../core/game/GameLoop";
 @injectable()
 export class AnalysisApp {
   constructor(
+    private readonly audioService: AudioService,
     private readonly blueprintService: BlueprintService,
     private readonly replayService: ReplayService,
     public readonly gameClock: GameplayClock,
@@ -43,6 +46,7 @@ export class AnalysisApp {
     private readonly gameSimulator: GameSimulator,
     private readonly sceneManager: AnalysisSceneManager,
     private readonly pixiRenderer: PixiRendererManager,
+    private readonly audioEngine: AudioEngine,
   ) {}
 
   stats() {
@@ -93,6 +97,11 @@ export class AnalysisApp {
     const blueprint = await this.blueprintService.retrieveBlueprint(blueprintId);
 
     await this.blueprintService.retrieveBlueprintResources(blueprintId);
+
+    this.audioEngine.setSong(await this.audioService.loadAudio(blueprintId));
+    this.audioEngine.song?.mediaElement.addEventListener("loadedmetadata", () => {
+      this.gameClock.setDuration((this.audioEngine.song?.mediaElement.duration ?? 0) * 1000);
+    });
 
     // If the building is too slow or unbearable, we should push the building to a WebWorker, but right now it's ok
     // even on long maps.

@@ -44,11 +44,16 @@ export class AudioEngine {
     this.setupListeners(this.eventEmitter);
   }
 
-  async loadSong(songUrl: string) {
-    // Disconnect other one?
-    const audio = new Audio();
-    audio.crossOrigin = "anonymous";
-    audio.src = songUrl;
+  // async loadSong(songUrl: string) {
+  //   // Disconnect other one?
+  //   const audio = new HTMLAudioElement();
+  //   audio.crossOrigin = "anonymous";
+  //   audio.src = songUrl;
+  //   this.song = this.audioContext.createMediaElementSource(audio);
+  //   this.song.connect(this.musicGain);
+  // }
+  //
+  setSong(audio: HTMLAudioElement) {
     this.song = this.audioContext.createMediaElementSource(audio);
     this.song.connect(this.musicGain);
   }
