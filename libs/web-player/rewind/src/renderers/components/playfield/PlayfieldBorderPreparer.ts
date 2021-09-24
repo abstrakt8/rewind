@@ -14,7 +14,7 @@ export class PlayfieldBorderPreparer {
     return this.playfieldBorder.graphics;
   }
 
-  prepare() {
+  update() {
     const { playfieldBorder } = this.stageViewService.getView();
     this.playfieldBorder.prepare(playfieldBorder);
   }
