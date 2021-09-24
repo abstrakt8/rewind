@@ -1,12 +1,12 @@
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import { Container } from "pixi.js";
 import { OsuClassicJudgement } from "@rewind/osu-pixi/classic-components";
 import { circleSizeToScale } from "@rewind/osu/math";
-import { Beatmap, MainHitObjectVerdict } from "@rewind/osu/core";
+import { MainHitObjectVerdict } from "@rewind/osu/core";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { SkinManager } from "../../../core/skins/SkinManager";
-import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
 import { GameSimulator } from "../../../core/game/GameSimulator";
+import { BeatmapManager } from "../../../apps/analysis/manager/BeatmapManager";
 
 function texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {
   switch (t) {
@@ -28,7 +28,7 @@ export class JudgementPreparer {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly stageSkinService: SkinManager,
-    @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
+    private readonly beatmapManager: BeatmapManager,
     private readonly gameSimulator: GameSimulator,
   ) {
     this.container = new Container();
@@ -38,9 +38,9 @@ export class JudgementPreparer {
     return this.container;
   }
 
-  prepare() {
+  update() {
     this.container.removeChildren();
-    const beatmap = this.beatmap;
+    const beatmap = this.beatmapManager.getBeatmap();
     const time = this.gameClock.timeElapsedInMs;
     const skin = this.stageSkinService.getSkin();
     const judgements = this.gameSimulator.judgements;

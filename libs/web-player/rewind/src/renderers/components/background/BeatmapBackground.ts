@@ -15,6 +15,12 @@ export class BeatmapBackground {
     private textureManager: TextureManager, // private theaterViewService: StageViewSettingsService,
   ) {
     this.background = new Sprite();
+    const blurScale = 0.5;
+    this.background.filters = [new BlurFilter(blurScale * MAX_BLUR_STRENGTH)];
+
+    // TODO
+    const alphaScale = 0.2;
+    this.background.alpha = alphaScale;
   }
 
   getSprite() {
@@ -25,12 +31,5 @@ export class BeatmapBackground {
     this.background.texture = this.textureManager.getTexture("BACKGROUND");
     const scaling = STAGE_WIDTH / this.background.texture.width;
     this.background.scale.set(scaling, scaling);
-
-    // TODO
-    const blurScale = 0.5;
-    const alphaScale = 0.2;
-
-    this.background.filters = [new BlurFilter(blurScale * MAX_BLUR_STRENGTH)];
-    this.background.alpha = alphaScale;
   }
 }

@@ -3,12 +3,11 @@ import { OsuClassicCursor } from "@rewind/osu-pixi/classic-components";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../../../Replay";
 import { AnalysisCursor } from "@rewind/osu-pixi/rewind";
 import { OsuAction } from "@rewind/osu/core";
-import { inject, injectable } from "inversify";
-import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
+import { injectable } from "inversify";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
-import type { OsuReplay } from "../../../model/OsuReplay";
-import type { ISkin } from "../../../model/Skin";
+import { SkinManager } from "../../../core/skins/SkinManager";
+import { ReplayManager } from "../../../apps/analysis/manager/ReplayManager";
 
 @injectable()
 export class CursorPreparer {
@@ -17,8 +16,8 @@ export class CursorPreparer {
   private readonly analysisCursor: AnalysisCursor;
 
   constructor(
-    @inject(STAGE_TYPES.REPLAY) private readonly replay: OsuReplay,
-    @inject(STAGE_TYPES.SKIN) private readonly skin: ISkin,
+    private readonly replayManager: ReplayManager,
+    private readonly skinManager: SkinManager,
     private readonly gameClock: GameplayClock,
     private readonly stageViewService: StageViewSettingsService,
   ) {
@@ -35,14 +34,16 @@ export class CursorPreparer {
     return this.stageViewService.getView();
   }
 
-  prepareOsuCursor() {
+  updateOsuCursor() {
     const { osuCursor } = this.view;
 
     if (!osuCursor.enabled) {
       return;
     }
 
-    const { time, replay, skin } = this;
+    const skin = this.skinManager.getSkin();
+    const replay = this.replayManager.getMainReplay();
+    const { time } = this;
     const cursor = this.osuClassicCursor;
     const { showTrail, scaleWithCS, scale } = osuCursor;
     if (!replay) return;
@@ -72,7 +73,11 @@ export class CursorPreparer {
     this.container.addChild(cursor.container);
   }
 
-  prepareAnalysisCursor() {
+  get replay() {
+    return this.replayManager.getMainReplay();
+  }
+
+  updateAnalysisCursor() {
     const { replay, time, view } = this;
     const { enabled } = view.analysisCursor;
     if (!enabled) {
@@ -129,10 +134,10 @@ export class CursorPreparer {
     this.container.addChild(cursor.container);
   }
 
-  prepare() {
+  update() {
     this.container.removeChildren();
-    this.prepareOsuCursor();
-    this.prepareAnalysisCursor();
+    this.updateOsuCursor();
+    this.updateAnalysisCursor();
   }
 
   getContainer() {

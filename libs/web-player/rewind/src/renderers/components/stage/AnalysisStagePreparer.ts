@@ -31,8 +31,12 @@ export class AnalysisStagePreparer {
 
     this.stage = new PIXI.Container();
     this.stage.addChild(background, playfield, foregroundHUD);
-    // this.stage.interactiveChildren = false;
-    // this.stage.interactive = false;
+
+    // Making them non interactive -> reduces lags when hovering because certain mouse events such as `onhover` don't
+    // get fired and the tree traversal also stops about here.
+    this.stage.interactiveChildren = false;
+    this.stage.interactive = false;
+
     const playfieldScaling = (STAGE_HEIGHT * 0.8) / OSU_PLAYFIELD_HEIGHT;
 
     playfield.position.set(

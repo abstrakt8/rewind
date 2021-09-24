@@ -39,8 +39,10 @@ export class GameSimulator {
   // Simulates the game to be at the given time
   // If a whole game simulation has happened, then this should be really fast
   simulate(gameTimeInMs: number) {
-    this.currentState = this.gameplayTimeMachine?.gameStateAt(gameTimeInMs);
-    // this.currentInfo = this.gameplayEvaluator?.evaluateReplayState(this.currentState!);
+    if (this.gameplayTimeMachine && this.gameplayEvaluator) {
+      this.currentState = this.gameplayTimeMachine.gameStateAt(gameTimeInMs);
+      this.currentInfo = this.gameplayEvaluator.evaluateReplayState(this.currentState!);
+    }
   }
 
   getCurrentState() {
