@@ -1,5 +1,5 @@
 import { Texture } from "pixi.js";
-import { RewindTextureId } from "../TextureManager";
+import { RewindTextureId } from "../textures/TextureManager";
 
 export const STAGE_TYPES = {
   THEATER_STAGE_PREPARER: Symbol.for("THEATER_STAGE_PREPARER"),
@@ -10,6 +10,7 @@ export const STAGE_TYPES = {
   EVENT_EMITTER: Symbol.for("EVENT_EMITTER"),
   TEXTURE_MAP: Symbol.for("TEXTURE_MAP"),
   INITIAL_VIEW_SETTINGS: Symbol.for("INITIAL_VIEW_SETTINGS"),
+  SKIN: Symbol.for("SKIN"),
 };
 
 export type RewindTextureMap = Map<RewindTextureId, Texture>;

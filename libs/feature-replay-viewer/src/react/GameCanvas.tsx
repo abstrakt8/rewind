@@ -1,22 +1,15 @@
 import React, { useEffect, useRef } from "react";
-import { useStageContext } from "./components/StageProvider/StageProvider";
+import { useAnalysisApp } from "./components/TheaterProvider/TheaterProvider";
 
 export const GameCanvas = () => {
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { stage } = useStageContext();
+  const analysisApp = useAnalysisApp();
 
   useEffect(() => {
-    if (containerRef.current !== null) {
-      containerRef.current.appendChild(stage.performanceMonitor.dom);
-    }
-  }, [stage]);
-  useEffect(() => {
-    if (canvas.current) {
-      stage.initializeRenderer(canvas.current);
-      stage.initializeTicker();
-    }
-  }, [stage]);
+    if (canvas.current) analysisApp.initializeRenderer(canvas.current);
+    return () => analysisApp.destroyRenderer();
+  }, [analysisApp]);
 
   return (
     <div ref={containerRef} className={"overflow-auto flex-1 rounded relative"}>

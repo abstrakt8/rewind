@@ -1,22 +1,23 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import Playbar, { PlaybarEvent } from "./Playbar";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
-import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
+// import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
 import { GameCanvas } from "./GameCanvas";
 import { useStageShortcuts } from "./hooks/useStageShortcuts";
-import { useGameClockContext } from "./components/StageProvider/StageClockProvider";
+import { useGameClock } from "./components/StageProvider/StageClockProvider";
 import { Sidebar } from "./Sidebar";
-import { useEnergySaver } from "./hooks/useEnergySaver";
-import { useStageContext } from "./components/StageProvider/StageProvider";
+// import { useEnergySaver } from "./hooks/useEnergySaver";
+// import { useStageContext } from "./components/StageProvider/StageProvider";
 import { PlaybarColors } from "./PlaybarColors";
 import { PlaybarSettings } from "../theater/playbarSettings";
 import { formatGameTime } from "@rewind/osu/math";
-import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
-import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";
+// import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
+// import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";
 import { FaQuestion } from "react-icons/all";
 import { HelpModalDialog } from "./HelpModal/HelpModal";
 import { handleButtonFocus } from "./HandleButtonFocus";
+import { useAnalysisApp } from "@rewind/feature-replay-viewer";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -54,7 +55,7 @@ function mapToPlaybarEvents(
 ): PlaybarEvent[] {
   const { showSliderBreaks, show100s, show50s, showMisses } = settings;
   const events: PlaybarEvent[] = [];
-  console.log("Remapping playbar events");
+  // console.log("Remapping playbar events");
   // TODO: Refactor -> maybe filter afterwards
   replayEvents.forEach((e) => {
     const position = e.time / maxTime;
@@ -83,11 +84,13 @@ function mapToPlaybarEvents(
 }
 
 const EfficientPlaybar = () => {
-  const { playbarSettings: settings } = useStagePlaybarSettingsContext();
-  const { timeInMs: currentTime, durationInMs: maxTime, seekTo } = useGameClockContext();
-  const { stage } = useStageContext();
-  const { gameSimulator } = stage;
-  const replayEvents: ReplayAnalysisEvent[] = gameSimulator.replayEvents;
+  // const { playbarSettings: settings } = useStagePlaybarSettingsContext();
+  const settings: PlaybarSettings = { show50s: false, show100s: false, showMisses: true, showSliderBreaks: false };
+  const { timeInMs: currentTime, durationInMs: maxTime, seekTo } = useGameClock();
+  // const { stage } = useStageContext();
+  // const { gameSimulator } = stage;
+  // const replayEvents: ReplayAnalysisEvent[] = gameSimulator.replayEvents;
+  const replayEvents: ReplayAnalysisEvent[] = [];
   const loadedPercentage = currentTime / maxTime;
   const handleSeekTo = useCallback(
     (percentage) => {
@@ -102,7 +105,7 @@ const EfficientPlaybar = () => {
 };
 
 export const CurrentTime = () => {
-  const { timeInMs: currentTime } = useGameClockContext();
+  const { timeInMs: currentTime } = useGameClock();
   const [timeHMS, timeMS] = formatGameTime(currentTime, true).split(".");
 
   return (
@@ -113,20 +116,26 @@ export const CurrentTime = () => {
   );
 };
 
-export const GameStage = (props: FeatureReplayViewerProps) => {
+export const GameStage = () => {
   // Canvas / Game
-  //
-  const { isPlaying, toggleClock, speed, durationInMs } = useGameClockContext();
+  const { isPlaying, toggleClock, speed, durationInMs } = useGameClock();
   const maxTimeHMS = formatGameTime(durationInMs);
 
   const handlePlayButtonClick = useCallback(() => toggleClock(), [toggleClock]);
 
-  const { modHidden, toggleModHidden } = useStageViewContext();
-  const handleHiddenButtonClicked = useCallback(() => toggleModHidden(), [toggleModHidden]);
+  // const { modHidden, toggleModHidden } = useStageViewContext();
+  // const handleHiddenButtonClicked = useCallback(() => toggleModHidden(), [toggleModHidden]);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
 
+  const analysisApp = useAnalysisApp();
+
+  useEffect(() => {
+    analysisApp.initialize();
+    return () => analysisApp.destroy();
+  });
+
   useStageShortcuts();
-  useEnergySaver(true);
+  // useEnergySaver(true);
 
   return (
     <>
@@ -151,14 +160,14 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
               <EfficientPlaybar />
             </div>
             <span className={"self-center select-all"}>{maxTimeHMS}</span>
-            <button onFocus={handleButtonFocus} className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>
-              <img
-                src={modHiddenImg}
-                alt={"ModHidden"}
-                className={`filter ${modHidden ? "grayscale-0" : "grayscale"} `}
-              />
-            </button>
-            <AudioSettingsButton />
+            {/*<button onFocus={handleButtonFocus} className={"w-10 -mb-1"} onClick={handleHiddenButtonClicked}>*/}
+            {/*  <img*/}
+            {/*    src={modHiddenImg}*/}
+            {/*    alt={"ModHidden"}*/}
+            {/*    className={`filter ${modHidden ? "grayscale-0" : "grayscale"} `}*/}
+            {/*  />*/}
+            {/*</button>*/}
+            {/*<AudioSettingsButton />*/}
             <button onFocus={handleButtonFocus} className={"transition-colors hover:text-gray-400 text-lg bg-500"}>
               {speed}x
             </button>
@@ -167,7 +176,7 @@ export const GameStage = (props: FeatureReplayViewerProps) => {
             </button>
           </div>
         </div>
-        <Sidebar />
+        {/*<Sidebar />*/}
       </div>
     </>
   );

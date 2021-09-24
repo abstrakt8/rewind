@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect } from "react";
-import { StageViewSettingsService } from "../../../../../web-player/rewind/src/settings/StageViewSettingsService";
+import { StageViewSettingsService } from "../../../../../web-player/rewind/src/apps/analysis/StageViewSettingsService";
 import { ViewSettings } from "../../../../../web-player/rewind/src/model/ViewSettings";
 import { useImmer } from "use-immer";
 

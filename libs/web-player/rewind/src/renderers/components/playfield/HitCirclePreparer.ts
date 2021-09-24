@@ -1,8 +1,7 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { HitCircle } from "@rewind/osu/core";
-import { GameplayClock } from "../../../game/GameplayClock";
-import { StageViewSettingsService } from "../../../settings/StageViewSettingsService";
-import { StageSkinService } from "../../../StageSkinService";
+import { GameplayClock } from "../../../core/game/GameplayClock";
+import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
 import {
   HitResult,
   OsuClassicApproachCircle,
@@ -10,8 +9,9 @@ import {
   OsuClassicHitCircleArea,
   OsuClassicHitCircleAreaSettings,
 } from "@rewind/osu-pixi/classic-components";
-import { Skin } from "../../../model/Skin";
-import { GameSimulator } from "../../../game/GameSimulator";
+import type { ISkin } from "../../../model/Skin";
+import { GameSimulator } from "../../../core/game/GameSimulator";
+import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
 
 // TODO: Maybe it's even dynamic
 const HIT_CIRCLE_FADE_OUT_DURATION = 300;
@@ -22,7 +22,7 @@ export class HitCirclePreparer {
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
     private readonly stageViewService: StageViewSettingsService,
-    private readonly stageSkinService: StageSkinService,
+    @inject(STAGE_TYPES.SKIN) private readonly skin: ISkin,
   ) {}
 
   // TODO: Pooling
@@ -37,7 +37,7 @@ export class HitCirclePreparer {
   prepare(hitCircle: HitCircle) {
     const time = this.gameClock.timeElapsedInMs;
     const view = this.stageViewService.getView();
-    const skin = this.stageSkinService.getSkin();
+    const skin = this.skin;
 
     const { modHidden } = view;
 
@@ -70,7 +70,7 @@ export class HitCirclePreparer {
 
 export function settingsApproachCircle(s: {
   hitCircle: HitCircle;
-  skin: Skin;
+  skin: ISkin;
   gameTime: number;
   modHidden?: boolean;
 }): Partial<OsuClassicApproachCircleSettings> {
@@ -89,7 +89,7 @@ export function settingsApproachCircle(s: {
 
 function settingsHitCircleArea(s: {
   hitCircle: HitCircle;
-  skin: Skin;
+  skin: ISkin;
   gameTime: number;
   modHidden?: boolean;
   hitResult: HitResult | null;

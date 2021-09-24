@@ -9,12 +9,12 @@ import {
   SliderBodySettings,
 } from "@rewind/osu-pixi/classic-components";
 import { RGB, sliderRepeatAngle, Vec2 } from "@rewind/osu/math";
-import { GameplayClock } from "../../../game/GameplayClock";
-import { StageViewSettingsService } from "../../../settings/StageViewSettingsService";
+import { GameplayClock } from "../../../core/game/GameplayClock";
+import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
 import { StageSkinService } from "../../../StageSkinService";
 import { injectable } from "inversify";
 import { TemporaryObjectPool } from "../../../utils/pooling/TemporaryObjectPool";
-import { SliderTextureService } from "../../managers/SliderTextureService";
+import { SliderTextureManager } from "../../managers/SliderTextureManager";
 
 const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;
 const DEBUG_PIXEL_BALL_COLOR = 0x00ff00;
@@ -29,7 +29,7 @@ export class SliderPreparer {
     private readonly gameClock: GameplayClock,
     private readonly stageViewService: StageViewSettingsService,
     private readonly stageSkinService: StageSkinService,
-    private readonly sliderTextureService: SliderTextureService,
+    private readonly sliderTextureService: SliderTextureManager,
   ) {
     // TODO: Inject
     this.graphicsPool = new TemporaryObjectPool<Graphics>(

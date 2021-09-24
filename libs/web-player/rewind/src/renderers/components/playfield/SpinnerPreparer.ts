@@ -1,10 +1,10 @@
 import { injectable } from "inversify";
 import { Spinner } from "@rewind/osu/core";
-import { GameplayClock } from "../../../game/GameplayClock";
-import { StageViewSettingsService } from "../../../settings/StageViewSettingsService";
+import { GameplayClock } from "../../../core/game/GameplayClock";
+import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
 import { StageSkinService } from "../../../StageSkinService";
 import { OsuClassicSpinner } from "@rewind/osu-pixi/classic-components";
-import { GameSimulator } from "../../../game/GameSimulator";
+import { GameSimulator } from "../../../core/game/GameSimulator";
 
 // TODO: Maybe it's even dynamic
 const SPINNER_FADE_OUT_DURATION = 300;

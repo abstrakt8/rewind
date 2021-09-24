@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ReplayService } from "../src/api/ReplayService";
+import { ReplayService } from "../src/core/api/ReplayService";
 
 const url = "http://localhost:7271";
 test("ReplayService", async () => {

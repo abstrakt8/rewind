@@ -1,17 +1,14 @@
 import { Container } from "pixi.js";
 import { OsuClassicCursor } from "@rewind/osu-pixi/classic-components";
-import {
-  findIndexInReplayAtTime,
-  interpolateReplayPosition,
-} from "../../../../../../feature-replay-viewer/src/utils/Replay";
+import { findIndexInReplayAtTime, interpolateReplayPosition } from "../../../Replay";
 import { AnalysisCursor } from "@rewind/osu-pixi/rewind";
 import { OsuAction } from "@rewind/osu/core";
 import { inject, injectable } from "inversify";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
-import { StageSkinService } from "../../../StageSkinService";
-import { GameplayClock } from "../../../game/GameplayClock";
-import { StageViewSettingsService } from "../../../settings/StageViewSettingsService";
+import { GameplayClock } from "../../../core/game/GameplayClock";
+import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
 import type { OsuReplay } from "../../../model/OsuReplay";
+import type { ISkin } from "../../../model/Skin";
 
 @injectable()
 export class CursorPreparer {
@@ -21,7 +18,7 @@ export class CursorPreparer {
 
   constructor(
     @inject(STAGE_TYPES.REPLAY) private readonly replay: OsuReplay,
-    private readonly stageSkinService: StageSkinService,
+    @inject(STAGE_TYPES.SKIN) private readonly skin: ISkin,
     private readonly gameClock: GameplayClock,
     private readonly stageViewService: StageViewSettingsService,
   ) {
@@ -32,10 +29,6 @@ export class CursorPreparer {
 
   get time() {
     return this.gameClock.timeElapsedInMs;
-  }
-
-  get skin() {
-    return this.stageSkinService.getSkin();
   }
 
   get view() {

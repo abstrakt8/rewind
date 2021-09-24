@@ -14,6 +14,8 @@ export type SkinTexturesByKey = Partial<Record<OsuSkinTextures, Texture[]>>;
 // Read
 // https://github.com/pixijs/pixi.js/blob/dev/packages/loaders/src/TextureLoader.ts
 export interface ISkin {
+  config: SkinConfig;
+
   getComboColorForIndex(i: number): number;
 
   getTexture(key: OsuSkinTextures): Texture;
@@ -26,6 +28,8 @@ export interface ISkin {
 }
 
 export class EmptySkin implements ISkin {
+  config = generateDefaultSkinConfig(false);
+
   getComboColorForIndex(i: number): number {
     return 0;
   }
