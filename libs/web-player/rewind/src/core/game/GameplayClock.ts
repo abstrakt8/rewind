@@ -9,7 +9,7 @@ const getNowInMs = () => performance.now();
 export class GameplayClock {
   public isPlaying = false;
   public speed = 1.0;
-  public durationInMs = 727 * 1000;
+  public durationInMs = 447 * 1000;
   public timeElapsedInMs = 0;
   private lastUpdateTimeInMs = 0;
 
@@ -66,7 +66,7 @@ export class GameplayClock {
   }
 
   setDuration(durationInMs: number) {
-    console.log(`Duration  ${durationInMs}`);
+    console.log(`GameClock duration has been set to ${durationInMs}ms`);
     this.durationInMs = durationInMs;
     this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_DURATION_CHANGED, durationInMs);
   }

@@ -68,7 +68,7 @@ export class ForegroundHUDPreparer {
       const count = gameplayInfo.verdictCounts;
       const maxCombo = gameplayInfo.maxComboSoFar;
 
-      this.stats.text = `Time: ${formatGameTime(time, true)}\n300: ${count[0]}\n100: ${count[1]}\n50: ${
+      this.stats.text = `Time: ${formatGameTime(time, true)}\n\n300: ${count[0]}\n100: ${count[1]}\n50: ${
         count[2]
       }\nMisses: ${count[3]}\n\nMaxCombo: ${maxCombo}`;
       this.stats.position.set(25, 50);
