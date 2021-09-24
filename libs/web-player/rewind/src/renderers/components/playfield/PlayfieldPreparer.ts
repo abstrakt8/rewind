@@ -31,9 +31,9 @@ export class PlayfieldPreparer {
   }
 
   update() {
-    this.playfieldBorderPreparer.prepare();
+    this.playfieldBorderPreparer.update();
     this.hitObjectsPreparer.update();
     this.cursorPreparer.update();
-    // this.judgementPreparer.prepare();
+    this.judgementPreparer.update();
   }
 }
