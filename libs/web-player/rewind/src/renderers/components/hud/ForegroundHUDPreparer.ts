@@ -7,6 +7,7 @@ import { StageSkinService } from "../../../StageSkinService";
 import { Beatmap } from "@rewind/osu/core";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
+import { formatGameTime } from "@rewind/osu/math";
 
 @injectable()
 export class ForegroundHUDPreparer {
@@ -15,8 +16,8 @@ export class ForegroundHUDPreparer {
   hitErrorBar: OsuClassicHitErrorBar;
 
   constructor(
-    @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
-    private readonly stageSkinService: StageSkinService,
+    // @inject(STAGE_TYPES.BEATMAP) private readonly beatmap: Beatmap,
+    // private readonly stageSkinService: StageSkinService,
     private readonly gameSimulator: GameSimulator,
   ) {
     this.container = new Container();
@@ -25,43 +26,47 @@ export class ForegroundHUDPreparer {
   }
 
   prepare() {
-    const skin = this.stageSkinService.getSkin();
+    // const skin = this.stageSkinService.getSkin();
     const gameplayInfo = this.gameSimulator.getCurrentInfo();
-    // const gameplayState = this.gameSimulator.getCurrentState();
+    const gameplayState = this.gameSimulator.getCurrentState();
     // const time = gameplayState.currentTime;
     // const beatmap = this.beatmap;
 
     this.container.removeChildren();
 
-    if (gameplayInfo) {
-      const comboNumber = new OsuClassicNumber();
-      const textures = skin.getComboNumberTextures();
-      const overlap = skin.config.fonts.comboOverlap;
-      comboNumber.prepare({ digits: calculateDigits(gameplayInfo.currentCombo), textures, overlap });
-      comboNumber.position.set(0, STAGE_HEIGHT - 50);
-      this.container.addChild(comboNumber);
-    }
-
-    // acc
-
-    if (gameplayInfo) {
-      // const text
-      const accNumber = new OsuClassicAccuracy();
-      const digitTextures = skin.getScoreTextures();
-      const dotTexture = skin.getTexture("SCORE_DOT");
-      const percentageTexture = skin.getTexture("SCORE_PERCENT");
-      const overlap = skin.config.fonts.scoreOverlap;
-      accNumber.prepare({ accuracy: gameplayInfo.accuracy, digitTextures, dotTexture, percentageTexture, overlap });
-      accNumber.container.position.set(STAGE_WIDTH - 15, 25);
-      this.container.addChild(accNumber.container);
-    }
+    // if (gameplayInfo) {
+    //   const comboNumber = new OsuClassicNumber();
+    //   const textures = skin.getComboNumberTextures();
+    //   const overlap = skin.config.fonts.comboOverlap;
+    //   comboNumber.prepare({ digits: calculateDigits(gameplayInfo.currentCombo), textures, overlap });
+    //   comboNumber.position.set(0, STAGE_HEIGHT - 50);
+    //   this.container.addChild(comboNumber);
+    // }
+    //
+    // // acc
+    //
+    // if (gameplayInfo) {
+    //   // const text
+    //   const accNumber = new OsuClassicAccuracy();
+    //   const digitTextures = skin.getScoreTextures();
+    //   const dotTexture = skin.getTexture("SCORE_DOT");
+    //   const percentageTexture = skin.getTexture("SCORE_PERCENT");
+    //   const overlap = skin.config.fonts.scoreOverlap;
+    //   accNumber.prepare({ accuracy: gameplayInfo.accuracy, digitTextures, dotTexture, percentageTexture, overlap });
+    //   accNumber.container.position.set(STAGE_WIDTH - 15, 25);
+    //   this.container.addChild(accNumber.container);
+    // }
 
     // verdict counts: 300, 100, 50, miss
 
-    if (gameplayInfo) {
+    if (gameplayInfo && gameplayState) {
       const count = gameplayInfo.verdictCounts;
       const maxCombo = gameplayInfo.maxComboSoFar;
-      this.stats.text = `300: ${count[0]}\n100: ${count[1]}\n50: ${count[2]}\nMisses: ${count[3]}\n\nMaxCombo: ${maxCombo}`;
+      const { currentTime } = gameplayState;
+
+      this.stats.text = `Time: ${formatGameTime(currentTime, true)}\n300: ${count[0]}\n100: ${count[1]}\n50: ${
+        count[2]
+      }\nMisses: ${count[3]}\n\nMaxCombo: ${maxCombo}`;
       this.stats.position.set(25, 50);
       this.container.addChild(this.stats);
     }

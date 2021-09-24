@@ -21,14 +21,16 @@ export class AnalysisStagePreparer {
 
   constructor(
     private rendererService: PixiRendererManager,
-    private backgroundPreparer: BeatmapBackground, // private playfieldPreparer: PlayfieldPreparer, // private // // // foregroundHUDPreparer: ForegroundHUDPreparer,
+    private backgroundPreparer: BeatmapBackground,
+    // private playfieldPreparer: PlayfieldPreparer,
+    private foregroundHUDPreparer: ForegroundHUDPreparer,
   ) {
     const background = backgroundPreparer.getSprite();
     // const playfield = this.playfieldPreparer.getContainer();
     // const foregroundHUD = this.foregroundHUDPreparer.container;
 
     this.stage = new PIXI.Container();
-    this.stage.addChild(background);
+    this.stage.addChild(background, foregroundHUDPreparer.container);
     // this.stage.addChild(background, playfield, foregroundHUD);
     // this.stage.interactiveChildren = false;
     // this.stage.interactive = false;
@@ -45,7 +47,7 @@ export class AnalysisStagePreparer {
    *  So the virtual screen is supposed to have the dimensions 1600x900.
    */
   resizeTo() {
-    this.rendererService.resizeRendererToCanvasSize();
+    if (!this.rendererService.resizeRendererToCanvasSize()) return;
 
     const screen = this.rendererService.getRenderer()?.screen;
     // Should not be possible
@@ -65,15 +67,14 @@ export class AnalysisStagePreparer {
     const scale = this.widthInPx / STAGE_WIDTH;
     this.stage.scale.set(scale, scale);
     this.stage.position.set((screen.width - this.widthInPx) / 2, (screen.height - this.heightInPx) / 2);
-    console.log(`screen.dimensions = ${screen.width} x ${screen.height}, scale = ${scale}`);
+    console.log(`Resizing screen.dimensions = ${screen.width} x ${screen.height}, scale = ${scale}`);
   }
 
   update() {
-    // Also other stuff -> see
     this.resizeTo();
     this.backgroundPreparer.update();
     // this.playfieldPreparer.prepare();
-    // this.foregroundHUDPreparer.prepare();
+    this.foregroundHUDPreparer.prepare();
   }
 
   destroy(): void {

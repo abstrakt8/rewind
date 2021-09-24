@@ -19,7 +19,7 @@ export class PixiRendererManager {
   resizeRendererToCanvasSize() {
     const canvas = this.canvas;
     if (!canvas || !this.renderer) {
-      return;
+      return false;
     }
     // look up the size the canvas is being displayed
     const width = canvas.clientWidth;
@@ -31,7 +31,9 @@ export class PixiRendererManager {
       canvas.height = height;
 
       this.renderer.resize(canvas.width, canvas.height);
+      return true;
     }
+    return false;
   }
 
   destroy() {

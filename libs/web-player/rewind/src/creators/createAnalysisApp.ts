@@ -15,6 +15,7 @@ import { AnalysisScene } from "../apps/analysis/scenes/AnalysisScene";
 import { BeatmapBackground } from "../renderers/components/background/BeatmapBackground";
 import { TextureManager } from "../textures/TextureManager";
 import { AnalysisStagePreparer } from "../renderers/components/stage/AnalysisStagePreparer";
+import { ForegroundHUDPreparer } from "../renderers/components/hud/ForegroundHUDPreparer";
 
 /**
  * This is a Rewind specific creation of the "Analysis" app.
@@ -43,6 +44,7 @@ export function createAnalysisApp(rewindTheaterContainer: Container) {
   container.bind(AnalysisScene).toSelf().inSingletonScope();
   container.bind(BeatmapBackground).toSelf().inSingletonScope();
   container.bind(AnalysisStagePreparer).toSelf().inSingletonScope();
+  container.bind(ForegroundHUDPreparer).toSelf();
 
   // AnalysisScene
 
