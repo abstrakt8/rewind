@@ -7,7 +7,7 @@ import { TYPES } from "./types/types";
 import { createRewindAnalysisApp } from "./creators/createRewindAnalysisApp";
 import { SkinId } from "./model/SkinId";
 import { SkinManager } from "./core/skins/SkinManager";
-import { AudioSettingsService } from "./settings/AudioSettingsService";
+import { AudioSettingsService } from "./services/AudioSettingsService";
 import { STAGE_TYPES } from "./types/STAGE_TYPES";
 
 /**
