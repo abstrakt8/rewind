@@ -131,6 +131,9 @@ export class AnalysisApp {
     const initialSpeed = determineDefaultPlaybackSpeed(replay.mods);
 
     this.modSettingsManager.setHidden(modHidden);
+    // Not supported yet
+    this.modSettingsManager.setFlashlight(false);
+
     this.gameClock.setSpeed(initialSpeed);
     this.gameClock.seekTo(0);
     this.beatmapManager.setBeatmap(beatmap);

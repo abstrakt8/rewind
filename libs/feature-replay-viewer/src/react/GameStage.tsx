@@ -19,6 +19,7 @@ import { HelpModalDialog } from "./HelpModal/HelpModal";
 import { handleButtonFocus } from "./HandleButtonFocus";
 import { useAnalysisApp, useTheater } from "@rewind/feature-replay-viewer";
 import { DEFAULT_SKIN_ID } from "../../../web-player/rewind/src/model/SkinId";
+import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";
 
 /* eslint-disable-next-line */
 export interface FeatureReplayViewerProps {
@@ -170,9 +171,10 @@ export const GameStage = () => {
             {/*    className={`filter ${modHidden ? "grayscale-0" : "grayscale"} `}*/}
             {/*  />*/}
             {/*</button>*/}
-            {/*<AudioSettingsButton />*/}
+            <AudioSettingsButton />
+
             <button onFocus={handleButtonFocus} onClick={() => analysisApp.takeScreenshot()}>
-              <RiScreenshot2Fill />
+              <RiScreenshot2Fill className={"w-4 h-4"} />
             </button>
             <button onFocus={handleButtonFocus} className={"transition-colors hover:text-gray-400 text-lg bg-500"}>
               {speed}x

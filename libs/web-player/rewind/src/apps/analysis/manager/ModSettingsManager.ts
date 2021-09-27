@@ -11,4 +11,8 @@ export class ModSettingsManager {
   setHidden(hidden: boolean) {
     this.modSettings.hidden = hidden;
   }
+
+  setFlashlight(flag: boolean) {
+    this.modSettings.flashlight = flag;
+  }
 }

@@ -13,6 +13,7 @@ import type { ISkin } from "../../../model/Skin";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
 import { SkinManager } from "../../../core/skins/SkinManager";
+import { ModSettingsManager } from "../../../apps/analysis/manager/ModSettingsManager";
 
 // TODO: Maybe it's even dynamic
 const HIT_CIRCLE_FADE_OUT_DURATION = 300;
@@ -22,7 +23,8 @@ export class HitCirclePreparer {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
-    private readonly stageViewService: StageViewSettingsService,
+    private readonly modSettingsManager: ModSettingsManager,
+    // private readonly stageViewService: StageViewSettingsService,
     private readonly stageSkinService: SkinManager, // @inject(STAGE_TYPES.SKIN) private readonly skin: ISkin,
   ) {}
 
@@ -37,10 +39,10 @@ export class HitCirclePreparer {
 
   prepare(hitCircle: HitCircle) {
     const time = this.gameClock.timeElapsedInMs;
-    const view = this.stageViewService.getView();
+    const modSettings = this.modSettingsManager.modSettings;
     const skin = this.stageSkinService.getSkin();
 
-    const { modHidden } = view;
+    const modHidden = modSettings.hidden;
 
     const isVisible = hitCircle.spawnTime <= time && time <= hitCircle.hitTime + HIT_CIRCLE_FADE_OUT_DURATION;
 

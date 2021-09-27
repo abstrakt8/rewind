@@ -1,7 +1,9 @@
 import { inject, injectable, postConstruct } from "inversify";
 import { EventEmitter, GameClockEvents } from "../../events";
 import { STAGE_TYPES } from "../../types/STAGE_TYPES";
-import { AUDIO_SETTINGS_CHANGED, AudioSettings, AudioSettingsService } from "../../settings/AudioSettingsService";
+import { AudioSettingsService } from "../../settings/AudioSettingsService";
+import { AudioSettings } from "../../settings/AudioSettings";
+import { debounceTime } from "rxjs/operators";
 
 // HTML5 Audio supports time stretching without pitch changing (otherwise sounds like night core)
 // Chromium's implementation of <audio> is the best.
@@ -63,7 +65,8 @@ export class AudioEngine {
     eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, () => this.pause());
     eventEmitter.on(GameClockEvents.GAME_CLOCK_STARTED, () => this.start());
     eventEmitter.on(GameClockEvents.GAME_CLOCK_SPEED_CHANGED, (speed) => this.changePlaybackRate(speed));
-    eventEmitter.on(AUDIO_SETTINGS_CHANGED, (settings) => this.handleAudioSettingsChanged(settings));
+
+    this.audioSettingService.settings$.subscribe((value) => this.handleAudioSettingsChanged(value));
   }
 
   start() {
