@@ -1,4 +1,4 @@
-import { Container } from "inversify";
+import { Container, injectable } from "inversify";
 import { BlueprintService } from "./core/api/BlueprintService";
 import { ReplayService } from "./core/api/ReplayService";
 import { SkinLoader } from "./core/api/SkinLoader";
@@ -11,29 +11,19 @@ import { AudioSettingsService } from "./services/AudioSettingsService";
 import { STAGE_TYPES } from "./types/STAGE_TYPES";
 
 /**
- * Creates the Rewind app that serves multiple tools.
+ * Creates the Rewind app that serves multiple useful osu! tools.
  *
- * Common settings such as preferred skin are set here.
+ * Common settings are set here so that they can be shared with other tools.
+ *
+ * Example: Preferred skin can be set at only one place and is shared among all tools.
  */
-
+@injectable()
 export class RewindTheater {
-  private readonly container: Container;
-
-  constructor(private apiUrl: string) {
-    this.container = new Container({ defaultScope: "Singleton" });
-    this.container.bind(TYPES.API_URL).toConstantValue(apiUrl);
-    this.container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
-    this.container.bind(BlueprintService).toSelf();
-    this.container.bind(ReplayService).toSelf();
-    this.container.bind(SkinLoader).toSelf();
-    this.container.bind(SkinManager).toSelf();
-    this.container.bind(AudioService).toSelf();
-    this.container.bind(AudioSettingsService).toSelf();
-  }
-
-  createAnalysisApp() {
-    return createRewindAnalysisApp(this.container);
-  }
+  constructor(
+    private readonly skinLoader: SkinLoader,
+    private readonly skinManager: SkinManager,
+    public readonly audioSettingsService: AudioSettingsService,
+  ) {}
 
   // @PostConstruct
   initialize() {
@@ -42,20 +32,11 @@ export class RewindTheater {
     // Load other textures
   }
 
-  async loadPreferredSkin() {
-    // From
-  }
-
-  get audioSettingsService() {
-    return this.container.get(AudioSettingsService);
-  }
+  // TODO: Expose the settings services (maybe as facades)
 
   async changeSkin(skinId: SkinId) {
-    const skinLoader = this.container.get(SkinLoader);
-    const skin = await skinLoader.loadSkin(skinId);
-
-    const skinManager = this.container.get(SkinManager);
-    skinManager.setSkin(skin);
+    const skin = await this.skinLoader.loadSkin(skinId);
+    this.skinManager.setSkin(skin);
   }
 }
 
@@ -64,5 +45,19 @@ interface Settings {
 }
 
 export function createRewindTheater({ apiUrl }: Settings) {
-  return new RewindTheater(apiUrl);
+  const container = new Container({ defaultScope: "Singleton" });
+  container.bind(TYPES.API_URL).toConstantValue(apiUrl);
+  container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
+  container.bind(BlueprintService).toSelf();
+  container.bind(ReplayService).toSelf();
+  container.bind(SkinLoader).toSelf();
+  container.bind(SkinManager).toSelf();
+  container.bind(AudioService).toSelf();
+  container.bind(AudioSettingsService).toSelf();
+  container.bind(RewindTheater).toSelf();
+
+  return {
+    theater: container.get(RewindTheater),
+    analyzer: createRewindAnalysisApp(container),
+  };
 }

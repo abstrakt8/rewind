@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import Playbar, { PlaybarEvent } from "./Playbar";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 // import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
 import { GameCanvas } from "./GameCanvas";
 import { useStageShortcuts } from "./hooks/useStageShortcuts";
 import { useGameClock } from "./components/StageProvider/StageClockProvider";
-import { Sidebar } from "./Sidebar";
 // import { useEnergySaver } from "./hooks/useEnergySaver";
 // import { useStageContext } from "./components/StageProvider/StageProvider";
 import { PlaybarColors } from "./PlaybarColors";

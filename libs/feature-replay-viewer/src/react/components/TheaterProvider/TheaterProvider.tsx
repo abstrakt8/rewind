@@ -1,10 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { AnalysisApp, createRewindTheater } from "@rewind/web-player/rewind";
 
-interface ITheaterContext {
-  theater: ReturnType<typeof createRewindTheater>;
-  analysis: AnalysisApp;
-}
+type ITheaterContext = ReturnType<typeof createRewindTheater>;
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const TheaterContext = createContext<ITheaterContext>(null!);
@@ -15,9 +12,8 @@ interface TheaterProviderProps {
 }
 
 export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
-  const [theater] = useState(() => createRewindTheater({ apiUrl }));
-  const [analysis] = useState(() => theater.createAnalysisApp());
-  return <TheaterContext.Provider value={{ theater, analysis }}>{children}</TheaterContext.Provider>;
+  const [rewind] = useState(() => createRewindTheater({ apiUrl }));
+  return <TheaterContext.Provider value={rewind}>{children}</TheaterContext.Provider>;
 }
 
 export function useTheaterContext() {
@@ -34,6 +30,6 @@ export function useTheater() {
 }
 
 export function useAnalysisApp() {
-  const { analysis } = useTheaterContext();
-  return analysis;
+  const { analyzer } = useTheaterContext();
+  return analyzer;
 }
