@@ -46,6 +46,10 @@ export class RewindTheater {
     // From
   }
 
+  get audioSettingsService() {
+    return this.container.get(AudioSettingsService);
+  }
+
   async changeSkin(skinId: SkinId) {
     const skinLoader = this.container.get(SkinLoader);
     const skin = await skinLoader.loadSkin(skinId);

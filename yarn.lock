@@ -16907,6 +16907,14 @@ rxjs-for-await@0.0.2:
   resolved "https://registry.yarnpkg.com/rxjs-for-await/-/rxjs-for-await-0.0.2.tgz#26598a1d6167147cc192172970e7eed4e620384b"
   integrity sha512-IJ8R/ZCFMHOcDIqoABs82jal00VrZx8Xkgfe7TOKoaRPAW5nH/VFlG23bXpeGdrmtqI9UobFPgUKgCuFc7Lncw==
 
+rxjs-hooks@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/rxjs-hooks/-/rxjs-hooks-0.7.0.tgz#01c00257afa3d602b28025f943ba613e9fa31e57"
+  integrity sha512-R7uSuiYkn5p0ig9dgdpiCyrRwoltTW70wtCNSalwxb+OWVuI1wkg3sYF/tLOtSXUm1n4eGwKkJgL65ICS3n/5A==
+  dependencies:
+    tslib "^2.1.0"
+    use-constant "^1.0.0"
+
 rxjs@6.6.3:
   version "6.6.3"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.3.tgz#8ca84635c4daa900c0d3967a6ee7ac60271ee552"
@@ -16921,7 +16929,7 @@ rxjs@6.6.7, rxjs@^6.4.0, rxjs@^6.5.4, rxjs@^6.6.7:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@~7.3.0:
+rxjs@^7.3.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.3.0.tgz#39fe4f3461dc1e50be1475b2b85a0a88c1e938c6"
   integrity sha512-p2yuGIg9S1epc3vrjKf6iVb3RCaAYjYskkO+jHIaV0IjOPlJop4UnodOoFb2xeNwlguqLYvGw1b1McillYb5Gw==
@@ -19192,6 +19200,11 @@ use-composed-ref@^1.0.0:
   integrity sha512-my1lNHGWsSDAhhVAT4MKs6IjBUtG6ZG11uUqexPH9PptiIZDQOzaF4f5tEbJ2+7qvNbtXNBbU3SfmN+fXlWDhg==
   dependencies:
     ts-essentials "^2.0.3"
+
+use-constant@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/use-constant/-/use-constant-1.1.0.tgz#76d36a0edf16d4cc8565361f522b55da5f8f3f22"
+  integrity sha512-yrflEfv7Xv/W8WlYV6nwRH01K+2BpR4cWxuzY03yPRjYZuHixhGlvnJN5O2bRYrXGpJ4zy8QjFABGIQ2QXeBOA==
 
 use-immer@^0.6.0:
   version "0.6.0"

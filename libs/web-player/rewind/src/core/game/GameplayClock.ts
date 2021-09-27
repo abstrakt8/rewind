@@ -9,7 +9,7 @@ const getNowInMs = () => performance.now();
 export class GameplayClock {
   public isPlaying = false;
   public speed = 1.0;
-  public durationInMs = 447 * 1000;
+  public durationInMs = 0;
   public timeElapsedInMs = 0;
   private lastUpdateTimeInMs = 0;
 
@@ -42,6 +42,8 @@ export class GameplayClock {
 
   start() {
     if (this.isPlaying) return;
+
+    // TODO: Maybe
     // Resets it back to 0 in case the user wants to start the clock again when it already ended.
     if (this.timeElapsedInMs >= this.durationInMs) {
       // Will also emit an event
