@@ -1,5 +1,5 @@
 import { injectable, postConstruct } from "inversify";
-import { AudioSettings } from "./AudioSettings";
+import { AudioSettings } from "../settings/AudioSettings";
 import { BehaviorSubject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import produce from "immer";
@@ -20,8 +20,6 @@ const DEFAULT_SETTINGS: AudioSettings = {
     effects: 0.25,
   },
 };
-
-export const AUDIO_SETTINGS_CHANGED = "AudioSettingsChanged";
 
 function retrieveLocalStorageWithFallback<T>(key: string, fallback: T) {
   const itemString = storage.getItem(key);
@@ -46,7 +44,7 @@ export class AudioSettingsService {
     );
 
     // We debounce so that we don't persist too often to the LocalStorage
-    this.settings$.pipe(debounceTime(1000)).subscribe((value) => {
+    this.settings$.pipe(debounceTime(500)).subscribe((value) => {
       storage.setItem(AUDIO_SETTINGS_KEY, JSON.stringify(value));
     });
   }
