@@ -1,6 +1,6 @@
 import { UserScene } from "../../../core/scenes/IScene";
 import { injectable } from "inversify";
-import { AnalysisStagePreparer } from "../../../renderers/components/stage/AnalysisStagePreparer";
+import { AnalysisStage } from "../../../renderers/components/stage/AnalysisStage";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 
@@ -10,25 +10,21 @@ export class AnalysisScene implements UserScene {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
-    private readonly analysisStagePreparer: AnalysisStagePreparer,
+    private readonly analysisStage: AnalysisStage,
   ) {}
-
-  get stage() {
-    return this.analysisStagePreparer.stage;
-  }
 
   update() {
     this.gameClock.tick();
     this.gameSimulator.simulate(this.gameClock.timeElapsedInMs);
-    this.analysisStagePreparer.update();
+    this.analysisStage.update();
   }
 
-  create(): void {
-    // Do nothing
+  get stage() {
+    return this.analysisStage.stage;
   }
 
   destroy(): void {
-    // Do nothing
+    this.analysisStage.destroy();
   }
 
   init(data: unknown): void {
@@ -37,5 +33,9 @@ export class AnalysisScene implements UserScene {
 
   preload(): Promise<void> {
     return Promise.resolve(undefined);
+  }
+
+  create(): void {
+    // Do nothing
   }
 }

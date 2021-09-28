@@ -13,7 +13,7 @@ const ratio = STAGE_WIDTH / STAGE_HEIGHT;
 // This is a custom analysis stage that composes all the things it needs
 // Other stages for example do not want a foreground HUD and should therefore compose differently.
 @injectable()
-export class AnalysisStagePreparer {
+export class AnalysisStage {
   private widthInPx = 0;
   private heightInPx = 0;
 
@@ -21,11 +21,11 @@ export class AnalysisStagePreparer {
 
   constructor(
     private rendererManager: PixiRendererManager,
-    private backgroundPreparer: BeatmapBackground,
+    private beatmapBackground: BeatmapBackground,
     private playfieldPreparer: PlayfieldPreparer,
     private foregroundHUDPreparer: ForegroundHUDPreparer,
   ) {
-    const background = backgroundPreparer.getSprite();
+    const background = beatmapBackground.sprite;
     const playfield = this.playfieldPreparer.getContainer();
     const foregroundHUD = this.foregroundHUDPreparer.container;
 
@@ -75,7 +75,6 @@ export class AnalysisStagePreparer {
 
   update() {
     this.resizeTo();
-    this.backgroundPreparer.update();
     this.playfieldPreparer.update();
     this.foregroundHUDPreparer.update();
   }

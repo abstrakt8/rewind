@@ -1,42 +1,41 @@
-import { Sprite } from "pixi.js";
+import { Sprite, Texture } from "pixi.js";
 import { BlurFilter } from "@pixi/filter-blur";
 
 import { injectable, postConstruct } from "inversify";
-import { TextureManager } from "../../../textures/TextureManager";
-import { STAGE_WIDTH } from "../../constants";
 import { BeatmapBackgroundSettingsStore } from "../../../services/BeatmapBackgroundSettingsStore";
 import { BeatmapBackgroundSettings } from "../../../settings/BeatmapBackgroundSettings";
+import { STAGE_WIDTH } from "../../constants";
 
 const MAX_BLUR_STRENGTH = 15;
 
-// <BeatmapBackground/>
+/**
+ * Can be thought of a smart component while the `background: Sprite` is the dumb component.
+ * Is connected to a background settings store
+ */
 @injectable()
 export class BeatmapBackground {
-  private readonly background: Sprite;
+  public sprite: Sprite;
 
-  constructor(private textureManager: TextureManager, private readonly settingsStore: BeatmapBackgroundSettingsStore) {
-    this.background = new Sprite();
+  constructor(private readonly settingsStore: BeatmapBackgroundSettingsStore) {
+    this.sprite = new Sprite(); // No pooling needed
   }
 
   @postConstruct()
-  initialize() {
-    this.settingsStore.settings$.subscribe(this.handleSettingsChange.bind(this));
+  init() {
+    this.settingsStore.settings$.subscribe((s) => this.onSettingsChange(s));
+    this.settingsStore.texture$.subscribe((t) => this.onTextureChange(t));
   }
 
-  private handleSettingsChange(beatmapBackgroundSettings: BeatmapBackgroundSettings) {
+  private onSettingsChange(beatmapBackgroundSettings: BeatmapBackgroundSettings) {
     const { enabled, dim, blur } = beatmapBackgroundSettings;
-    this.background.alpha = 1.0 - dim;
-    this.background.filters = [new BlurFilter(blur * MAX_BLUR_STRENGTH)];
-    this.background.renderable = enabled;
+    this.sprite.alpha = 1.0 - dim;
+    this.sprite.filters = [new BlurFilter(blur * MAX_BLUR_STRENGTH)];
+    this.sprite.renderable = enabled;
   }
 
-  getSprite() {
-    return this.background;
-  }
-
-  update() {
-    this.background.texture = this.textureManager.getTexture("BACKGROUND");
-    const scaling = STAGE_WIDTH / this.background.texture.width;
-    this.background.scale.set(scaling, scaling);
+  private onTextureChange(texture: Texture) {
+    this.sprite.texture = texture;
+    const scaling = STAGE_WIDTH / texture.width;
+    this.sprite.scale.set(scaling, scaling);
   }
 }
