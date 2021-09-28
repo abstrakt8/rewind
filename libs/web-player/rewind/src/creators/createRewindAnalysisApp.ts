@@ -14,7 +14,7 @@ import { GameLoop } from "../core/game/GameLoop";
 import { AnalysisScene } from "../apps/analysis/scenes/AnalysisScene";
 import { BeatmapBackground } from "../renderers/components/background/BeatmapBackground";
 import { TextureManager } from "../textures/TextureManager";
-import { AnalysisStagePreparer } from "../renderers/components/stage/AnalysisStagePreparer";
+import { AnalysisStage } from "../renderers/components/stage/AnalysisStage";
 import { ForegroundHUDPreparer } from "../renderers/components/hud/ForegroundHUDPreparer";
 import { PlayfieldPreparer } from "../renderers/components/playfield/PlayfieldPreparer";
 import { PlayfieldBorderPreparer } from "../renderers/components/playfield/PlayfieldBorderPreparer";
@@ -67,7 +67,7 @@ export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
   container.bind(SliderTextureManager).toSelf();
 
   container.bind(StageViewSettingsService).toSelf();
-  container.bind(AnalysisStagePreparer).toSelf();
+  container.bind(AnalysisStage).toSelf();
   {
     container.bind(BeatmapBackground).toSelf();
     container.bind(ForegroundHUDPreparer).toSelf();

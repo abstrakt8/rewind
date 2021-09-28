@@ -19,13 +19,11 @@ export class TextureManager {
     return texture ?? Texture.EMPTY;
   }
 
-  async loadTexture(textureId: RewindTextureId, url: string) {
+  async loadTexture(url: string) {
     try {
-      const texture = await Texture.fromURL(url);
-      this.dict.set(textureId, texture);
+      return await Texture.fromURL(url);
     } catch (err) {
-      console.error(`Could not load texture ${textureId}, replacing with empty texture`);
-      this.dict.set(textureId, Texture.EMPTY);
+      return Texture.EMPTY;
     }
   }
 }

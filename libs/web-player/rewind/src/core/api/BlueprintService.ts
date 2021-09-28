@@ -2,6 +2,7 @@ import { parseBlueprint } from "@rewind/osu/core";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../types/types";
 import { TextureManager } from "../../textures/TextureManager";
+import { BeatmapBackgroundSettingsStore } from "../../services/BeatmapBackgroundSettingsStore";
 
 interface BlueprintResources {
   blueprintRaw: string;
@@ -12,7 +13,11 @@ interface BlueprintResources {
 
 @injectable()
 export class BlueprintService {
-  constructor(@inject(TYPES.API_URL) private apiUrl: string, private readonly textureManager: TextureManager) {}
+  constructor(
+    @inject(TYPES.API_URL) private apiUrl: string,
+    private readonly textureManager: TextureManager,
+    private readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
+  ) {}
 
   async retrieveBlueprint(blueprintId: string) {
     const url = `${this.apiUrl}/api/blueprints/${encodeURIComponent(blueprintId)}/osu`;
@@ -30,6 +35,6 @@ export class BlueprintService {
 
   async retrieveBlueprintResources(blueprintId: string) {
     const url = `${this.apiUrl}/api/blueprints/${encodeURIComponent(blueprintId)}/bg`;
-    return this.textureManager.loadTexture("BACKGROUND", url);
+    this.beatmapBackgroundSettingsStore.texture$.next(await this.textureManager.loadTexture(url));
   }
 }
