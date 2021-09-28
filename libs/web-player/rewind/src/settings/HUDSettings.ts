@@ -1,9 +1,11 @@
-interface HUDSettings {
+export interface PlayfieldBorderSettings {
+  thickness: number;
+  enabled: boolean;
+  // style: "RECTANGLE" | "CORNERS" | ...
+}
+
+export interface HUDSettings {
   backgroundDim: number;
-  playfieldBorder: {
-    thickness: number;
-    enabled: boolean;
-  };
+  playfieldBorder: PlayfieldBorderSettings;
   showFps: boolean;
-  // playfieldBorder
 }

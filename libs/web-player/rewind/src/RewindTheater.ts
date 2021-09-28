@@ -9,6 +9,7 @@ import { SkinId } from "./model/SkinId";
 import { SkinManager } from "./core/skins/SkinManager";
 import { AudioSettingsService } from "./services/AudioSettingsService";
 import { STAGE_TYPES } from "./types/STAGE_TYPES";
+import { BeatmapBackgroundSettingsStore } from "./services/BeatmapBackgroundSettingsStore";
 
 /**
  * Creates the Rewind app that serves multiple useful osu! tools.
@@ -53,7 +54,11 @@ export function createRewindTheater({ apiUrl }: Settings) {
   container.bind(SkinLoader).toSelf();
   container.bind(SkinManager).toSelf();
   container.bind(AudioService).toSelf();
+  // General settings stores
   container.bind(AudioSettingsService).toSelf();
+  container.bind(BeatmapBackgroundSettingsStore).toSelf();
+
+  // Theater facade
   container.bind(RewindTheater).toSelf();
 
   return {

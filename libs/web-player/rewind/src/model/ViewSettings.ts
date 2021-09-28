@@ -1,18 +1,9 @@
-export interface CursorSetting {
-  scale: number;
-  enabled: boolean;
-  scaleWithCS: boolean;
-}
+import { CursorSetting } from "../core/settings/CursorSetting";
+import { AnalysisCursorSetting } from "../apps/analysis/settings/AnalysisCursorSetting";
 
 export interface OsuCursorSetting extends CursorSetting {
   showTrail: boolean;
   // Maybe there will be a smooth cursor trail
-}
-
-export interface AnalysisCursorSetting extends CursorSetting {
-  colorKey1: number;
-  colorKey2: number;
-  colorBothKeys: number;
 }
 
 // Can be serialized and maybe stored as default preferences

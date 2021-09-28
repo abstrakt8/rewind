@@ -39,10 +39,12 @@ export class AudioSettingsService {
 
   @postConstruct()
   setup() {
+    // TODO: Settings read should be injected
     this.settings$ = new BehaviorSubject<AudioSettings>(
       retrieveLocalStorageWithFallback(AUDIO_SETTINGS_KEY, DEFAULT_SETTINGS),
     );
 
+    // TODO: Move this up
     // We debounce so that we don't persist too often to the LocalStorage
     this.settings$.pipe(debounceTime(500)).subscribe((value) => {
       storage.setItem(AUDIO_SETTINGS_KEY, JSON.stringify(value));

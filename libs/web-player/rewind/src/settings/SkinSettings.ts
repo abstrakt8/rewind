@@ -6,4 +6,7 @@
 // Cursor scale with CS
 //  Other stuff
 
-class SkinSettingService {}
+export interface SkinSettings {
+  // defaultSkinId: ?
+  preferredSkinId: string;
+}
