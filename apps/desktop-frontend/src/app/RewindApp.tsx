@@ -7,14 +7,14 @@ import { SetupScreen } from "./setup/SetupScreen";
 import { useEffect } from "react";
 import { HomeScreen } from "./home/HomeScreen";
 import { Box, Divider, Stack } from "@mui/material";
+import { Analyzer } from "./analyzer/Analyzer";
 
 function ConnectedTheater() {
   const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
   useEffect(() => {
     console.log(`Theater is now constructing a stage with blueprintId=${chosenBlueprintId} replayId=${chosenReplayId}`);
   }, [chosenReplayId, chosenBlueprintId]);
-  return <div>TODO: D</div>;
-  // return <Theater chosenBlueprintId={chosenBlueprintId} chosenReplayId={chosenReplayId} />;
+  return <Analyzer />;
 }
 
 function ConnectedSplashScreen() {
@@ -39,7 +39,7 @@ function NormalView() {
       <Box sx={{ flexGrow: 1, height: "100%" }}>
         <Switch>
           <Route exact path={"/home"} render={() => <HomeScreen />} />
-          <Route exact path={"/theater"} render={() => <ConnectedTheater />} />
+          <Route exact path={"/analyzer"} render={() => <ConnectedTheater />} />
         </Switch>
       </Box>
     </Stack>

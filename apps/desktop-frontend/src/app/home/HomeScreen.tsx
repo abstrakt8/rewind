@@ -1,6 +1,6 @@
 import { RewindLogo } from "../RewindLogo";
 import { FaDiscord, FaTwitter, FaYoutube } from "react-icons/fa";
-import { discordUrl, twitterUrl, youtubeUrl } from "../../react/Constants";
+import { discordUrl, twitterUrl, youtubeUrl } from "../../constants";
 import { Stack } from "@mui/material";
 
 function Socials() {
