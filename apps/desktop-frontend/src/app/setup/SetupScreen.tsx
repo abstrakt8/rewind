@@ -1,9 +1,8 @@
 // Asks for the user
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { FolderOpenIcon } from "@heroicons/react/solid";
 import { useUpdateOsuDirectoryMutation } from "../backend/api";
-import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack, TextField } from "@mui/material";
+import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "@mui/material";
 import { RewindLogo } from "../RewindLogo";
 import { Loop } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
@@ -108,28 +107,5 @@ export function SetupScreen() {
         </Stack>
       </Paper>
     </Box>
-    // <div className={"h-screen bg-gray-800 flex flex-item items-center justify-center text-gray-200"}>
-    //   <div className={"bg-gray-700 w-auto py-4 px-6 rounded flex flex-col gap-8"}>
-    //     <RewindLogo.tsx />
-    //     {/*<DirectorySelection*/}
-    //     {/*  placeHolder={"Select your osu! directory..."}*/}
-    //     {/*  value={directoryPath}*/}
-    //     {/*  onChange={handleOnDirectoryChange}*/}
-    //     {/*  pulseOnEmpty*/}
-    //     {/*/>*/}
-    //     {showErrorMessage && <div className={"text-red-500"}>Does not look like a valid osu! directory.</div>}
-    //     <div className={"flex flex-row-reverse"}>
-    //       <button
-    //         className={`${
-    //           saveEnabled ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 cursor-default text-gray-500"
-    //         } py-2 px-4 rounded select-none`}
-    //         disabled={!saveEnabled}
-    //         onClick={handleConfirmClick}
-    //       >
-    //         <span>Save & Restart</span>
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
   );
 }
