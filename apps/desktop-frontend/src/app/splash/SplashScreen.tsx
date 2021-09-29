@@ -1,5 +1,6 @@
 import { BackendState } from "../backend/slice";
 import { HashLoader } from "react-spinners";
+import { Stack } from "@mui/material";
 
 interface Props {
   status: BackendState;
@@ -22,9 +23,16 @@ export function SplashScreen({ status }: Props) {
   const showSpinner = status === "LOADING" || status === "NOT_STARTED" || status === "SETUP_MISSING";
   const loadingText = text(status);
   return (
-    <div className={"h-screen bg-gray-800 flex items-center justify-center flex-col text-gray-200 gap-4"}>
+    <Stack
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <HashLoader color={"white"} loading={showSpinner} />
       <div>{loadingText}</div>
-    </div>
+    </Stack>
   );
 }

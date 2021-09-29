@@ -8,6 +8,8 @@ import { ConnectedRouter, push } from "connected-react-router";
 import { TheaterProvider } from "@rewind/feature-replay-viewer";
 import { RewindApp } from "./app/RewindApp";
 import { FrontendPreloadAPI } from "@rewind/electron/api";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { RewindTheme } from "./app/muiTheme";
 
 declare global {
   interface Window {
@@ -19,10 +21,12 @@ ReactDOM.render(
   <StrictMode>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        {/* place ConnectedRouter under Provider */}
-        <TheaterProvider apiUrl={"http://localhost:7271"}>
-          <RewindApp />
-        </TheaterProvider>
+        <ThemeProvider theme={RewindTheme}>
+          <CssBaseline />
+          <TheaterProvider apiUrl={"http://localhost:7271"}>
+            <RewindApp />
+          </TheaterProvider>
+        </ThemeProvider>
       </ConnectedRouter>
     </Provider>
   </StrictMode>,
