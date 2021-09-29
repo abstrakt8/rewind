@@ -1,9 +1,30 @@
 import { RewindLogo } from "./RewindLogo";
-import { Box, Divider, List, ListItem, ListItemButton, Stack, Tooltip } from "@mui/material";
+import { Box, Divider, IconButton, Stack, Tooltip } from "@mui/material";
 import { Home, Settings } from "@mui/icons-material";
 import { FaMicroscope } from "react-icons/fa";
+import React from "react";
+import { push } from "connected-react-router";
+import { useAppDispatch, useAppSelector } from "./hooks";
+
+const tooltipPosition = {
+  anchorOrigin: {
+    vertical: "center",
+    horizontal: "right",
+  },
+  transformOrigin: {
+    vertical: "center",
+    horizontal: "left",
+  },
+};
 
 export function LeftMenuSidebar() {
+  // const LinkBehavior = React.forwardRef((props, ref) => <Link ref={ref} to="/" {...props} role={undefined} />);
+  const dispatch = useAppDispatch();
+  const pathname = useAppSelector((state) => state.router.location.pathname);
+
+  const handleLinkClick = (to: string) => () => dispatch(push(to));
+  const buttonColor = (name: string) => (name === pathname ? "primary" : "default");
+
   return (
     <Stack
       sx={{
@@ -16,35 +37,31 @@ export function LeftMenuSidebar() {
     >
       <RewindLogo />
       <Divider orientation={"horizontal"} sx={{ borderWidth: 1, width: "80%" }} />
-      <List>
-        <ListItem>
-          <ListItemButton>
-            <Home />
-          </ListItemButton>
-        </ListItem>
-        <ListItem>
-          <Tooltip title={"Analyzer"}>
-            <ListItemButton
-              // These are not centered
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <FaMicroscope />
-            </ListItemButton>
-          </Tooltip>
-        </ListItem>
-      </List>
+      <Tooltip title={"Overview"} placement={"right"}>
+        <IconButton color={buttonColor("/home")} onClick={handleLinkClick("/home")}>
+          <Home />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title={"Analyzer"} placement={"right"}>
+        <IconButton
+          // These are not centered
+          onClick={handleLinkClick("/analyzer")}
+          color={buttonColor("/analyzer")}
+          // sx={{
+          //   display: "flex",
+          //   justifyContent: "center",
+          // }}
+        >
+          <FaMicroscope height={"0.75em"} />
+        </IconButton>
+      </Tooltip>
       {/*Nothing*/}
       <Box flexGrow={1} />
-      <List>
-        <ListItem>
-          <ListItemButton>
-            <Settings />
-          </ListItemButton>
-        </ListItem>
-      </List>
+      <Tooltip title={"Settings"} placement={"right"}>
+        <IconButton onClick={() => console.log("Should open settings modal")}>
+          <Settings />
+        </IconButton>
+      </Tooltip>
     </Stack>
   );
 }

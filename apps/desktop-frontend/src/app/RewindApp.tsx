@@ -37,11 +37,10 @@ function NormalView() {
       <LeftMenuSidebar />
       <Divider orientation={"vertical"} />
       <Box sx={{ flexGrow: 1, height: "100%" }}>
-        hello
-        {/*<Switch>*/}
-        {/*  <Route exact path={"/home"} render={() => <HomeScreen />} />*/}
-        {/*  <Route exact path={"/theater"} render={() => <ConnectedTheater />} />*/}
-        {/*</Switch>*/}
+        <Switch>
+          <Route exact path={"/home"} render={() => <HomeScreen />} />
+          <Route exact path={"/theater"} render={() => <ConnectedTheater />} />
+        </Switch>
       </Box>
     </Stack>
   );

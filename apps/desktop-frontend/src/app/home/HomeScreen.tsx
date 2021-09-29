@@ -1,11 +1,11 @@
-import "./HomeScreen.css";
 import { RewindLogo } from "../RewindLogo";
 import { FaDiscord, FaTwitter, FaYoutube } from "react-icons/fa";
 import { discordUrl, twitterUrl, youtubeUrl } from "../../react/Constants";
+import { Stack } from "@mui/material";
 
 function Socials() {
   return (
-    <div className={"flex gap-4"}>
+    <Stack direction={"row"} gap={2}>
       <a href={discordUrl} target={"_blank"}>
         <FaDiscord className={"socials"} />
       </a>
@@ -15,15 +15,15 @@ function Socials() {
       <a href={youtubeUrl} target={"_blank"}>
         <FaYoutube className={"socials"} />
       </a>
-    </div>
+    </Stack>
   );
 }
 
 export function HomeScreen() {
   return (
-    <div className={"flex flex-col items-center gap-8 justify-center text-white m-auto text-gray-200"}>
+    <Stack gap={2} sx={{ justifyContent: "center", alignItems: "center", margin: "auto", height: "100%" }}>
       <RewindLogo />
       <Socials />
-    </div>
+    </Stack>
   );
 }
