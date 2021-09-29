@@ -30,7 +30,9 @@ export function SplashScreen({ status }: Props) {
         alignItems: "center",
         justifyContent: "center",
       }}
+      gap={2}
     >
+      {/*Hardcoding white not good*/}
       <HashLoader color={"white"} loading={showSpinner} />
       <div>{loadingText}</div>
     </Stack>
