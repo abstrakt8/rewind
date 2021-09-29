@@ -1,5 +1,8 @@
-import { RewindSidebarLogo } from "./RewindSidebarLogo";
+import { RewindLogo, RewindSidebarLogo } from "./RewindSidebarLogo";
 import { Link } from "react-router-dom";
+import { Box, Divider, IconButton, List, ListItem, ListItemButton, Stack, Tooltip } from "@mui/material";
+import { Home, Settings } from "@mui/icons-material";
+import { FaMicroscope } from "react-icons/all";
 
 const VideoCameraIcon = () => (
   <svg
@@ -41,32 +44,78 @@ const SettingsIcon = () => (
   </svg>
 );
 
+// export function LeftMenuSidebar() {
+//   return (
+//     <Box className={"flex-none w-20 p-2 border-gray-500 border-r"}>
+//       <ul className={"flex flex-col items-center text-gray-200 gap-4 h-full"}>
+//         <li>
+//           <RewindSidebarLogo />
+//         </li>
+//         <li>
+//           <div className={"border-b-2 border-gray-500 w-6"} />
+//         </li>
+//         <li className={""}>
+//           <Link to={"/home"}>
+//             <HomeIcon />
+//           </Link>
+//         </li>
+//         <li className={""}>
+//           <Link to={"/theater"}>
+//             <FilmIcon />
+//           </Link>
+//         </li>
+//         {/* Gap */}
+//         <li className={"flex-1"} />
+//         {/*<li className={""}>*/}
+//         {/*  <SettingsIcon />*/}
+//         {/*</li>*/}
+//       </ul>
+//     </Box>
+//   );
+// }
+//
 export function LeftMenuSidebar() {
   return (
-    <nav className={"flex-none w-20 p-2 border-gray-500 border-r"}>
-      <ul className={"flex flex-col items-center text-gray-200 gap-4 h-full"}>
-        <li>
-          <RewindSidebarLogo />
-        </li>
-        <li>
-          <div className={"border-b-2 border-gray-500 w-6"} />
-        </li>
-        <li className={""}>
-          <Link to={"/home"}>
-            <HomeIcon />
-          </Link>
-        </li>
-        <li className={""}>
-          <Link to={"/theater"}>
-            <FilmIcon />
-          </Link>
-        </li>
-        {/* Gap */}
-        <li className={"flex-1"} />
-        {/*<li className={""}>*/}
-        {/*  <SettingsIcon />*/}
-        {/*</li>*/}
-      </ul>
-    </nav>
+    <Stack
+      sx={{
+        width: (theme) => theme.spacing(10),
+      }}
+      gap={1}
+      p={1}
+      alignItems={"center"}
+      component={"nav"}
+    >
+      <RewindLogo />
+      <Divider orientation={"horizontal"} sx={{ borderWidth: 1, width: "80%" }} />
+      <List>
+        <ListItem>
+          <ListItemButton>
+            <Home />
+          </ListItemButton>
+        </ListItem>
+        <ListItem>
+          <Tooltip title={"Analyzer"}>
+            <ListItemButton
+              // These are not centered
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <FaMicroscope />
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+      </List>
+      {/*Nothing*/}
+      <Box flexGrow={1} />
+      <List>
+        <ListItem>
+          <ListItemButton>
+            <Settings />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Stack>
   );
 }

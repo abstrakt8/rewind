@@ -1,4 +1,6 @@
 import { RewindIcon } from "@heroicons/react/solid";
+import { Stack, Typography } from "@mui/material";
+import { FastRewind } from "@mui/icons-material";
 
 // const RewindIcon = () => (
 //   <svg xmlns="http://www.w3.org/2000/svg" className="sidebar-icon" viewBox="0 0 20 20" fill="currentColor">
@@ -12,8 +14,8 @@ export const RewindSidebarLogo = () => (
 );
 
 export const RewindLogo = () => (
-  <div className={"flex flex-col items-center"}>
-    <RewindIcon className={"h-10 w-10"} />
-    <span className={"text-xl -mt-2 select-none"}>Rewind</span>
-  </div>
+  <Stack alignItems={"center"}>
+    <FastRewind fontSize={"large"} />
+    <Typography fontSize={"8px"}>REWIND</Typography>
+  </Stack>
 );
