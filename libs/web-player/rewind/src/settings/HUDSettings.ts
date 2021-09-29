@@ -1,8 +1,4 @@
-export interface PlayfieldBorderSettings {
-  thickness: number;
-  enabled: boolean;
-  // style: "RECTANGLE" | "CORNERS" | ...
-}
+import { PlayfieldBorderSettings } from "@rewind/osu-pixi/classic-components";
 
 export interface HUDSettings {
   backgroundDim: number;

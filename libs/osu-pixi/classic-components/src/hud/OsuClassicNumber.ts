@@ -16,6 +16,7 @@ const DEFAULT_NUMBER_SETTINGS: OsuClassicNumberSettings = {
 
 /**
  * This number can be used for hitCircleCombo, currentCombo and score
+ * TODO: Do not extend from Container
  */
 export class OsuClassicNumber extends Container {
   private lastNumber: number[] = [];
