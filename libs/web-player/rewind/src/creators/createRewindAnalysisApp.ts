@@ -12,17 +12,17 @@ import { AnalysisSceneManager } from "../apps/analysis/manager/AnalysisSceneMana
 import { SceneManager } from "../core/scenes/SceneManager";
 import { GameLoop } from "../core/game/GameLoop";
 import { AnalysisScene } from "../apps/analysis/scenes/AnalysisScene";
-import { BeatmapBackground } from "../renderers/components/background/BeatmapBackground";
+import { BeatmapBackground, BeatmapBackgroundFactory } from "../renderers/components/background/BeatmapBackground";
 import { TextureManager } from "../textures/TextureManager";
 import { AnalysisStage } from "../renderers/components/stage/AnalysisStage";
 import { ForegroundHUDPreparer } from "../renderers/components/hud/ForegroundHUDPreparer";
-import { PlayfieldPreparer } from "../renderers/components/playfield/PlayfieldPreparer";
-import { PlayfieldBorderPreparer } from "../renderers/components/playfield/PlayfieldBorderPreparer";
+import { PlayfieldFactory } from "../renderers/components/playfield/PlayfieldFactory";
+import { PlayfieldBorderFactory } from "../renderers/components/playfield/PlayfieldBorderFactory";
 import { StageViewSettingsService } from "../apps/analysis/StageViewSettingsService";
-import { HitObjectsPreparer } from "../renderers/components/playfield/HitObjectsPreparer";
-import { HitCirclePreparer } from "../renderers/components/playfield/HitCirclePreparer";
-import { SliderPreparer } from "../renderers/components/playfield/SliderPreparer";
-import { SpinnerPreparer } from "../renderers/components/playfield/SpinnerPreparer";
+import { HitObjectsContainerFactory } from "../renderers/components/playfield/HitObjectsContainerFactory";
+import { HitCircleFactory } from "../renderers/components/playfield/HitCircleFactory";
+import { SliderFactory } from "../renderers/components/playfield/SliderFactory";
+import { SpinnerFactory } from "../renderers/components/playfield/SpinnerFactory";
 import { SliderTextureManager } from "../renderers/managers/SliderTextureManager";
 import { CursorPreparer } from "../renderers/components/playfield/CursorPreparer";
 import { JudgementPreparer } from "../renderers/components/playfield/JudgementPreparer";
@@ -69,15 +69,15 @@ export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
   container.bind(StageViewSettingsService).toSelf();
   container.bind(AnalysisStage).toSelf();
   {
-    container.bind(BeatmapBackground).toSelf();
+    container.bind(BeatmapBackgroundFactory).toSelf();
     container.bind(ForegroundHUDPreparer).toSelf();
-    container.bind(PlayfieldPreparer).toSelf();
+    container.bind(PlayfieldFactory).toSelf();
     {
-      container.bind(PlayfieldBorderPreparer).toSelf();
-      container.bind(HitObjectsPreparer).toSelf();
-      container.bind(HitCirclePreparer).toSelf();
-      container.bind(SliderPreparer).toSelf();
-      container.bind(SpinnerPreparer).toSelf();
+      container.bind(PlayfieldBorderFactory).toSelf();
+      container.bind(HitObjectsContainerFactory).toSelf();
+      container.bind(HitCircleFactory).toSelf();
+      container.bind(SliderFactory).toSelf();
+      container.bind(SpinnerFactory).toSelf();
 
       container.bind(CursorPreparer).toSelf();
       container.bind(JudgementPreparer).toSelf();

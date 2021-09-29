@@ -22,7 +22,7 @@ const DEBUG_PIXEL_BALL_COLOR = 0x00ff00;
 const SLIDER_FADE_OUT_TIME = 300;
 
 @injectable()
-export class SliderPreparer {
+export class SliderFactory {
   graphicsPool: TemporaryObjectPool<Graphics>;
 
   constructor(
@@ -185,7 +185,7 @@ export class SliderPreparer {
     return this.stageViewService.getView();
   }
 
-  prepare(slider: Slider) {
+  create(slider: Slider) {
     const { time, skin, view } = this;
 
     const isVisible = slider.spawnTime <= time && time <= slider.endTime + SLIDER_FADE_OUT_TIME;

@@ -10,7 +10,7 @@ import { GameSimulator } from "../../../core/game/GameSimulator";
 const SPINNER_FADE_OUT_DURATION = 300;
 
 @injectable()
-export class SpinnerPreparer {
+export class SpinnerFactory {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
@@ -18,7 +18,7 @@ export class SpinnerPreparer {
     private readonly stageSkinService: SkinManager,
   ) {}
 
-  prepare(spinner: Spinner) {
+  create(spinner: Spinner) {
     const skin = this.stageSkinService.getSkin();
     const time = this.gameClock.timeElapsedInMs;
     const view = this.stageViewService.getView();

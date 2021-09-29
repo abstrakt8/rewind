@@ -1,7 +1,6 @@
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import { HitCircle } from "@rewind/osu/core";
 import { GameplayClock } from "../../../core/game/GameplayClock";
-import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
 import {
   HitResult,
   OsuClassicApproachCircle,
@@ -11,21 +10,23 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import type { ISkin } from "../../../model/Skin";
 import { GameSimulator } from "../../../core/game/GameSimulator";
-import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
 import { SkinManager } from "../../../core/skins/SkinManager";
 import { ModSettingsManager } from "../../../apps/analysis/manager/ModSettingsManager";
 
 // TODO: Maybe it's even dynamic
 const HIT_CIRCLE_FADE_OUT_DURATION = 300;
 
+/**
+ * Connected to all the different components and knows how to create the corresponding hit circle components (area +
+ * approach circle).
+ */
 @injectable()
-export class HitCirclePreparer {
+export class HitCircleFactory {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
     private readonly modSettingsManager: ModSettingsManager,
-    // private readonly stageViewService: StageViewSettingsService,
-    private readonly stageSkinService: SkinManager, // @inject(STAGE_TYPES.SKIN) private readonly skin: ISkin,
+    private readonly stageSkinService: SkinManager,
   ) {}
 
   // TODO: Pooling
@@ -37,7 +38,7 @@ export class HitCirclePreparer {
     return new OsuClassicApproachCircle({});
   }
 
-  prepare(hitCircle: HitCircle) {
+  createHitCircle(hitCircle: HitCircle) {
     const time = this.gameClock.timeElapsedInMs;
     const modSettings = this.modSettingsManager.modSettings;
     const skin = this.stageSkinService.getSkin();
@@ -51,6 +52,7 @@ export class HitCirclePreparer {
     const gameplayState = this.gameSimulator.getCurrentState();
 
     const area = this.getOsuClassicHitCircleArea(hitCircle.id);
+    // TODO: Replace this with a service that can also be mocked and simulate AUTO play
     const hitCircleState = gameplayState?.hitCircleVerdict[hitCircle.id];
 
     const hitResult = hitCircleState
@@ -59,10 +61,10 @@ export class HitCirclePreparer {
           timing: hitCircleState.judgementTime - hitCircle.hitTime,
         }
       : null;
-    area.prepare(settingsHitCircleArea({ hitCircle, gameTime: time, modHidden, skin, hitResult }));
+    area.prepare(createHitCircleAreaSettings({ hitCircle, gameTime: time, modHidden, skin, hitResult }));
 
     const approachCircle = this.getOsuClassicApproachCircle(hitCircle.id);
-    approachCircle.prepare(settingsApproachCircle({ hitCircle, skin, gameTime: time, modHidden }));
+    approachCircle.prepare(createApproachCircleSettings({ hitCircle, skin, gameTime: time, modHidden }));
 
     return {
       hitCircleArea: area.container,
@@ -71,7 +73,7 @@ export class HitCirclePreparer {
   }
 }
 
-export function settingsApproachCircle(s: {
+export function createApproachCircleSettings(s: {
   hitCircle: HitCircle;
   skin: ISkin;
   gameTime: number;
@@ -90,7 +92,7 @@ export function settingsApproachCircle(s: {
   };
 }
 
-function settingsHitCircleArea(s: {
+function createHitCircleAreaSettings(s: {
   hitCircle: HitCircle;
   skin: ISkin;
   gameTime: number;
