@@ -1,5 +1,5 @@
 import "./HomeScreen.css";
-import { RewindLogo } from "../RewindSidebarLogo";
+import { RewindLogo } from "../RewindLogo";
 import { FaDiscord, FaTwitter, FaYoutube } from "react-icons/fa";
 import { discordUrl, twitterUrl, youtubeUrl } from "../../react/Constants";
 
