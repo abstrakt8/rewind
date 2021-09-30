@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { PlaybarSettings } from "../../../theater/playbarSettings";
+import { PlaybarSettings } from "../../../../../web-player/rewind/src/settings/playbarSettings";
 
 function useStagePlaybarSettings() {
   const [playbarSettings, setPlaybarSettings] = useState<PlaybarSettings>({

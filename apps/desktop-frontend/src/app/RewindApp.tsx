@@ -1,4 +1,4 @@
-import { useAppSelector } from "./hooks";
+import { useAppSelector } from "./hooks/hooks";
 import { Route, Switch } from "react-router-dom"; // react-router v4/v5
 import { LeftMenuSidebar } from "./LeftMenuSidebar";
 // import { Theater } from "@rewind/feature-replay-viewer";

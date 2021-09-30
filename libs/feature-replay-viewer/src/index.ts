@@ -3,3 +3,4 @@
 export * from "./react/components/TheaterProvider/TheaterProvider";
 // export * from "./react/Theater";
 export { handleButtonFocus } from "./react/HandleButtonFocus";
+export * from "./react/muiTheme";

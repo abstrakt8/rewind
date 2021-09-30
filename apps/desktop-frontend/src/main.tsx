@@ -9,7 +9,7 @@ import { TheaterProvider } from "@rewind/feature-replay-viewer";
 import { RewindApp } from "./app/RewindApp";
 import { FrontendPreloadAPI } from "@rewind/electron/api";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { RewindTheme } from "./app/muiTheme";
+import { RewindTheme } from "@rewind/feature-replay-viewer";
 
 declare global {
   interface Window {

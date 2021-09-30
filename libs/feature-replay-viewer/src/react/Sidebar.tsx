@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Toggle } from "./Toggle";
 import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
 import { PlaybarColors } from "./PlaybarColors";
-import { PlaybarSettings } from "../theater/playbarSettings";
+import { PlaybarSettings } from "../../../web-player/rewind/src/settings/playbarSettings";
 import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
 
 function SettingsTitle(props: { title: string }) {
