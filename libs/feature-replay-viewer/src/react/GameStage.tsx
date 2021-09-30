@@ -8,7 +8,7 @@ import { useGameClock } from "./components/StageProvider/StageClockProvider";
 // import { useEnergySaver } from "./hooks/useEnergySaver";
 // import { useStageContext } from "./components/StageProvider/StageProvider";
 import { PlaybarColors } from "./PlaybarColors";
-import { PlaybarSettings } from "../theater/playbarSettings";
+import { PlaybarSettings } from "../../../web-player/rewind/src/settings/playbarSettings";
 import { formatGameTime } from "@rewind/osu/math";
 // import { useStagePlaybarSettingsContext } from "./components/StageProvider/StagePlaybarSettingsProvider";
 // import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";

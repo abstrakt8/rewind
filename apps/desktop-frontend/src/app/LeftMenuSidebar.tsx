@@ -4,7 +4,7 @@ import { Home, Settings } from "@mui/icons-material";
 import { FaMicroscope } from "react-icons/fa";
 import React from "react";
 import { push } from "connected-react-router";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import { useAppDispatch, useAppSelector } from "./hooks/hooks";
 
 const tooltipPosition = {
   anchorOrigin: {
