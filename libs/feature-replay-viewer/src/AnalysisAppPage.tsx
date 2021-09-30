@@ -1,6 +1,5 @@
 import { useAnalysisApp } from "./react/components/TheaterProvider/TheaterProvider";
-import React, { useEffect, useRef, useState } from "react";
-import { GameCanvas } from "./react/GameCanvas";
+import React, { useEffect, useState } from "react";
 import GameStage from "./react/GameStage";
 
 interface Scenario {
