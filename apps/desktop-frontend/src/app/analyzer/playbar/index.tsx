@@ -2,6 +2,7 @@ import { Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Popover, S
 import { Help, MoreVert, PhotoCamera, PlayCircle, VolumeUp } from "@mui/icons-material";
 import { useState } from "react";
 import { AudioSettings } from "./AudioSettings";
+import { ReplayBar } from "../../../../../../libs/feature-replay-viewer/src/react/ReplayBar";
 
 const centerUp = {
   anchorOrigin: {
@@ -107,7 +108,8 @@ export function Playbar() {
       <IconButton>
         <PlayCircle fontSize={"large"} />
       </IconButton>
-      <Slider size="medium" defaultValue={30} valueLabelDisplay="auto" />
+      <ReplayBar backgroundEnable={true} />
+      {/*<Slider size="medium" defaultValue={30} valueLabelDisplay="auto" />*/}
 
       <AudioButton />
       <MoreMenu />

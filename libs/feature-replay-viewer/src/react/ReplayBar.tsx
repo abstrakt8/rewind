@@ -13,8 +13,8 @@ const EventLine = ({ color, tooltip, positions }: EventLineProps) => {
       <div>
         <Box
           sx={{
-            height: "14px",
-            backgroundColor: darken(color, 0.6),
+            height: "12px",
+            // backgroundColor: darken(color, 0.9),
             "&:hover": {
               backgroundColor: darken(color, 0.4),
             },
@@ -27,10 +27,13 @@ const EventLine = ({ color, tooltip, positions }: EventLineProps) => {
               sx={{
                 position: "absolute",
                 transform: "translate(-50%)",
-                backgroundColor: darken(color, 0.2),
-                "&:hover": {
-                  backgroundColor: color,
-                },
+                backgroundColor: color,
+
+                // TODO: Introduce this only if it's actually possible to go there, otherwise might confuse
+                // backgroundColor: darken(color, 0.2),
+                // "&:hover": {
+                //   backgroundColor: color,
+                // },
                 width: "2px",
                 height: "100%",
 
@@ -44,15 +47,26 @@ const EventLine = ({ color, tooltip, positions }: EventLineProps) => {
   );
 };
 
-export interface ReplayBarProps {}
+export interface ReplayBarProps {
+  backgroundEnable?: boolean;
+}
 
 export function ReplayBar(props: ReplayBarProps) {
+  const { backgroundEnable } = props;
   const valueLabelFormat = (value: number) => {
     return formatGameTime(value);
   };
+
   return (
-    <Box position={"relative"}>
-      <Stack sx={{ overflow: "hidden", visibility: "visible" }}>
+    <Box sx={{ width: "100%", position: "relative" }}>
+      <Stack
+        sx={{
+          overflow: "hidden",
+          // borderRadius: 1,
+          visibility: backgroundEnable ? "visible" : "hidden",
+          filter: "brightness(50%)",
+        }}
+      >
         <EventLine color={"hsl(0,100%,50%)"} tooltip={"Misses"} positions={[0.3]} />
         <EventLine color={"hsl(21,100%,50%)"} tooltip={"Slider Breaks"} positions={[0.0, 0.5, 0.9]} />
         <EventLine color={"hsl(52,100%,50%)"} tooltip={"50s"} positions={[0.4, 0.6, 0.88]} />
@@ -73,7 +87,7 @@ export function ReplayBar(props: ReplayBarProps) {
           "& .MuiSlider-thumb": {
             width: 8,
             height: 8,
-            transition: "0.3s cubic-bezier(.47,1.64,.41,.8)",
+            transition: "0.3s bezier(.47,1.64,.41,.8)",
             "&:before": {
               boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
             },
@@ -81,8 +95,8 @@ export function ReplayBar(props: ReplayBarProps) {
               boxShadow: `0px 0px 0px 8px ${"rgb(255 255 255 / 16%)"}`,
             },
             "&.Mui-active": {
-              width: 20,
-              height: 20,
+              width: 12,
+              height: 12,
             },
           },
           "& .MuiSlider-rail": {
