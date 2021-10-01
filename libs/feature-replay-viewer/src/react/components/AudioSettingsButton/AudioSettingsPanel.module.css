@@ -1,7 +1,0 @@
-
-.container {
-  @apply bg-gray-600 rounded p-4 gap-2 w-auto text-gray-200 w-max;
-  display: grid;
-  align-items: center;
-  grid-template-columns: [label] max-content [slider] 1fr;
-}
