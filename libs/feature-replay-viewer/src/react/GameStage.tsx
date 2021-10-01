@@ -3,7 +3,7 @@ import Playbar, { PlaybarEvent } from "./Playbar";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 // import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
 import { GameCanvas } from "../components/GameCanvas";
-import { useStageShortcuts } from "./hooks/useStageShortcuts";
+import { useShortcuts } from "../hooks/useShortcuts";
 import { useGameClock } from "./components/StageProvider/StageClockProvider";
 // import { useEnergySaver } from "./hooks/useEnergySaver";
 // import { useStageContext } from "./components/StageProvider/StageProvider";
@@ -136,7 +136,7 @@ export const GameStage = () => {
     return () => analysisApp.destroy();
   }, [analysisApp]);
 
-  useStageShortcuts();
+  useShortcuts();
   // useEnergySaver(true);
 
   return (
