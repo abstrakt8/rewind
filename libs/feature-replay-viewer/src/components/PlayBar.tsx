@@ -1,10 +1,23 @@
-import { Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Popover, Slider, Stack } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Popover,
+  Slider,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, VolumeUp } from "@mui/icons-material";
 import { useCallback, useState } from "react";
-import { AudioSettings } from "./AudioSettings";
+import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
 import { BaseCurrentTime, useAnalysisApp } from "@rewind/feature-replay-viewer";
-import { useGameClockControls, useGameClockTime } from "../hooks/analyzer";
+import { useGameClockControls, useGameClockTime } from "../hooks/gameClock";
+import { formatGameTime } from "@rewind/osu/math";
+import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
 
 const centerUp = {
   anchorOrigin: {
@@ -78,6 +91,9 @@ function AudioButton() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const { volume, muted } = useAudioSettings();
+  const service = useAudioSettingsService();
+
   return (
     <>
       <IconButton onClick={handleClick}>
@@ -97,7 +113,12 @@ function AudioButton() {
         }}
       >
         <Box width={256}>
-          <AudioSettings />
+          <BaseAudioSettingsPanel
+            {...volume}
+            onMasterChange={(x) => service.setMasterVolume(x)}
+            onMusicChange={(x) => service.setMusicVolume(x)}
+            onEffectsChange={(x) => service.setEffectsVolume(x)}
+          />
         </Box>
       </Popover>
     </>
@@ -131,8 +152,7 @@ function GameTimeSlider() {
   // TODO: Depending on if replay is loaded and settings
   const backgroundEnable = true;
   const currentTime = useGameClockTime(30);
-  const { seekTo } = useGameClockControls();
-  const duration = (60 * 4 + 50) * 1000;
+  const { seekTo, duration } = useGameClockControls();
 
   return (
     <BaseGameTimeSlider
@@ -144,13 +164,20 @@ function GameTimeSlider() {
   );
 }
 
+function Duration() {
+  const { duration } = useGameClockControls();
+  const f = formatGameTime(duration);
+
+  return <Typography>{f}</Typography>;
+}
+
 export function PlayBar() {
   return (
     <Stack height={64} gap={2} p={2} direction={"row"} alignItems={"center"}>
       <PlayButton />
       <CurrentTime />
       <GameTimeSlider />
-
+      <Duration />
       <AudioButton />
       <MoreMenu />
     </Stack>

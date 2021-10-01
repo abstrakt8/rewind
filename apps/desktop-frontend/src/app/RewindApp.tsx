@@ -9,16 +9,9 @@ import { Box, Divider, Modal, Stack } from "@mui/material";
 import { Analyzer } from "../../../../libs/feature-replay-viewer/src/Analyzer";
 import { SettingsModal } from "../../../../libs/feature-replay-viewer/src/components/SettingsModal";
 import { settingsModalClosed } from "./settings/slice";
-import { useAnalysisApp } from "@rewind/feature-replay-viewer";
 
 function ConnectedAnalyzer() {
   const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
-  const analyzer = useAnalysisApp();
-  useEffect(() => {
-    console.log("Analyzer initialized");
-    analyzer.initialize();
-    return () => analyzer.destroy();
-  }, []);
   useEffect(() => {
     console.log(`Theater is now constructing a stage with blueprintId=${chosenBlueprintId} replayId=${chosenReplayId}`);
   }, [chosenReplayId, chosenBlueprintId]);

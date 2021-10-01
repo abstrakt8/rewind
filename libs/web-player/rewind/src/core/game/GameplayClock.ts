@@ -10,9 +10,9 @@ const getNowInMs = () => performance.now();
 export class GameplayClock {
   public isPlaying$: BehaviorSubject<boolean>;
   public timeElapsedInMs$: BehaviorSubject<number>;
+  public durationInMs$: BehaviorSubject<number>;
 
-  public speed = 1.0;
-  public durationInMs = 0;
+  public speed$: BehaviorSubject<number>;
   private lastUpdateTimeInMs = 0;
 
   // private eventEmitter: EventEmitter;
@@ -20,7 +20,9 @@ export class GameplayClock {
   constructor(@inject(STAGE_TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter) {
     // this.eventEmitter = new EventEmitter();
     this.isPlaying$ = new BehaviorSubject<boolean>(false);
+    this.durationInMs$ = new BehaviorSubject<number>(0);
     this.timeElapsedInMs$ = new BehaviorSubject<number>(0);
+    this.speed$ = new BehaviorSubject<number>(1);
   }
 
   /**
@@ -34,6 +36,22 @@ export class GameplayClock {
       this.timeElapsedInMs = this.durationInMs;
     }
     return this.timeElapsedInMs;
+  }
+
+  get speed() {
+    return this.speed$.getValue();
+  }
+
+  set speed(value: number) {
+    this.speed$.next(value);
+  }
+
+  get durationInMs() {
+    return this.durationInMs$.getValue();
+  }
+
+  set durationInMs(value: number) {
+    this.durationInMs$.next(value);
   }
 
   get isPlaying() {
