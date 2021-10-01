@@ -2,7 +2,7 @@
 // export * from "./react/components/StageProvider/StageProvider";
 export * from "./providers/TheaterProvider";
 // export * from "./react/Theater";
-export { handleButtonFocus } from "./react/HandleButtonFocus";
+export { ignoreFocus } from "./react/IgnoreFocus";
 export * from "./RewindTheme";
 
 // Components
