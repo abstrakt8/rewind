@@ -3,7 +3,7 @@ import React from "react";
 import { addDecorator } from "@storybook/react";
 
 import { ThemeProvider as EmotionThemeProvider } from "emotion-theming";
-import { RewindTheme } from "../src/react/muiTheme";
+import { RewindTheme } from "../src/RewindTheme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
 const defaultTheme = RewindTheme;

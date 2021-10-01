@@ -3,12 +3,12 @@ import { formatGameTime } from "@rewind/osu/math";
 import { darken, Typography } from "@mui/material";
 
 export interface GameCurrentTimeProps {
-  currentTimeInMs: number;
+  currentTime: number;
 }
 
-export const GameCurrentTime = (props: GameCurrentTimeProps) => {
-  const { currentTimeInMs } = props;
-  const [timeHMS, timeMS] = formatGameTime(currentTimeInMs, true).split(".");
+export const BaseCurrentTime = (props: GameCurrentTimeProps) => {
+  const { currentTime } = props;
+  const [timeHMS, timeMS] = formatGameTime(currentTime, true).split(".");
 
   return (
     <Typography component={"span"} sx={{ userSelect: "all" }}>

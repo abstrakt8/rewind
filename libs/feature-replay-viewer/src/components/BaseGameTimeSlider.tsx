@@ -47,15 +47,19 @@ const EventLine = ({ color, tooltip, positions }: EventLineProps) => {
   );
 };
 
-export interface ReplayBarProps {
+export interface BaseGameTimeSliderProps {
   backgroundEnable?: boolean;
+  // Duration in ms
+  duration: number;
+  // Time in ms
+  currentTime: number;
+  // When the slider is dragged
+  onChange: (value: number) => any;
 }
 
-export function ReplayBar(props: ReplayBarProps) {
-  const { backgroundEnable } = props;
-  const valueLabelFormat = (value: number) => {
-    return formatGameTime(value);
-  };
+export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
+  const { backgroundEnable, duration, currentTime, onChange } = props;
+  const valueLabelFormat = (value: number) => formatGameTime(value);
 
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
@@ -87,7 +91,8 @@ export function ReplayBar(props: ReplayBarProps) {
           "& .MuiSlider-thumb": {
             width: 8,
             height: 8,
-            transition: "0.3s bezier(.47,1.64,.41,.8)",
+            // transition: "0.3s bezier(.47,1.64,.41,.8)",
+            transition: "none",
             "&:before": {
               boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
             },
@@ -103,11 +108,12 @@ export function ReplayBar(props: ReplayBarProps) {
             opacity: 0.28,
           },
         }}
-        defaultValue={0.4}
+        value={currentTime}
+        onChange={(_, x) => onChange(x as number)}
         getAriaValueText={valueLabelFormat}
         valueLabelFormat={valueLabelFormat}
         valueLabelDisplay={"auto"}
-        max={727 * 1000}
+        max={duration}
       />
     </Box>
   );

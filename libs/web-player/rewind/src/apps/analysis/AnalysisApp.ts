@@ -61,7 +61,7 @@ export class AnalysisApp {
   }
 
   destroy() {
-    this.gameLoop.startTicker();
+    this.gameLoop.stopTicker();
     // console.log(`Going to destroy the stage with replay = ${replay.md5hash}`);
     // gameLoop.destroy();
     // audioEngine.destroy();

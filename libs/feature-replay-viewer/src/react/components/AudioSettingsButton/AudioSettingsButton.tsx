@@ -2,7 +2,7 @@ import { FaVolumeMute, FaVolumeUp } from "react-icons/all";
 import { useCallback, useRef, useState } from "react";
 import { handleButtonFocus } from "../../HandleButtonFocus";
 import { AudioSettingsPanel } from "./AudioSettingsPanel";
-import { useTheater } from "../TheaterProvider/TheaterProvider";
+import { useTheater } from "../../../providers/TheaterProvider";
 import { AudioSettings } from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks/dist/esm";
 

@@ -62,6 +62,7 @@ export class GameLoop {
   private render() {
     const renderer = this.pixiRendererService.getRenderer();
     if (renderer) {
+      this.pixiRendererService.resizeRendererToCanvasSize();
       renderer.render(this.sceneManager.stage);
     }
   }

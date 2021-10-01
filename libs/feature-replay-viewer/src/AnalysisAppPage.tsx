@@ -1,4 +1,4 @@
-import { useAnalysisApp } from "./react/components/TheaterProvider/TheaterProvider";
+import { useAnalysisApp } from "./providers/TheaterProvider";
 import React, { useEffect, useState } from "react";
 import GameStage from "./react/GameStage";
 

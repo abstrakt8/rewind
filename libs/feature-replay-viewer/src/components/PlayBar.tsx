@@ -1,8 +1,10 @@
 import { Box, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Popover, Slider, Stack } from "@mui/material";
-import { Help, MoreVert, PhotoCamera, PlayCircle, VolumeUp } from "@mui/icons-material";
-import { useState } from "react";
+import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, VolumeUp } from "@mui/icons-material";
+import { useCallback, useState } from "react";
 import { AudioSettings } from "./AudioSettings";
-import { ReplayBar } from "../../../../../../libs/feature-replay-viewer/src/react/ReplayBar";
+import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
+import { BaseCurrentTime, useAnalysisApp } from "@rewind/feature-replay-viewer";
+import { useGameClockControls, useGameClockTime } from "../hooks/analyzer";
 
 const centerUp = {
   anchorOrigin: {
@@ -102,14 +104,52 @@ function AudioButton() {
   );
 }
 
-export function Playbar() {
+// Connected
+function PlayButton() {
+  const { isPlaying, toggleClock } = useGameClockControls();
+  const Icon = !isPlaying ? PlayCircle : PauseCircle;
+
+  return (
+    <IconButton onClick={toggleClock}>
+      <Icon fontSize={"large"} />
+    </IconButton>
+  );
+}
+
+function CurrentTime() {
+  const currentTime = useGameClockTime(60);
+  return (
+    // We MUST fix the width because the font is not monospace e.g. "111" is thinner than "000"
+    // Also if the duration is more than an hour there will also be a slight shift
+    <Box sx={{ width: "6em" }}>
+      <BaseCurrentTime currentTime={currentTime} />
+    </Box>
+  );
+}
+
+function GameTimeSlider() {
+  // TODO: Depending on if replay is loaded and settings
+  const backgroundEnable = true;
+  const currentTime = useGameClockTime(30);
+  const { seekTo } = useGameClockControls();
+  const duration = (60 * 4 + 50) * 1000;
+
+  return (
+    <BaseGameTimeSlider
+      backgroundEnable={backgroundEnable}
+      duration={duration}
+      currentTime={currentTime}
+      onChange={seekTo}
+    />
+  );
+}
+
+export function PlayBar() {
   return (
     <Stack height={64} gap={2} p={2} direction={"row"} alignItems={"center"}>
-      <IconButton>
-        <PlayCircle fontSize={"large"} />
-      </IconButton>
-      <ReplayBar backgroundEnable={true} />
-      {/*<Slider size="medium" defaultValue={30} valueLabelDisplay="auto" />*/}
+      <PlayButton />
+      <CurrentTime />
+      <GameTimeSlider />
 
       <AudioButton />
       <MoreMenu />

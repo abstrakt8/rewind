@@ -1,7 +1,6 @@
 import { Meta, Story } from "@storybook/react";
 import { SettingsModal, SettingsProps } from "./SettingsModal";
-import { CssBaseline, Paper, ThemeProvider } from "@mui/material";
-import { RewindTheme } from "../muiTheme";
+import { Paper } from "@mui/material";
 
 export default {
   component: SettingsModal,
