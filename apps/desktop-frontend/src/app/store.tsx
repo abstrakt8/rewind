@@ -3,6 +3,7 @@ import createSagaMiddleware from "redux-saga";
 import localBlueprintInfoReducer from "./blueprints/LocalBlueprintInfo";
 import theaterReducer from "./theater/slice";
 import backendReducer from "./backend/slice";
+import settingsReducer from "./settings/slice";
 import { createRewindRootSaga } from "./RootSaga";
 import { createHashHistory } from "history";
 import { connectRouter, routerMiddleware } from "connected-react-router";
@@ -122,6 +123,7 @@ const reducer = {
   localBlueprintInfo: localBlueprintInfoReducer,
   theater: theaterReducer,
   backend: backendReducer,
+  settings: settingsReducer,
   [rewindDesktopApi.reducerPath]: rewindDesktopApi.reducer,
 };
 

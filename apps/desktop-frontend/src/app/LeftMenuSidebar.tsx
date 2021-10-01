@@ -5,6 +5,7 @@ import { FaMicroscope } from "react-icons/fa";
 import React from "react";
 import { push } from "connected-react-router";
 import { useAppDispatch, useAppSelector } from "./hooks/hooks";
+import { settingsModalOpened } from "./settings/slice";
 
 const tooltipPosition = {
   anchorOrigin: {
@@ -24,6 +25,7 @@ export function LeftMenuSidebar() {
 
   const handleLinkClick = (to: string) => () => dispatch(push(to));
   const buttonColor = (name: string) => (name === pathname ? "primary" : "default");
+  const handleOpenSettings = () => dispatch(settingsModalOpened());
 
   return (
     <Stack
@@ -58,7 +60,7 @@ export function LeftMenuSidebar() {
       {/*Nothing*/}
       <Box flexGrow={1} />
       <Tooltip title={"Settings"} placement={"right"}>
-        <IconButton onClick={() => console.log("Should open settings modal")}>
+        <IconButton onClick={handleOpenSettings}>
           <Settings />
         </IconButton>
       </Tooltip>
