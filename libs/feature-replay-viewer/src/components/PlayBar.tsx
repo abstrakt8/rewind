@@ -14,7 +14,7 @@ import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, VolumeUp } from "
 import { useCallback, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
-import { BaseCurrentTime, handleButtonFocus, useAnalysisApp } from "@rewind/feature-replay-viewer";
+import { BaseCurrentTime, ignoreFocus, useAnalysisApp } from "@rewind/feature-replay-viewer";
 import { useGameClockControls, useGameClockTime } from "../hooks/gameClock";
 import { formatGameTime } from "@rewind/osu/math";
 import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
@@ -136,7 +136,7 @@ function PlayButton() {
   const Icon = !isPlaying ? PlayCircle : PauseCircle;
 
   return (
-    <IconButton onClick={toggleClock} onFocus={handleButtonFocus}>
+    <IconButton onClick={toggleClock} onFocus={ignoreFocus}>
       <Icon fontSize={"large"} />
     </IconButton>
   );
@@ -181,7 +181,7 @@ function HiddenButton() {
   const handleClick = useCallback(() => setHidden(!hidden), [hidden, setHidden]);
 
   return (
-    <IconButton onFocus={handleButtonFocus} sx={{ width: "2em", height: "2em" }} onClick={handleClick}>
+    <IconButton onFocus={ignoreFocus} sx={{ width: "2em", height: "2em" }} onClick={handleClick}>
       <img src={modHiddenImg} alt={"ModHidden"} className={`filter ${hidden ? "grayscale-0" : "grayscale"} `} />
     </IconButton>
   );

@@ -1,5 +1,6 @@
 import { Box, darken, Slider, Stack, Tooltip } from "@mui/material";
 import { formatGameTime } from "@rewind/osu/math";
+import { ignoreFocus } from "@rewind/feature-replay-viewer";
 
 interface EventLineProps {
   color: string;
@@ -77,6 +78,7 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
         <EventLine color={"hsl(96,100%,50%)"} tooltip={"100s"} positions={[0.1, 0.2, 0.33, 0.34, 0.345, 0.6, 0.601]} />
       </Stack>
       <Slider
+        onFocus={ignoreFocus}
         size={"small"}
         // The padding here determines how clickable the slider is
         // This is copied from: https://mui.com/components/slider/#music-player

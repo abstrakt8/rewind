@@ -14,7 +14,7 @@ import { formatGameTime } from "@rewind/osu/math";
 // import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";
 import { FaQuestion, RiScreenshot2Fill } from "react-icons/all";
 import { HelpModalDialog } from "./HelpModal/HelpModal";
-import { handleButtonFocus } from "./HandleButtonFocus";
+import { ignoreFocus } from "./IgnoreFocus";
 import { useAnalysisApp, useTheater } from "@rewind/feature-replay-viewer";
 import { DEFAULT_SKIN_ID } from "../../../web-player/rewind/src/model/SkinId";
 import { AudioSettingsButton } from "./components/AudioSettingsButton/AudioSettingsButton";
@@ -150,7 +150,7 @@ export const GameStage = () => {
           {/*</div>*/}
           <div className={"flex flex-row gap-4 flex-none bg-gray-700 p-4 rounded align-middle"}>
             <button
-              onFocus={handleButtonFocus}
+              onFocus={ignoreFocus}
               className={"transition-colors hover:text-gray-400"}
               tabIndex={-1}
               onClick={handlePlayButtonClick}
@@ -171,13 +171,13 @@ export const GameStage = () => {
             {/*</button>*/}
             <AudioSettingsButton />
 
-            <button onFocus={handleButtonFocus} onClick={() => analysisApp.takeScreenshot()}>
+            <button onFocus={ignoreFocus} onClick={() => analysisApp.takeScreenshot()}>
               <RiScreenshot2Fill className={"w-4 h-4"} />
             </button>
-            <button onFocus={handleButtonFocus} className={"transition-colors hover:text-gray-400 text-lg bg-500"}>
+            <button onFocus={ignoreFocus} className={"transition-colors hover:text-gray-400 text-lg bg-500"}>
               {speed}x
             </button>
-            <button onFocus={handleButtonFocus} onClick={() => setHelpModalOpen(true)}>
+            <button onFocus={ignoreFocus} onClick={() => setHelpModalOpen(true)}>
               <FaQuestion className={"w-4 h-4"} />
             </button>
           </div>

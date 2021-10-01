@@ -1,6 +1,6 @@
 import { FaVolumeMute, FaVolumeUp } from "react-icons/all";
 import { useCallback, useRef, useState } from "react";
-import { handleButtonFocus } from "../../HandleButtonFocus";
+import { ignoreFocus } from "../../IgnoreFocus";
 import { AudioSettingsPanel } from "./AudioSettingsPanel";
 import { useTheater } from "../../../providers/TheaterProvider";
 import { AudioSettings } from "@rewind/web-player/rewind";
@@ -37,7 +37,7 @@ export const AudioSettingsButton = () => {
   return (
     <div className={"relative flex align-middle justify-center"}>
       <button
-        onFocus={handleButtonFocus}
+        onFocus={ignoreFocus}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
