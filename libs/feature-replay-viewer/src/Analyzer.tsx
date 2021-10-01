@@ -2,6 +2,7 @@ import { Box, Paper, Stack, Typography } from "@mui/material";
 import { PlayBar } from "./components/PlayBar";
 import { GameCanvas, useAnalysisApp } from "@rewind/feature-replay-viewer";
 import { useEffect } from "react";
+import { useShortcuts } from "./hooks/useShortcuts";
 
 const CanvasPlaceHolder = () => (
   <Box
@@ -26,6 +27,7 @@ function useInitializeAnalyzer() {
 
 export function Analyzer() {
   useInitializeAnalyzer();
+  useShortcuts();
 
   return (
     <Stack

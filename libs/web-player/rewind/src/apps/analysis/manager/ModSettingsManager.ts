@@ -1,18 +1,27 @@
 import { AnalysisModSettings } from "../settings/AnalysisModSettings";
 import { injectable } from "inversify";
+import { BehaviorSubject } from "rxjs";
 
 @injectable()
 export class ModSettingsManager {
-  modSettings: AnalysisModSettings = {
-    flashlight: false,
-    hidden: false,
-  };
+  modSettings$: BehaviorSubject<AnalysisModSettings>;
 
-  setHidden(hidden: boolean) {
-    this.modSettings.hidden = hidden;
+  constructor() {
+    this.modSettings$ = new BehaviorSubject<AnalysisModSettings>({
+      flashlight: false,
+      hidden: false,
+    });
   }
 
-  setFlashlight(flag: boolean) {
-    this.modSettings.flashlight = flag;
+  get modSettings() {
+    return this.modSettings$.getValue();
+  }
+
+  setHidden(hidden: boolean) {
+    this.modSettings$.next({ ...this.modSettings, hidden });
+  }
+
+  setFlashlight(flashlight: boolean) {
+    this.modSettings$.next({ ...this.modSettings, flashlight });
   }
 }

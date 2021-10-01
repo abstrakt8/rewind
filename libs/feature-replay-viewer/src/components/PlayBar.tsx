@@ -14,10 +14,12 @@ import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, VolumeUp } from "
 import { useCallback, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
-import { BaseCurrentTime, useAnalysisApp } from "@rewind/feature-replay-viewer";
+import { BaseCurrentTime, handleButtonFocus, useAnalysisApp } from "@rewind/feature-replay-viewer";
 import { useGameClockControls, useGameClockTime } from "../hooks/gameClock";
 import { formatGameTime } from "@rewind/osu/math";
 import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
+import { useModControls } from "../hooks/mods";
+import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 
 const centerUp = {
   anchorOrigin: {
@@ -114,7 +116,10 @@ function AudioButton() {
       >
         <Box width={256}>
           <BaseAudioSettingsPanel
-            {...volume}
+            master={volume.master}
+            music={volume.music}
+            /* Currently it's disabled */
+            effects={0}
             onMasterChange={(x) => service.setMasterVolume(x)}
             onMusicChange={(x) => service.setMusicVolume(x)}
             onEffectsChange={(x) => service.setEffectsVolume(x)}
@@ -131,7 +136,7 @@ function PlayButton() {
   const Icon = !isPlaying ? PlayCircle : PauseCircle;
 
   return (
-    <IconButton onClick={toggleClock}>
+    <IconButton onClick={toggleClock} onFocus={handleButtonFocus}>
       <Icon fontSize={"large"} />
     </IconButton>
   );
@@ -171,14 +176,26 @@ function Duration() {
   return <Typography>{f}</Typography>;
 }
 
+function HiddenButton() {
+  const { setHidden, hidden } = useModControls();
+  const handleClick = useCallback(() => setHidden(!hidden), [hidden, setHidden]);
+
+  return (
+    <IconButton onFocus={handleButtonFocus} sx={{ width: "2em", height: "2em" }} onClick={handleClick}>
+      <img src={modHiddenImg} alt={"ModHidden"} className={`filter ${hidden ? "grayscale-0" : "grayscale"} `} />
+    </IconButton>
+  );
+}
+
 export function PlayBar() {
   return (
-    <Stack height={64} gap={2} p={2} direction={"row"} alignItems={"center"}>
+    <Stack height={64} gap={1} p={2} direction={"row"} alignItems={"center"}>
       <PlayButton />
       <CurrentTime />
       <GameTimeSlider />
       <Duration />
       <AudioButton />
+      <HiddenButton />
       <MoreMenu />
     </Stack>
   );

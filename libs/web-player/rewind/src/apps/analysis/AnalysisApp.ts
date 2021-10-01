@@ -36,12 +36,12 @@ import { AnalysisScene } from "./scenes/AnalysisScene";
 @injectable()
 export class AnalysisApp {
   constructor(
+    public readonly gameClock: GameplayClock,
+    public readonly modSettingsManager: ModSettingsManager,
     private readonly audioService: AudioService,
     private readonly blueprintService: BlueprintService,
     private readonly replayService: ReplayService,
-    public readonly gameClock: GameplayClock,
     private readonly gameLoop: GameLoop,
-    private readonly modSettingsManager: ModSettingsManager,
     private readonly beatmapManager: BeatmapManager,
     private readonly replayManager: ReplayManager,
     private readonly gameSimulator: GameSimulator,
