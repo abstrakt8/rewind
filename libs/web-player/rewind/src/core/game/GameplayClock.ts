@@ -2,21 +2,25 @@ import { EventEmitter, GameClockEvents } from "../../events";
 import { ListenerFn } from "eventemitter2";
 import { inject, injectable } from "inversify";
 import { STAGE_TYPES } from "../../types/STAGE_TYPES";
+import { BehaviorSubject } from "rxjs";
 
 const getNowInMs = () => performance.now();
 
 @injectable()
 export class GameplayClock {
-  public isPlaying = false;
+  public isPlaying$: BehaviorSubject<boolean>;
+  public timeElapsedInMs$: BehaviorSubject<number>;
+
   public speed = 1.0;
   public durationInMs = 0;
-  public timeElapsedInMs = 0;
   private lastUpdateTimeInMs = 0;
 
   // private eventEmitter: EventEmitter;
 
   constructor(@inject(STAGE_TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter) {
     // this.eventEmitter = new EventEmitter();
+    this.isPlaying$ = new BehaviorSubject<boolean>(false);
+    this.timeElapsedInMs$ = new BehaviorSubject<number>(0);
   }
 
   /**
@@ -32,12 +36,33 @@ export class GameplayClock {
     return this.timeElapsedInMs;
   }
 
+  get isPlaying() {
+    return this.isPlaying$.getValue();
+  }
+
+  set isPlaying(value: boolean) {
+    this.isPlaying$.next(value);
+  }
+
+  get timeElapsedInMs() {
+    return this.timeElapsedInMs$.getValue();
+  }
+
+  set timeElapsedInMs(value: number) {
+    this.timeElapsedInMs$.next(value);
+  }
+
   updateTimeElapsed() {
     if (!this.isPlaying) return;
     const nowInMs = getNowInMs();
     const deltaInMs = this.speed * (nowInMs - this.lastUpdateTimeInMs);
     this.timeElapsedInMs += deltaInMs;
     this.lastUpdateTimeInMs = nowInMs;
+  }
+
+  toggle() {
+    if (this.isPlaying) this.pause();
+    else this.start();
   }
 
   start() {

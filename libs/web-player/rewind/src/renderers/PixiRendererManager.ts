@@ -31,6 +31,7 @@ export class PixiRendererManager {
       canvas.height = height;
 
       this.renderer.resize(canvas.width, canvas.height);
+      console.log(`Canvas dimensions have been set to ${canvas.width} x ${canvas.height}`);
       return true;
     }
     return false;

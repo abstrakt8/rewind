@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Playbar, { PlaybarEvent } from "./Playbar";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 // import { useStageViewContext } from "./components/StageProvider/StageViewProvider";
-import { GameCanvas } from "./GameCanvas";
+import { GameCanvas } from "../components/GameCanvas";
 import { useStageShortcuts } from "./hooks/useStageShortcuts";
 import { useGameClock } from "./components/StageProvider/StageClockProvider";
 // import { useEnergySaver } from "./hooks/useEnergySaver";

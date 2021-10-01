@@ -1,10 +1,10 @@
 import { Meta, Story } from "@storybook/react";
 import { Paper } from "@mui/material";
-import { GameCurrentTime, GameCurrentTimeProps } from "./GameCurrentTime";
+import { BaseCurrentTime, GameCurrentTimeProps } from "./BaseCurrentTime";
 
 export default {
-  component: GameCurrentTime,
-  title: "GameCurrentTime",
+  component: BaseCurrentTime,
+  title: "BaseCurrentTime",
   argTypes: {
     onClick: { action: "onClick executed!" },
   },
@@ -12,7 +12,7 @@ export default {
 
 const Template: Story<GameCurrentTimeProps> = (args) => (
   <Paper elevation={1}>
-    <GameCurrentTime {...args} />
+    <BaseCurrentTime {...args} />
   </Paper>
 );
 

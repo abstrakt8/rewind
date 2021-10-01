@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { AnalysisApp, createRewindTheater } from "@rewind/web-player/rewind";
+import { createRewindTheater } from "@rewind/web-player/rewind";
 
 type ITheaterContext = ReturnType<typeof createRewindTheater>;
 

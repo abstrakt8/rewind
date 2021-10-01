@@ -1,24 +1,21 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import { Meta, Story } from "@storybook/react";
-import { Playbar } from "./Playbar";
-import { ReplayBar, ReplayBarProps } from "./ReplayBar";
-import { RewindTheme } from "./muiTheme";
+import { Playbar } from "../react/Playbar";
+import { BaseGameTimeSlider, BaseGameTimeSliderProps } from "./BaseGameTimeSlider";
+import { RewindTheme } from "../RewindTheme";
 
 export default {
-  component: ReplayBar,
-  title: "ReplayBar",
+  component: BaseGameTimeSlider,
+  title: "BaseGameTimeSlider",
   argTypes: {
     onClick: { action: "onClick executed!" },
   },
 } as Meta;
 
-const Template: Story<ReplayBarProps> = (args) => (
-  <ThemeProvider theme={RewindTheme}>
-    <CssBaseline />
-    <Box width={"420px"}>
-      <ReplayBar {...args} />
-    </Box>
-  </ThemeProvider>
+const Template: Story<BaseGameTimeSliderProps> = (args) => (
+  <Box width={"420px"}>
+    <BaseGameTimeSlider {...args} />
+  </Box>
 );
 
 export const Primary = Template.bind({});
