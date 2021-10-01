@@ -8,3 +8,6 @@ export * from "./RewindTheme";
 // Components
 export * from "./components/GameCanvas";
 export * from "./components/BaseCurrentTime";
+
+// Connected components
+export * from "./Analyzer";

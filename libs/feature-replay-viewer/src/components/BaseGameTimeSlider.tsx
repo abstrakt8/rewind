@@ -113,6 +113,7 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
         getAriaValueText={valueLabelFormat}
         valueLabelFormat={valueLabelFormat}
         valueLabelDisplay={"auto"}
+        step={16}
         max={duration}
       />
     </Box>
