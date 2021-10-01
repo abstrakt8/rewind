@@ -100,7 +100,7 @@ export function ReplayBar(props: ReplayBarProps) {
             },
           },
           "& .MuiSlider-rail": {
-            opacity: 0.6,
+            opacity: 0.28,
           },
         }}
         defaultValue={0.4}
