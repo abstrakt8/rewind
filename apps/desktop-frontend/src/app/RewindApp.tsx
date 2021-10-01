@@ -1,13 +1,14 @@
-import { useAppSelector } from "./hooks/hooks";
+import { useAppDispatch, useAppSelector } from "./hooks/hooks";
 import { Route, Switch } from "react-router-dom"; // react-router v4/v5
 import { LeftMenuSidebar } from "./LeftMenuSidebar";
-// import { Theater } from "@rewind/feature-replay-viewer";
 import { SplashScreen } from "./splash/SplashScreen";
 import { SetupScreen } from "./setup/SetupScreen";
 import { useEffect } from "react";
 import { HomeScreen } from "./home/HomeScreen";
-import { Box, Divider, Stack } from "@mui/material";
+import { Box, Divider, Modal, Stack } from "@mui/material";
 import { Analyzer } from "./analyzer/Analyzer";
+import { SettingsModal } from "../../../../libs/feature-replay-viewer/src/react/SettingsModal/SettingsModal";
+import { settingsModalClosed } from "./settings/slice";
 
 function ConnectedTheater() {
   const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
@@ -26,17 +27,43 @@ function ConnectedSetupScreen() {
   return <SetupScreen />;
 }
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+};
+
 function NormalView() {
   const { status } = useAppSelector((state) => state.backend);
+  const settingsModalOpen = useAppSelector((state) => state.settings.open);
+  const dispatch = useAppDispatch();
 
   if (status !== "READY") {
     return <div>You should not be here</div>;
   }
+
+  const onClose = () => dispatch(settingsModalClosed());
   return (
     <Stack direction={"row"} sx={{ height: "100vh" }}>
       <LeftMenuSidebar />
       <Divider orientation={"vertical"} />
       <Box sx={{ flexGrow: 1, height: "100%" }}>
+        <Modal open={settingsModalOpen} onClose={onClose}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 1028,
+              height: 728,
+            }}
+          >
+            <SettingsModal onClose={onClose} />
+          </Box>
+        </Modal>
         <Switch>
           <Route exact path={"/home"} render={() => <HomeScreen />} />
           <Route exact path={"/analyzer"} render={() => <ConnectedTheater />} />

@@ -1,4 +1,4 @@
-import { Box, Divider, IconButton, Slider, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Paper, Slider, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { forwardRef, useState } from "react";
 import { Close, Settings as SettingsIcon, Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -18,12 +18,15 @@ const MyTab = ({ index, label }: { index: number; label: string }) => {
   );
 };
 
-export interface SettingsProps {}
+export interface SettingsProps {
+  onClose?: () => void;
+}
 
 const minOpacity = 10;
 const maxOpacity = 100;
 
-export function Settings() {
+export function SettingsModal(props: SettingsProps) {
+  const { onClose } = props;
   const [tabIndex, setTabIndex] = useState(0);
   const handleTabChange = (event: any, newValue: any) => {
     setTabIndex(newValue);
@@ -33,19 +36,20 @@ export function Settings() {
 
   return (
     //TODO : Add opacity = 1% button
-    <Stack sx={{ filter: `opacity(${opacity}%)` }}>
+    <Paper
+      sx={{ filter: `opacity(${opacity}%)`, height: "100%", display: "flex", flexDirection: "column" }}
+      elevation={2}
+    >
       <Stack sx={{ py: 1, px: 2, alignItems: "center" }} direction={"row"} gap={1}>
         <SettingsIcon />
         <Typography fontWeight={"bolder"}>Settings</Typography>
         <Box flexGrow={1} />
-        <Divider orientation={"vertical"} sx={{ height: "50%", width: "1px" }} />
-        <IconButton>
+        <IconButton onClick={onClose}>
           <Close />
         </IconButton>
       </Stack>
       <Divider />
-
-      <Stack direction={"row"}>
+      <Stack direction={"row"} sx={{ flexGrow: 1 }}>
         <Tabs
           orientation="vertical"
           variant="scrollable"
@@ -61,6 +65,7 @@ export function Settings() {
           <Tab label={"Analyzer"} tabIndex={2} sx={{ textTransform: "none" }} />
           <Tab label={"About"} tabIndex={3} sx={{ textTransform: "none" }} />
         </Tabs>
+        <Box>Test</Box>
       </Stack>
       <Divider />
       <Stack sx={{ p: 1 }} direction={"row"}>
@@ -84,6 +89,6 @@ export function Settings() {
           </IconButton>
         </Stack>
       </Stack>
-    </Stack>
+    </Paper>
   );
 }

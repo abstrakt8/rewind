@@ -1,10 +1,10 @@
 import { Meta, Story } from "@storybook/react";
-import { Settings, SettingsProps } from "./SettingsModal";
+import { SettingsModal, SettingsProps } from "./SettingsModal";
 import { CssBaseline, Paper, ThemeProvider } from "@mui/material";
 import { RewindTheme } from "../muiTheme";
 
 export default {
-  component: Settings,
+  component: SettingsModal,
   title: "SettingsModal",
   argTypes: {
     onClick: { action: "onClick executed!" },
@@ -13,7 +13,7 @@ export default {
 
 const Template: Story<SettingsProps> = (args) => (
   <Paper elevation={2} sx={{ width: 560 }}>
-    <Settings {...args} />
+    <SettingsModal {...args} />
   </Paper>
 );
 
