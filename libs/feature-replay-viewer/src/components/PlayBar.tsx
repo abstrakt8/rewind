@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -10,7 +11,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, VolumeUp } from "@mui/icons-material";
+import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, Settings, VolumeUp } from "@mui/icons-material";
 import { useCallback, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
@@ -187,6 +188,16 @@ function HiddenButton() {
   );
 }
 
+function SettingsButton() {
+  return (
+    <IconButton>
+      <Settings />
+    </IconButton>
+  );
+}
+
+const VerticalDivider = () => <Divider orientation={"vertical"} sx={{ height: "80%" }} />;
+
 export function PlayBar() {
   return (
     <Stack height={64} gap={1} p={2} direction={"row"} alignItems={"center"}>
@@ -194,9 +205,13 @@ export function PlayBar() {
       <CurrentTime />
       <GameTimeSlider />
       <Duration />
-      <AudioButton />
-      <HiddenButton />
-      <MoreMenu />
+      <VerticalDivider />
+      <Stack direction={"row"} alignItems={"center"}>
+        <AudioButton />
+        <HiddenButton />
+        <SettingsButton />
+        <MoreMenu />
+      </Stack>
     </Stack>
   );
 }

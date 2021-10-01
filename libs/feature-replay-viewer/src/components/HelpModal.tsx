@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { FaBug, FaDiscord, FaGraduationCap, IoClose } from "react-icons/all";
 import { Dialog } from "@headlessui/react";
-import { RewindLinks } from "../Constants";
+import { RewindLinks } from "../utils/Constants";
 
 export function Key({ text }: { text: string }) {
   return (
