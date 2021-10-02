@@ -32,7 +32,7 @@ export class SceneManager {
     return this.managedScene.find((s) => s.key === key);
   }
 
-  get stage() {
+  createStage() {
     const container = new Container();
     this.managedScene.forEach((scene) => {
       if (scene.state === "PLAYING" || scene.state === "PAUSED") {
