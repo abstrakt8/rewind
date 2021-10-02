@@ -4,7 +4,7 @@ import { bufferTime, last, takeLast, throttleTime } from "rxjs/operators";
 import { useAnalysisApp } from "../providers/TheaterProvider";
 import { ALLOWED_SPEEDS } from "../utils/Constants";
 import { timer } from "rxjs";
-import { useInterval } from "../react/hooks/useInterval";
+import { useInterval } from "./useInterval";
 
 export function useGameClock() {
   const analyzer = useAnalysisApp();
