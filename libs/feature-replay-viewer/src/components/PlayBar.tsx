@@ -6,8 +6,8 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  MenuList,
   Popover,
-  Slider,
   Stack,
   Typography,
 } from "@mui/material";
@@ -15,12 +15,13 @@ import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, Settings, VolumeU
 import { useCallback, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
-import { BaseCurrentTime, ignoreFocus, useAnalysisApp } from "@rewind/feature-replay-viewer";
 import { useGameClockControls, useGameClockTime } from "../hooks/gameClock";
 import { formatGameTime } from "@rewind/osu/math";
 import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
 import { useModControls } from "../hooks/mods";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
+import { ALLOWED_SPEEDS } from "../utils/Constants";
+import { BaseCurrentTime, ignoreFocus } from "..";
 
 const centerUp = {
   anchorOrigin: {
@@ -196,6 +197,79 @@ function SettingsButton() {
   );
 }
 
+interface BaseSpeedButtonProps {
+  value: number;
+  onChange: (value: number) => any;
+}
+
+const speedLabels: Record<number, string> = { 0.75: "HT", 1.5: "DT" } as const;
+
+function BaseSpeedButton(props: BaseSpeedButtonProps) {
+  const { value, onChange } = props;
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const formatSpeed = (s: number) => `${s}x`;
+
+  // Floating point issues?
+
+  return (
+    <>
+      <IconButton
+        color={"inherit"}
+        onClick={handleClick}
+        // size={"small"}
+        // sx={{ width: "content" }}
+        // sx={{ fontSize: (theme) => theme.typography.fontSize }}
+      >
+        <Typography>{formatSpeed(value)}</Typography>
+      </IconButton>
+      <Menu
+        open={open}
+        onClose={handleClose}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+      >
+        <MenuList>
+          {ALLOWED_SPEEDS.map((s) => (
+            <MenuItem
+              key={s}
+              onClick={() => {
+                onChange(s);
+                handleClose();
+              }}
+              sx={{ width: "120px", maxWidth: "100%" }}
+            >
+              <ListItemText>{formatSpeed(s)}</ListItemText>
+              <Typography variant="body2" color="text.secondary">
+                {speedLabels[s] ?? ""}
+              </Typography>
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
+    </>
+  );
+}
+
+function SpeedButton() {
+  const { speed, setSpeed } = useGameClockControls();
+  return <BaseSpeedButton value={speed} onChange={setSpeed} />;
+}
+
 const VerticalDivider = () => <Divider orientation={"vertical"} sx={{ height: "80%" }} />;
 
 export function PlayBar() {
@@ -208,6 +282,7 @@ export function PlayBar() {
       <VerticalDivider />
       <Stack direction={"row"} alignItems={"center"}>
         <AudioButton />
+        <SpeedButton />
         <HiddenButton />
         <SettingsButton />
         <MoreMenu />
