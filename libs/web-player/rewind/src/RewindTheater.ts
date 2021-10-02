@@ -12,6 +12,8 @@ import { STAGE_TYPES } from "./types/STAGE_TYPES";
 import { BeatmapBackgroundSettingsStore } from "./services/BeatmapBackgroundSettingsStore";
 import { PlayfieldBorderSettingsStore } from "./services/PlayfieldBorderSettingsStore";
 import { BeatmapRenderSettingsStore } from "./services/BeatmapRenderSettingsStore";
+import { AnalysisCursorSettingsStore } from "./services/AnalysisCursorSettingsStore";
+import { ReplayCursorSettingsStore } from "./services/ReplayCursorSettingsStore";
 
 /**
  * Creates the Rewind app that serves multiple useful osu! tools.
@@ -28,6 +30,8 @@ export class RewindTheater {
     public readonly audioSettingsService: AudioSettingsStore,
     public readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
     public readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
+    public readonly analysisCursorSettingsStore: AnalysisCursorSettingsStore,
+    public readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
   ) {}
 
   // @PostConstruct
@@ -50,7 +54,8 @@ interface Settings {
 }
 
 export function createRewindTheater({ apiUrl }: Settings) {
-  const container = new Container({ defaultScope: "Singleton" });
+  // Regarding `skipBaseClassChecks`: https://github.com/inversify/InversifyJS/issues/522#issuecomment-682246076
+  const container = new Container({ defaultScope: "Singleton", skipBaseClassChecks: true });
   container.bind(TYPES.API_URL).toConstantValue(apiUrl);
   container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
   container.bind(BlueprintService).toSelf();
@@ -60,9 +65,11 @@ export function createRewindTheater({ apiUrl }: Settings) {
   container.bind(AudioService).toSelf();
   // General settings stores
   container.bind(AudioSettingsStore).toSelf();
+  container.bind(AnalysisCursorSettingsStore).toSelf();
   container.bind(BeatmapBackgroundSettingsStore).toSelf();
   container.bind(BeatmapRenderSettingsStore).toSelf();
   container.bind(PlayfieldBorderSettingsStore).toSelf();
+  container.bind(ReplayCursorSettingsStore).toSelf();
 
   // Theater facade
   container.bind(RewindTheater).toSelf();

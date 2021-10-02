@@ -18,7 +18,6 @@ import { AnalysisStage } from "../renderers/components/stage/AnalysisStage";
 import { ForegroundHUDPreparer } from "../renderers/components/hud/ForegroundHUDPreparer";
 import { PlayfieldFactory } from "../renderers/components/playfield/PlayfieldFactory";
 import { PlayfieldBorderFactory } from "../renderers/components/playfield/PlayfieldBorderFactory";
-import { StageViewSettingsService } from "../apps/analysis/StageViewSettingsService";
 import { HitObjectsContainerFactory } from "../renderers/components/playfield/HitObjectsContainerFactory";
 import { HitCircleFactory } from "../renderers/components/playfield/HitCircleFactory";
 import { SliderFactory } from "../renderers/components/playfield/SliderFactory";
@@ -66,7 +65,6 @@ export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
   // Sliders
   container.bind(SliderTextureManager).toSelf();
 
-  container.bind(StageViewSettingsService).toSelf();
   container.bind(AnalysisStage).toSelf();
   {
     container.bind(BeatmapBackgroundFactory).toSelf();

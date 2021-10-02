@@ -1,4 +1,4 @@
-import { AnalysisCursorSetting } from "./AnalysisCursorSetting";
+import { AnalysisCursorSettings } from "../../../settings/AnalysisCursorSettings";
 
 /**
  * Persistent settings that I would only consider in the analyzer app.
@@ -8,7 +8,7 @@ import { AnalysisCursorSetting } from "./AnalysisCursorSetting";
 
 export interface AnalysisSettings {
   sliderDebug: boolean;
-  analysisCursor: AnalysisCursorSetting;
+  analysisCursor: AnalysisCursorSettings;
 
   showUnstableRate: boolean;
 }

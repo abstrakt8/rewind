@@ -22,11 +22,8 @@ import {
   SkinSource,
 } from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks";
-// export const defaultSkinId: SkinId =
-// export const defaultSkinId: SkinId = {
-// export const defaultSkinId: SkinId =
-// export const defaultSkinId: SkinId =
-// export const defaultSkinId: SkinId =
+import { DEFAULT_ANALYSIS_CURSOR_SETTINGS } from "../../../web-player/rewind/src/settings/AnalysisCursorSettings";
+import { DEFAULT_REPLAY_CURSOR_SETTINGS } from "../../../web-player/rewind/src/settings/ReplayCursorSettings";
 
 const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",
@@ -38,7 +35,7 @@ function BeatmapBackgroundSettings() {
   const { beatmapBackgroundSettingsStore } = theater;
   const settings = useObservable(() => beatmapBackgroundSettingsStore.settings$, { blur: 0, enabled: false, dim: 0 });
   return (
-    <Stack p={2}>
+    <Stack>
       <Typography>Background blur</Typography>
       <Slider
         value={Math.round(settings.blur * 100)}
@@ -60,7 +57,7 @@ function BeatmapRenderSettings() {
   const settings = useObservable(() => beatmapRenderSettingsStore.settings$, DEFAULT_BEATMAP_RENDER_SETTINGS);
 
   return (
-    <Stack p={2}>
+    <Stack>
       <FormGroup>
         <FormControlLabel
           control={
@@ -77,11 +74,55 @@ function BeatmapRenderSettings() {
   );
 }
 
+function AnalysisCursorSettingsPanel() {
+  const { analysisCursorSettingsStore } = useTheater();
+  const settings = useObservable(() => analysisCursorSettingsStore.settings$, DEFAULT_ANALYSIS_CURSOR_SETTINGS);
+
+  return (
+    <Stack gap={2}>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={settings.enabled}
+              onChange={(event) => analysisCursorSettingsStore.setEnabled(event.target.checked)}
+            />
+          }
+          label={"Analysis Cursor"}
+        />
+      </FormGroup>
+    </Stack>
+  );
+}
+
+function ReplayCursorSettingsPanel() {
+  const { replayCursorSettingsStore } = useTheater();
+  const settings = useObservable(() => replayCursorSettingsStore.settings$, DEFAULT_REPLAY_CURSOR_SETTINGS);
+
+  return (
+    <Stack gap={2}>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={settings.enabled}
+              onChange={(event) => replayCursorSettingsStore.changeSettings((s) => (s.enabled = event.target.checked))}
+            />
+          }
+          label={"Replay Cursor"}
+        />
+      </FormGroup>
+    </Stack>
+  );
+}
+
 function GeneralSettings() {
   return (
-    <Stack>
+    <Stack p={2}>
       <BeatmapBackgroundSettings />
       <BeatmapRenderSettings />
+      <ReplayCursorSettingsPanel />
+      <AnalysisCursorSettingsPanel />
     </Stack>
   );
 }
