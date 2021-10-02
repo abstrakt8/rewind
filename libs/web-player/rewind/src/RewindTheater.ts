@@ -25,6 +25,7 @@ export class RewindTheater {
     private readonly skinLoader: SkinLoader,
     private readonly skinManager: SkinManager,
     public readonly audioSettingsService: AudioSettingsService,
+    public readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
   ) {}
 
   // @PostConstruct

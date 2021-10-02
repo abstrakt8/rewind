@@ -1,9 +1,10 @@
 import { useSettingsModalContext } from "../providers/SettingsProvider";
-import { Autocomplete, Box, Modal, TextField } from "@mui/material";
+import { Autocomplete, Box, Modal, Slider, Stack, TextField, Typography } from "@mui/material";
 import { BaseSettingsModal } from "./BaseSettingsModal";
-import { useTheater } from "../providers/TheaterProvider";
+import { useAnalysisApp, useTheater } from "../providers/TheaterProvider";
 import { useCallback, useState } from "react";
 import { DEFAULT_OSU_SKIN_ID, DEFAULT_REWIND_SKIN_ID, SkinId, SkinSource } from "@rewind/web-player/rewind";
+import { useObservable } from "rxjs-hooks";
 // export const defaultSkinId: SkinId =
 // export const defaultSkinId: SkinId = {
 // export const defaultSkinId: SkinId =
@@ -14,6 +15,29 @@ const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",
   rewind: "Rewind",
 };
+
+function GeneralSettings() {
+  const theater = useTheater();
+  const { beatmapBackgroundSettingsStore } = theater;
+  const settings = useObservable(() => beatmapBackgroundSettingsStore.settings$, { blur: 0, enabled: false, dim: 0 });
+
+  return (
+    <Stack p={2}>
+      <Typography>Background blur</Typography>
+      <Slider
+        value={Math.round(settings.blur * 100)}
+        onChange={(_, v) => beatmapBackgroundSettingsStore.setBlur((v as number) / 100)}
+        valueLabelDisplay={"auto"}
+      />
+      <Typography>Background dim</Typography>
+      <Slider
+        value={Math.round(settings.dim * 100)}
+        onChange={(_, v) => beatmapBackgroundSettingsStore.setDim((v as number) / 100)}
+        valueLabelDisplay={"auto"}
+      />
+    </Stack>
+  );
+}
 
 function SkinsSettings() {
   // TODO: Button for synchronizing skin list again
@@ -69,7 +93,8 @@ function SkinsSettings() {
 }
 
 export function SettingsModal() {
-  const { onSettingsModalOpenChange, settingsModalOpen } = useSettingsModalContext();
+  const { onSettingsModalOpenChange, settingsModalOpen, opacity, onTabIndexChange, onOpacityChange, tabIndex } =
+    useSettingsModalContext();
   const onClose = () => onSettingsModalOpenChange(false);
 
   return (
@@ -78,6 +103,8 @@ export function SettingsModal() {
       onClose={onClose}
       hideBackdrop={false}
       sx={{
+        // We reduce the default backdrop from 0.5 alpha to 0.1 in order for the user to better see the background
+        // behind the modal
         "& .MuiBackdrop-root": {
           backgroundColor: "rgba(0,0,0,0.1)",
         },
@@ -94,9 +121,13 @@ export function SettingsModal() {
         }}
       >
         <BaseSettingsModal
+          opacity={opacity}
+          tabIndex={tabIndex}
+          onTabIndexChange={onTabIndexChange}
+          onOpacityChange={onOpacityChange}
           onClose={onClose}
           tabs={[
-            { label: "General", component: <div>xd</div> },
+            { label: "General", component: <GeneralSettings /> },
             {
               label: "Skins",
               component: <SkinsSettings />,

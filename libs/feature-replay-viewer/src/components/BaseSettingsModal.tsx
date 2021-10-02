@@ -12,20 +12,24 @@ interface SettingTab {
 export interface SettingsProps {
   onClose?: () => void;
   tabs: Array<SettingTab>;
+
+  opacity: number;
+  onOpacityChange: (o: number) => unknown;
+
+  tabIndex: number;
+  onTabIndexChange: (i: number) => unknown;
 }
 
 const minOpacity = 25;
 const maxOpacity = 100;
 
 export function BaseSettingsModal(props: SettingsProps) {
-  const { onClose, tabs } = props;
-  const [tabIndex, setTabIndex] = useState(0);
+  const { onClose, tabs, opacity, onOpacityChange, tabIndex, onTabIndexChange } = props;
 
   const handleTabChange = (event: any, newValue: any) => {
-    setTabIndex(newValue);
+    onTabIndexChange(newValue);
   };
 
-  const [opacity, setOpacity] = useState(maxOpacity);
   const displayedTab = tabs[tabIndex].component;
 
   return (
@@ -67,12 +71,12 @@ export function BaseSettingsModal(props: SettingsProps) {
         </Typography>
         <Box flexGrow={1} />
         <Stack direction={"row"} alignItems={"center"} gap={2}>
-          <IconButton onClick={() => setOpacity(minOpacity)}>
+          <IconButton onClick={() => onOpacityChange(minOpacity)}>
             <VisibilityOff />
           </IconButton>
           <Slider
             value={opacity}
-            onChange={(_, v) => setOpacity(v as number)}
+            onChange={(_, v) => onOpacityChange(v as number)}
             step={5}
             min={minOpacity}
             max={maxOpacity}
@@ -80,7 +84,7 @@ export function BaseSettingsModal(props: SettingsProps) {
             sx={{ width: "12em" }}
             valueLabelDisplay={"auto"}
           />
-          <IconButton onClick={() => setOpacity(maxOpacity)}>
+          <IconButton onClick={() => onOpacityChange(maxOpacity)}>
             <Visibility />
           </IconButton>
         </Stack>
