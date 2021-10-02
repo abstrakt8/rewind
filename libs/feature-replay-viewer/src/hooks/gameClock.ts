@@ -1,8 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useObservable } from "rxjs-hooks";
-import { throttleTime } from "rxjs/operators";
+import { bufferTime, last, takeLast, throttleTime } from "rxjs/operators";
 import { useAnalysisApp } from "../providers/TheaterProvider";
 import { ALLOWED_SPEEDS } from "../utils/Constants";
+import { timer } from "rxjs";
+import { useInterval } from "../react/hooks/useInterval";
 
 export function useGameClock() {
   const analyzer = useAnalysisApp();
@@ -49,5 +51,13 @@ export function useGameClockControls() {
 // 60FPS by default
 export function useGameClockTime(fps = 60) {
   const gameClock = useGameClock();
-  return useObservable(() => gameClock.timeElapsedInMs$.pipe(throttleTime(1000 / fps)), 0);
+  const [time, setTime] = useState(0);
+
+  // return useObservable(() => gameClock.timeElapsedInMs$.pipe(throttleTime(1000 / fps)), 0);
+  // return useObservable(() => timer(0, 1000 / fps).pipe(gameClock.timeElapsedInMs$.asObservable()), 0);
+  // Use rxjs somehow
+  useInterval(() => {
+    setTime(gameClock.timeElapsedInMs);
+  }, 1000 / fps);
+  return time;
 }

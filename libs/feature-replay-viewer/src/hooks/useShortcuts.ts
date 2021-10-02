@@ -1,5 +1,4 @@
 import { useHotkeys } from "react-hotkeys-hook";
-import { useGameClock } from "../react/components/StageProvider/StageClockProvider";
 import { useGameClockControls } from "./gameClock";
 import { useModControls } from "./mods";
 
@@ -21,20 +20,19 @@ const generateKeyComboSimple = (keys: string[]) => keys.join(", ");
 const generateKeyCombo = (modifier = "", keys: string[]) => keys.map((k) => `${modifier}+${k}`).join(", ");
 
 export function useShortcuts() {
-  const { toggleClock } = useGameClockControls();
-  // const { toggleClock, increaseSpeed, decreaseSpeed, seekForward, seekBackward } = useGameClockControls();
+  const { toggleClock, seekBackward, seekForward, increaseSpeed, decreaseSpeed } = useGameClockControls();
   const { setHidden, hidden } = useModControls();
 
-  // useHotkeys(generateKeyComboSimple(upKeys), () => increaseSpeed(), [increaseSpeed]);
-  // useHotkeys(generateKeyComboSimple(downKeys), () => decreaseSpeed(), [decreaseSpeed]);
+  useHotkeys(generateKeyComboSimple(upKeys), () => increaseSpeed(), [increaseSpeed]);
+  useHotkeys(generateKeyComboSimple(downKeys), () => decreaseSpeed(), [decreaseSpeed]);
   useHotkeys("space", () => toggleClock(), [toggleClock]);
 
-  // useHotkeys(generateKeyCombo("shift", leftKeys), () => seekBackward(mediumJump), [seekBackward]);
-  // useHotkeys(generateKeyCombo("shift", rightKeys), () => seekForward(mediumJump), [seekForward]);
-  // useHotkeys(generateKeyCombo("ctrl", leftKeys), () => seekBackward(microscopeJump), [seekBackward]);
-  // useHotkeys(generateKeyCombo("ctrl", rightKeys), () => seekForward(microscopeJump), [seekForward]);
-  // useHotkeys(generateKeyComboSimple(leftKeys), () => seekBackward(frameJump), [seekBackward]);
-  // useHotkeys(generateKeyComboSimple(rightKeys), () => seekForward(frameJump), [seekForward]);
+  useHotkeys(generateKeyCombo("shift", leftKeys), () => seekBackward(mediumJump), [seekBackward]);
+  useHotkeys(generateKeyCombo("shift", rightKeys), () => seekForward(mediumJump), [seekForward]);
+  useHotkeys(generateKeyCombo("ctrl", leftKeys), () => seekBackward(microscopeJump), [seekBackward]);
+  useHotkeys(generateKeyCombo("ctrl", rightKeys), () => seekForward(microscopeJump), [seekForward]);
+  useHotkeys(generateKeyComboSimple(leftKeys), () => seekBackward(frameJump), [seekBackward]);
+  useHotkeys(generateKeyComboSimple(rightKeys), () => seekForward(frameJump), [seekForward]);
 
   // These have really bad collisions
   // useHotkeys(`alt+${leftKey}`, () => seekBackward(frameJump), [seekBackward]);
