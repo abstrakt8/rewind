@@ -22,6 +22,7 @@ import { useModControls } from "../hooks/mods";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import { ALLOWED_SPEEDS } from "../utils/Constants";
 import { BaseCurrentTime, ignoreFocus } from "..";
+import { useSettingsModalContext } from "../providers/SettingsProvider";
 
 const centerUp = {
   anchorOrigin: {
@@ -190,8 +191,9 @@ function HiddenButton() {
 }
 
 function SettingsButton() {
+  const { onSettingsModalOpenChange } = useSettingsModalContext();
   return (
-    <IconButton>
+    <IconButton onClick={() => onSettingsModalOpenChange(true)}>
       <Settings />
     </IconButton>
   );
