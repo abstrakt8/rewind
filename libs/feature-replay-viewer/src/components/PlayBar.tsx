@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, Settings, VolumeUp } from "@mui/icons-material";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
 import { useGameClockControls, useGameClockTime } from "../hooks/gameClock";
@@ -21,8 +21,11 @@ import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
 import { useModControls } from "../hooks/mods";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import { ALLOWED_SPEEDS } from "../utils/Constants";
-import { BaseCurrentTime, ignoreFocus } from "..";
+import { BaseCurrentTime, ignoreFocus, useAnalysisApp, useTheater } from "..";
 import { useSettingsModalContext } from "../providers/SettingsProvider";
+import { PlaybarColors } from "../utils/PlaybarColors";
+import { ReplayAnalysisEvent } from "@rewind/osu/core";
+import { useObservable } from "rxjs-hooks";
 
 const centerUp = {
   anchorOrigin: {
@@ -156,11 +159,46 @@ function CurrentTime() {
   );
 }
 
+function groupTimings(events: ReplayAnalysisEvent[]) {
+  const missTimings: number[] = [];
+  const mehTimings: number[] = [];
+  const okTimings: number[] = [];
+  const sliderBreakTimings: number[] = [];
+
+  events.forEach((e) => {
+    switch (e.type) {
+      case "HitObjectJudgement":
+        // TODO: for lazer style, this needs some rework
+        if (e.isSliderHead) {
+          if (e.verdict === "MISS") missTimings.push(e.time);
+          return;
+        } else {
+          if (e.verdict === "MISS") missTimings.push(e.time);
+          if (e.verdict === "MEH") mehTimings.push(e.time);
+          if (e.verdict === "OK") okTimings.push(e.time);
+        }
+        // if(e.verdict === "GREAT" && show300s) events.push(); // Not sure if this will ever be implemented
+        break;
+      case "CheckpointJudgement":
+        if (!e.hit && !e.isLastTick) sliderBreakTimings.push(e.time);
+        break;
+      case "UnnecessaryClick":
+        // TODO
+        break;
+    }
+  });
+  return { missTimings, mehTimings, okTimings, sliderBreakTimings };
+}
+
 function GameTimeSlider() {
   // TODO: Depending on if replay is loaded and settings
   const backgroundEnable = true;
   const currentTime = useGameClockTime(30);
   const { seekTo, duration } = useGameClockControls();
+  const { gameSimulator } = useAnalysisApp();
+  const events = useObservable(() => gameSimulator.replayEvents$, []);
+
+  const { sliderBreakTimings, missTimings, mehTimings, okTimings } = useMemo(() => groupTimings(events), [events]);
 
   return (
     <BaseGameTimeSlider
@@ -168,6 +206,12 @@ function GameTimeSlider() {
       duration={duration}
       currentTime={currentTime}
       onChange={seekTo}
+      events={[
+        { color: PlaybarColors.MISS, timings: missTimings, tooltip: "Misses" },
+        { color: PlaybarColors.SLIDER_BREAK, timings: sliderBreakTimings, tooltip: "Sliderbreaks" },
+        { color: PlaybarColors.MEH, timings: mehTimings, tooltip: "50s" },
+        { color: PlaybarColors.OK, timings: okTimings, tooltip: "100s" },
+      ]}
     />
   );
 }

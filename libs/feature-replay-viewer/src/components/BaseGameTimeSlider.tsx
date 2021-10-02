@@ -1,6 +1,6 @@
 import { Box, darken, Slider, Stack, Tooltip } from "@mui/material";
 import { formatGameTime } from "@rewind/osu/math";
-import { ignoreFocus } from "@rewind/feature-replay-viewer";
+import { ignoreFocus } from "../utils/IgnoreFocus";
 
 interface EventLineProps {
   color: string;
@@ -56,10 +56,12 @@ export interface BaseGameTimeSliderProps {
   currentTime: number;
   // When the slider is dragged
   onChange: (value: number) => any;
+
+  events: { timings: number[]; tooltip: string; color: string }[];
 }
 
 export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
-  const { backgroundEnable, duration, currentTime, onChange } = props;
+  const { backgroundEnable, duration, currentTime, onChange, events } = props;
   const valueLabelFormat = (value: number) => formatGameTime(value);
 
   return (
@@ -72,10 +74,9 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
           filter: "brightness(50%)",
         }}
       >
-        <EventLine color={"hsl(0,100%,50%)"} tooltip={"Misses"} positions={[0.3]} />
-        <EventLine color={"hsl(21,100%,50%)"} tooltip={"Slider Breaks"} positions={[0.0, 0.5, 0.9]} />
-        <EventLine color={"hsl(52,100%,50%)"} tooltip={"50s"} positions={[0.4, 0.6, 0.88]} />
-        <EventLine color={"hsl(96,100%,50%)"} tooltip={"100s"} positions={[0.1, 0.2, 0.33, 0.34, 0.345, 0.6, 0.601]} />
+        {events.map((e) => (
+          <EventLine color={e.color} tooltip={e.tooltip} positions={e.timings.map((t) => t / duration)} />
+        ))}
       </Stack>
       <Slider
         onFocus={ignoreFocus}
