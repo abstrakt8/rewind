@@ -193,7 +193,7 @@ function HiddenButton() {
 function SettingsButton() {
   const { onSettingsModalOpenChange } = useSettingsModalContext();
   return (
-    <IconButton onClick={() => onSettingsModalOpenChange(true)}>
+    <IconButton onClick={() => onSettingsModalOpenChange(true)} onFocus={ignoreFocus}>
       <Settings />
     </IconButton>
   );

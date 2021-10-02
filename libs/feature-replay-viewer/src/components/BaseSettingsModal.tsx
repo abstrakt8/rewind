@@ -1,6 +1,8 @@
 import { Box, Divider, IconButton, Paper, Slider, Stack, Tab, Tabs, Typography } from "@mui/material";
 import React, { forwardRef, useState } from "react";
 import { Close, Settings as SettingsIcon, Visibility, VisibilityOff } from "@mui/icons-material";
+import { FaDiscord } from "react-icons/all";
+import { RewindLinks } from "../utils/Constants";
 
 interface SettingTab {
   component: React.ReactNode;
@@ -12,7 +14,7 @@ export interface SettingsProps {
   tabs: Array<SettingTab>;
 }
 
-const minOpacity = 10;
+const minOpacity = 25;
 const maxOpacity = 100;
 
 export function BaseSettingsModal(props: SettingsProps) {
@@ -49,7 +51,7 @@ export function BaseSettingsModal(props: SettingsProps) {
           sx={{ borderRight: 1, borderColor: "divider" }}
         >
           {tabs.map(({ label }, index) => (
-            <Tab label={label} tabIndex={index} sx={{ textTransform: "none" }} />
+            <Tab label={label} key={index} tabIndex={index} sx={{ textTransform: "none" }} />
           ))}
         </Tabs>
         {displayedTab}
@@ -57,7 +59,11 @@ export function BaseSettingsModal(props: SettingsProps) {
       <Divider />
       <Stack sx={{ px: 2, py: 1, flexDirection: "row", alignItems: "center" }}>
         <Typography fontSize={"caption.fontSize"} color={"text.secondary"}>
-          Rewind v0.0.2 by abstrakt
+          {/*TODO: Version dynamic*/}
+          Rewind v0.0.2 by abstrakt | osu! University
+          <IconButton href={RewindLinks.OsuUniDiscord} target={"_blank"} size={"small"}>
+            <FaDiscord />
+          </IconButton>
         </Typography>
         <Box flexGrow={1} />
         <Stack direction={"row"} alignItems={"center"} gap={2}>
