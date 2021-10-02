@@ -11,6 +11,7 @@ import { AudioSettingsService } from "./services/AudioSettingsService";
 import { STAGE_TYPES } from "./types/STAGE_TYPES";
 import { BeatmapBackgroundSettingsStore } from "./services/BeatmapBackgroundSettingsStore";
 import { PlayfieldBorderSettingsStore } from "./services/PlayfieldBorderSettingsStore";
+import { BeatmapRenderSettingsStore } from "./services/BeatmapRenderSettingsStore";
 
 /**
  * Creates the Rewind app that serves multiple useful osu! tools.
@@ -26,6 +27,7 @@ export class RewindTheater {
     private readonly skinManager: SkinManager,
     public readonly audioSettingsService: AudioSettingsService,
     public readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
+    public readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
   ) {}
 
   // @PostConstruct
@@ -59,6 +61,7 @@ export function createRewindTheater({ apiUrl }: Settings) {
   // General settings stores
   container.bind(AudioSettingsService).toSelf();
   container.bind(BeatmapBackgroundSettingsStore).toSelf();
+  container.bind(BeatmapRenderSettingsStore).toSelf();
   container.bind(PlayfieldBorderSettingsStore).toSelf();
 
   // Theater facade

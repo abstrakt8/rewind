@@ -1,4 +1,4 @@
-import { useTheater } from "@rewind/feature-replay-viewer";
+import { useTheater } from "../providers/TheaterProvider";
 import { useObservable } from "rxjs-hooks";
 import { AudioSettings } from "@rewind/web-player/rewind";
 

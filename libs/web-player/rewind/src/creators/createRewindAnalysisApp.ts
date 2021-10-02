@@ -12,7 +12,7 @@ import { AnalysisSceneManager } from "../apps/analysis/manager/AnalysisSceneMana
 import { SceneManager } from "../core/scenes/SceneManager";
 import { GameLoop } from "../core/game/GameLoop";
 import { AnalysisScene } from "../apps/analysis/scenes/AnalysisScene";
-import { BeatmapBackground, BeatmapBackgroundFactory } from "../renderers/components/background/BeatmapBackground";
+import { BeatmapBackgroundFactory } from "../renderers/components/background/BeatmapBackground";
 import { TextureManager } from "../textures/TextureManager";
 import { AnalysisStage } from "../renderers/components/stage/AnalysisStage";
 import { ForegroundHUDPreparer } from "../renderers/components/hud/ForegroundHUDPreparer";

@@ -7,3 +7,9 @@ export interface BeatmapBackgroundSettings {
   // dim = 1 - alpha
   dim: number;
 }
+
+export const DEFAULT_BEATMAP_BACKGROUND_SETTINGS: BeatmapBackgroundSettings = Object.freeze({
+  dim: 0.8,
+  blur: 0.4,
+  enabled: true,
+});

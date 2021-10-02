@@ -1,6 +1,5 @@
 import { useHotkeys } from "react-hotkeys-hook";
 import { useGameClock } from "../react/components/StageProvider/StageClockProvider";
-import { useStageViewContext } from "../react/components/StageProvider/StageViewProvider";
 import { useGameClockControls } from "./gameClock";
 import { useModControls } from "./mods";
 
