@@ -1,8 +1,9 @@
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { PlayBar } from "./components/PlayBar";
-import { GameCanvas, useAnalysisApp } from "@rewind/feature-replay-viewer";
 import { useEffect } from "react";
 import { useShortcuts } from "./hooks/useShortcuts";
+import { GameCanvas } from "./components/GameCanvas";
+import { useAnalysisApp } from "./providers/TheaterProvider";
 
 const CanvasPlaceHolder = () => (
   <Box
