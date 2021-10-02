@@ -11,11 +11,13 @@ const DEFAULT_SETTINGS: BeatmapBackgroundSettings = {
 
 @injectable()
 export class BeatmapBackgroundSettingsStore {
+  static defaultSettings: BeatmapBackgroundSettings = DEFAULT_SETTINGS;
+
   settings$: BehaviorSubject<BeatmapBackgroundSettings>;
   texture$: BehaviorSubject<Texture>;
 
   constructor() {
-    this.settings$ = new BehaviorSubject<BeatmapBackgroundSettings>(DEFAULT_SETTINGS);
+    this.settings$ = new BehaviorSubject<BeatmapBackgroundSettings>(BeatmapBackgroundSettingsStore.defaultSettings);
     this.texture$ = new BehaviorSubject<Texture>(Texture.EMPTY);
   }
 
@@ -25,5 +27,17 @@ export class BeatmapBackgroundSettingsStore {
 
   get texture() {
     return this.texture$.getValue();
+  }
+
+  setBlur(blur: number) {
+    this.settings$.next({ ...this.settings, blur });
+  }
+
+  setDim(dim: number) {
+    this.settings$.next({ ...this.settings, dim });
+  }
+
+  setEnabled(enabled: boolean) {
+    this.settings$.next({ ...this.settings, enabled });
   }
 }
