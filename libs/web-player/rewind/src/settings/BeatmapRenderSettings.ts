@@ -4,6 +4,6 @@ export interface BeatmapRenderSettings {
 }
 
 export const DEFAULT_BEATMAP_RENDER_SETTINGS: BeatmapRenderSettings = Object.freeze({
-  sliderDevMode: true,
+  sliderDevMode: false,
   drawSliderEnds: false,
 });

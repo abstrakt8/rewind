@@ -5,9 +5,10 @@ import { AnalysisCursor } from "@rewind/osu-pixi/rewind";
 import { OsuAction } from "@rewind/osu/core";
 import { injectable } from "inversify";
 import { GameplayClock } from "../../../core/game/GameplayClock";
-import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
 import { SkinManager } from "../../../core/skins/SkinManager";
 import { ReplayManager } from "../../../apps/analysis/manager/ReplayManager";
+import { AnalysisCursorSettingsStore } from "../../../services/AnalysisCursorSettingsStore";
+import { ReplayCursorSettingsStore } from "../../../services/ReplayCursorSettingsStore";
 
 @injectable()
 export class CursorPreparer {
@@ -19,7 +20,8 @@ export class CursorPreparer {
     private readonly replayManager: ReplayManager,
     private readonly skinManager: SkinManager,
     private readonly gameClock: GameplayClock,
-    private readonly stageViewService: StageViewSettingsService,
+    private readonly analysisCursorSettingsStore: AnalysisCursorSettingsStore,
+    private readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
   ) {
     this.container = new Container();
     this.osuClassicCursor = new OsuClassicCursor();
@@ -30,14 +32,14 @@ export class CursorPreparer {
     return this.gameClock.timeElapsedInMs;
   }
 
-  get view() {
-    return this.stageViewService.getView();
+  get analysisCursorSettings() {
+    return this.analysisCursorSettingsStore.settings;
   }
 
   updateOsuCursor() {
-    const { osuCursor } = this.view;
+    const { enabled, scaleWithCS, scale, showTrail } = this.replayCursorSettingsStore.settings;
 
-    if (!osuCursor.enabled) {
+    if (!enabled) {
       return;
     }
 
@@ -45,7 +47,6 @@ export class CursorPreparer {
     const replay = this.replayManager.getMainReplay();
     const { time } = this;
     const cursor = this.osuClassicCursor;
-    const { showTrail, scaleWithCS, scale } = osuCursor;
     if (!replay) return;
     const frames = replay.frames;
 
@@ -86,8 +87,8 @@ export class CursorPreparer {
   }
 
   updateAnalysisCursor() {
-    const { replay, time, view } = this;
-    const { enabled } = view.analysisCursor;
+    const { replay, time, analysisCursorSettings } = this;
+    const { enabled } = analysisCursorSettings;
     if (!enabled) {
       return;
     }
@@ -121,11 +122,10 @@ export class CursorPreparer {
       }
     }
     const colorScheme = [
-      0x5d6463, // none gray
-      0xffa500, // left (orange)
-      0x00ff00, // right (green)
-      // 0xfa0cd9, // right (pink)
-      0x3cbdc1, // both (cyan)
+      analysisCursorSettings.colorNoKeys,
+      analysisCursorSettings.colorKey1,
+      analysisCursorSettings.colorKey2,
+      analysisCursorSettings.colorBothKeys,
     ];
     for (let i = 0; i < trailCount && pi - i >= 0; i++) {
       const j = pi - i;

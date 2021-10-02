@@ -45,8 +45,13 @@ export class AudioSettingsStore {
     this.settings$.next(settings);
   }
 
-  private changeSettings(fn: (draft: WritableDraft<AudioSettings>) => void) {
-    this.applyNewSettings(produce(this.settings$.getValue(), fn));
+  private changeSettings(fn: (draft: WritableDraft<AudioSettings>) => unknown) {
+    this.applyNewSettings(
+      produce(this.settings$.getValue(), (draft) => {
+        fn(draft);
+        // no return done means we can just return something
+      }),
+    );
   }
 
   toggleMuted() {
