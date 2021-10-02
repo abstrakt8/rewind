@@ -6,7 +6,7 @@ import { SetupScreen } from "./setup/SetupScreen";
 import { useEffect } from "react";
 import { HomeScreen } from "./home/HomeScreen";
 import { Box, Divider, Modal, Stack } from "@mui/material";
-import { Analyzer } from "../../../../libs/feature-replay-viewer/src/Analyzer";
+import { Analyzer } from "@rewind/feature-replay-viewer";
 import { SettingsModal } from "../../../../libs/feature-replay-viewer/src/components/SettingsModal";
 import { settingsModalClosed } from "./settings/slice";
 
