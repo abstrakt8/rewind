@@ -1,7 +1,7 @@
 import { inject, injectable, postConstruct } from "inversify";
 import { EventEmitter, GameClockEvents } from "../../events";
 import { STAGE_TYPES } from "../../types/STAGE_TYPES";
-import { AudioSettingsService } from "../../services/AudioSettingsService";
+import { AudioSettingsStore } from "../../services/AudioSettingsStore";
 import { AudioSettings } from "../../settings/AudioSettings";
 
 // HTML5 Audio supports time stretching without pitch changing (otherwise sounds like night core)
@@ -26,7 +26,7 @@ export class AudioEngine {
   schedulePointer = 0;
 
   constructor(
-    private readonly audioSettingService: AudioSettingsService,
+    private readonly audioSettingService: AudioSettingsStore,
     @inject(STAGE_TYPES.AUDIO_CONTEXT) private readonly audioContext: AudioContext,
     @inject(STAGE_TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter,
   ) {
