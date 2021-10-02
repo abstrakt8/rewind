@@ -12,6 +12,7 @@ import {
 } from "@rewind/osu/core";
 import { injectable } from "inversify";
 import type { OsuReplay } from "../../model/OsuReplay";
+import { BehaviorSubject } from "rxjs";
 
 @injectable()
 export class GameSimulator {
@@ -19,8 +20,11 @@ export class GameSimulator {
   private gameplayEvaluator?: GameplayInfoEvaluator;
   private currentState?: GameState;
   private currentInfo: GameplayInfo = defaultGameplayInfo;
-  public replayEvents: ReplayAnalysisEvent[] = [];
+  public replayEvents$: BehaviorSubject<ReplayAnalysisEvent[]>;
   public judgements: HitObjectJudgement[] = [];
+  constructor() {
+    this.replayEvents$ = new BehaviorSubject<ReplayAnalysisEvent[]>([]);
+  }
 
   simulateReplay(beatmap: Beatmap, replay: OsuReplay) {
     this.gameplayTimeMachine = new BucketedGameStateTimeMachine(replay.frames, beatmap, {
@@ -32,8 +36,8 @@ export class GameSimulator {
     this.currentState = this.gameplayTimeMachine.gameStateAt(1e9);
     this.currentInfo = defaultGameplayInfo;
     // this.currentState = finalState...
-    this.replayEvents = retrieveEvents(this.currentState, beatmap.hitObjects);
-    this.judgements = this.replayEvents.filter(isHitObjectJudgement);
+    this.replayEvents$.next(retrieveEvents(this.currentState, beatmap.hitObjects));
+    this.judgements = this.replayEvents$.getValue().filter(isHitObjectJudgement);
     console.log("Judgements ", this.judgements.length);
   }
 

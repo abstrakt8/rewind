@@ -37,6 +37,7 @@ import { AnalysisScene } from "./scenes/AnalysisScene";
 export class AnalysisApp {
   constructor(
     public readonly gameClock: GameplayClock,
+    public readonly gameSimulator: GameSimulator,
     public readonly modSettingsManager: ModSettingsManager,
     private readonly audioService: AudioService,
     private readonly blueprintService: BlueprintService,
@@ -44,7 +45,6 @@ export class AnalysisApp {
     private readonly gameLoop: GameLoop,
     private readonly beatmapManager: BeatmapManager,
     private readonly replayManager: ReplayManager,
-    private readonly gameSimulator: GameSimulator,
     private readonly sceneManager: AnalysisSceneManager,
     private readonly pixiRenderer: PixiRendererManager,
     private readonly audioEngine: AudioEngine,

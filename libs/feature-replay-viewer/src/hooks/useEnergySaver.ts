@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useGameClock } from "../components/StageProvider/StageClockProvider";
 import { usePageVisibility } from "react-page-visibility";
 // import { useStageContext } from "../components/StageProvider/StageProvider";
 
