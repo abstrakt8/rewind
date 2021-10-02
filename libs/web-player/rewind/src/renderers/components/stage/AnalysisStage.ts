@@ -54,8 +54,6 @@ export class AnalysisStage {
    *  So the virtual screen is supposed to have the dimensions 1600x900.
    */
   resizeTo() {
-    if (!this.rendererManager.resizeRendererToCanvasSize()) return;
-
     const screen = this.rendererManager.getRenderer()?.screen;
     // Should not be possible
     if (!screen) return;

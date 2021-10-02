@@ -12,11 +12,13 @@ export class PixiRendererManager {
 
   initializeRenderer(canvas: HTMLCanvasElement) {
     // Destroy old renderer
-    this.renderer = new PIXI.Renderer({ view: canvas, antialias: true });
     this.canvas = canvas;
+    this.renderer = new PIXI.Renderer({ view: canvas, antialias: true });
+    this.resizeCanvasToDisplaySize();
   }
 
-  resizeRendererToCanvasSize() {
+  // https://webgl2fundamentals.org/webgl/lessons/webgl-anti-patterns.html
+  resizeCanvasToDisplaySize() {
     const canvas = this.canvas;
     if (!canvas || !this.renderer) {
       return false;
