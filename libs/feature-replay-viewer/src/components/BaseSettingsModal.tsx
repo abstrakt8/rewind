@@ -1,4 +1,4 @@
-import { Box, Divider, IconButton, Paper, Slider, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Link, Paper, Slider, Stack, Tab, Tabs, Typography } from "@mui/material";
 import React, { forwardRef, useState } from "react";
 import { Close, Settings as SettingsIcon, Visibility, VisibilityOff } from "@mui/icons-material";
 import { FaDiscord } from "react-icons/all";
@@ -64,7 +64,11 @@ export function BaseSettingsModal(props: SettingsProps) {
       <Stack sx={{ px: 2, py: 1, flexDirection: "row", alignItems: "center" }}>
         <Typography fontSize={"caption.fontSize"} color={"text.secondary"}>
           {/*TODO: Version dynamic*/}
-          Rewind v0.0.2 by abstrakt | osu! University
+          Rewind v0.0.2 by{" "}
+          <Link href={RewindLinks.abstraktOsu} target={"_blank"} color={"text.secondary"}>
+            abstrakt
+          </Link>{" "}
+          | osu! University
           <IconButton href={RewindLinks.OsuUniDiscord} target={"_blank"} size={"small"}>
             <FaDiscord />
           </IconButton>
