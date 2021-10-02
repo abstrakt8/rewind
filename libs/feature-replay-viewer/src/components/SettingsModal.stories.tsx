@@ -1,20 +1,25 @@
 import { Meta, Story } from "@storybook/react";
-import { SettingsModal, SettingsProps } from "./SettingsModal";
+import { BaseSettingsModal, SettingsProps } from "./BaseSettingsModal";
 import { Paper } from "@mui/material";
 
 export default {
-  component: SettingsModal,
-  title: "SettingsModal",
+  component: BaseSettingsModal,
+  title: "BaseSettingsModal",
   argTypes: {
-    onClick: { action: "onClick executed!" },
+    onClose: { action: "onClick executed!" },
   },
 } as Meta;
 
 const Template: Story<SettingsProps> = (args) => (
   <Paper elevation={2} sx={{ width: 560 }}>
-    <SettingsModal {...args} />
+    <BaseSettingsModal {...args} />
   </Paper>
 );
 
 export const Primary = Template.bind({});
-Primary.args = {};
+Primary.args = {
+  tabs: [
+    { component: <div>General</div>, label: "General" },
+    { component: <div>Skinning</div>, label: "Cool" },
+  ],
+};

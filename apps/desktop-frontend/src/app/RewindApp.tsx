@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { HomeScreen } from "./home/HomeScreen";
 import { Box, Divider, Modal, Stack } from "@mui/material";
 import { Analyzer } from "@rewind/feature-replay-viewer";
-import { SettingsModal } from "../../../../libs/feature-replay-viewer/src/components/SettingsModal";
+import { BaseSettingsModal } from "../../../../libs/feature-replay-viewer/src/components/BaseSettingsModal";
 import { settingsModalClosed } from "./settings/slice";
 
 function ConnectedAnalyzer() {
@@ -61,7 +61,7 @@ function NormalView() {
               height: 728,
             }}
           >
-            <SettingsModal onClose={onClose} />
+            <BaseSettingsModal onClose={onClose} />
           </Box>
         </Modal>
         <Switch>

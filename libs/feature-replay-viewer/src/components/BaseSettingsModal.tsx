@@ -1,41 +1,32 @@
 import { Box, Divider, IconButton, Paper, Slider, Stack, Tab, Tabs, Typography } from "@mui/material";
-import { forwardRef, useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { Close, Settings as SettingsIcon, Visibility, VisibilityOff } from "@mui/icons-material";
 
-function a11yProps(index: number) {
-  return {};
+interface SettingTab {
+  component: React.ReactNode;
+  label: string;
 }
-
-const MyTab = ({ index, label }: { index: number; label: string }) => {
-  return (
-    <Tab
-      id={`vertical-tab-${index}`}
-      aria-controls={`vertical-tab-${index}`}
-      label={label}
-      tabIndex={index}
-      sx={{ textTransform: "none" }}
-    />
-  );
-};
 
 export interface SettingsProps {
   onClose?: () => void;
+  tabs: Array<SettingTab>;
 }
 
 const minOpacity = 10;
 const maxOpacity = 100;
 
-export function SettingsModal(props: SettingsProps) {
-  const { onClose } = props;
+export function BaseSettingsModal(props: SettingsProps) {
+  const { onClose, tabs } = props;
   const [tabIndex, setTabIndex] = useState(0);
+
   const handleTabChange = (event: any, newValue: any) => {
     setTabIndex(newValue);
   };
 
   const [opacity, setOpacity] = useState(maxOpacity);
+  const displayedTab = tabs[tabIndex].component;
 
   return (
-    //TODO : Add opacity = 1% button
     <Paper
       sx={{ filter: `opacity(${opacity}%)`, height: "100%", display: "flex", flexDirection: "column" }}
       elevation={2}
@@ -57,18 +48,17 @@ export function SettingsModal(props: SettingsProps) {
           onChange={handleTabChange}
           sx={{ borderRight: 1, borderColor: "divider" }}
         >
-          {/*<MyTab label={"General"} index={0} />*/}
-          {/*<MyTab label={"Skins"} index={1} />*/}
-          {/*<MyTab label={"Analyzer"} index={2} />*/}
-          <Tab label={"General"} tabIndex={0} sx={{ textTransform: "none" }} />
-          <Tab label={"Skins"} tabIndex={1} sx={{ textTransform: "none" }} />
-          <Tab label={"Analyzer"} tabIndex={2} sx={{ textTransform: "none" }} />
-          <Tab label={"About"} tabIndex={3} sx={{ textTransform: "none" }} />
+          {tabs.map(({ label }, index) => (
+            <Tab label={label} tabIndex={index} sx={{ textTransform: "none" }} />
+          ))}
         </Tabs>
-        <Box>Test</Box>
+        {displayedTab}
       </Stack>
       <Divider />
-      <Stack sx={{ p: 1 }} direction={"row"}>
+      <Stack sx={{ px: 2, py: 1, flexDirection: "row", alignItems: "center" }}>
+        <Typography fontSize={"caption.fontSize"} color={"text.secondary"}>
+          Rewind v0.0.2 by abstrakt
+        </Typography>
         <Box flexGrow={1} />
         <Stack direction={"row"} alignItems={"center"} gap={2}>
           <IconButton onClick={() => setOpacity(minOpacity)}>
