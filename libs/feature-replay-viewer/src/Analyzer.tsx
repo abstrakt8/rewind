@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useShortcuts } from "./hooks/useShortcuts";
 import { GameCanvas } from "./components/GameCanvas";
 import { useAnalysisApp } from "./providers/TheaterProvider";
-import { SettingsModal } from "./components/SettingsModal";
+import { BaseSettingsModal } from "./components/BaseSettingsModal";
 import { useSettingsModalContext } from "./providers/SettingsProvider";
 
 const CanvasPlaceHolder = () => (
@@ -44,7 +44,16 @@ function MySettingsModal() {
           height: 728,
         }}
       >
-        <SettingsModal onClose={onClose} />
+        <BaseSettingsModal
+          onClose={onClose}
+          tabs={[
+            { label: "General", component: <div>xd</div> },
+            {
+              label: "Skins",
+              component: <div>skins</div>,
+            },
+          ]}
+        />
       </Box>
     </Modal>
   );
