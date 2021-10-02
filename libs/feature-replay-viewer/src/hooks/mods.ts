@@ -1,4 +1,4 @@
-import { useAnalysisApp } from "@rewind/feature-replay-viewer";
+import { useAnalysisApp } from "../providers/TheaterProvider";
 import { useObservable } from "rxjs-hooks";
 import { useCallback } from "react";
 

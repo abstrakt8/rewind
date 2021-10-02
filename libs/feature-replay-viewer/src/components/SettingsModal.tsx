@@ -1,9 +1,26 @@
 import { useSettingsModalContext } from "../providers/SettingsProvider";
-import { Autocomplete, Box, Modal, Slider, Stack, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  FormControlLabel,
+  FormGroup,
+  Modal,
+  Slider,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { BaseSettingsModal } from "./BaseSettingsModal";
-import { useAnalysisApp, useTheater } from "../providers/TheaterProvider";
+import { useTheater } from "../providers/TheaterProvider";
 import { useCallback, useState } from "react";
-import { DEFAULT_OSU_SKIN_ID, DEFAULT_REWIND_SKIN_ID, SkinId, SkinSource } from "@rewind/web-player/rewind";
+import {
+  DEFAULT_BEATMAP_RENDER_SETTINGS,
+  DEFAULT_OSU_SKIN_ID,
+  DEFAULT_REWIND_SKIN_ID,
+  SkinId,
+  SkinSource,
+} from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks";
 // export const defaultSkinId: SkinId =
 // export const defaultSkinId: SkinId = {
@@ -16,11 +33,10 @@ const sourceName: Record<SkinSource, string> = {
   rewind: "Rewind",
 };
 
-function GeneralSettings() {
+function BeatmapBackgroundSettings() {
   const theater = useTheater();
   const { beatmapBackgroundSettingsStore } = theater;
   const settings = useObservable(() => beatmapBackgroundSettingsStore.settings$, { blur: 0, enabled: false, dim: 0 });
-
   return (
     <Stack p={2}>
       <Typography>Background blur</Typography>
@@ -35,6 +51,37 @@ function GeneralSettings() {
         onChange={(_, v) => beatmapBackgroundSettingsStore.setDim((v as number) / 100)}
         valueLabelDisplay={"auto"}
       />
+    </Stack>
+  );
+}
+
+function BeatmapRenderSettings() {
+  const { beatmapRenderSettingsStore } = useTheater();
+  const settings = useObservable(() => beatmapRenderSettingsStore.settings$, DEFAULT_BEATMAP_RENDER_SETTINGS);
+
+  return (
+    <Stack p={2}>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={settings.sliderDevMode}
+              onChange={(event) => beatmapRenderSettingsStore.setSliderDevMode(event.target.checked)}
+            />
+          }
+          label={"Slider Dev Mode"}
+        />
+      </FormGroup>
+      {/*  draw slider ends*/}
+    </Stack>
+  );
+}
+
+function GeneralSettings() {
+  return (
+    <Stack>
+      <BeatmapBackgroundSettings />
+      <BeatmapRenderSettings />
     </Stack>
   );
 }

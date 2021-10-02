@@ -10,11 +10,12 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import { RGB, sliderRepeatAngle, Vec2 } from "@rewind/osu/math";
 import { GameplayClock } from "../../../core/game/GameplayClock";
-import { StageViewSettingsService } from "../../../apps/analysis/StageViewSettingsService";
 import { SkinManager } from "../../../core/skins/SkinManager";
 import { injectable } from "inversify";
 import { TemporaryObjectPool } from "../../../utils/pooling/TemporaryObjectPool";
 import { SliderTextureManager } from "../../managers/SliderTextureManager";
+import { ModSettingsManager } from "../../../apps/analysis/manager/ModSettingsManager";
+import { BeatmapRenderSettingsStore } from "../../../services/BeatmapRenderSettingsStore";
 
 const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;
 const DEBUG_PIXEL_BALL_COLOR = 0x00ff00;
@@ -27,7 +28,8 @@ export class SliderFactory {
 
   constructor(
     private readonly gameClock: GameplayClock,
-    private readonly stageViewService: StageViewSettingsService,
+    private readonly modSettingsManager: ModSettingsManager,
+    private readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
     private readonly stageSkinService: SkinManager,
     private readonly sliderTextureService: SliderTextureManager,
   ) {
@@ -43,9 +45,12 @@ export class SliderFactory {
     return new OsuClassicSliderBody();
   }
 
+  private get modHidden() {
+    return this.modSettingsManager.modSettings.hidden;
+  }
+
   private prepareSliderBody(slider: Slider) {
-    const { skin, time: gameTime, view } = this;
-    const { modHidden } = view;
+    const { skin, time: gameTime, modHidden } = this;
     const texture = this.sliderTextureService.getTexture({
       id: slider.id,
       points: slider.path.calculatedPath,
@@ -133,11 +138,15 @@ export class SliderFactory {
     return sprites;
   }
 
+  private get sliderDevMode() {
+    return this.beatmapRenderSettingsStore.settings.sliderDevMode;
+  }
+
   private prepareSliderBall(slider: Slider) {
-    const { time: gameTime, skin, view } = this;
+    const { time: gameTime, skin } = this;
     if (gameTime < slider.startTime || slider.endTime < gameTime) return [];
 
-    const sliderAnalysis = view.sliderAnalysis;
+    const sliderAnalysis = this.sliderDevMode;
 
     const progress = (gameTime - slider.startTime) / slider.duration;
     const position = slider.ballPositionAt(progress);
@@ -158,6 +167,7 @@ export class SliderFactory {
         const [rawFollowCircle] = this.graphicsPool.allocate(slider.id + "/rawFollowCircle");
         rawFollowCircle.clear();
         rawFollowCircle.lineStyle(1, DEBUG_FOLLOW_CIRCLE_COLOR);
+        // TODO: Depending on if inside or not
         rawFollowCircle.drawCircle(position.x, position.y, slider.radius * 2.4);
         displayObjects.push(rawFollowCircle);
       }
@@ -181,12 +191,8 @@ export class SliderFactory {
     return this.stageSkinService.getSkin();
   }
 
-  get view() {
-    return this.stageViewService.getView();
-  }
-
   create(slider: Slider) {
-    const { time, skin, view } = this;
+    const { time, sliderDevMode } = this;
 
     const isVisible = slider.spawnTime <= time && time <= slider.endTime + SLIDER_FADE_OUT_TIME;
     if (!isVisible) {
@@ -215,7 +221,7 @@ export class SliderFactory {
     container.addChild(this.prepareSliderTail(slider));
     addChildren(this.prepareSliderTicks(ticks));
 
-    if (legacyTick && view.sliderAnalysis) {
+    if (legacyTick && sliderDevMode) {
       const tick = this.prepareSliderLastLegacyTick(legacyTick);
       if (tick) container.addChild(tick);
     }

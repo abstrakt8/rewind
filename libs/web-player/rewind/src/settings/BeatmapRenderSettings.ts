@@ -1,6 +1,9 @@
-interface BeatmapRenderSettings {
-  modHidden: false;
-  speed: number;
+export interface BeatmapRenderSettings {
+  sliderDevMode: boolean;
+  drawSliderEnds: boolean;
 }
 
-// modFlashlight would be replay setting
+export const DEFAULT_BEATMAP_RENDER_SETTINGS: BeatmapRenderSettings = Object.freeze({
+  sliderDevMode: true,
+  drawSliderEnds: false,
+});

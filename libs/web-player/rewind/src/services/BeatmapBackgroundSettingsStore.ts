@@ -1,23 +1,15 @@
 import { injectable } from "inversify";
-import { BeatmapBackgroundSettings } from "../settings/BeatmapBackgroundSettings";
+import { BeatmapBackgroundSettings, DEFAULT_BEATMAP_BACKGROUND_SETTINGS } from "../settings/BeatmapBackgroundSettings";
 import { BehaviorSubject } from "rxjs";
 import { Texture } from "pixi.js";
 
-const DEFAULT_SETTINGS: BeatmapBackgroundSettings = {
-  dim: 0.8,
-  blur: 0.4,
-  enabled: true,
-};
-
 @injectable()
 export class BeatmapBackgroundSettingsStore {
-  static defaultSettings: BeatmapBackgroundSettings = DEFAULT_SETTINGS;
-
   settings$: BehaviorSubject<BeatmapBackgroundSettings>;
   texture$: BehaviorSubject<Texture>;
 
   constructor() {
-    this.settings$ = new BehaviorSubject<BeatmapBackgroundSettings>(BeatmapBackgroundSettingsStore.defaultSettings);
+    this.settings$ = new BehaviorSubject<BeatmapBackgroundSettings>(DEFAULT_BEATMAP_BACKGROUND_SETTINGS);
     this.texture$ = new BehaviorSubject<Texture>(Texture.EMPTY);
   }
 
