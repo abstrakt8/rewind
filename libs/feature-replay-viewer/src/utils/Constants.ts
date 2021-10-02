@@ -1,4 +1,5 @@
 export const RewindLinks = {
+  abstraktOsu: "https://osu.ppy.sh/users/5773957",
   OsuUniDiscord: "https://bit.ly/3BT6uap",
   ReportABug: "https://bit.ly/3BT6uap", // TODO: Currently it's still the osu! discord
   Guide: "https://bit.ly/3BOF3P2",
