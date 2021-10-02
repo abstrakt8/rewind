@@ -55,12 +55,18 @@ export class CursorPreparer {
 
     // console.log(pi);
     const position = interpolateReplayPosition(frames[pi], frames[pi + 1], time);
+
     const trailPositions = [];
     if (showTrail) {
       for (let i = 1; i <= 5 && pi - i >= 0; i++) {
         trailPositions.push(frames[pi - i].position);
       }
     }
+
+    // For motion blurring or similar
+    // const velocity = Vec2.sub(frames[pi + 1].position, frames[pi].position).divide(
+    //   frames[pi + 1].time - frames[pi].time,
+    // );
 
     cursor.prepare({
       position,
@@ -69,6 +75,8 @@ export class CursorPreparer {
       cursorTexture: skin.getTexture("CURSOR"),
       cursorTrailTexture: skin.getTexture("CURSOR_TRAIL"),
     });
+
+    // console.log(velocity);
 
     this.container.addChild(cursor.container);
   }

@@ -3,7 +3,7 @@ import { Texture } from "pixi.js";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { createCenteredSprite } from "../utils/Pixi";
-import { Position, Vec2 } from "@rewind/osu/math";
+import { Position } from "@rewind/osu/math";
 
 const MAX_CURSOR_TRAILS = 8;
 
@@ -21,6 +21,9 @@ export interface OsuClassicCursorSetting {
   cursorTexture: Texture;
   cursorTrailTexture: Texture;
 
+  // If motion blurring / similar gets implemented
+  // velocity: Vec2;
+
   // Customizable fade out easing function?
 }
 
@@ -30,6 +33,7 @@ const defaultSettings: OsuClassicCursorSetting = {
   cursorScale: 1.0,
   cursorTexture: Texture.EMPTY,
   cursorTrailTexture: Texture.EMPTY,
+  // velocity: Vec2.Zero,
 };
 
 /**
@@ -69,6 +73,10 @@ export class OsuClassicCursor implements PrepareSetting<OsuClassicCursorSetting>
     // The cursor trails have their positions relative to (0, 0) basically.
     this.cursorSprite.position.set(position.x, position.y);
     this.cursorSprite.scale.set(cursorScale);
+
+    // Does not work as expected
+    // this.cursorSprite.filters = [new MotionBlurFilter([90, 90], 25)];
+
     // this.container.position.set(position.x, position.y);
     this.cursorTrailSprites.forEach((cts, i) => {
       cts.texture = cursorTrailTexture;
