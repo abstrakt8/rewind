@@ -11,3 +11,4 @@ export * from "./components/BaseCurrentTime";
 
 // Connected components
 export * from "./Analyzer";
+export { SettingsModal } from "./components/SettingsModal";
