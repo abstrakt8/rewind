@@ -7,7 +7,7 @@ import { TYPES } from "./types/types";
 import { createRewindAnalysisApp } from "./creators/createRewindAnalysisApp";
 import { SkinId } from "./model/SkinId";
 import { SkinManager } from "./core/skins/SkinManager";
-import { AudioSettingsService } from "./services/AudioSettingsService";
+import { AudioSettingsStore } from "./services/AudioSettingsStore";
 import { STAGE_TYPES } from "./types/STAGE_TYPES";
 import { BeatmapBackgroundSettingsStore } from "./services/BeatmapBackgroundSettingsStore";
 import { PlayfieldBorderSettingsStore } from "./services/PlayfieldBorderSettingsStore";
@@ -25,7 +25,7 @@ export class RewindTheater {
   constructor(
     private readonly skinLoader: SkinLoader,
     private readonly skinManager: SkinManager,
-    public readonly audioSettingsService: AudioSettingsService,
+    public readonly audioSettingsService: AudioSettingsStore,
     public readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
     public readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
   ) {}
@@ -59,7 +59,7 @@ export function createRewindTheater({ apiUrl }: Settings) {
   container.bind(SkinManager).toSelf();
   container.bind(AudioService).toSelf();
   // General settings stores
-  container.bind(AudioSettingsService).toSelf();
+  container.bind(AudioSettingsStore).toSelf();
   container.bind(BeatmapBackgroundSettingsStore).toSelf();
   container.bind(BeatmapRenderSettingsStore).toSelf();
   container.bind(PlayfieldBorderSettingsStore).toSelf();

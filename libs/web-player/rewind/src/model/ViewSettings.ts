@@ -1,7 +1,7 @@
-import { CursorSetting } from "../core/settings/CursorSetting";
-import { AnalysisCursorSetting } from "../apps/analysis/settings/AnalysisCursorSetting";
+import { CursorSettings } from "../settings/CursorSettings";
+import { AnalysisCursorSetting } from "../settings/AnalysisCursorSetting";
 
-export interface OsuCursorSetting extends CursorSetting {
+export interface OsuCursorSetting extends CursorSettings {
   showTrail: boolean;
   // Maybe there will be a smooth cursor trail
 }

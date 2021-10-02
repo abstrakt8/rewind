@@ -1,5 +1,5 @@
 import { injectable, postConstruct } from "inversify";
-import { AudioSettings } from "../settings/AudioSettings";
+import { AudioSettings, DEFAULT_AUDIO_SETTINGS } from "../settings/AudioSettings";
 import { BehaviorSubject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import produce from "immer";
@@ -11,16 +11,6 @@ import { WritableDraft } from "immer/dist/types/types-external";
 const AUDIO_SETTINGS_KEY = "rewind-audio-settings";
 const storage = window.localStorage;
 
-const DEFAULT_SETTINGS: AudioSettings = {
-  muted: false,
-  volume: {
-    // Make it intentionally low, but not muted.
-    master: 0.1,
-    music: 1.0,
-    effects: 0.25,
-  },
-};
-
 function retrieveLocalStorageWithFallback<T>(key: string, fallback: T) {
   const itemString = storage.getItem(key);
   if (itemString === null) {
@@ -30,18 +20,18 @@ function retrieveLocalStorageWithFallback<T>(key: string, fallback: T) {
 }
 
 @injectable()
-export class AudioSettingsService {
+export class AudioSettingsStore {
   settings$: BehaviorSubject<AudioSettings>;
 
   constructor() {
-    this.settings$ = new BehaviorSubject<AudioSettings>(DEFAULT_SETTINGS);
+    this.settings$ = new BehaviorSubject<AudioSettings>(DEFAULT_AUDIO_SETTINGS);
   }
 
   @postConstruct()
   setup() {
     // TODO: Settings read should be injected
     this.settings$ = new BehaviorSubject<AudioSettings>(
-      retrieveLocalStorageWithFallback(AUDIO_SETTINGS_KEY, DEFAULT_SETTINGS),
+      retrieveLocalStorageWithFallback(AUDIO_SETTINGS_KEY, DEFAULT_AUDIO_SETTINGS),
     );
 
     // TODO: Move this up
