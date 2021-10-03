@@ -81,4 +81,10 @@ export class AudioSettingsStore {
   getSettings() {
     return this.settings$.getValue();
   }
+
+  setMuted(muted: boolean) {
+    this.changeSettings((d) => {
+      d.muted = muted;
+    });
+  }
 }
