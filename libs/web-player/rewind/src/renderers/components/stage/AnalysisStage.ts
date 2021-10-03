@@ -5,7 +5,7 @@ import { Playfield, PlayfieldFactory } from "../playfield/PlayfieldFactory";
 import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "@rewind/osu/core";
 import { ForegroundHUDPreparer } from "../hud/ForegroundHUDPreparer";
 import { PixiRendererManager } from "../../PixiRendererManager";
-import { BeatmapBackground, BeatmapBackgroundFactory } from "../background/BeatmapBackground";
+import { BeatmapBackgroundFactory } from "../background/BeatmapBackground";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
 
 const ratio = STAGE_WIDTH / STAGE_HEIGHT;
@@ -14,8 +14,8 @@ const ratio = STAGE_WIDTH / STAGE_HEIGHT;
 // Other stages for example do not want a foreground HUD and should therefore compose differently.
 @injectable()
 export class AnalysisStage {
-  private widthInPx = 0;
-  private heightInPx = 0;
+  private screenWidth = 0;
+  private screenHeight = 0;
 
   public stage: Container;
   private playfield: Playfield;
@@ -49,7 +49,6 @@ export class AnalysisStage {
     );
     this.playfield.container.scale.set(playfieldScaling);
   }
-
   /**
    *  So the virtual screen is supposed to have the dimensions 1600x900.
    */
@@ -57,21 +56,24 @@ export class AnalysisStage {
     const screen = this.rendererManager.getRenderer()?.screen;
     // Should not be possible
     if (!screen) return;
-    // Unchanged
-    if (this.widthInPx === screen.width && this.heightInPx === screen.height) return;
+    // Using caching to check if unchanged
+    if (this.screenWidth === screen.width && this.screenHeight === screen.height) return;
+    [this.screenWidth, this.screenHeight] = [screen.width, screen.height];
 
+    let widthInPx, heightInPx;
+    // Determines whether we will have black stripes vertically or horizontally
     if (screen.width < screen.height * ratio) {
-      this.widthInPx = screen.width;
-      this.heightInPx = screen.width / ratio;
+      widthInPx = screen.width;
+      heightInPx = screen.width / ratio;
     } else {
       // That is usually the case that the height is the constraint
-      this.widthInPx = screen.height * ratio;
-      this.heightInPx = screen.height;
+      widthInPx = screen.height * ratio;
+      heightInPx = screen.height;
     }
 
-    const scale = this.widthInPx / STAGE_WIDTH;
+    const scale = widthInPx / STAGE_WIDTH;
     this.stage.scale.set(scale, scale);
-    this.stage.position.set((screen.width - this.widthInPx) / 2, (screen.height - this.heightInPx) / 2);
+    this.stage.position.set((screen.width - widthInPx) / 2, (screen.height - heightInPx) / 2);
     console.debug(`Resizing screen.dimensions = ${screen.width} x ${screen.height}, scale = ${scale}`);
   }
 
