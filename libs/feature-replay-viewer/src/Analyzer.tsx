@@ -5,6 +5,7 @@ import { useShortcuts } from "./hooks/useShortcuts";
 import { GameCanvas } from "./components/GameCanvas";
 import { useAnalysisApp } from "./providers/TheaterProvider";
 import { SettingsModal } from "./components/SettingsModal";
+import { SettingsModalProvider } from "./providers/SettingsProvider";
 
 function useInitializeAnalyzer() {
   const analyzer = useAnalysisApp();
@@ -20,7 +21,7 @@ export function Analyzer() {
   useShortcuts();
 
   return (
-    <>
+    <SettingsModalProvider>
       <SettingsModal />
       <Stack
         sx={{
@@ -35,6 +36,6 @@ export function Analyzer() {
           <PlayBar />
         </Paper>
       </Stack>
-    </>
+    </SettingsModalProvider>
   );
 }
