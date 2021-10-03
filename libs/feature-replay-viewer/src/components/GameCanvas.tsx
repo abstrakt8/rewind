@@ -22,7 +22,7 @@ export const GameCanvas = () => {
   }, [analysisApp]);
 
   return (
-    <Box ref={containerRef} sx={{ borderRadius: 2, overflow: "auto", position: "relative", flex: 1 }}>
+    <Box ref={containerRef} sx={{ borderRadius: 2, overflow: "hidden", position: "relative", flex: 1 }}>
       <canvas
         style={{ width: "100%", height: "100%", pointerEvents: "none", borderRadius: 2 }}
         ref={canvas}

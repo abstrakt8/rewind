@@ -56,15 +56,12 @@ export class AnalysisApp {
   }
 
   initialize() {
-    this.gameLoop.initializeTicker();
     this.gameLoop.startTicker();
   }
 
   destroy() {
     this.gameLoop.stopTicker();
-    // console.log(`Going to destroy the stage with replay = ${replay.md5hash}`);
-    // gameLoop.destroy();
-    // audioEngine.destroy();
+    console.log("Game loop stopped");
   }
 
   // This is just the NM view of a beatmap

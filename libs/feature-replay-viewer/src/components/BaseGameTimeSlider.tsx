@@ -75,7 +75,12 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
         }}
       >
         {events.map((e) => (
-          <EventLine color={e.color} tooltip={e.tooltip} positions={e.timings.map((t) => t / duration)} />
+          <EventLine
+            key={e.tooltip + e.color}
+            color={e.color}
+            tooltip={e.tooltip}
+            positions={e.timings.map((t) => t / duration)}
+          />
         ))}
       </Stack>
       <Slider

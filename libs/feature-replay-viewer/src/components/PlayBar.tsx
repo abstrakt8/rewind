@@ -313,7 +313,11 @@ function BaseSpeedButton(props: BaseSpeedButtonProps) {
 
 function SpeedButton() {
   const { speed, setSpeed } = useGameClockControls();
-  return <BaseSpeedButton value={speed} onChange={setSpeed} />;
+  return (
+    <Box sx={{ width: "3em", display: "flex", justifyContent: "center" }}>
+      <BaseSpeedButton value={speed} onChange={setSpeed} />
+    </Box>
+  );
 }
 
 const VerticalDivider = () => <Divider orientation={"vertical"} sx={{ height: "80%" }} />;
@@ -326,7 +330,7 @@ export function PlayBar() {
       <GameTimeSlider />
       <Duration />
       <VerticalDivider />
-      <Stack direction={"row"} alignItems={"center"}>
+      <Stack direction={"row"} alignItems={"center"} justifyContent={"center"}>
         <AudioButton />
         <SpeedButton />
         <HiddenButton />

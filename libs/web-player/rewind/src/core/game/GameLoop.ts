@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GameplayClock } from "./GameplayClock";
 import { PixiRendererManager } from "../../renderers/PixiRendererManager";
-import { injectable } from "inversify";
+import { injectable, postConstruct } from "inversify";
 import { SceneManager } from "../scenes/SceneManager";
 import MrDoobStats from "stats.js";
 
@@ -39,6 +39,7 @@ export class GameLoop {
     return this.performanceMonitor.dom;
   }
 
+  @postConstruct()
   initializeTicker() {
     this.ticker.add(this.tickHandler.bind(this));
   }
