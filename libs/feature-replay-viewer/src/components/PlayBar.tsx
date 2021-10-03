@@ -21,7 +21,7 @@ import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
 import { useModControls } from "../hooks/mods";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import { ALLOWED_SPEEDS } from "../utils/Constants";
-import { BaseCurrentTime, ignoreFocus, useAnalysisApp, useTheater } from "..";
+import { BaseCurrentTime, ignoreFocus, useAnalysisApp } from "..";
 import { useSettingsModalContext } from "../providers/SettingsProvider";
 import { PlaybarColors } from "../utils/PlaybarColors";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
@@ -224,12 +224,16 @@ function Duration() {
 }
 
 function HiddenButton() {
-  const { setHidden, hidden } = useModControls();
-  const handleClick = useCallback(() => setHidden(!hidden), [hidden, setHidden]);
+  const { setHidden, hidden: hiddenEnabled } = useModControls();
+  const handleClick = useCallback(() => setHidden(!hiddenEnabled), [hiddenEnabled, setHidden]);
 
   return (
-    <IconButton onFocus={ignoreFocus} sx={{ width: "2em", height: "2em" }} onClick={handleClick}>
-      <img src={modHiddenImg} alt={"ModHidden"} className={`filter ${hidden ? "grayscale-0" : "grayscale"} `} />
+    <IconButton onFocus={ignoreFocus} onClick={handleClick}>
+      <img
+        src={modHiddenImg}
+        alt={"ModHidden"}
+        style={{ filter: `grayscale(${hiddenEnabled ? "0%" : "100%"})`, width: "1.5em" }}
+      />
     </IconButton>
   );
 }
