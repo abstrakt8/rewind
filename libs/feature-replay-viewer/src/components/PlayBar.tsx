@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Divider,
   IconButton,
   ListItemIcon,
@@ -11,7 +12,16 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Help, MoreVert, PauseCircle, PhotoCamera, PlayCircle, Settings, VolumeUp } from "@mui/icons-material";
+import {
+  Help,
+  MoreVert,
+  PauseCircle,
+  PhotoCamera,
+  PlayCircle,
+  Settings,
+  VolumeOff,
+  VolumeUp,
+} from "@mui/icons-material";
 import { useCallback, useMemo, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
@@ -93,7 +103,7 @@ function MoreMenu() {
 function AudioButton() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: any) => {
+  const handlePopOverOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -102,11 +112,12 @@ function AudioButton() {
   const { volume, muted } = useAudioSettings();
   const service = useAudioSettingsService();
 
+  const handleClick = () => {
+    service.toggleMuted();
+  };
   return (
     <>
-      <IconButton onClick={handleClick}>
-        <VolumeUp />
-      </IconButton>
+      <IconButton onClick={handlePopOverOpen}>{muted ? <VolumeOff /> : <VolumeUp />}</IconButton>
       <Popover
         open={open}
         anchorEl={anchorEl}
@@ -228,13 +239,13 @@ function HiddenButton() {
   const handleClick = useCallback(() => setHidden(!hiddenEnabled), [hiddenEnabled, setHidden]);
 
   return (
-    <IconButton onFocus={ignoreFocus} onClick={handleClick}>
+    <Button onFocus={ignoreFocus} onClick={handleClick} sx={{ px: 0 }}>
       <img
         src={modHiddenImg}
         alt={"ModHidden"}
-        style={{ filter: `grayscale(${hiddenEnabled ? "0%" : "100%"})`, width: "1.5em" }}
+        style={{ filter: `grayscale(${hiddenEnabled ? "0%" : "100%"})`, width: "60%" }}
       />
-    </IconButton>
+    </Button>
   );
 }
 
@@ -271,9 +282,21 @@ function BaseSpeedButton(props: BaseSpeedButtonProps) {
 
   return (
     <>
-      <IconButton color={"inherit"} onClick={handleClick} onFocus={ignoreFocus}>
-        <Typography>{formatSpeed(value)}</Typography>
-      </IconButton>
+      <Button
+        sx={{
+          color: "text.primary",
+          textTransform: "none",
+          fontSize: "1em",
+          // minWidth: "0",
+          // px: 2,
+        }}
+        size={"small"}
+        onClick={handleClick}
+        onFocus={ignoreFocus}
+      >
+        {formatSpeed(value)}
+        {/*<Typography>{formatSpeed(value)}</Typography>*/}
+      </Button>
       <Menu
         open={open}
         onClose={handleClose}
@@ -312,9 +335,9 @@ function BaseSpeedButton(props: BaseSpeedButtonProps) {
 function SpeedButton() {
   const { speed, setSpeed } = useGameClockControls();
   return (
-    <Box sx={{ width: "3em", display: "flex", justifyContent: "center" }}>
-      <BaseSpeedButton value={speed} onChange={setSpeed} />
-    </Box>
+    // <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <BaseSpeedButton value={speed} onChange={setSpeed} />
+    // </Box>
   );
 }
 
