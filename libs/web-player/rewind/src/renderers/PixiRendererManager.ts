@@ -18,21 +18,16 @@ export class PixiRendererManager {
   }
 
   // https://webgl2fundamentals.org/webgl/lessons/webgl-anti-patterns.html
+  // https://developer.mozilla.org/en-US/docs/Web/API/Element/clientWidth
   resizeCanvasToDisplaySize() {
     const canvas = this.canvas;
     if (!canvas || !this.renderer) {
       return false;
     }
-    // look up the size the canvas is being displayed
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-
     // If it's resolution does not match change it
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width;
-      canvas.height = height;
-
-      this.renderer.resize(canvas.width, canvas.height);
+    if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+      // canvas.width/height will be set by renderer.resize()
+      this.renderer.resize(canvas.clientWidth, canvas.clientHeight);
       console.log(`Canvas dimensions have been set to ${canvas.width} x ${canvas.height}`);
       return true;
     }
@@ -47,7 +42,4 @@ export class PixiRendererManager {
   getRenderer(): PIXI.Renderer | undefined {
     return this.renderer;
   }
-
-  // fps, antialias , should be reconsidered
-  onRendererSettingsChange() {}
 }
