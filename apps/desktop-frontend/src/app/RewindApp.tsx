@@ -3,16 +3,11 @@ import { Route, Switch } from "react-router-dom"; // react-router v4/v5
 import { LeftMenuSidebar } from "./LeftMenuSidebar";
 import { SplashScreen } from "./splash/SplashScreen";
 import { SetupScreen } from "./setup/SetupScreen";
-import { useEffect } from "react";
 import { HomeScreen } from "./home/HomeScreen";
 import { Box, Divider, Stack } from "@mui/material";
 import { Analyzer } from "@rewind/feature-replay-viewer";
 
 function ConnectedAnalyzer() {
-  const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
-  useEffect(() => {
-    console.log(`Theater is now constructing a stage with blueprintId=${chosenBlueprintId} replayId=${chosenReplayId}`);
-  }, [chosenReplayId, chosenBlueprintId]);
   return <Analyzer />;
 }
 

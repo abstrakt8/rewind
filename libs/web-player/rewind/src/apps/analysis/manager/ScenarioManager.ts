@@ -13,7 +13,7 @@ import { AudioEngine } from "../../../core/audio/AudioEngine";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 
 interface Scenario {
-  status: "LOADING" | "ERROR" | "DONE";
+  status: "LOADING" | "ERROR" | "DONE" | "INIT";
 }
 
 @injectable()
@@ -32,7 +32,7 @@ export class ScenarioManager {
     private readonly sceneManager: AnalysisSceneManager,
     private readonly audioEngine: AudioEngine,
   ) {
-    this.scenario$ = new BehaviorSubject<Scenario>({ status: "DONE" });
+    this.scenario$ = new BehaviorSubject<Scenario>({ status: "INIT" });
   }
 
   async loadReplay(replayId: string) {
