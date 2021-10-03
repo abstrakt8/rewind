@@ -170,7 +170,7 @@ function groupTimings(events: ReplayAnalysisEvent[]) {
       case "HitObjectJudgement":
         // TODO: for lazer style, this needs some rework
         if (e.isSliderHead) {
-          if (e.verdict === "MISS") missTimings.push(e.time);
+          if (e.verdict === "MISS") sliderBreakTimings.push(e.time);
           return;
         } else {
           if (e.verdict === "MISS") missTimings.push(e.time);
