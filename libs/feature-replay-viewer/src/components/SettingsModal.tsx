@@ -204,8 +204,10 @@ export function SettingsModal() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 1028,
-          height: 728,
+          width: 800,
+          maxWidth: "100%",
+          height: 600,
+          maxHeight: "100%",
         }}
       >
         <BaseSettingsModal

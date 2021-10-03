@@ -12,12 +12,14 @@ function EmptyState() {
         <InfoIcon sx={{ height: "2em", width: "2em" }} />
         <Typography>No replay loaded</Typography>
       </Stack>
-      <Typography color={"text.secondary"}>
-        <Stack gap={1} alignItems={"center"} direction={"row"}>
+      <Stack gap={1} alignItems={"center"} direction={"row"}>
+        <Typography color={"text.secondary"}>
           <LightningBoltIcon height={"1em"} />
+        </Typography>
+        <Typography color={"text.secondary"}>
           In osu! press F2 while being at a score/fail screen to load the replay
-        </Stack>
-      </Typography>
+        </Typography>
+      </Stack>
     </Stack>
   );
 }

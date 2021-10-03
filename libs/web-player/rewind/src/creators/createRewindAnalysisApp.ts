@@ -28,6 +28,8 @@ import { JudgementPreparer } from "../renderers/components/playfield/JudgementPr
 import { AudioEngine } from "../core/audio/AudioEngine";
 import { ScenarioManager } from "../apps/analysis/manager/ScenarioManager";
 import { ScreenshotTaker } from "../apps/analysis/manager/ScreenshotTaker";
+import { ReplayWatcher } from "../core/api/ReplayWatcher";
+import { TYPES } from "../types/types";
 
 /**
  * This is a Rewind specific constructor of the "Analysis" tool (not to be used outside of Rewind).
@@ -42,6 +44,7 @@ export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
   const container = new Container({ defaultScope: "Singleton" });
   container.parent = rewindTheaterContainer;
   container.bind(STAGE_TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter2());
+  container.bind(TYPES.WS_URL).toConstantValue("ws://localhost:7271");
 
   container.bind(ReplayManager).toSelf();
   container.bind(BeatmapManager).toSelf();
@@ -53,6 +56,7 @@ export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
 
   // Plugins ?
   container.bind(ScreenshotTaker).toSelf();
+  container.bind(ReplayWatcher).toSelf();
 
   // Assets
   container.bind(TextureManager).toSelf();

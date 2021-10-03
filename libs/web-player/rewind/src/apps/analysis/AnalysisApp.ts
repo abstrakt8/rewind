@@ -10,6 +10,7 @@ import { AnalysisSceneManager } from "./manager/AnalysisSceneManager";
 import { GameLoop } from "../../core/game/GameLoop";
 import { AudioEngine } from "../../core/audio/AudioEngine";
 import { ScenarioManager } from "./manager/ScenarioManager";
+import { ReplayWatcher } from "../../core/api/ReplayWatcher";
 
 /**
  * Usage:
@@ -37,13 +38,13 @@ export class AnalysisApp {
     public readonly gameSimulator: GameSimulator,
     public readonly scenarioManager: ScenarioManager,
     public readonly modSettingsManager: ModSettingsManager,
+    public readonly replayWatcher: ReplayWatcher,
     private readonly blueprintService: BlueprintService,
     private readonly replayService: ReplayService,
     private readonly gameLoop: GameLoop,
     private readonly beatmapManager: BeatmapManager,
     private readonly sceneManager: AnalysisSceneManager,
     private readonly pixiRenderer: PixiRendererManager,
-    private readonly audioEngine: AudioEngine,
   ) {}
 
   stats() {
@@ -52,6 +53,7 @@ export class AnalysisApp {
 
   initialize() {
     this.gameLoop.startTicker();
+    this.replayWatcher.startWatching();
   }
 
   destroy() {

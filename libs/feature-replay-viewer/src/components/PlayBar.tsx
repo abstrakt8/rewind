@@ -271,13 +271,7 @@ function BaseSpeedButton(props: BaseSpeedButtonProps) {
 
   return (
     <>
-      <IconButton
-        color={"inherit"}
-        onClick={handleClick}
-        // size={"small"}
-        // sx={{ width: "content" }}
-        // sx={{ fontSize: (theme) => theme.typography.fontSize }}
-      >
+      <IconButton color={"inherit"} onClick={handleClick} onFocus={ignoreFocus}>
         <Typography>{formatSpeed(value)}</Typography>
       </IconButton>
       <Menu
