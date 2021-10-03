@@ -1,4 +1,4 @@
-import { injectable } from "inversify";
+import { injectable, postConstruct } from "inversify";
 import { BehaviorSubject } from "rxjs";
 import { buildBeatmap, determineDefaultPlaybackSpeed } from "@rewind/osu/core";
 import { GameSimulator } from "../../../core/game/GameSimulator";
