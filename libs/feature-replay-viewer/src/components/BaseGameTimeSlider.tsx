@@ -1,6 +1,7 @@
 import { Box, darken, Slider, Stack, Tooltip } from "@mui/material";
 import { formatGameTime } from "@rewind/osu/math";
 import { ignoreFocus } from "../utils/IgnoreFocus";
+import { useMemo } from "react";
 
 interface EventLineProps {
   color: string;
@@ -64,6 +65,17 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
   const { backgroundEnable, duration, currentTime, onChange, events } = props;
   const valueLabelFormat = (value: number) => formatGameTime(value);
 
+  const eventLines = useMemo(() => {
+    return events.map((e) => (
+      <EventLine
+        key={e.tooltip + e.color}
+        color={e.color}
+        tooltip={e.tooltip}
+        positions={e.timings.map((t) => t / duration)}
+      />
+    ));
+  }, [events, duration]);
+
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
       <Stack
@@ -74,14 +86,7 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
           filter: "brightness(50%)",
         }}
       >
-        {events.map((e) => (
-          <EventLine
-            key={e.tooltip + e.color}
-            color={e.color}
-            tooltip={e.tooltip}
-            positions={e.timings.map((t) => t / duration)}
-          />
-        ))}
+        {eventLines}
       </Stack>
       <Slider
         onFocus={ignoreFocus}

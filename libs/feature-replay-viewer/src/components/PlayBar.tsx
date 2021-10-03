@@ -137,6 +137,7 @@ function AudioButton() {
             music={volume.music}
             /* Currently it's disabled */
             effects={0}
+            onMutedChange={(x) => service.setMuted(x)}
             onMasterChange={(x) => service.setMasterVolume(x)}
             onMusicChange={(x) => service.setMusicVolume(x)}
             onEffectsChange={(x) => service.setEffectsVolume(x)}
@@ -207,9 +208,17 @@ function GameTimeSlider() {
   const currentTime = useGameClockTime(30);
   const { seekTo, duration } = useGameClockControls();
   const { gameSimulator } = useAnalysisApp();
-  const events = useObservable(() => gameSimulator.replayEvents$, []);
+  const replayEvents = useObservable(() => gameSimulator.replayEvents$, []);
 
-  const { sliderBreakTimings, missTimings, mehTimings, okTimings } = useMemo(() => groupTimings(events), [events]);
+  const events = useMemo(() => {
+    const { sliderBreakTimings, missTimings, mehTimings, okTimings } = groupTimings(replayEvents);
+    return [
+      { color: PlaybarColors.MISS, timings: missTimings, tooltip: "Misses" },
+      { color: PlaybarColors.SLIDER_BREAK, timings: sliderBreakTimings, tooltip: "Sliderbreaks" },
+      { color: PlaybarColors.MEH, timings: mehTimings, tooltip: "50s" },
+      { color: PlaybarColors.OK, timings: okTimings, tooltip: "100s" },
+    ];
+  }, [replayEvents]);
 
   return (
     <BaseGameTimeSlider
@@ -217,12 +226,7 @@ function GameTimeSlider() {
       duration={duration}
       currentTime={currentTime}
       onChange={seekTo}
-      events={[
-        { color: PlaybarColors.MISS, timings: missTimings, tooltip: "Misses" },
-        { color: PlaybarColors.SLIDER_BREAK, timings: sliderBreakTimings, tooltip: "Sliderbreaks" },
-        { color: PlaybarColors.MEH, timings: mehTimings, tooltip: "50s" },
-        { color: PlaybarColors.OK, timings: okTimings, tooltip: "100s" },
-      ]}
+      events={events}
     />
   );
 }

@@ -11,6 +11,7 @@ interface BaseAudioSettingsPanelProps {
   onMasterChange: Change;
   onEffectsChange: Change;
   onMusicChange: Change;
+  onMutedChange: (muted: boolean) => unknown;
 }
 
 export function VolumeSlider({ disabled, onChange, value }: { disabled?: boolean; onChange: Change; value: number }) {
@@ -31,7 +32,7 @@ export function VolumeSlider({ disabled, onChange, value }: { disabled?: boolean
 }
 
 export function BaseAudioSettingsPanel(props: BaseAudioSettingsPanelProps) {
-  const { master, effects, music, onMasterChange, onEffectsChange, onMusicChange } = props;
+  const { master, effects, music, onMasterChange, onEffectsChange, onMusicChange, onMutedChange } = props;
   return (
     <Stack
       sx={{
