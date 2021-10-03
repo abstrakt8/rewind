@@ -2,7 +2,6 @@ import { Box } from "@mui/material";
 import { Analyzer } from "@rewind/feature-replay-viewer";
 import { useAnalysisApp, useTheater } from "@rewind/feature-replay-viewer";
 import { useEffect } from "react";
-import { SettingsModalProvider } from "../../../../libs/feature-replay-viewer/src/providers/SettingsProvider";
 import { SkinId } from "@rewind/web-player/rewind";
 
 const akatsukiId = "535c6e5b4febb48629cbdd4e3a268624";
@@ -25,9 +24,7 @@ export function WebTestApp() {
   }, []);
   return (
     <Box sx={{ height: "100vh" }}>
-      <SettingsModalProvider>
-        <Analyzer />
-      </SettingsModalProvider>
+      <Analyzer />
     </Box>
   );
 }
