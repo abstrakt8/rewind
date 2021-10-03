@@ -134,8 +134,4 @@ export class GameplayClock {
   onPaused(fn: ListenerFn) {
     this.eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, fn);
   }
-
-  onDurationChange(fn: ListenerFn) {
-    this.eventEmitter.on(GameClockEvents.GAME_CLOCK_DURATION_CHANGED, fn);
-  }
 }
