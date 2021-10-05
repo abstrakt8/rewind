@@ -1,4 +1,4 @@
-import { Box, Paper, Stack, Typography } from "@mui/material";
+import { Paper, Stack } from "@mui/material";
 import { PlayBar } from "./components/PlayBar";
 import { useEffect } from "react";
 import { useShortcuts } from "./hooks/useShortcuts";
@@ -10,8 +10,8 @@ import { SettingsModalProvider } from "./providers/SettingsProvider";
 function useInitializeAnalyzer() {
   const analyzer = useAnalysisApp();
   useEffect(() => {
-    console.log("Analyzer: Initialized.");
-    analyzer.initialize();
+    console.log("Analyzer: Ticker started");
+    analyzer.startTicker();
     return () => analyzer.destroy();
   }, [analyzer]);
 }

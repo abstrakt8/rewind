@@ -1,8 +1,8 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable, postConstruct } from "inversify";
 import { Subject } from "rxjs";
 import { TYPES } from "../../types/types";
 import { ScenarioManager } from "../../apps/analysis/manager/ScenarioManager";
-import { io, Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
 // interface Payload {
 //   replay: { filename: string };
@@ -13,22 +13,21 @@ type Payload = {
   replayId: string;
 };
 
-function createWebSocketConnection(url: string) {
-  const socket = io(url);
-  socket.on("connect", () => {
-    console.log("Connected to WebSocket");
-  });
-  return socket;
-}
-
 @injectable()
 export class ReplayWatcher {
   public readonly newReplays$: Subject<string>;
-  private socket: Socket;
 
   constructor(@inject(TYPES.WS_URL) private readonly wsUrl: string, private readonly scenarioManager: ScenarioManager) {
-    this.socket = createWebSocketConnection(wsUrl);
     this.newReplays$ = new Subject<string>();
+  }
+
+  @postConstruct()
+  initialize() {
+    // Probably this should be somewhere else...
+    this.newReplays$.subscribe((replayId) => {
+      // TODO: if settings also true
+      this.scenarioManager.loadReplay(replayId);
+    });
   }
 
   replayAddedHandler(replay: { filename: string }, beatmapMetaData: { md5Hash: string }) {
@@ -41,13 +40,15 @@ export class ReplayWatcher {
   }
 
   startWatching() {
-    console.log("Started replay watching subscription");
-
-    this.socket.on("replayAdded", this.replayAddedHandler.bind(this));
-
-    this.newReplays$.subscribe((replayId) => {
-      // TODO: if settings also true
-      this.scenarioManager.loadReplay(replayId);
+    const socket = io(this.wsUrl, {});
+    // // https://github.com/socketio/socket.io/issues/474#issuecomment-289316361 Why though?
+    socket.on("connect", () => {
+      console.log(`ReplayWatcher: Connected to WebSocket with id = ${socket.id}`);
     });
+    socket.on("disconnect", () => {
+      console.log("ReplayWatcher: Disconnected from WebSocket");
+    });
+    // const listener = this.replayAddedHandler.bind(this);
+    socket.on("replayAdded", this.replayAddedHandler.bind(this));
   }
 }

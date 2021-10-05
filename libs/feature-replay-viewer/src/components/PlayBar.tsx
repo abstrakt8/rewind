@@ -22,7 +22,7 @@ import {
   VolumeOff,
   VolumeUp,
 } from "@mui/icons-material";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
 import { useGameClockControls, useGameClockTime } from "../hooks/gameClock";
@@ -31,7 +31,7 @@ import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
 import { useModControls } from "../hooks/mods";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import { ALLOWED_SPEEDS } from "../utils/Constants";
-import { BaseCurrentTime, ignoreFocus, useAnalysisApp } from "..";
+import { BaseCurrentTime, GameCurrentTimeHandle, ignoreFocus, useAnalysisApp } from "..";
 import { useSettingsModalContext } from "../providers/SettingsProvider";
 import { PlaybarColors } from "../utils/PlaybarColors";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
@@ -56,6 +56,12 @@ function MoreMenu() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const analyzer = useAnalysisApp();
+  const handleTakeScreenshot = () => {
+    analyzer.screenshotTaker.takeScreenshot();
+    handleClose();
   };
 
   return (
@@ -83,7 +89,7 @@ function MoreMenu() {
           horizontal: "center",
         }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleTakeScreenshot}>
           <ListItemIcon>
             <PhotoCamera />
           </ListItemIcon>
@@ -160,13 +166,29 @@ function PlayButton() {
   );
 }
 
+// https://css-tricks.com/using-requestanimationframe-with-react-hooks/
 function CurrentTime() {
-  const currentTime = useGameClockTime(60);
+  const analyzer = useAnalysisApp();
+  const requestRef = useRef<number>();
+  const timeRef = useRef<GameCurrentTimeHandle>(null);
+
+  // const animate = () => {};
+
+  useEffect(() => {
+    // requestRef.current = requestAnimationFrame(animate);
+    requestRef.current = requestAnimationFrame(function animate() {
+      if (timeRef.current) timeRef.current.updateTime(analyzer.gameClock.timeElapsedInMs);
+      requestRef.current = requestAnimationFrame(animate);
+    });
+    return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, [analyzer]);
   return (
     // We MUST fix the width because the font is not monospace e.g. "111" is thinner than "000"
     // Also if the duration is more than an hour there will also be a slight shift
     <Box sx={{ width: "6em" }}>
-      <BaseCurrentTime currentTime={currentTime} />
+      <BaseCurrentTime ref={timeRef} />
     </Box>
   );
 }
@@ -205,7 +227,7 @@ function groupTimings(events: ReplayAnalysisEvent[]) {
 function GameTimeSlider() {
   // TODO: Depending on if replay is loaded and settings
   const backgroundEnable = true;
-  const currentTime = useGameClockTime(30);
+  const currentTime = useGameClockTime(15);
   const { seekTo, duration } = useGameClockControls();
   const { gameSimulator } = useAnalysisApp();
   const replayEvents = useObservable(() => gameSimulator.replayEvents$, []);

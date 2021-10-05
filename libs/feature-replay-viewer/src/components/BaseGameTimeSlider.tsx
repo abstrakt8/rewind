@@ -78,6 +78,7 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
 
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
+      {/*TODO: Optimize with canvas*/}
       <Stack
         sx={{
           overflow: "hidden",
