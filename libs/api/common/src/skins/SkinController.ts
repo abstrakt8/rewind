@@ -6,7 +6,13 @@ import { SkinService } from "./SkinService";
 export class SkinController {
   private logger = new Logger(SkinController.name);
 
-  constructor(private skinService: SkinService) {}
+  constructor(private readonly skinService: SkinService) {}
+
+  @Get("/list")
+  async getAllSkins(@Res() res: Response) {
+    const skins = await this.skinService.listAllSkins();
+    res.json(skins);
+  }
 
   @Get()
   async getSkinInfo(@Res() res: Response, @Query() query: { hd: number; animated: number; name: string }) {

@@ -10,7 +10,11 @@ export class LocalBlueprintController {
   constructor(private readonly blueprintService: LocalBlueprintService) {}
 
   async blueprint(md5: string) {
-    return this.blueprintService.getBlueprintByMD5(md5);
+    const b = await this.blueprintService.getBlueprintByMD5(md5);
+    if (b === undefined) {
+      throw Error("Not found");
+    }
+    return b;
   }
 
   @Get(":md5hash")
@@ -35,6 +39,7 @@ export class LocalBlueprintController {
   @Get(":md5hash/bg")
   async getBlueprintBackground(@Res() res: Response, @Param("md5hash") md5hash: string) {
     const bgFileName = await this.blueprintService.blueprintBg(md5hash);
+    if (!bgFileName) throw Error("No background found");
     return this.redirectToFolder(res, md5hash, bgFileName);
   }
 

@@ -164,7 +164,7 @@ export class OsuLegacySkinTextureResolver implements OsuSkinTextureResolver {
     if (tryWithAnimation) {
       // Check for 0, 1, 2, ...
       let animationIndex = 0;
-      const files = [];
+      const files: string[] = [];
       // Can't be more than that right?
       while (animationIndex < 727) {
         const file = await this.checkForTextureWithFallback(skinTexture, {

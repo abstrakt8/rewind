@@ -12,11 +12,11 @@ export class LocalReplayService {
 
   constructor(@Inject(OSU_FOLDER) private osuDirectory: string) {}
 
-  exportedPath(fileName?: string) {
+  exportedPath(fileName: string) {
     return join(this.osuDirectory, "Replays", fileName);
   }
 
-  internalPath(fileName?: string) {
+  internalPath(fileName: string) {
     return join(this.osuDirectory, "Data", "r", fileName);
   }
 

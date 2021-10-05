@@ -492,8 +492,9 @@ export class OsuBuffer {
    * @return {OsuBuffer}
    */
   writeVarInt(value: number) {
-    const arr = [];
+    const arr: any[] = [];
     let len = 0;
+    // TODO: Push is faster
     do {
       arr[len] = value & 0x7f;
       if ((value >>= 7) !== 0) arr[len] |= 0x80;
