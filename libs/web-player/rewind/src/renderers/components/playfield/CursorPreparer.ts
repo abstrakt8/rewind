@@ -1,14 +1,15 @@
 import { Container } from "pixi.js";
 import { OsuClassicCursor } from "@rewind/osu-pixi/classic-components";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../../../Replay";
-import { AnalysisCursor } from "@rewind/osu-pixi/rewind";
+import { AnalysisCursor, AnalysisPoint } from "@rewind/osu-pixi/rewind";
 import { OsuAction } from "@rewind/osu/core";
 import { injectable } from "inversify";
 import { GameplayClock } from "../../../core/game/GameplayClock";
-import { SkinManager } from "../../../core/skins/SkinManager";
+import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { ReplayManager } from "../../../apps/analysis/manager/ReplayManager";
 import { AnalysisCursorSettingsStore } from "../../../services/AnalysisCursorSettingsStore";
 import { ReplayCursorSettingsStore } from "../../../services/ReplayCursorSettingsStore";
+import { Position } from "@rewind/osu/math";
 
 @injectable()
 export class CursorPreparer {
@@ -18,7 +19,7 @@ export class CursorPreparer {
 
   constructor(
     private readonly replayManager: ReplayManager,
-    private readonly skinManager: SkinManager,
+    private readonly skinManager: SkinHolder,
     private readonly gameClock: GameplayClock,
     private readonly analysisCursorSettingsStore: AnalysisCursorSettingsStore,
     private readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
@@ -57,7 +58,7 @@ export class CursorPreparer {
     // console.log(pi);
     const position = interpolateReplayPosition(frames[pi], frames[pi + 1], time);
 
-    const trailPositions = [];
+    const trailPositions: Position[] = [];
     if (showTrail) {
       for (let i = 1; i <= 5 && pi - i >= 0; i++) {
         trailPositions.push(frames[pi - i].position);
@@ -101,11 +102,11 @@ export class CursorPreparer {
     if (pi === -1 || pi + 1 >= frames.length) return;
     const position = interpolateReplayPosition(frames[pi], frames[pi + 1], time);
 
-    const interesting = [];
+    const interesting: boolean[] = [];
     const masks: number[] = [];
     // the interesting rule can be changed...
 
-    const points = [];
+    const points: AnalysisPoint[] = [];
     const trailCount = 25;
     for (let i = trailCount - 1; i >= 0; i--) {
       masks[i] = 0;

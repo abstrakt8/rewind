@@ -34,7 +34,7 @@ export const parseReplayFramesFromRaw = (rawString: string): ReplayFrame[] => {
     // but for now we'll achieve equal playback to stable by skipping negative frames
 
     if (diff < 0) continue;
-    const actions = [];
+    const actions: OsuAction[] = [];
     const b = parseInt(split[3]);
 
     if (bitmaskCheck(b, ReplayButtonState.Left1) || bitmaskCheck(b, ReplayButtonState.Left2))

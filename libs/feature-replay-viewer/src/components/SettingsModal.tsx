@@ -13,17 +13,19 @@ import {
 } from "@mui/material";
 import { BaseSettingsModal } from "./BaseSettingsModal";
 import { useTheater } from "../providers/TheaterProvider";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import {
+  DEFAULT_ANALYSIS_CURSOR_SETTINGS,
   DEFAULT_BEATMAP_RENDER_SETTINGS,
   DEFAULT_OSU_SKIN_ID,
+  DEFAULT_REPLAY_CURSOR_SETTINGS,
   DEFAULT_REWIND_SKIN_ID,
+  DEFAULT_SKIN_SETTINGS,
   SkinId,
   SkinSource,
+  stringToSkinId,
 } from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks";
-import { DEFAULT_ANALYSIS_CURSOR_SETTINGS } from "../../../web-player/rewind/src/settings/AnalysisCursorSettings";
-import { DEFAULT_REPLAY_CURSOR_SETTINGS } from "../../../web-player/rewind/src/settings/ReplayCursorSettings";
 
 const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",
@@ -131,7 +133,9 @@ function SkinsSettings() {
   // TODO: Button for synchronizing skin list again
 
   const theater = useTheater();
-  const [chosenSkinId, setChosenSkinId] = useState<SkinId>(DEFAULT_OSU_SKIN_ID);
+
+  const { preferredSkinId } = useObservable(() => theater.skinSettingsStore.settings$, DEFAULT_SKIN_SETTINGS);
+  const chosenSkinId = stringToSkinId(preferredSkinId);
 
   const skinOptions: SkinId[] = [
     DEFAULT_OSU_SKIN_ID,
@@ -149,10 +153,14 @@ function SkinsSettings() {
 
   const handleSkinChange = useCallback(
     (skinId: SkinId) => {
-      theater.changeSkin(skinId).then(() => {
-        console.log("Done!");
-        setChosenSkinId(skinId);
-      });
+      (async function () {
+        try {
+          await theater.skinManager.loadSkin(skinId);
+        } catch (e) {
+          // Show some error dialog
+          console.error(`Could not load skin ${skinId}`);
+        }
+      })();
       // TODO: ERror handling
     },
     [theater],

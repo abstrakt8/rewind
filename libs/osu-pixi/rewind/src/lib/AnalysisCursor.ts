@@ -27,7 +27,7 @@ export enum AnalysisColorStyle {
   NEW, // only display the "new" key presses
 }
 
-interface AnalysisPoint {
+export interface AnalysisPoint {
   position: Position;
   color: number;
   interesting: boolean;

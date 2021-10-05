@@ -1,12 +1,21 @@
 /**
  * Configuring the current user skin
  */
-
-// DefaultSkinID
-// Cursor scale with CS
-//  Other stuff
+import { JSONSchemaType } from "ajv";
 
 export interface SkinSettings {
-  // defaultSkinId: ?
+  // fallbackSkinId is rewind:OsuDefaultSkin
   preferredSkinId: string;
 }
+
+export const DEFAULT_SKIN_SETTINGS: SkinSettings = Object.freeze({
+  preferredSkinId: "rewind:RewindDefaultSkin",
+});
+
+export const SkinSettingsSchema: JSONSchemaType<SkinSettings> = {
+  type: "object",
+  properties: {
+    preferredSkinId: { type: "string", default: DEFAULT_SKIN_SETTINGS.preferredSkinId },
+  },
+  required: ["preferredSkinId"],
+};

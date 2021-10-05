@@ -11,7 +11,7 @@ export function calculateDigits(x: number) {
   if (x === 0) {
     return [0];
   }
-  const d = [];
+  const d: number[] = [];
   while (x > 0) {
     d.push(x % 10);
     x = Math.floor(x / 10);

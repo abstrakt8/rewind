@@ -14,6 +14,7 @@ interface TheaterProviderProps {
 export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
   const [rewind] = useState(() => createRewindTheater({ apiUrl }));
   useEffect(() => {
+    rewind.theater.initialize().then(() => console.log("Theater initialized"));
     rewind.analyzer.initialize();
   }, [rewind]);
   return <TheaterContext.Provider value={rewind}>{children}</TheaterContext.Provider>;

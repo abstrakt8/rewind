@@ -102,7 +102,7 @@ type SampleBankInfo = {
 
 function convertPathString(pointString: string, offset: Position): PathControlPoint[] {
   const pointSplit = pointString.split("|");
-  const controlPoints = [];
+  const controlPoints: PathControlPoint[] = [];
   let startIndex = 0;
   let endIndex = 0;
   let first = true;
@@ -164,7 +164,7 @@ function convertPoints(
   let startIndex = 0;
   let endIndex = 0;
 
-  const result = [];
+  const result: PathControlPoint[] = [];
 
   // this is just some logic to not have duplicated positions at the end
   while (++endIndex < vertices.length - endPointLength) {

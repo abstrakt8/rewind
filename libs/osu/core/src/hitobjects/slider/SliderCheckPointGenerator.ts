@@ -48,7 +48,7 @@ export function* generateSliderCheckpoints(
       const it = generateTicks(span, spanStartTime, spanDuration, reversed, length, tickDistance, minDistanceFromEnd);
 
       // Don't flame me for this
-      const ticks = [];
+      const ticks: SliderCheckPointDescriptor[] = [];
       for (const t of it) ticks.push(t);
       if (reversed) ticks.reverse();
       for (const t of ticks) yield t;

@@ -1,6 +1,5 @@
 import { Box } from "@mui/material";
-import { Analyzer } from "@rewind/feature-replay-viewer";
-import { useAnalysisApp, useTheater } from "@rewind/feature-replay-viewer";
+import { Analyzer, useAnalysisApp, useTheater } from "@rewind/feature-replay-viewer";
 import { useEffect } from "react";
 import { SkinId } from "@rewind/web-player/rewind";
 
@@ -18,8 +17,7 @@ export function WebTestApp() {
   const theater = useTheater();
   const analyzer = useAnalysisApp();
   useEffect(() => {
-    theater.changeSkin(skin);
-
+    // theater.changeSkin(skin);
     analyzer.loadReplay(chosenReplayId);
   }, []);
   return (

@@ -116,7 +116,7 @@ export class PathApproximator {
    * @returns A list of vectors representing the piecewise-linear approximation.
    */
   static approximateCatmull(controlPoints: Vec2[]): Vec2[] {
-    const result = [];
+    const result: Vec2[] = [];
     const controlPointsLength = controlPoints.length;
 
     for (let i = 0; i < controlPointsLength - 1; i++) {
@@ -193,7 +193,7 @@ export class PathApproximator {
     // The special case is required for extremely short sliders where the radius is smaller than
     // the tolerance. This is a pathological rather than a realistic case.
 
-    const output = [];
+    const output: Vec2[] = [];
 
     for (let i = 0; i < amountPoints; ++i) {
       const fract = i / (amountPoints - 1);
@@ -224,7 +224,7 @@ export class PathApproximator {
     // TODO: add some smarter logic here, chebyshev nodes?
     const numSteps = 51;
 
-    const result = [];
+    const result: Vec2[] = [];
 
     const weights = PathApproximator._barycentricWeights(controlPoints);
 
@@ -255,9 +255,10 @@ export class PathApproximator {
    */
   static _barycentricWeights(points: Vec2[]): number[] {
     const n = points.length;
-    const w = [];
+    const w: number[] = [];
 
     for (let i = 0; i < n; i++) {
+      // TODO: w[i].push() -> unholey
       w[i] = 1;
 
       for (let j = 0; j < n; j++) {

@@ -2,7 +2,7 @@ import { Skin } from "../../model/Skin";
 import { injectable } from "inversify";
 
 @injectable()
-export class SkinManager {
+export class SkinHolder {
   private skin: Skin;
 
   constructor() {
