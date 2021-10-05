@@ -44,7 +44,8 @@ export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
   const container = new Container({ defaultScope: "Singleton" });
   container.parent = rewindTheaterContainer;
   container.bind(STAGE_TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter2());
-  container.bind(TYPES.WS_URL).toConstantValue("ws://localhost:7271");
+  // TODO
+  container.bind(TYPES.WS_URL).toConstantValue("http://localhost:7271");
 
   container.bind(ReplayManager).toSelf();
   container.bind(BeatmapManager).toSelf();

@@ -8,9 +8,9 @@ import { injectable } from "inversify";
 import { PixiRendererManager } from "../../renderers/PixiRendererManager";
 import { AnalysisSceneManager } from "./manager/AnalysisSceneManager";
 import { GameLoop } from "../../core/game/GameLoop";
-import { AudioEngine } from "../../core/audio/AudioEngine";
 import { ScenarioManager } from "./manager/ScenarioManager";
 import { ReplayWatcher } from "../../core/api/ReplayWatcher";
+import { ScreenshotTaker } from "./manager/ScreenshotTaker";
 
 /**
  * Usage:
@@ -39,6 +39,7 @@ export class AnalysisApp {
     public readonly scenarioManager: ScenarioManager,
     public readonly modSettingsManager: ModSettingsManager,
     public readonly replayWatcher: ReplayWatcher,
+    public readonly screenshotTaker: ScreenshotTaker,
     private readonly blueprintService: BlueprintService,
     private readonly replayService: ReplayService,
     private readonly gameLoop: GameLoop,
@@ -52,8 +53,13 @@ export class AnalysisApp {
   }
 
   initialize() {
-    this.gameLoop.startTicker();
+    console.log("AnalysisApp: Initialize");
+    // Do not @postConstruct or the startWatching happens twice ... (???)
     this.replayWatcher.startWatching();
+  }
+
+  startTicker() {
+    this.gameLoop.startTicker();
   }
 
   destroy() {

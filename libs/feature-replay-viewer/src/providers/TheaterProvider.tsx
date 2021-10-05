@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { createRewindTheater } from "@rewind/web-player/rewind";
 
 type ITheaterContext = ReturnType<typeof createRewindTheater>;
@@ -13,6 +13,9 @@ interface TheaterProviderProps {
 
 export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
   const [rewind] = useState(() => createRewindTheater({ apiUrl }));
+  useEffect(() => {
+    rewind.analyzer.initialize();
+  }, [rewind]);
   return <TheaterContext.Provider value={rewind}>{children}</TheaterContext.Provider>;
 }
 

@@ -9,10 +9,11 @@ const getNowInMs = () => performance.now();
 @injectable()
 export class GameplayClock {
   public isPlaying$: BehaviorSubject<boolean>;
-  public timeElapsedInMs$: BehaviorSubject<number>;
   public durationInMs$: BehaviorSubject<number>;
-
   public speed$: BehaviorSubject<number>;
+
+  // Things that get updated very often should not be Subjects due to performance issues
+  public timeElapsedInMs = 0;
   private lastUpdateTimeInMs = 0;
 
   // private eventEmitter: EventEmitter;
@@ -21,7 +22,6 @@ export class GameplayClock {
     // this.eventEmitter = new EventEmitter();
     this.isPlaying$ = new BehaviorSubject<boolean>(false);
     this.durationInMs$ = new BehaviorSubject<number>(0);
-    this.timeElapsedInMs$ = new BehaviorSubject<number>(0);
     this.speed$ = new BehaviorSubject<number>(1);
   }
 
@@ -51,7 +51,7 @@ export class GameplayClock {
   }
 
   set durationInMs(value: number) {
-    this.durationInMs$.next(value);
+    this.durationInMs$.next(Number.isNaN(value) ? 0 : value);
   }
 
   get isPlaying() {
@@ -60,14 +60,6 @@ export class GameplayClock {
 
   set isPlaying(value: boolean) {
     this.isPlaying$.next(value);
-  }
-
-  get timeElapsedInMs() {
-    return this.timeElapsedInMs$.getValue();
-  }
-
-  set timeElapsedInMs(value: number) {
-    this.timeElapsedInMs$.next(value);
   }
 
   updateTimeElapsed() {
