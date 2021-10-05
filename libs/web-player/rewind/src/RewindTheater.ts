@@ -5,8 +5,7 @@ import { SkinLoader } from "./core/api/SkinLoader";
 import { AudioService } from "./core/audio/AudioService";
 import { TYPES } from "./types/types";
 import { createRewindAnalysisApp } from "./creators/createRewindAnalysisApp";
-import { SkinId } from "./model/SkinId";
-import { SkinManager } from "./core/skins/SkinManager";
+import { SkinHolder } from "./core/skins/SkinHolder";
 import { AudioSettingsStore } from "./services/AudioSettingsStore";
 import { STAGE_TYPES } from "./types/STAGE_TYPES";
 import { BeatmapBackgroundSettingsStore } from "./services/BeatmapBackgroundSettingsStore";
@@ -14,6 +13,9 @@ import { PlayfieldBorderSettingsStore } from "./services/PlayfieldBorderSettings
 import { BeatmapRenderSettingsStore } from "./services/BeatmapRenderSettingsStore";
 import { AnalysisCursorSettingsStore } from "./services/AnalysisCursorSettingsStore";
 import { ReplayCursorSettingsStore } from "./services/ReplayCursorSettingsStore";
+import { RewindLocalStorage } from "./services/RewindLocalStorage";
+import { SkinManager } from "./services/SkinManager";
+import { SkinSettingsStore } from "./services/SkinSettingsStore";
 
 /**
  * Creates the Rewind app that serves multiple useful osu! tools.
@@ -25,8 +27,9 @@ import { ReplayCursorSettingsStore } from "./services/ReplayCursorSettingsStore"
 @injectable()
 export class RewindTheater {
   constructor(
-    private readonly skinLoader: SkinLoader,
-    private readonly skinManager: SkinManager,
+    public readonly skinManager: SkinManager,
+    private readonly rewindLocalStorage: RewindLocalStorage,
+    public readonly skinSettingsStore: SkinSettingsStore,
     public readonly audioSettingsService: AudioSettingsStore,
     public readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
     public readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
@@ -34,18 +37,9 @@ export class RewindTheater {
     public readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
   ) {}
 
-  // @PostConstruct
-  initialize() {
-    // TODO: Load default skin
-    // TODO: Load preferred skin
-    // Load other textures
-  }
-
-  // TODO: Expose the settings services (maybe as facades)
-
-  async changeSkin(skinId: SkinId) {
-    const skin = await this.skinLoader.loadSkin(skinId);
-    this.skinManager.setSkin(skin);
+  async initialize() {
+    this.rewindLocalStorage.initialize();
+    await this.skinManager.loadPreferredSkin();
   }
 }
 
@@ -61,8 +55,9 @@ export function createRewindTheater({ apiUrl }: Settings) {
   container.bind(BlueprintService).toSelf();
   container.bind(ReplayService).toSelf();
   container.bind(SkinLoader).toSelf();
-  container.bind(SkinManager).toSelf();
+  container.bind(SkinHolder).toSelf();
   container.bind(AudioService).toSelf();
+  container.bind(SkinManager).toSelf();
   // General settings stores
   container.bind(AudioSettingsStore).toSelf();
   container.bind(AnalysisCursorSettingsStore).toSelf();
@@ -70,6 +65,9 @@ export function createRewindTheater({ apiUrl }: Settings) {
   container.bind(BeatmapRenderSettingsStore).toSelf();
   container.bind(PlayfieldBorderSettingsStore).toSelf();
   container.bind(ReplayCursorSettingsStore).toSelf();
+  container.bind(SkinSettingsStore).toSelf();
+
+  container.bind(RewindLocalStorage).toSelf();
 
   // Theater facade
   container.bind(RewindTheater).toSelf();

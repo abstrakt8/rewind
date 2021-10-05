@@ -10,7 +10,7 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import { RGB, sliderRepeatAngle, Vec2 } from "@rewind/osu/math";
 import { GameplayClock } from "../../../core/game/GameplayClock";
-import { SkinManager } from "../../../core/skins/SkinManager";
+import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { injectable } from "inversify";
 import { TemporaryObjectPool } from "../../../utils/pooling/TemporaryObjectPool";
 import { SliderTextureManager } from "../../managers/SliderTextureManager";
@@ -30,7 +30,7 @@ export class SliderFactory {
     private readonly gameClock: GameplayClock,
     private readonly modSettingsManager: ModSettingsManager,
     private readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
-    private readonly stageSkinService: SkinManager,
+    private readonly stageSkinService: SkinHolder,
     private readonly sliderTextureService: SliderTextureManager,
   ) {
     // TODO: Inject

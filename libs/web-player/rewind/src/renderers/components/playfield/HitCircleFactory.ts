@@ -10,7 +10,7 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import type { ISkin } from "../../../model/Skin";
 import { GameSimulator } from "../../../core/game/GameSimulator";
-import { SkinManager } from "../../../core/skins/SkinManager";
+import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { ModSettingsManager } from "../../../apps/analysis/manager/ModSettingsManager";
 
 // TODO: Maybe it's even dynamic
@@ -26,7 +26,7 @@ export class HitCircleFactory {
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
     private readonly modSettingsManager: ModSettingsManager,
-    private readonly stageSkinService: SkinManager,
+    private readonly stageSkinService: SkinHolder,
   ) {}
 
   // TODO: Pooling

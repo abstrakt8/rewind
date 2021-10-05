@@ -7,7 +7,7 @@ import {
   OsuClassicHitErrorBar,
   OsuClassicNumber,
 } from "@rewind/osu-pixi/classic-components";
-import { SkinManager } from "../../../core/skins/SkinManager";
+import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
 import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
 import { GameplayClock } from "../../../core/game/GameplayClock";
@@ -21,7 +21,7 @@ export class ForegroundHUDPreparer {
 
   constructor(
     private readonly beatmapManager: BeatmapManager,
-    private readonly skinManager: SkinManager,
+    private readonly skinManager: SkinHolder,
     private readonly gameSimulator: GameSimulator,
     private readonly gameplayClock: GameplayClock,
   ) {
@@ -78,7 +78,7 @@ export class ForegroundHUDPreparer {
     // hit error
     {
       // TODO: optimize
-      const hits = [];
+      const hits: any[] = [];
       if (gameplayState) {
         for (const id in gameplayState.hitCircleVerdict) {
           const s = gameplayState.hitCircleVerdict[id];
