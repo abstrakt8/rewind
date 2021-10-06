@@ -1,4 +1,4 @@
-import { injectable, postConstruct } from "inversify";
+import { injectable } from "inversify";
 import { BehaviorSubject } from "rxjs";
 import { buildBeatmap, determineDefaultPlaybackSpeed } from "@rewind/osu/core";
 import { GameSimulator } from "../../../core/game/GameSimulator";
@@ -36,6 +36,9 @@ export class ScenarioManager {
   }
 
   async loadReplay(replayId: string) {
+    // TODO: Hotfix
+    this.audioEngine.destroy();
+
     this.scenario$.next({ status: "LOADING" });
 
     const replay = await this.replayService.retrieveReplay(replayId);
@@ -60,6 +63,7 @@ export class ScenarioManager {
     // Not supported yet
     this.modSettingsManager.setFlashlight(false);
 
+    this.gameClock.pause();
     this.gameClock.setSpeed(initialSpeed);
     this.gameClock.seekTo(0);
     this.beatmapManager.setBeatmap(beatmap);

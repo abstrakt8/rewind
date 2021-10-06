@@ -112,9 +112,12 @@ export class AudioEngine {
     return (this.song?.mediaElement.duration ?? 1) * 1000;
   }
 
-  // TODO: @preDestroy ?
   destroy() {
-    this.pause();
+    if (this.song) {
+      this.song.disconnect();
+      this.song = undefined;
+    }
+    // this.pause();
     // this.audioContext.close().then(() => {
     //   console.log("Audio context closed.");
     // });
