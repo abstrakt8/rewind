@@ -40,6 +40,12 @@ export class SkinLoader {
     this.skins = {};
   }
 
+  async loadSkinList() {
+    const url = urljoin(this.apiUrl, "api", "skins", "list");
+    const res = (await axios.get(url)).data;
+    return res as string[];
+  }
+
   // force such like reloading
   async loadSkin(skinId: SkinId, forceReload?: boolean): Promise<Skin> {
     const id = `${skinId.source}/${encodeURIComponent(skinId.name)}`;

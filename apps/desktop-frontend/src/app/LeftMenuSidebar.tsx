@@ -1,6 +1,6 @@
 import { RewindLogo } from "./RewindLogo";
 import { Box, Divider, IconButton, Stack, Tooltip } from "@mui/material";
-import { Home, Settings } from "@mui/icons-material";
+import { Home } from "@mui/icons-material";
 import { FaMicroscope } from "react-icons/fa";
 import React from "react";
 import { push } from "connected-react-router";
@@ -59,11 +59,11 @@ export function LeftMenuSidebar() {
       </Tooltip>
       {/*Nothing*/}
       <Box flexGrow={1} />
-      <Tooltip title={"Settings"} placement={"right"}>
-        <IconButton onClick={handleOpenSettings}>
-          <Settings />
-        </IconButton>
-      </Tooltip>
+      {/*<Tooltip title={"Settings"} placement={"right"}>*/}
+      {/*  <IconButton onClick={handleOpenSettings}>*/}
+      {/*    <Settings />*/}
+      {/*  </IconButton>*/}
+      {/*</Tooltip>*/}
     </Stack>
   );
 }

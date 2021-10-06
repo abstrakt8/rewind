@@ -28,13 +28,13 @@ import { SkinSettingsStore } from "./services/SkinSettingsStore";
 export class RewindTheater {
   constructor(
     public readonly skinManager: SkinManager,
-    private readonly rewindLocalStorage: RewindLocalStorage,
     public readonly skinSettingsStore: SkinSettingsStore,
     public readonly audioSettingsService: AudioSettingsStore,
     public readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
     public readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
     public readonly analysisCursorSettingsStore: AnalysisCursorSettingsStore,
     public readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
+    private readonly rewindLocalStorage: RewindLocalStorage,
   ) {}
 
   async initialize() {

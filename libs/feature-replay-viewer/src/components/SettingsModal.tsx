@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { BaseSettingsModal } from "./BaseSettingsModal";
 import { useTheater } from "../providers/TheaterProvider";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   DEFAULT_ANALYSIS_CURSOR_SETTINGS,
   DEFAULT_BEATMAP_RENDER_SETTINGS,
@@ -129,6 +129,14 @@ function GeneralSettings() {
   );
 }
 
+// { source: "osu", name: "- # BTMC   ⌞Freedom Dive  ↓⌝" },
+// { source: "osu", name: "-         《CK》 WhiteCat 2.1 _ old -lite" },
+// { source: "osu", name: "idke+1.2" },
+// { source: "osu", name: "Joie's Seoul v9 x owoTuna + whale" },
+// { source: "osu", name: "Millhiore Lite" },
+// { source: "osu", name: "Rafis 2018-03-26 HDDT" },
+// { source: "osu", name: "Toy 2018-09-07" },
+
 function SkinsSettings() {
   // TODO: Button for synchronizing skin list again
 
@@ -136,18 +144,16 @@ function SkinsSettings() {
 
   const { preferredSkinId } = useObservable(() => theater.skinSettingsStore.settings$, DEFAULT_SKIN_SETTINGS);
   const chosenSkinId = stringToSkinId(preferredSkinId);
+  const skins = useObservable(() => theater.skinManager.skinList$, []);
 
-  const skinOptions: SkinId[] = [
-    DEFAULT_OSU_SKIN_ID,
-    DEFAULT_REWIND_SKIN_ID,
-    { source: "osu", name: "- # BTMC   ⌞Freedom Dive  ↓⌝" },
-    { source: "osu", name: "-         《CK》 WhiteCat 2.1 _ old -lite" },
-    { source: "osu", name: "idke+1.2" },
-    { source: "osu", name: "Joie's Seoul v9 x owoTuna + whale" },
-    { source: "osu", name: "Millhiore Lite" },
-    { source: "osu", name: "Rafis 2018-03-26 HDDT" },
-    { source: "osu", name: "Toy 2018-09-07" },
-  ];
+  const skinOptions: SkinId[] = useMemo(
+    () => [DEFAULT_OSU_SKIN_ID, DEFAULT_REWIND_SKIN_ID].concat(skins.map((name) => ({ source: "osu", name }))),
+    [skins],
+  );
+
+  useEffect(() => {
+    theater.skinManager.loadSkinList();
+  }, [theater]);
 
   // TODO:
 
