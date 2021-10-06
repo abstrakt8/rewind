@@ -1,18 +1,20 @@
 // Asks for the user
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { RewindLogo } from "../RewindSidebarLogo";
-import { FolderOpenIcon } from "@heroicons/react/solid";
 import { useUpdateOsuDirectoryMutation } from "../backend/api";
+import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "@mui/material";
+import { RewindLogo } from "../RewindLogo";
+import { Loop } from "@mui/icons-material";
+import FolderIcon from "@mui/icons-material/Folder";
 
 interface DirectorySelectionProps {
   value: string | null;
   onChange: (value: string | null) => void;
   placeHolder: string;
-  pulseOnEmpty?: boolean;
+  badgeOnEmpty?: boolean;
 }
 
-function DirectorySelection({ value, onChange, placeHolder, pulseOnEmpty }: DirectorySelectionProps) {
+function DirectorySelection({ value, onChange, placeHolder, badgeOnEmpty }: DirectorySelectionProps) {
   const handleSelectFolderClick = useCallback(() => {
     window.api.selectDirectory(value ?? "").then((path) => {
       if (path !== null) {
@@ -21,15 +23,24 @@ function DirectorySelection({ value, onChange, placeHolder, pulseOnEmpty }: Dire
     });
   }, [onChange, value]);
 
-  const showAnimatePulse = pulseOnEmpty && value === null;
+  const onInputChange = useCallback(
+    (event) => {
+      onChange(event.target.value);
+    },
+    [onChange],
+  );
 
+  const invisibleBadge = !badgeOnEmpty || !!value;
   return (
-    <div className={"rounded flex flex-row px-4 py-2 justify-between bg-gray-600 items-center gap-4"}>
-      <span className={"text-gray-400 select-none w-96"}>{value ?? placeHolder}</span>
-      <button onClick={handleSelectFolderClick}>
-        <FolderOpenIcon className={`h-6 w-6  ${showAnimatePulse && "animate-pulse"}`} />
-      </button>
-    </div>
+    <Paper sx={{ px: 2, py: 1, display: "flex", alignItems: "center", width: 400 }} elevation={2}>
+      {/*<span className={"text-gray-400 select-none w-96"}>{value ?? placeHolder}</span>*/}
+      <InputBase sx={{ flex: 1 }} placeholder={placeHolder} value={value} onChange={onInputChange} disabled={true} />
+      <IconButton onClick={handleSelectFolderClick}>
+        <Badge invisible={invisibleBadge} color={"primary"} variant={"dot"}>
+          <FolderIcon />
+        </Badge>
+      </IconButton>
+    </Paper>
   );
 }
 
@@ -67,30 +78,34 @@ export function SetupScreen() {
   useEffect(() => {
     setSaveEnabled(directoryPath !== null && !updateState.isLoading);
   }, [directoryPath, updateState.isLoading]);
+  const errorMessage = "Does not look a valid osu! directory.";
 
   return (
-    <div className={"h-screen bg-gray-800 flex flex-item items-center justify-center text-gray-200"}>
-      <div className={"bg-gray-700 w-auto py-4 px-6 rounded flex flex-col gap-8"}>
-        <RewindLogo />
-        <DirectorySelection
-          placeHolder={"Select your osu! directory..."}
-          value={directoryPath}
-          onChange={handleOnDirectoryChange}
-          pulseOnEmpty
-        />
-        {showErrorMessage && <div className={"text-red-500"}>Does not look like a valid osu! directory.</div>}
-        <div className={"flex flex-row-reverse"}>
-          <button
-            className={`${
-              saveEnabled ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-400 cursor-default text-gray-500"
-            } py-2 px-4 rounded select-none`}
-            disabled={!saveEnabled}
-            onClick={handleConfirmClick}
-          >
-            <span>Save & Restart</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Paper elevation={1}>
+        <Stack gap={2} sx={{ px: 6, py: 4 }}>
+          <RewindLogo />
+          {showErrorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          <DirectorySelection
+            value={directoryPath}
+            onChange={handleOnDirectoryChange}
+            placeHolder={"Select your osu! directory"}
+            badgeOnEmpty={true}
+          />
+          <Stack direction={"row-reverse"}>
+            <Button variant={"contained"} startIcon={<Loop />} disabled={!saveEnabled} onClick={handleConfirmClick}>
+              Save & Restart
+            </Button>
+          </Stack>
+        </Stack>
+      </Paper>
+    </Box>
   );
 }

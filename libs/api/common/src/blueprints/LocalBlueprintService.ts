@@ -81,11 +81,13 @@ export class LocalBlueprintService {
 
   // xd
   async blueprintBg(md5: string): Promise<string | undefined> {
-    const { osuFileName, folderName } = await this.getBlueprintByMD5(md5);
+    const blueprintMetaData = await this.getBlueprintByMD5(md5);
+    if (!blueprintMetaData) return undefined;
+    const { osuFileName, folderName } = blueprintMetaData;
     const data = await readFile(join(this.songsFolder, folderName, osuFileName), { encoding: "utf-8" });
-    const blueprint = parseBlueprint(data, { sectionsToRead: ["Events"] });
+    const parsedBlueprint = parseBlueprint(data, { sectionsToRead: ["Events"] });
     // There is also an offset but let's ignore for now
-    return blueprint.blueprintInfo.metadata.backgroundFile;
+    return parsedBlueprint.blueprintInfo.metadata.backgroundFile;
   }
 }
 

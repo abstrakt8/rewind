@@ -116,7 +116,7 @@ void main()
 
 // because Math.sin and Math.cos are slow ... probably
 function getUnitCircle(numberOfDivisions: number): Position[] {
-  const unitCircle = [];
+  const unitCircle: Position[] = [];
   for (let i = 0; i < numberOfDivisions; i++) {
     const phase = (i * Math.PI * 2) / numberOfDivisions;
     const pointOnCircle = { x: Math.sin(phase), y: Math.cos(phase) };
@@ -370,7 +370,7 @@ export class BasicSliderTextureRenderer {
 
     // The reason we have to render the whole slider in multiple sub-paths is described above.
     // Usually this will only happen for long sliders (in terms of vertices).
-    let subPoints = [];
+    let subPoints: Vec2[] = [];
     for (let i = 0; i < points.length; i++) {
       if (numberOfVertices(subPoints.length + 1) > MAX_NUMBER_OF_VERTICES) {
         renderSubPath(subPoints);

@@ -1,4 +1,4 @@
-export { PlayfieldBorder } from "./playfield/PlayfieldBorder";
+export * from "./playfield/PlayfieldBorder";
 
 export * from "./hitobjects/OsuClassicHitCircleArea";
 export * from "./hitobjects/OsuClassicApproachCircle";

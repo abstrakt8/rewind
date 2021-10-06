@@ -18,7 +18,7 @@ export class SkinNameResolver {
     const [source, folder] = name.split("/");
     const folderPath = this.skinNameResolverConfig.find((c) => c.prefix === source);
     if (folderPath === undefined) {
-      return null;
+      throw Error(`Source='${source}' was not configured.`);
     }
     return { source, name: folder, path: join(folderPath.path, folder) };
   }

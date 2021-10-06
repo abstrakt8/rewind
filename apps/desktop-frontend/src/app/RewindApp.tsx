@@ -1,19 +1,14 @@
-import "./main.css";
-import { useAppSelector } from "./hooks";
+import { useAppSelector } from "./hooks/hooks";
 import { Route, Switch } from "react-router-dom"; // react-router v4/v5
 import { LeftMenuSidebar } from "./LeftMenuSidebar";
-import { Theater } from "@rewind/feature-replay-viewer";
 import { SplashScreen } from "./splash/SplashScreen";
 import { SetupScreen } from "./setup/SetupScreen";
-import { useEffect } from "react";
 import { HomeScreen } from "./home/HomeScreen";
+import { Box, Divider, Stack } from "@mui/material";
+import { Analyzer } from "@rewind/feature-replay-viewer";
 
-function ConnectedTheater() {
-  const { chosenBlueprintId, chosenReplayId } = useAppSelector((state) => state.theater);
-  useEffect(() => {
-    console.log(`Theater is now constructing a stage with blueprintId=${chosenBlueprintId} replayId=${chosenReplayId}`);
-  }, [chosenReplayId, chosenBlueprintId]);
-  return <Theater chosenBlueprintId={chosenBlueprintId} chosenReplayId={chosenReplayId} />;
+function ConnectedAnalyzer() {
+  return <Analyzer />;
 }
 
 function ConnectedSplashScreen() {
@@ -32,14 +27,16 @@ function NormalView() {
     return <div>You should not be here</div>;
   }
   return (
-    <div className={"bg-gray-800 flex h-screen"}>
+    <Stack direction={"row"} sx={{ height: "100vh" }}>
       <LeftMenuSidebar />
-
-      <Switch>
-        <Route exact path={"/home"} render={() => <HomeScreen />} />
-        <Route exact path={"/theater"} render={() => <ConnectedTheater />} />
-      </Switch>
-    </div>
+      <Divider orientation={"vertical"} />
+      <Box sx={{ flexGrow: 1, height: "100%" }}>
+        <Switch>
+          <Route exact path={"/home"} render={() => <HomeScreen />} />
+          <Route exact path={"/analyzer"} render={() => <ConnectedAnalyzer />} />
+        </Switch>
+      </Box>
+    </Stack>
   );
 }
 

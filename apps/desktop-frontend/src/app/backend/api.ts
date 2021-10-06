@@ -9,10 +9,15 @@ interface BackendState {
   state: string;
 }
 
+type SkinsList = string[];
+
 export const rewindDesktopApi = createApi({
   reducerPath: "rewindDesktopApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
   endpoints: (builder) => ({
+    listSkins: builder.query<SkinsList, void>({
+      query: () => `skins/list`,
+    }),
     status: builder.query<BackendState, void>({
       query: () => `status`,
     }),
@@ -26,4 +31,4 @@ export const rewindDesktopApi = createApi({
   }),
 });
 
-export const { useUpdateOsuDirectoryMutation } = rewindDesktopApi;
+export const { useUpdateOsuDirectoryMutation, useListSkinsQuery } = rewindDesktopApi;

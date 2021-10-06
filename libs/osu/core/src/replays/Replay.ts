@@ -19,10 +19,3 @@ export enum ReplayButtonState {
   Right2 = 8,
   Smoke = 16,
 }
-
-const actionBitmaskToActions = (bitmask: number) => {
-  const actions = [];
-  if (bitmask & 1) actions.push(OsuAction.leftButton);
-  if (bitmask & 2) actions.push(OsuAction.rightButton);
-  return actions;
-};

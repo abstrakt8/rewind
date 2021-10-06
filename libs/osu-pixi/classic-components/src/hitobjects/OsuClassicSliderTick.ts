@@ -5,7 +5,7 @@ import {
   evaluateTransformationsToProperties,
 } from "../utils/Pixi";
 import { Sprite, Texture } from "pixi.js";
-import { Position } from "@rewind/osu/math";
+import { Easing, Position } from "@rewind/osu/math";
 import { fadeInT, fadeOutT } from "../utils/Transformations";
 
 // Lazer/DrawableSliderTick.cs
@@ -28,14 +28,21 @@ export class OsuClassicSliderTick {
     this.sprite = createCenteredSprite();
   }
 
-  static normalTransformation(settings: { approachDuration: number }): DisplayObjectTransformationProcess {
-    const { approachDuration } = settings;
+  static normalTransformation(settings: {
+    approachDuration: number;
+    hit: boolean;
+  }): DisplayObjectTransformationProcess {
+    const { approachDuration, hit } = settings;
+    const hitTime = 0;
     return {
       alpha: {
         startValue: 0,
         transformations: [
           { time: [-approachDuration, -approachDuration + ANIM_DURATION], func: fadeInT() },
-          { time: [0, 0 + ANIM_DURATION], func: fadeOutT() },
+          // TODO: Depending on HIT
+          hit
+            ? { time: [hitTime, hitTime + ANIM_DURATION], func: fadeOutT(0, Easing.OUT_QUINT) }
+            : { time: [hitTime, hitTime + ANIM_DURATION], func: fadeOutT(0) },
         ],
       },
     };
@@ -48,7 +55,7 @@ export class OsuClassicSliderTick {
     this.sprite.position.set(position.x, position.y);
     this.sprite.scale.set(scale); // TODO: Actually it scales from 0.5 to 1.0
 
-    const t = OsuClassicSliderTick.normalTransformation({ approachDuration });
+    const t = OsuClassicSliderTick.normalTransformation({ approachDuration, hit: hit ?? false });
     const p = evaluateTransformationsToProperties(t, time);
     applyPropertiesToDisplayObject(p, this.sprite);
   }

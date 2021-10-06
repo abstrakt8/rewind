@@ -49,7 +49,7 @@ export class ScoresDBReader extends Reader {
   }
 
   private readScores(numberOfScores: number): Score[] {
-    const scores = [];
+    const scores: Score[] = [];
     for (let i = 0; i < numberOfScores; i++) {
       scores.push(this.readScore());
     }
@@ -68,7 +68,7 @@ export class ScoresDBReader extends Reader {
   }
 
   private readBeatmaps(numberOfBeatmaps: number) {
-    const beatmaps = [];
+    const beatmaps: any[] = [];
     for (let i = 0; i < numberOfBeatmaps; i++) {
       beatmaps.push(this.readBeatmap());
     }

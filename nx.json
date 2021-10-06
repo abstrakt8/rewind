@@ -36,6 +36,9 @@
     "api-desktop": {
       "tags": []
     },
+    "demo-analysis": {
+      "tags": []
+    },
     "desktop": {
       "tags": []
     },
@@ -110,6 +113,9 @@
     "web-e2e": {
       "tags": [],
       "implicitDependencies": ["web"]
+    },
+    "web-player-rewind": {
+      "tags": []
     }
   }
 }

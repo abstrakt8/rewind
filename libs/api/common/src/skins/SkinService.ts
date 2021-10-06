@@ -1,7 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { GetTextureFileOption, OsuSkinTextureResolver, SkinFolderReader } from "@rewind/osu-local/skin-reader";
 import { SkinNameResolver } from "./SkinNameResolver";
 import { DEFAULT_SKIN_TEXTURE_CONFIG, OsuSkinTextures } from "@rewind/osu/skin";
+import { OSU_FOLDER } from "../constants";
+import { join } from "path";
 
 const OSU_DEFAULT_SKIN_ID = "rewind/OsuDefaultSkin";
 
@@ -9,7 +11,11 @@ const OSU_DEFAULT_SKIN_ID = "rewind/OsuDefaultSkin";
 export class SkinService {
   private logger = new Logger(SkinService.name);
 
-  constructor(private readonly skinNameResolver: SkinNameResolver) {}
+  constructor(@Inject(OSU_FOLDER) private osuDirectory: string, private readonly skinNameResolver: SkinNameResolver) {}
+
+  async listAllSkins() {
+    return SkinFolderReader.listSkinsInFolder(join(this.osuDirectory, "Skins"), { skinIniRequired: false });
+  }
 
   /**
    * In the future we also want to get the skin info with the beatmap as the parameters in order to retrieve
@@ -46,7 +52,7 @@ export class SkinService {
     const { name, path, source } = resolved;
 
     const osuDefaultSkinResolver = await SkinFolderReader.getSkinResolver(
-      this.skinNameResolver.resolveNameToPath(OSU_DEFAULT_SKIN_ID)?.path,
+      this.skinNameResolver.resolveNameToPath(OSU_DEFAULT_SKIN_ID).path,
     );
     const skinResolver = await SkinFolderReader.getSkinResolver(path);
     // TODO: Include default osu! skin

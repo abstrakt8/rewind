@@ -1,7 +1,8 @@
-import { call, put, take } from "redux-saga/effects";
+import { call, take } from "redux-saga/effects";
 import { io, Socket } from "socket.io-client";
 import { eventChannel, SagaIterator } from "redux-saga";
-import { theaterStageChangeRequested } from "../theater/slice";
+
+// import { theaterStageChangeRequested } from "./theater/slice";
 
 function createWebSocketConnection(url: string) {
   const socket = io(url);
@@ -50,7 +51,7 @@ export function* watchReplaysAdded(url: string): SagaIterator {
   while (true) {
     try {
       const payload: Payload = yield take(channel);
-      yield put(theaterStageChangeRequested(payload));
+      // yield put(theaterStageChangeRequested(payload));
     } catch (err) {
       console.error("Socket error: ", err);
     }
