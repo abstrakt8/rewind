@@ -5,11 +5,10 @@ import { Provider } from "react-redux";
 import { history, store } from "./app/store";
 import { ConnectedRouter, push } from "connected-react-router";
 
-import { TheaterProvider } from "@rewind/feature-replay-viewer";
+import { RewindTheme, TheaterProvider } from "@rewind/feature-replay-viewer";
 import { RewindApp } from "./app/RewindApp";
 import { FrontendPreloadAPI } from "@rewind/electron/api";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { RewindTheme } from "@rewind/feature-replay-viewer";
 
 declare global {
   interface Window {
@@ -34,4 +33,4 @@ ReactDOM.render(
 );
 
 // TODO: Maybe not here -> initial State ?
-store.dispatch(push("/analyzer"));
+store.dispatch(push("/splash"));
