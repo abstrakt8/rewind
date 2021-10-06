@@ -10,5 +10,6 @@ export * from "./components/GameCanvas";
 export * from "./components/BaseCurrentTime";
 
 // Connected components
+export * from "./utils/Constants";
 export * from "./Analyzer";
 export { SettingsModal } from "./components/SettingsModal";

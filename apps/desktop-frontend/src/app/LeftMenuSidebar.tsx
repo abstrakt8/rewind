@@ -37,7 +37,9 @@ export function LeftMenuSidebar() {
       alignItems={"center"}
       component={"nav"}
     >
-      <RewindLogo />
+      <Box onClick={handleLinkClick("/home")} sx={{ cursor: "pointer" }}>
+        <RewindLogo />
+      </Box>
       <Divider orientation={"horizontal"} sx={{ borderWidth: 1, width: "80%" }} />
       <Tooltip title={"Overview"} placement={"right"}>
         <IconButton color={buttonColor("/home")} onClick={handleLinkClick("/home")}>
