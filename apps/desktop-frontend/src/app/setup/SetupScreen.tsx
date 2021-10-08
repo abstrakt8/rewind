@@ -44,6 +44,7 @@ function DirectorySelection({ value, onChange, placeHolder, badgeOnEmpty }: Dire
   );
 }
 
+// TODO: Maybe tell which file is actually missing
 export function SetupScreen() {
   // TODO: Add a guess for directory path
   const [directoryPath, setDirectoryPath] = useState<string | null>(null);
@@ -78,7 +79,6 @@ export function SetupScreen() {
   useEffect(() => {
     setSaveEnabled(directoryPath !== null && !updateState.isLoading);
   }, [directoryPath, updateState.isLoading]);
-  const errorMessage = "Does not look a valid osu! directory.";
 
   return (
     <Box
@@ -92,7 +92,15 @@ export function SetupScreen() {
       <Paper elevation={1}>
         <Stack gap={2} sx={{ px: 6, py: 4 }}>
           <RewindLogo />
-          {showErrorMessage && <Alert severity="error">{errorMessage}</Alert>}
+          {showErrorMessage && (
+            <>
+              <Alert severity="error">Does not look a valid osu! directory!</Alert>
+              <Alert severity="info">
+                <div>Make sure it has the following files:</div>
+                <div>"osu!.db", "scores.db", "Replays", "Skins", "Songs"</div>
+              </Alert>
+            </>
+          )}
           <DirectorySelection
             value={directoryPath}
             onChange={handleOnDirectoryChange}
