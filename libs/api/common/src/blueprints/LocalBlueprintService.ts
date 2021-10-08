@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { BlueprintInfo } from "./BlueprintInfo";
 import { OsuDBDao } from "./OsuDBDao";
 import { promises as fsPromises } from "fs";
@@ -7,15 +7,21 @@ import { filterFilenamesInDirectory } from "@rewind/osu-local/utils";
 import { Blueprint, BlueprintSection, parseBlueprint } from "@rewind/osu/core";
 import { OSU_FOLDER } from "../constants";
 
+import { createHash } from "crypto";
+
 const { stat, readFile } = fsPromises;
 
-const sectionsToRead: BlueprintSection[] = ["General", "Difficulty", "Events", "Metadata"];
+const METADATA_SECTIONS_TO_READ: BlueprintSection[] = ["General", "Difficulty", "Events", "Metadata"];
 
-function mapToLocalBlueprint(blueprint: Blueprint, osuFileName: string, folderName: string): BlueprintInfo {
+function mapToLocalBlueprint(
+  blueprint: Blueprint,
+  osuFileName: string,
+  folderName: string,
+  md5Hash: string,
+): BlueprintInfo {
   const { metadata } = blueprint.blueprintInfo;
-  const md5Hash = "";
   return {
-    creator: "",
+    creator: "", // TODO: ?
     title: metadata.title,
     osuFileName,
     folderName,
@@ -30,6 +36,7 @@ function mapToLocalBlueprint(blueprint: Blueprint, osuFileName: string, folderNa
 @Injectable()
 export class LocalBlueprintService {
   blueprints: Record<string, BlueprintInfo> = {};
+  private logger = new Logger(LocalBlueprintService.name);
 
   constructor(private readonly osuDbDao: OsuDBDao, @Inject(OSU_FOLDER) private readonly osuFolder: string) {}
 
@@ -38,20 +45,27 @@ export class LocalBlueprintService {
   }
 
   // osu!.db + Songs folder read
+
   async completeRead() {
     const freshBlueprints = await this.osuDbDao.getAllBlueprints();
     const lastModifiedTime = await this.osuDbDao.getOsuDbLastModifiedTime();
 
-    // TODO: Not supported yet
-    if (false) {
-      const candidates = await getNewFolderCandidates(this.songsFolder, new Date(lastModifiedTime));
-      for (const songFolder of candidates) {
-        const osuFiles = await listOsuFiles(songFolder);
-        for (const osuFile of osuFiles) {
-          // const data = await readFile(osuFile, { encoding: "utf-8" });
-          // const blueprint = await parseBlueprint(data, { sectionsToRead });
-          // freshBlueprints.push(mapToLocalBlueprint(blueprint, osuFile));
-        }
+    this.logger.log("Reading the osu!/Songs folder");
+    const candidates = await getNewFolderCandidates(this.songsFolder, new Date(lastModifiedTime));
+    if (candidates.length > 0) {
+      this.logger.log(`Candidates: ${candidates.length} : ${candidates.join(",")}`);
+    }
+    for (const songFolder of candidates) {
+      const osuFiles = await listOsuFiles(join(this.songsFolder, songFolder));
+      for (const osuFile of osuFiles) {
+        const fileName = join(this.songsFolder, songFolder, osuFile);
+        this.logger.log(`Reading file ${fileName}`);
+        const data = await readFile(fileName);
+        const hash = createHash("md5");
+        hash.update(data);
+        const md5Hash = hash.digest("hex");
+        const blueprint = await parseBlueprint(data.toString("utf-8"), { sectionsToRead: METADATA_SECTIONS_TO_READ });
+        freshBlueprints.push(mapToLocalBlueprint(blueprint, osuFile, songFolder, md5Hash));
       }
     }
 
@@ -65,10 +79,23 @@ export class LocalBlueprintService {
     this.blueprints[blueprint.md5Hash] = blueprint;
   }
 
-  async getAllBlueprints(): Promise<Record<string, BlueprintInfo>> {
+  async blueprintHasBeenAdded() {
     // It's better to rely on the "osu!.db" than the ones we received from watching.
     // But ofc, we if we read from osu!.db again there might still be some folders that have not been properly flushed.
     if (await this.osuDbDao.hasChanged()) {
+      return true;
+    }
+    const s = await stat(this.songsFolder);
+    const t = await this.osuDbDao.getOsuDbLastModifiedTime();
+    if (s.mtime.getTime() > t) {
+      return true;
+    }
+    return false;
+  }
+
+  async getAllBlueprints(): Promise<Record<string, BlueprintInfo>> {
+    const needToCheckAgain = await this.blueprintHasBeenAdded();
+    if (needToCheckAgain) {
       await this.completeRead();
     }
     return this.blueprints;

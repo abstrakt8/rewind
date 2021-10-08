@@ -15,7 +15,6 @@ export class DesktopConfigController {
 
   @Post()
   async saveOsuStablePath(@Res() res: Response, @Body() { osuStablePath }: UpdateOsuStablePathDto) {
-    // this.logger.log(`${JSON.stringify(body)}`);
     this.logger.log(`Received request to update the OsuStablePath to ${osuStablePath}`);
 
     const sanityCheckPassed = await osuFolderSanityCheck(osuStablePath);
