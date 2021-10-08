@@ -33,8 +33,16 @@ export type SliderBodyState = {
 };
 
 export type SpinnerState = {
-  wholeSpinCount: number;
-  // Maybe also current RPM that can be shown
+  // Spinning 180 clock wise and 180 counter clock wise will give 360 degrees spun
+  // This is not rate adjusted
+  // The reason osu! lazer has a rate adjusted one is that the game clock play rate can change throughout time
+  totalSpunAngle: number;
+
+  // The current angle of the spinner hand
+  currentAngle: number;
+
+  // In other words:
+  // totalSpunAngle = sigma_i (abs(currentAngle[i] - currentAngle[i - 1])) with currentAngle[0] = 0
 };
 
 export interface GameState {

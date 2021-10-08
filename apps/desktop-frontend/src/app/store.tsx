@@ -9,7 +9,7 @@ import { connectRouter, routerMiddleware } from "connected-react-router";
 import { rewindDesktopApi } from "./backend/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
-export const history = createHashHistory();
+export const history = createHashHistory({});
 
 const reducer = {
   router: connectRouter(history),
@@ -22,14 +22,15 @@ const reducer = {
 const sagaMiddleware = createSagaMiddleware();
 
 const isDev = process.env.NODE_ENV !== "production" && false;
-const preloadedState = {};
+const preloadedState = {
+  router: {},
+};
 
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   reducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware).concat(routerMiddleware(history)).concat(rewindDesktopApi.middleware),
-  preloadedState,
 });
 
 setupListeners(store.dispatch);

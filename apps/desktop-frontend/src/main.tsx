@@ -22,6 +22,7 @@ ReactDOM.render(
       <ConnectedRouter history={history}>
         <ThemeProvider theme={RewindTheme}>
           <CssBaseline />
+          {/*todo: just create theater outside and pass it in lol*/}
           <TheaterProvider apiUrl={"http://localhost:7271"}>
             <RewindApp />
           </TheaterProvider>

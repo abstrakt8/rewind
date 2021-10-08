@@ -1,7 +1,7 @@
 import { hitWindowsForOD, Position, Vec2 } from "@rewind/osu/math";
 import { Beatmap } from "../beatmap/Beatmap";
 import { defaultGameState, GameState, HitCircleVerdict, NOT_PRESSING, PressingSinceTimings } from "./GameState";
-import { isHitCircle, isSlider } from "../hitobjects/Types";
+import { isHitCircle, isSlider, isSpinner } from "../hitobjects/Types";
 import { Slider } from "../hitobjects/Slider";
 import { OsuAction, ReplayFrame } from "../replays/Replay";
 import { MainHitObjectVerdict } from "./Verdicts";
@@ -51,6 +51,7 @@ function generateEvents(beatmap: Beatmap, hitWindows: number[]): Event[] {
 
   const pushHitCircleEvents = (h: HitCircle) => {
     events.push({ time: h.hitTime - h.approachDuration, hitObjectId: h.id, type: "HIT_CIRCLE_SPAWN" });
+    // TODO: In case you are allowed to press late -> +1 additional
     events.push({ time: h.hitTime + mehHitWindow + 1, hitObjectId: h.id, type: "HIT_CIRCLE_FORCE_KILL" });
   };
 
@@ -64,7 +65,7 @@ function generateEvents(beatmap: Beatmap, hitWindows: number[]): Event[] {
       h.checkPoints.forEach((c) => {
         events.push({ time: c.hitTime, hitObjectId: c.id, type: "SLIDER_CHECK_POINT" });
       });
-    } else {
+    } else if (isSpinner(h)) {
       events.push({ time: h.startTime, hitObjectId: h.id, type: "SPINNER_START" });
       events.push({ time: h.endTime, hitObjectId: h.id, type: "SPINNER_END" });
     }
@@ -280,21 +281,20 @@ export class GameStateEvaluator {
         }
       }
 
-      // TODO: Force miss other notes less than i
+      // TODO: Force miss other notes less than i for lazer style
       if (judged) break;
 
       if (isWithinHitWindow(this.hitWindows, delta, "MISS")) {
         // TODO: Add a "HIT_TOO_LATE" (even though it's kinda unfair, but this is osu!stable behavior)
-        // For some reason in osu!stable the HitCircle that has a MEH time of let's say +-109.5ms is still alive at t+110ms and can
-        // be "clicked" by the user at time t+110ms, but it will just result in a miss.
-        // The problem is that the underlying note will then be ignored because the click is "wasted" for the already
-        // expired hit circle.
-        // => This might be a stable bug or feature?
+        // For some reason in osu!stable the HitCircle that has a MEH time of let's say +-109.5ms is still alive at
+        // t+110ms and can be "clicked" by the user at time t+110ms, but it will just result in a miss. The problem is
+        // that the underlying note will then be ignored because the click is "wasted" for the already expired hit
+        // circle. => This might be a stable bug or feature?
         this.judgeHitCircle(hitCircle.id, { judgementTime: currentTime, type: "MISS", missReason: "HIT_TOO_EARLY" });
         judged = true;
       }
 
-      // TODO: Do we force miss other notes as well?
+      // TODO: Do we force miss other notes as well? for lazer style
       if (judged) break;
     }
   }
@@ -310,7 +310,6 @@ export class GameStateEvaluator {
   }
 
   private updateSliderBodyTracking(time: number, cursorPosition: Position, pressingSince: PressingSinceTimings): void {
-    // For every alive slider (even in non 2B case there might multiple alive)
     for (const id of this.gameState.aliveSliderIds) {
       const slider = this.beatmap.getSlider(id);
 

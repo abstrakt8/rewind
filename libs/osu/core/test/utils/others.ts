@@ -124,7 +124,7 @@ export function createTestTimeMachine(mapFile: string, replayFile: string) {
 
 // Time deltas
 export function timeDeltas(frames: { time: number }[]) {
-  const deltas = [];
+  const deltas: number[] = [];
   for (let i = 1; i < frames.length; i++) {
     deltas.push(frames[i].time - frames[i - 1].time);
   }
