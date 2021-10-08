@@ -121,6 +121,9 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
           "& .MuiSlider-rail": {
             opacity: 0.28,
           },
+          "& .MuiSlider-track": {
+            transition: "none", // Otherwise it lags behind on very short songs
+          },
         }}
         value={currentTime}
         onChange={(_, x) => onChange(x as number)}
