@@ -30,6 +30,7 @@ import { ScenarioManager } from "../apps/analysis/manager/ScenarioManager";
 import { ScreenshotTaker } from "../apps/analysis/manager/ScreenshotTaker";
 import { ReplayWatcher } from "../core/api/ReplayWatcher";
 import { TYPES } from "../types/types";
+import { ClipRecorder } from "../apps/analysis/manager/ClipRecorder";
 
 /**
  * This is a Rewind specific constructor of the "Analysis" tool (not to be used outside of Rewind).
@@ -57,7 +58,8 @@ export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
 
   // Plugins ?
   container.bind(ScreenshotTaker).toSelf();
-  container.bind(ReplayWatcher).toSelf();
+  container.bind(ClipRecorder).toSelf();
+  container.bind(ReplayWatcher).toSelf(); // Listens to WebSocket
 
   // Assets
   container.bind(TextureManager).toSelf();

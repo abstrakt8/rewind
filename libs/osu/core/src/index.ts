@@ -46,6 +46,7 @@ export * from "./gameplay/Verdicts";
 // replays
 export * from "./replays/RawReplayData";
 export * from "./replays/Replay";
+export * from "./replays/ReplayClicks";
 export { parseReplayFramesFromRaw } from "./replays/ReplayParser";
 
 export * from "./playfield";

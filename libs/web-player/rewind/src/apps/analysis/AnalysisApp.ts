@@ -11,6 +11,7 @@ import { GameLoop } from "../../core/game/GameLoop";
 import { ScenarioManager } from "./manager/ScenarioManager";
 import { ReplayWatcher } from "../../core/api/ReplayWatcher";
 import { ScreenshotTaker } from "./manager/ScreenshotTaker";
+import { ClipRecorder } from "./manager/ClipRecorder";
 
 /**
  * Usage:
@@ -40,6 +41,7 @@ export class AnalysisApp {
     public readonly modSettingsManager: ModSettingsManager,
     public readonly replayWatcher: ReplayWatcher,
     public readonly screenshotTaker: ScreenshotTaker,
+    public readonly clipRecorder: ClipRecorder,
     private readonly blueprintService: BlueprintService,
     private readonly replayService: ReplayService,
     private readonly gameLoop: GameLoop,

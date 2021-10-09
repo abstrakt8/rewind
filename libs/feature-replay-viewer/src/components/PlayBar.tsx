@@ -10,6 +10,7 @@ import {
   MenuList,
   Popover,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -36,6 +37,8 @@ import { useSettingsModalContext } from "../providers/SettingsProvider";
 import { PlaybarColors } from "../utils/PlaybarColors";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 import { useObservable } from "rxjs-hooks";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { HelpModalDialog } from "./HelpModal";
 
 const centerUp = {
   anchorOrigin: {
@@ -64,8 +67,16 @@ function MoreMenu() {
     handleClose();
   };
 
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  const handleOpenHelp = () => {
+    setHelpOpen(true);
+    handleClose();
+  };
+
   return (
     <>
+      <HelpModalDialog isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
       <IconButton
         aria-label="more"
         id="long-button"
@@ -73,6 +84,7 @@ function MoreMenu() {
         // aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         onClick={handleClick}
+        onFocus={ignoreFocus}
       >
         <MoreVert />
       </IconButton>
@@ -95,7 +107,7 @@ function MoreMenu() {
           </ListItemIcon>
           <ListItemText>Take Screenshot</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleOpenHelp}>
           <ListItemIcon>
             <Help />
           </ListItemIcon>
@@ -367,6 +379,36 @@ function SpeedButton() {
   );
 }
 
+function RecordButton() {
+  // TODO: Probably stop at a certain time otherwise the program might crash due to memory issue
+  const { clipRecorder } = useAnalysisApp();
+  const recordingSince = useObservable(() => clipRecorder.recordingSince$, 0);
+
+  const isRecording = recordingSince > 0;
+
+  const recordingTime = "3:00";
+
+  const handleClick = useCallback(() => {
+    if (isRecording) {
+      clipRecorder.stopRecording();
+    } else {
+      clipRecorder.startRecording();
+    }
+  }, [isRecording, clipRecorder]);
+
+  return (
+    <Tooltip title={"Start recording a clip"}>
+      <IconButton onClick={handleClick}>
+        <FiberManualRecordIcon
+          sx={{
+            color: isRecording ? "red" : "text.primary",
+          }}
+        />
+      </IconButton>
+    </Tooltip>
+  );
+}
+
 const VerticalDivider = () => <Divider orientation={"vertical"} sx={{ height: "80%" }} />;
 
 export function PlayBar() {
@@ -381,6 +423,7 @@ export function PlayBar() {
         <AudioButton />
         <SpeedButton />
         <HiddenButton />
+        {/*<RecordButton />*/}
         <SettingsButton />
         <MoreMenu />
       </Stack>
