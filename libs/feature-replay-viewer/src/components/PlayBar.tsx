@@ -38,6 +38,7 @@ import { PlaybarColors } from "../utils/PlaybarColors";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 import { useObservable } from "rxjs-hooks";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { HelpModalDialog } from "./HelpModal";
 
 const centerUp = {
   anchorOrigin: {
@@ -66,8 +67,16 @@ function MoreMenu() {
     handleClose();
   };
 
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  const handleOpenHelp = () => {
+    setHelpOpen(true);
+    handleClose();
+  };
+
   return (
     <>
+      <HelpModalDialog isOpen={helpOpen} onClose={() => setHelpOpen(false)} />
       <IconButton
         aria-label="more"
         id="long-button"
@@ -75,6 +84,7 @@ function MoreMenu() {
         // aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         onClick={handleClick}
+        onFocus={ignoreFocus}
       >
         <MoreVert />
       </IconButton>
@@ -97,7 +107,7 @@ function MoreMenu() {
           </ListItemIcon>
           <ListItemText>Take Screenshot</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleOpenHelp}>
           <ListItemIcon>
             <Help />
           </ListItemIcon>

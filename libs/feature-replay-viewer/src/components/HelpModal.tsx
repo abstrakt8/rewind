@@ -1,14 +1,33 @@
 import React from "react";
 import styled from "styled-components";
-import { FaBug, FaDiscord, FaGraduationCap, IoClose } from "react-icons/all";
-import { Dialog } from "@headlessui/react";
+import { FaBug, FaDiscord, FaGraduationCap } from "react-icons/all";
 import { RewindLinks } from "../utils/Constants";
+import { Box, Divider, IconButton, Modal, Paper, Stack, Typography } from "@mui/material";
+import { Close, Help } from "@mui/icons-material";
+import { PromotionFooter } from "./BaseDialog";
 
 export function Key({ text }: { text: string }) {
   return (
-    <span className={"bg-gray-300 font-mono text-gray-800 rounded border-b-4 border-r-4 border-gray-600 pl-1 pr-1"}>
+    <Box
+      component={"span"}
+      sx={{
+        backgroundColor: "hsl(0,2%,44%)",
+        fontFamily: "monospace",
+        borderStyle: "solid",
+        borderRadius: 1,
+        borderWidth: "0px 4px 4px 0",
+        // borderBottomWidth: 2,
+        // borderRightWidth: 4,
+        borderColor: "hsl(0,2%,20%)",
+        paddingLeft: 1,
+        paddingRight: 1,
+      }}
+    >
       {text}
-    </span>
+    </Box>
+    // <span className={"bg-gray-300 font-mono text-gray-800 rounded border-b-4 border-r-4 border-gray-600 pl-1 pr-1"}>
+    //   {text}
+    // </span>
   );
 }
 
@@ -43,7 +62,7 @@ function KeyBindings({ separator = "+", keys, inline }: { separator?: string; ke
 }
 
 function Title({ children }: any) {
-  return <h1 className={"text-xl"}>{children}</h1>;
+  return <Typography variant={"h6"}>{children}</Typography>;
 }
 
 // Which one?
@@ -53,7 +72,7 @@ const orSeparator = " or ";
 
 function PlaybarNavigationShortcuts() {
   return (
-    <div className={"flex flex-col gap-4"}>
+    <Stack sx={{ py: 2 }} flexDirection={"column"} gap={1}>
       <Title>Shortcuts</Title>
       <ShortcutBox>
         <KeyBindings keys={["Spacebar"]} /> <span>Start / Pause</span>
@@ -83,8 +102,7 @@ function PlaybarNavigationShortcuts() {
         <span>Large jump forward</span>
         <KeyBindings keys={["f"]} /> <span>Toggle hidden</span>
       </ShortcutBox>
-      <span className={"text-sm text-gray-500"}>More shortcuts and customizability soon...</span>
-    </div>
+    </Stack>
   );
 }
 
@@ -121,15 +139,26 @@ interface HelpModalProps {
 export function HelpBox(props: Pick<HelpModalProps, "onClose">) {
   const { onClose } = props;
   return (
-    <div className={"bg-gray-700 text-gray-200 rounded px-12 py-8 gap-4 relative"}>
-      <button className={"absolute top-0 right-0 p-2"} onClick={onClose}>
-        <IoClose className={"h-6 w-6 text-gray-400"} />
-      </button>
-      <div className={"divide-x divide-gray-600 gap-8 flex"}>
-        <PlaybarNavigationShortcuts />
-        <OtherResources />
-      </div>
-    </div>
+    <Paper sx={{ px: 2, py: 2, display: "flex", flexDirection: "column" }}>
+      {/*MenuBar could be reused*/}
+      <Stack sx={{ alignItems: "center" }} direction={"row"} gap={1}>
+        <Help />
+        <Typography fontWeight={"bolder"}>Help</Typography>
+        <Box flexGrow={1} />
+        <IconButton onClick={onClose}>
+          <Close />
+        </IconButton>
+      </Stack>
+      <Divider />
+
+      <PlaybarNavigationShortcuts />
+      {/*<OtherResources />*/}
+      {/*Footer*/}
+      <Divider />
+      <Stack sx={{ paddingTop: 1 }}>
+        <PromotionFooter />
+      </Stack>
+    </Paper>
   );
 }
 
@@ -137,11 +166,22 @@ export function HelpModalDialog(props: HelpModalProps) {
   const { isOpen, onClose } = props;
 
   return (
-    <Dialog onClose={onClose} open={isOpen} className={"fixed z-10 overflow-y-auto inset-0"}>
-      <div className={"flex items-center justify-center min-h-screen"}>
-        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+    <Modal open={isOpen} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          minWidth: 600,
+          // maxWidth: 700,
+          maxWidth: "100%",
+          // maxHeight: 600,
+          maxHeight: "100%",
+        }}
+      >
         <HelpBox onClose={onClose} />
-      </div>
-    </Dialog>
+      </Box>
+    </Modal>
   );
 }
