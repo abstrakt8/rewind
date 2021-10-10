@@ -39,7 +39,7 @@ export class HitObjectsContainer {
     if (spinnerGraphic) this.spinnerProxies.addChild(spinnerGraphic.container);
   }
 
-  update() {
+  updateHitObjects() {
     this.hitObjectContainer.removeChildren();
     this.spinnerProxies.removeChildren();
     this.approachCircleContainer.removeChildren();

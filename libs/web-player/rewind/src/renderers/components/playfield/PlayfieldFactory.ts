@@ -26,11 +26,11 @@ export class Playfield {
     );
   }
 
-  update() {
+  updatePlayfield() {
     // playfieldBorder is push-based, therefore no .update()
-    this.hitObjectsContainer.update();
-    this.cursorPreparer.update();
-    this.judgementPreparer.update();
+    this.hitObjectsContainer.updateHitObjects();
+    this.cursorPreparer.updateCursors();
+    this.judgementPreparer.updateJudgements();
   }
 }
 

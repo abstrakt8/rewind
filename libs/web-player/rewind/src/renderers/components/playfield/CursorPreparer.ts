@@ -143,7 +143,7 @@ export class CursorPreparer {
     this.container.addChild(cursor.container);
   }
 
-  update() {
+  updateCursors() {
     this.container.removeChildren();
     this.updateOsuCursor();
     this.updateAnalysisCursor();

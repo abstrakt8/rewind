@@ -30,12 +30,44 @@ export class ForegroundHUDPreparer {
     this.hitErrorBar = new OsuClassicHitErrorBar();
   }
 
-  update() {
+  updateHitErrorBar() {
+    const time = this.gameplayClock.timeElapsedInMs;
+    const gameplayState = this.gameSimulator.getCurrentState();
+    const beatmap = this.beatmapManager.getBeatmap();
+    {
+      const hits: any[] = [];
+      if (gameplayState) {
+        for (const id in gameplayState.hitCircleVerdict) {
+          const s = gameplayState.hitCircleVerdict[id];
+          const hitCircle = beatmap.getHitCircle(id);
+          const offset = s.judgementTime - hitCircle.hitTime;
+          const timeAgo = time - s.judgementTime;
+          if (timeAgo >= 0 && timeAgo < 3000) hits.push({ offset, timeAgo, miss: s.type === "MISS" });
+        }
+      }
+
+      const [hitWindow300, hitWindow100, hitWindow50] = hitWindowsForOD(beatmap.difficulty.overallDifficulty);
+      this.hitErrorBar.prepare({
+        hitWindow50,
+        hitWindow100,
+        hitWindow300,
+        hits,
+        // hits: [
+        //   { timeAgo: 100, offset: -2 },
+        //   { timeAgo: 2, offset: +10 },
+        // ],
+      });
+      this.hitErrorBar.container.position.set(STAGE_WIDTH / 2, STAGE_HEIGHT - 20);
+      this.hitErrorBar.container.scale.set(2.0);
+      this.container.addChild(this.hitErrorBar.container);
+    }
+  }
+
+  updateHUD() {
     const skin = this.skinManager.getSkin();
     const gameplayInfo = this.gameSimulator.getCurrentInfo();
     const gameplayState = this.gameSimulator.getCurrentState();
     const time = this.gameplayClock.timeElapsedInMs;
-    const beatmap = this.beatmapManager.getBeatmap();
 
     this.container.removeChildren();
 
@@ -75,34 +107,6 @@ export class ForegroundHUDPreparer {
       this.container.addChild(this.stats);
     }
 
-    // hit error
-    {
-      // TODO: optimize
-      const hits: any[] = [];
-      if (gameplayState) {
-        for (const id in gameplayState.hitCircleVerdict) {
-          const s = gameplayState.hitCircleVerdict[id];
-          const hitCircle = beatmap.getHitCircle(id);
-          const offset = s.judgementTime - hitCircle.hitTime;
-          const timeAgo = time - s.judgementTime;
-          if (timeAgo >= 0 && timeAgo < 3000) hits.push({ offset, timeAgo, miss: s.type === "MISS" });
-        }
-      }
-
-      const [hitWindow300, hitWindow100, hitWindow50] = hitWindowsForOD(beatmap.difficulty.overallDifficulty);
-      this.hitErrorBar.prepare({
-        hitWindow50,
-        hitWindow100,
-        hitWindow300,
-        hits,
-        // hits: [
-        //   { timeAgo: 100, offset: -2 },
-        //   { timeAgo: 2, offset: +10 },
-        // ],
-      });
-      this.hitErrorBar.container.position.set(STAGE_WIDTH / 2, STAGE_HEIGHT - 20);
-      this.hitErrorBar.container.scale.set(2.0);
-      this.container.addChild(this.hitErrorBar.container);
-    }
+    this.updateHitErrorBar();
   }
 }

@@ -16,7 +16,7 @@ export class AnalysisScene implements UserScene {
   update() {
     this.gameClock.tick();
     this.gameSimulator.simulate(this.gameClock.timeElapsedInMs);
-    this.analysisStage.update();
+    this.analysisStage.updateAnalysisStage();
   }
 
   get stage() {

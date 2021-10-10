@@ -79,16 +79,18 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
       {/*TODO: Optimize with canvas*/}
-      <Stack
-        sx={{
-          overflow: "hidden",
-          // borderRadius: 1,
-          visibility: backgroundEnable ? "visible" : "hidden",
-          filter: "brightness(50%)",
-        }}
-      >
-        {eventLines}
-      </Stack>
+      {backgroundEnable && (
+        <Stack
+          sx={{
+            overflow: "hidden",
+            // borderRadius: 1,
+            // visibility: backgroundEnable ? "visible" : "hidden",
+            filter: "brightness(50%)",
+          }}
+        >
+          {eventLines}
+        </Stack>
+      )}
       <Slider
         onFocus={ignoreFocus}
         size={"small"}
