@@ -38,7 +38,7 @@ export class JudgementPreparer {
     return this.container;
   }
 
-  update() {
+  updateJudgements() {
     this.container.removeChildren();
     const beatmap = this.beatmapManager.getBeatmap();
     const time = this.gameClock.timeElapsedInMs;

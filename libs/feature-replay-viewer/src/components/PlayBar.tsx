@@ -256,7 +256,7 @@ function GameTimeSlider() {
 
   return (
     <BaseGameTimeSlider
-      backgroundEnable={backgroundEnable}
+      backgroundEnable={backgroundEnable && false}
       duration={duration}
       currentTime={currentTime}
       onChange={seekTo}
