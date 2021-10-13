@@ -56,6 +56,8 @@ export class ScenarioManager {
     // even on long maps.
     const beatmap = buildBeatmap(blueprint, { addStacking: true, mods: replay.mods });
 
+    console.log(`Beatmap built with ${beatmap.hitObjects.length} hitobjects`);
+    console.log(`Replay loaded with ${replay.frames.length} frames`);
     const modHidden = replay.mods.includes("HIDDEN");
     const initialSpeed = determineDefaultPlaybackSpeed(replay.mods);
 

@@ -25,7 +25,7 @@ import { SkinSettingsStore } from "./services/SkinSettingsStore";
  * Example: Preferred skin can be set at only one place and is shared among all tools.
  */
 @injectable()
-export class RewindTheater {
+export class CommonManagers {
   constructor(
     public readonly skinManager: SkinManager,
     public readonly skinSettingsStore: SkinSettingsStore,
@@ -37,6 +37,7 @@ export class RewindTheater {
     private readonly rewindLocalStorage: RewindLocalStorage,
   ) {}
 
+  // This should only be called after there is a connection to the backend.
   async initialize() {
     this.rewindLocalStorage.initialize();
     await this.skinManager.loadPreferredSkin();
@@ -70,10 +71,12 @@ export function createRewindTheater({ apiUrl }: Settings) {
   container.bind(RewindLocalStorage).toSelf();
 
   // Theater facade
-  container.bind(RewindTheater).toSelf();
+  container.bind(CommonManagers).toSelf();
 
   return {
-    theater: container.get(RewindTheater),
+    common: container.get(CommonManagers),
     analyzer: createRewindAnalysisApp(container),
   };
 }
+
+export type RewindTheater = ReturnType<typeof createRewindTheater>;

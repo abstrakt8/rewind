@@ -8,6 +8,7 @@ import { createHashHistory } from "history";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { rewindDesktopApi } from "./backend/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import { theater } from "./theater";
 
 export const history = createHashHistory({});
 
@@ -35,7 +36,7 @@ const store = configureStore({
 
 setupListeners(store.dispatch);
 
-sagaMiddleware.run(createRewindRootSaga());
+sagaMiddleware.run(createRewindRootSaga({ theater }));
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

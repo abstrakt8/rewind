@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { BaseSettingsModal } from "./BaseSettingsModal";
-import { useTheater } from "../providers/TheaterProvider";
+import { useCommonManagers } from "../providers/TheaterProvider";
 import { useCallback, useEffect, useMemo } from "react";
 import {
   DEFAULT_ANALYSIS_CURSOR_SETTINGS,
@@ -33,7 +33,7 @@ const sourceName: Record<SkinSource, string> = {
 };
 
 function BeatmapBackgroundSettings() {
-  const theater = useTheater();
+  const theater = useCommonManagers();
   const { beatmapBackgroundSettingsStore } = theater;
   const settings = useObservable(() => beatmapBackgroundSettingsStore.settings$, { blur: 0, enabled: false, dim: 0 });
   return (
@@ -55,7 +55,7 @@ function BeatmapBackgroundSettings() {
 }
 
 function BeatmapRenderSettings() {
-  const { beatmapRenderSettingsStore } = useTheater();
+  const { beatmapRenderSettingsStore } = useCommonManagers();
   const settings = useObservable(() => beatmapRenderSettingsStore.settings$, DEFAULT_BEATMAP_RENDER_SETTINGS);
 
   return (
@@ -77,7 +77,7 @@ function BeatmapRenderSettings() {
 }
 
 function AnalysisCursorSettingsPanel() {
-  const { analysisCursorSettingsStore } = useTheater();
+  const { analysisCursorSettingsStore } = useCommonManagers();
   const settings = useObservable(() => analysisCursorSettingsStore.settings$, DEFAULT_ANALYSIS_CURSOR_SETTINGS);
 
   return (
@@ -98,7 +98,7 @@ function AnalysisCursorSettingsPanel() {
 }
 
 function ReplayCursorSettingsPanel() {
-  const { replayCursorSettingsStore } = useTheater();
+  const { replayCursorSettingsStore } = useCommonManagers();
   const settings = useObservable(() => replayCursorSettingsStore.settings$, DEFAULT_REPLAY_CURSOR_SETTINGS);
 
   return (
@@ -140,7 +140,7 @@ function GeneralSettings() {
 function SkinsSettings() {
   // TODO: Button for synchronizing skin list again
 
-  const theater = useTheater();
+  const theater = useCommonManagers();
 
   const { preferredSkinId } = useObservable(() => theater.skinSettingsStore.settings$, DEFAULT_SKIN_SETTINGS);
   const chosenSkinId = stringToSkinId(preferredSkinId);

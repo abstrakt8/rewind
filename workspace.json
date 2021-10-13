@@ -113,80 +113,6 @@
         }
       }
     },
-    "demo-analysis": {
-      "root": "apps/demo/analysis",
-      "sourceRoot": "apps/demo/analysis/src",
-      "projectType": "application",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:build",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/apps/demo/analysis",
-            "index": "apps/demo/analysis/src/index.html",
-            "main": "apps/demo/analysis/src/main.tsx",
-            "polyfills": "apps/demo/analysis/src/polyfills.ts",
-            "tsConfig": "apps/demo/analysis/tsconfig.app.json",
-            "assets": ["apps/demo/analysis/src/favicon.ico", "apps/demo/analysis/src/assets"],
-            "styles": ["apps/demo/analysis/src/styles.css"],
-            "scripts": [],
-            "webpackConfig": "@nrwl/react/plugins/webpack"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/demo/analysis/src/environments/environment.ts",
-                  "with": "apps/demo/analysis/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "@nrwl/web:dev-server",
-          "options": {
-            "buildTarget": "demo-analysis:build",
-            "hmr": true
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "demo-analysis:build:production",
-              "hmr": false
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["apps/demo/analysis/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/demo/analysis"],
-          "options": {
-            "jestConfig": "apps/demo/analysis/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "desktop": {
       "root": "apps/desktop",
       "sourceRoot": "apps/desktop/src",
@@ -1138,6 +1064,5 @@
       "linter": "eslint",
       "unitTestRunner": "jest"
     }
-  },
-  "defaultProject": "demo-analysis"
+  }
 }

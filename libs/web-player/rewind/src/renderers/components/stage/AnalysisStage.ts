@@ -77,11 +77,11 @@ export class AnalysisStage {
     console.debug(`Resizing screen.dimensions = ${screen.width} x ${screen.height}, scale = ${scale}`);
   }
 
-  update() {
+  updateAnalysisStage() {
     // Maybe resizing should also be push based (with some debouncing)
     this.resizeTo();
-    this.playfield.update();
-    this.foregroundHUDPreparer.update();
+    this.playfield.updatePlayfield();
+    this.foregroundHUDPreparer.updateHUD();
   }
 
   destroy(): void {

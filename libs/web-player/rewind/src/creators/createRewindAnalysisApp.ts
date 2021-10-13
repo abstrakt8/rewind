@@ -41,9 +41,9 @@ import { ClipRecorder } from "../apps/analysis/manager/ClipRecorder";
  *
  * The analysis tool can be used as a standalone app though.
  */
-export function createRewindAnalysisApp(rewindTheaterContainer: Container) {
+export function createRewindAnalysisApp(commonContainer: Container) {
   const container = new Container({ defaultScope: "Singleton" });
-  container.parent = rewindTheaterContainer;
+  container.parent = commonContainer;
   container.bind(STAGE_TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter2());
   // TODO
   container.bind(TYPES.WS_URL).toConstantValue("http://localhost:7271");

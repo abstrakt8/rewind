@@ -30,54 +30,11 @@ export class ForegroundHUDPreparer {
     this.hitErrorBar = new OsuClassicHitErrorBar();
   }
 
-  update() {
-    const skin = this.skinManager.getSkin();
-    const gameplayInfo = this.gameSimulator.getCurrentInfo();
-    const gameplayState = this.gameSimulator.getCurrentState();
+  updateHitErrorBar() {
     const time = this.gameplayClock.timeElapsedInMs;
+    const gameplayState = this.gameSimulator.getCurrentState();
     const beatmap = this.beatmapManager.getBeatmap();
-
-    this.container.removeChildren();
-
-    if (gameplayInfo) {
-      const comboNumber = new OsuClassicNumber();
-      const textures = skin.getComboNumberTextures();
-      const overlap = skin.config.fonts.comboOverlap;
-      comboNumber.prepare({ digits: calculateDigits(gameplayInfo.currentCombo), textures, overlap });
-      comboNumber.position.set(0, STAGE_HEIGHT - 50);
-      this.container.addChild(comboNumber);
-    }
-    //
-    // acc
-
-    if (gameplayInfo) {
-      // const text
-      const accNumber = new OsuClassicAccuracy();
-      const digitTextures = skin.getScoreTextures();
-      const dotTexture = skin.getTexture("SCORE_DOT");
-      const percentageTexture = skin.getTexture("SCORE_PERCENT");
-      const overlap = skin.config.fonts.scoreOverlap;
-      accNumber.prepare({ accuracy: gameplayInfo.accuracy, digitTextures, dotTexture, percentageTexture, overlap });
-      accNumber.container.position.set(STAGE_WIDTH - 15, 25);
-      this.container.addChild(accNumber.container);
-    }
-
-    // verdict counts: 300, 100, 50, miss
-
-    if (gameplayInfo && gameplayState) {
-      const count = gameplayInfo.verdictCounts;
-      const maxCombo = gameplayInfo.maxComboSoFar;
-
-      this.stats.text = `Time: ${formatGameTime(time, true)}\n\n300: ${count[0]}\n100: ${count[1]}\n50: ${
-        count[2]
-      }\nMisses: ${count[3]}\n\nMaxCombo: ${maxCombo}`;
-      this.stats.position.set(25, 50);
-      this.container.addChild(this.stats);
-    }
-
-    // hit error
     {
-      // TODO: optimize
       const hits: any[] = [];
       if (gameplayState) {
         for (const id in gameplayState.hitCircleVerdict) {
@@ -103,6 +60,61 @@ export class ForegroundHUDPreparer {
       this.hitErrorBar.container.position.set(STAGE_WIDTH / 2, STAGE_HEIGHT - 20);
       this.hitErrorBar.container.scale.set(2.0);
       this.container.addChild(this.hitErrorBar.container);
+    }
+  }
+
+  updateComboNumber() {
+    const skin = this.skinManager.getSkin();
+    const gameplayInfo = this.gameSimulator.getCurrentInfo();
+
+    if (gameplayInfo) {
+      const comboNumber = new OsuClassicNumber();
+      const textures = skin.getComboNumberTextures();
+      const overlap = skin.config.fonts.comboOverlap;
+      comboNumber.prepare({ digits: calculateDigits(gameplayInfo.currentCombo), textures, overlap });
+      comboNumber.position.set(0, STAGE_HEIGHT - 50);
+      this.container.addChild(comboNumber);
+    }
+  }
+
+  updateHUD() {
+    this.container.removeChildren();
+    this.updateComboNumber();
+    this.updateAccuracy();
+    this.updateStats();
+    this.updateHitErrorBar();
+  }
+
+  private updateAccuracy() {
+    const skin = this.skinManager.getSkin();
+    const gameplayInfo = this.gameSimulator.getCurrentInfo();
+    if (gameplayInfo) {
+      // const text
+      const accNumber = new OsuClassicAccuracy();
+      const digitTextures = skin.getScoreTextures();
+      const dotTexture = skin.getTexture("SCORE_DOT");
+      const percentageTexture = skin.getTexture("SCORE_PERCENT");
+      const overlap = skin.config.fonts.scoreOverlap;
+      accNumber.prepare({ accuracy: gameplayInfo.accuracy, digitTextures, dotTexture, percentageTexture, overlap });
+      accNumber.container.position.set(STAGE_WIDTH - 15, 25);
+      this.container.addChild(accNumber.container);
+    }
+  }
+
+  private updateStats() {
+    const gameplayInfo = this.gameSimulator.getCurrentInfo();
+    const gameplayState = this.gameSimulator.getCurrentState();
+    const time = this.gameplayClock.timeElapsedInMs;
+
+    if (gameplayInfo && gameplayState) {
+      const count = gameplayInfo.verdictCounts;
+      const maxCombo = gameplayInfo.maxComboSoFar;
+
+      this.stats.text = `Time: ${formatGameTime(time, true)}\n\n300: ${count[0]}\n100: ${count[1]}\n50: ${
+        count[2]
+      }\nMisses: ${count[3]}\n\nMaxCombo: ${maxCombo}`;
+      this.stats.position.set(25, 50);
+      this.container.addChild(this.stats);
     }
   }
 }

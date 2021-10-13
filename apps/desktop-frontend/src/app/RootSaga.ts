@@ -3,6 +3,7 @@ import { API_BASE_URL } from "./backend/constants";
 import { BackendState, stateChanged } from "./backend/slice";
 import { SagaIterator } from "redux-saga";
 import { push } from "connected-react-router";
+import { RewindTheater } from "@rewind/web-player/rewind";
 
 function* waitForBackendState(state: BackendState): SagaIterator {
   while (true) {
@@ -13,10 +14,12 @@ function* waitForBackendState(state: BackendState): SagaIterator {
   }
 }
 
-function* watchForBackendReady(): SagaIterator {
+function* watchForBackendReady(theater: RewindTheater): SagaIterator {
+  const { common, analyzer } = theater;
   yield call(waitForBackendState, "READY");
-  // yield spawn(watchReplaysAdded, REWIND_WS_URL);
   yield put(push("/home")); // Theater
+  yield call(common.initialize.bind(common));
+  yield call(analyzer.initialize.bind(analyzer));
 }
 
 function* watchForBackendMissingSetup(): SagaIterator {
@@ -52,10 +55,10 @@ function* busyPollBackendState(): SagaIterator {
   }
 }
 
-export function createRewindRootSaga() {
+export function createRewindRootSaga({ theater }: { theater: RewindTheater }) {
   return function* () {
     yield spawn(watchForBackendMissingSetup);
-    yield spawn(watchForBackendReady);
+    yield spawn(watchForBackendReady, theater);
     yield spawn(busyPollBackendState);
   };
 }
