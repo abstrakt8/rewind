@@ -1,9 +1,9 @@
-import { useTheater } from "../providers/TheaterProvider";
+import { useCommonManagers } from "../providers/TheaterProvider";
 import { useObservable } from "rxjs-hooks";
 import { AudioSettings } from "@rewind/web-player/rewind";
 
 export function useAudioSettingsService() {
-  const theater = useTheater();
+  const theater = useCommonManagers();
   return theater.audioSettingsService;
 }
 

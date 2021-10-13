@@ -1,23 +1,16 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { createRewindTheater } from "@rewind/web-player/rewind";
-
-type ITheaterContext = ReturnType<typeof createRewindTheater>;
+import React, { createContext, useContext } from "react";
+import { RewindTheater } from "@rewind/web-player/rewind";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const TheaterContext = createContext<ITheaterContext>(null!);
+export const TheaterContext = createContext<RewindTheater>(null!);
 
 interface TheaterProviderProps {
-  apiUrl: string;
+  theater: RewindTheater;
   children: React.ReactNode;
 }
 
-export function TheaterProvider({ apiUrl, children }: TheaterProviderProps) {
-  const [rewind] = useState(() => createRewindTheater({ apiUrl }));
-  useEffect(() => {
-    rewind.theater.initialize().then(() => console.log("Theater initialized"));
-    rewind.analyzer.initialize();
-  }, [rewind]);
-  return <TheaterContext.Provider value={rewind}>{children}</TheaterContext.Provider>;
+export function TheaterProvider({ theater, children }: TheaterProviderProps) {
+  return <TheaterContext.Provider value={theater}>{children}</TheaterContext.Provider>;
 }
 
 export function useTheaterContext() {
@@ -28,12 +21,12 @@ export function useTheaterContext() {
   return context;
 }
 
-export function useTheater() {
-  const { theater } = useTheaterContext();
-  return theater;
+export function useCommonManagers() {
+  const theater = useTheaterContext();
+  return theater.common;
 }
 
 export function useAnalysisApp() {
-  const { analyzer } = useTheaterContext();
-  return analyzer;
+  const theater = useTheaterContext();
+  return theater.analyzer;
 }

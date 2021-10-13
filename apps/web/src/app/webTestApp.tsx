@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { Analyzer, useAnalysisApp, useTheater } from "@rewind/feature-replay-viewer";
+import { Analyzer, useAnalysisApp, useCommonManagers } from "@rewind/feature-replay-viewer";
 import { useEffect } from "react";
 import { SkinId } from "@rewind/web-player/rewind";
 
@@ -16,7 +16,7 @@ const chosenReplayId = centipede;
 const skin: SkinId = { source: "osu", name: "-        # re;owoTuna v1.1 『Selyu』 #        -" };
 
 export function WebTestApp() {
-  const theater = useTheater();
+  const theater = useCommonManagers();
   const analyzer = useAnalysisApp();
   useEffect(() => {
     // theater.changeSkin(skin);
