@@ -51,10 +51,6 @@ export function LeftMenuSidebar() {
           // These are not centered
           onClick={handleLinkClick("/analyzer")}
           color={buttonColor("/analyzer")}
-          // sx={{
-          //   display: "flex",
-          //   justifyContent: "center",
-          // }}
         >
           <FaMicroscope height={"0.75em"} />
         </IconButton>

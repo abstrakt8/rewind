@@ -9,6 +9,7 @@ import { RewindTheme, TheaterProvider } from "@rewind/feature-replay-viewer";
 import { RewindApp } from "./app/RewindApp";
 import { FrontendPreloadAPI } from "@rewind/electron/api";
 import { CssBaseline, ThemeProvider } from "@mui/material";
+import { theater } from "./app/theater";
 
 declare global {
   interface Window {
@@ -22,8 +23,7 @@ ReactDOM.render(
       <ConnectedRouter history={history}>
         <ThemeProvider theme={RewindTheme}>
           <CssBaseline />
-          {/*todo: just create theater outside and pass it in lol*/}
-          <TheaterProvider apiUrl={"http://localhost:7271"}>
+          <TheaterProvider theater={theater}>
             <RewindApp />
           </TheaterProvider>
         </ThemeProvider>
