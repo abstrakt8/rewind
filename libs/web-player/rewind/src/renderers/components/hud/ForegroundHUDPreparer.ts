@@ -63,13 +63,9 @@ export class ForegroundHUDPreparer {
     }
   }
 
-  updateHUD() {
+  updateComboNumber() {
     const skin = this.skinManager.getSkin();
     const gameplayInfo = this.gameSimulator.getCurrentInfo();
-    const gameplayState = this.gameSimulator.getCurrentState();
-    const time = this.gameplayClock.timeElapsedInMs;
-
-    this.container.removeChildren();
 
     if (gameplayInfo) {
       const comboNumber = new OsuClassicNumber();
@@ -79,9 +75,19 @@ export class ForegroundHUDPreparer {
       comboNumber.position.set(0, STAGE_HEIGHT - 50);
       this.container.addChild(comboNumber);
     }
-    //
-    // acc
+  }
 
+  updateHUD() {
+    this.container.removeChildren();
+    this.updateComboNumber();
+    this.updateAccuracy();
+    this.updateStats();
+    this.updateHitErrorBar();
+  }
+
+  private updateAccuracy() {
+    const skin = this.skinManager.getSkin();
+    const gameplayInfo = this.gameSimulator.getCurrentInfo();
     if (gameplayInfo) {
       // const text
       const accNumber = new OsuClassicAccuracy();
@@ -93,8 +99,12 @@ export class ForegroundHUDPreparer {
       accNumber.container.position.set(STAGE_WIDTH - 15, 25);
       this.container.addChild(accNumber.container);
     }
+  }
 
-    // verdict counts: 300, 100, 50, miss
+  private updateStats() {
+    const gameplayInfo = this.gameSimulator.getCurrentInfo();
+    const gameplayState = this.gameSimulator.getCurrentState();
+    const time = this.gameplayClock.timeElapsedInMs;
 
     if (gameplayInfo && gameplayState) {
       const count = gameplayInfo.verdictCounts;
@@ -106,7 +116,5 @@ export class ForegroundHUDPreparer {
       this.stats.position.set(25, 50);
       this.container.addChild(this.stats);
     }
-
-    this.updateHitErrorBar();
   }
 }
