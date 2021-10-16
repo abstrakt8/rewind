@@ -22,6 +22,14 @@ export class Replay {
   timestamp: number;
   replay_length: number;
   replay_data: string;
+
+  serializeSync(): Buffer;
+
+  serialize(): Promise<Buffer>;
+
+  writeSync(path: string);
+
+  write(path: string, cb?: any);
 }
 
 /**
