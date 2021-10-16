@@ -179,6 +179,8 @@ function PlayButton() {
 }
 
 // https://css-tricks.com/using-requestanimationframe-with-react-hooks/
+const timeAnimateFPS = 30;
+
 function CurrentTime() {
   const analyzer = useAnalysisApp();
   const requestRef = useRef<number>();
@@ -188,10 +190,19 @@ function CurrentTime() {
 
   useEffect(() => {
     // requestRef.current = requestAnimationFrame(animate);
-    requestRef.current = requestAnimationFrame(function animate() {
-      if (timeRef.current) timeRef.current.updateTime(analyzer.gameClock.timeElapsedInMs);
+    let last = -1;
+    const requiredElapsed = 1000 / timeAnimateFPS;
+
+    function animate(currentTimestamp: number) {
+      const elapsed = currentTimestamp - last;
+      if (elapsed > requiredElapsed) {
+        if (timeRef.current) timeRef.current.updateTime(analyzer.gameClock.timeElapsedInMs);
+        last = currentTimestamp;
+      }
       requestRef.current = requestAnimationFrame(animate);
-    });
+    }
+
+    requestRef.current = requestAnimationFrame(animate);
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
