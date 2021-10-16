@@ -199,7 +199,7 @@ function CurrentTime() {
   return (
     // We MUST fix the width because the font is not monospace e.g. "111" is thinner than "000"
     // Also if the duration is more than an hour there will also be a slight shift
-    <Box sx={{ width: "6em" }}>
+    <Box sx={{ width: "7em" }}>
       <BaseCurrentTime ref={timeRef} />
     </Box>
   );

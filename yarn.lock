@@ -2789,6 +2789,11 @@
   resolved "https://registry.yarnpkg.com/@pixi/extract/-/extract-6.1.2.tgz#bd625bb09f95dc536cdaa5abec238934d9cf9c7a"
   integrity sha512-1vnAOJEaaRsTWyRa4OCodVubvZ0Ib3LVkg5MFU+bDsgnczwUiZEOvtaQKOAiO1F9rEdNdvuo/TQyWlJAuHB73Q==
 
+"@pixi/filter-adjustment@^4.1.3":
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@pixi/filter-adjustment/-/filter-adjustment-4.1.3.tgz#61e34b4dd9766ccf40463f0538201bf68f78df66"
+  integrity sha512-W+NhPiZRYKoRToa5+tkU95eOw8gnS5dfIp3ZP+pLv2mdER9RI+4xHxp1uLHMqUYZViTaMdZIIoVOuCgHFPYCbQ==
+
 "@pixi/filter-alpha@6.1.2":
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/@pixi/filter-alpha/-/filter-alpha-6.1.2.tgz#4f57bb9a536f3be167211a61941353bfcaaa0cb7"
@@ -4312,6 +4317,11 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
+
+"@types/color-string@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@types/color-string/-/color-string-1.5.0.tgz#0a9f3ee6bc9bd4f89693fc3f2bc30d47ad68afc3"
+  integrity sha512-17/8LWbkfvoKgfnnBvKbUnPTzPtzBlSELf5FPvVt9dRTQW88igOYZZ78us9dmbY1301VtTBEnuPTKspvmtGDxA==
 
 "@types/component-emitter@^1.2.10":
   version "1.2.10"

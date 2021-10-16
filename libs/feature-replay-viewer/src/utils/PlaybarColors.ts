@@ -1,6 +1,6 @@
 export const PlaybarColors = {
-  MISS: "hsl(0,100%,50%)",
-  SLIDER_BREAK: "hsl(21,100%,50%)",
-  MEH: "hsl(52,100%,50%)",
-  OK: "hsl(96,100%,50%)",
+  MISS: "rgb(255,0,0)",
+  SLIDER_BREAK: "rgb(255,89,0)",
+  MEH: "rgb(255,221,0)",
+  OK: "rgb(102,255,0)",
 };
