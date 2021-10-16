@@ -11,7 +11,7 @@ const centipede =
   "exported:- Knife Party - Centipede [This isn't a map, just a simple visualisation] (2021-10-04) Osu.osr";
 
 const chosenBlueprintId = akatsukiId;
-const chosenReplayId = centipede;
+const chosenReplayId = akatsukiReplayId;
 // const skin = DEFAULT_SKIN_ID;
 const skin: SkinId = { source: "osu", name: "-        # re;owoTuna v1.1 『Selyu』 #        -" };
 

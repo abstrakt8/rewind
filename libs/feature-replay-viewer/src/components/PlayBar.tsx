@@ -243,6 +243,7 @@ function GameTimeSlider() {
   const { seekTo, duration } = useGameClockControls();
   const { gameSimulator } = useAnalysisApp();
   const replayEvents = useObservable(() => gameSimulator.replayEvents$, []);
+  const difficulties = useObservable(() => gameSimulator.difficulties$, []);
 
   const events = useMemo(() => {
     const { sliderBreakTimings, missTimings, mehTimings, okTimings } = groupTimings(replayEvents);
@@ -261,6 +262,8 @@ function GameTimeSlider() {
       currentTime={currentTime}
       onChange={seekTo}
       events={events}
+      difficulties={difficulties}
+      // difficulties={[0, 0, 0, 0, 0, 0.2, 0.3, 0.5, 0.2, 0.1, 0, 0, 0]}
     />
   );
 }

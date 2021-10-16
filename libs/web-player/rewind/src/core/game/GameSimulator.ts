@@ -13,6 +13,9 @@ import {
 import { injectable } from "inversify";
 import type { OsuReplay } from "../../model/OsuReplay";
 import { BehaviorSubject } from "rxjs";
+import { parser, std_diff } from "ojsama";
+import { Queue } from "typescript-collections";
+import { max } from "simple-statistics";
 
 @injectable()
 export class GameSimulator {
@@ -21,9 +24,58 @@ export class GameSimulator {
   private currentState?: GameState;
   private currentInfo: GameplayInfo = defaultGameplayInfo;
   public replayEvents$: BehaviorSubject<ReplayAnalysisEvent[]>;
+  public difficulties$: BehaviorSubject<number[]>;
   public judgements: HitObjectJudgement[] = [];
+
   constructor() {
     this.replayEvents$ = new BehaviorSubject<ReplayAnalysisEvent[]>([]);
+    this.difficulties$ = new BehaviorSubject<number[]>([]);
+  }
+
+  calculateDifficulties(rawBeatmap: string, durationInMs: number, mods: number) {
+    console.log(`Calculating difficulty for beatmap with duration=${durationInMs}ms and mods=${mods}`);
+    const p = new parser();
+    p.feed(rawBeatmap);
+    const map = p.map;
+    const d = new std_diff().calc({ map, mods });
+
+    const TIME_STEP = 500;
+    const q = new Queue<[number, number]>();
+    let i = 0;
+    let sum = 0;
+    const res: number[] = [];
+    console.log(d.objects);
+    console.log(map);
+
+    // O(n + m)
+    for (let t = 0; t < durationInMs; t += TIME_STEP) {
+      while (i < map.objects.length) {
+        const o = map.objects[i];
+        if (t + TIME_STEP < o.time) {
+          break;
+        }
+        const strainTotal = d.objects[i].strains[0] + d.objects[i].strains[1];
+        q.enqueue([o.time, strainTotal]);
+        sum += strainTotal;
+        i++;
+      }
+      while (!q.isEmpty()) {
+        const [time, totalStrain] = q.peek() as [number, number];
+        if (time > t - TIME_STEP) {
+          break;
+        }
+        sum -= totalStrain;
+        q.dequeue();
+      }
+      res.push(q.isEmpty() ? 0 : sum / q.size());
+    }
+    // normalize
+    const m = max(res);
+    if (m > 0) {
+      const normalizedRes = res.map((r) => r / m);
+      console.log(normalizedRes);
+      this.difficulties$.next(normalizedRes);
+    }
   }
 
   simulateReplay(beatmap: Beatmap, replay: OsuReplay) {

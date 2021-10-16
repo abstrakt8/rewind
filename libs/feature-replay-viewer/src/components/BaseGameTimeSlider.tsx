@@ -5,7 +5,11 @@ import { useEffect, useRef } from "react";
 import { Renderer, Sprite, Texture } from "pixi.js";
 import { AdjustmentFilter } from "@pixi/filter-adjustment";
 import { Container } from "@pixi/display";
+import { Chart, registerables } from "chart.js";
 import colorString from "color-string";
+
+//
+Chart.register(...registerables);
 
 interface EventLineProps {
   color: string;
@@ -25,6 +29,7 @@ export interface BaseGameTimeSliderProps {
   onChange: (value: number) => any;
 
   events: EventType[];
+  difficulties: number[];
 }
 
 function drawPlaybarEvents(canvas: HTMLCanvasElement, eventTypes: EventType[], duration: number) {
@@ -59,7 +64,7 @@ function drawPlaybarEvents(canvas: HTMLCanvasElement, eventTypes: EventType[], d
   // Doesn't need ticker right?
 }
 
-const Canvas = styled("canvas")`
+const PlaybarEventsCanvas = styled("canvas")`
   //background: aqua;
   position: absolute;
   height: 40px;
@@ -69,19 +74,89 @@ const Canvas = styled("canvas")`
   transform: translate(0, -50%);
 `;
 
+const DifficultyCanvas = styled("canvas")`
+  //position: absolute;
+  //top: 0;
+  //left: 0;
+  //transform: translate(0, -100%);
+  //background: aqua;
+`;
+
+function drawDifficulty(canvas: HTMLCanvasElement, data: number[]) {
+  // const labels = [0, 20, 40, 50, 99, 1000];
+  const labels = data.map((_) => "");
+
+  const chart = new Chart(canvas, {
+    type: "line",
+    options: {
+      maintainAspectRatio: false,
+
+      // To hide the little "knobs"
+      elements: {
+        point: {
+          radius: 0,
+        },
+      },
+      scales: {
+        x: {
+          display: false,
+        },
+        y: {
+          display: false,
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          enabled: false,
+        },
+      },
+    },
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          fill: true,
+          // borderColor: "rgba(255, 255, 255, 0.5)",
+          // borderColor: "hsla(0,4%,31%,0.77)",
+          backgroundColor: "hsla(0, 2%, 44%, 0.3)",
+          tension: 0.5,
+        },
+      ],
+    },
+  });
+  chart.draw();
+  return chart;
+}
+
 export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
-  const { backgroundEnable, duration, currentTime, onChange, events } = props;
+  const { backgroundEnable, duration, currentTime, onChange, events, difficulties } = props;
   const valueLabelFormat = (value: number) => formatGameTime(value);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null!);
+  const eventsCanvas = useRef<HTMLCanvasElement>(null!);
+  const difficultyCanvas = useRef<HTMLCanvasElement>(null!);
 
   useEffect(() => {
-    drawPlaybarEvents(canvasRef.current, events, duration);
-  }, [canvasRef, events, duration]);
+    drawPlaybarEvents(eventsCanvas.current, events, duration);
+  }, [eventsCanvas, events, duration]);
+  useEffect(() => {
+    const chart = drawDifficulty(difficultyCanvas.current, difficulties);
+    return () => {
+      chart.destroy();
+    };
+  }, [difficultyCanvas, difficulties]);
 
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
-      <Canvas ref={canvasRef} />
+      <Box sx={{ position: "absolute", top: 0, transform: "translate(0, -100%)", width: "100%" }}>
+        <Box sx={{ position: "relative", height: "56px", width: "100%" }}>
+          <DifficultyCanvas ref={difficultyCanvas} />
+        </Box>
+      </Box>
+      <PlaybarEventsCanvas ref={eventsCanvas} />
       <Slider
         onFocus={ignoreFocus}
         size={"small"}

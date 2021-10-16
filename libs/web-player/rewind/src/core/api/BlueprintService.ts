@@ -1,4 +1,3 @@
-import { parseBlueprint } from "@rewind/osu/core";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../types/types";
 import { TextureManager } from "../../textures/TextureManager";
@@ -19,12 +18,10 @@ export class BlueprintService {
     private readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
   ) {}
 
-  async retrieveBlueprint(blueprintId: string) {
+  async retrieveRawBlueprint(blueprintId: string) {
     const url = `${this.apiUrl}/api/blueprints/${encodeURIComponent(blueprintId)}/osu`;
     const res = await fetch(url);
-    const data = await res.text();
-    // TODO: Emit
-    return parseBlueprint(data);
+    return res.text();
   }
 
   // Blueprint resources

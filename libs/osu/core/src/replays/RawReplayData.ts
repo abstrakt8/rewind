@@ -57,3 +57,11 @@ export function modsFromBitmask(modMask: number): OsuClassicMod[] {
   }
   return list;
 }
+
+export function modsToBitmask(mods: OsuClassicMod[]): number {
+  let mask = 0;
+  for (const mod of mods) {
+    mask |= 1 << ReplayModBit[mod];
+  }
+  return mask;
+}

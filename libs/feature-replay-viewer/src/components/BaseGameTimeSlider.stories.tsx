@@ -1,8 +1,6 @@
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box } from "@mui/material";
 import { Meta, Story } from "@storybook/react";
-import { Playbar } from "../react/Playbar";
 import { BaseGameTimeSlider, BaseGameTimeSliderProps } from "./BaseGameTimeSlider";
-import { RewindTheme } from "../RewindTheme";
 
 export default {
   component: BaseGameTimeSlider,
