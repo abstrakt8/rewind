@@ -93,6 +93,7 @@ const defaultSettings: OsuClassicHitCircleAreaSettings = {
 export class OsuClassicHitCircleArea implements PrepareSetting<OsuClassicHitCircleAreaSettings> {
   public container: Container;
   private hitCircleSprite: Sprite;
+  // TODO: Number also as sprite
   private readonly number: OsuClassicNumber;
   private hitCircleOverlaySprite: Sprite;
 

@@ -4,6 +4,7 @@ export enum Easing {
   OUT,
   OUT_QUINT,
   OUT_ELASTIC,
+  IN_CUBIC,
 }
 
 const elastic_const = (2 * Math.PI) / 0.3;
@@ -28,6 +29,8 @@ export function applyEasing(t: number, easing: Easing): number {
       return --t * t * t * t * t + 1;
     case Easing.OUT_ELASTIC:
       return Math.pow(2, -10 * t) * Math.sin((t - elastic_const2) * elastic_const) + 1 - elastic_offset_full * t;
+    case Easing.IN_CUBIC:
+      return t * t * t;
   }
   return t;
 }
@@ -38,7 +41,7 @@ export function applyInterpolation(
   endTime: number,
   valA: number,
   valB: number,
-  easing = Easing.LINEAR
+  easing = Easing.LINEAR,
 ): number {
   // Or floatEqual ...
   if (startTime >= endTime) {

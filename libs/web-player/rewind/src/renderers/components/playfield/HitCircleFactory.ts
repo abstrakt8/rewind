@@ -12,6 +12,7 @@ import type { ISkin } from "../../../model/Skin";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { ModSettingsManager } from "../../../apps/analysis/manager/ModSettingsManager";
+import { TemporaryObjectPool } from "../../../utils/pooling/TemporaryObjectPool";
 
 // TODO: Maybe it's even dynamic
 const HIT_CIRCLE_FADE_OUT_DURATION = 300;
@@ -22,12 +23,20 @@ const HIT_CIRCLE_FADE_OUT_DURATION = 300;
  */
 @injectable()
 export class HitCircleFactory {
+  hitAreaPool: TemporaryObjectPool<OsuClassicHitCircleArea>;
+
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
     private readonly modSettingsManager: ModSettingsManager,
     private readonly stageSkinService: SkinHolder,
-  ) {}
+  ) {
+    this.hitAreaPool = new TemporaryObjectPool<OsuClassicHitCircleArea>(
+      () => new OsuClassicHitCircleArea(),
+      (t) => {},
+      { initialSize: 50 },
+    );
+  }
 
   // TODO: Pooling
   private getOsuClassicHitCircleArea(id: string) {
@@ -36,6 +45,10 @@ export class HitCircleFactory {
 
   private getOsuClassicApproachCircle(id: string) {
     return new OsuClassicApproachCircle({});
+  }
+
+  freeResources() {
+    this.hitAreaPool.releaseUntouched();
   }
 
   createHitCircle(hitCircle: HitCircle) {
@@ -52,6 +65,7 @@ export class HitCircleFactory {
     const gameplayState = this.gameSimulator.getCurrentState();
 
     const area = this.getOsuClassicHitCircleArea(hitCircle.id);
+    // const [area] = this.hitAreaPool.allocate(hitCircle.id);
     // TODO: Replace this with a service that can also be mocked and simulate AUTO play
     const hitCircleState = gameplayState?.hitCircleVerdict[hitCircle.id];
 

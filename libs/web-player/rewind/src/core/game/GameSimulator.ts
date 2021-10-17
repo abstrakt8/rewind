@@ -22,10 +22,12 @@ export class GameSimulator {
   private gameplayTimeMachine?: BucketedGameStateTimeMachine;
   private gameplayEvaluator?: GameplayInfoEvaluator;
   private currentState?: GameState;
+  private lastState?: GameState;
   private currentInfo: GameplayInfo = defaultGameplayInfo;
   public replayEvents$: BehaviorSubject<ReplayAnalysisEvent[]>;
   public difficulties$: BehaviorSubject<number[]>;
   public judgements: HitObjectJudgement[] = [];
+  public hits: [number, number, boolean][] = [];
 
   constructor() {
     this.replayEvents$ = new BehaviorSubject<ReplayAnalysisEvent[]>([]);
@@ -78,6 +80,8 @@ export class GameSimulator {
     }
   }
 
+  calculateHitErrorArray() {}
+
   simulateReplay(beatmap: Beatmap, replay: OsuReplay) {
     this.gameplayTimeMachine = new BucketedGameStateTimeMachine(replay.frames, beatmap, {
       hitWindowStyle: "OSU_STABLE",
@@ -85,12 +89,29 @@ export class GameSimulator {
     });
     this.gameplayEvaluator = new GameplayInfoEvaluator(beatmap, {});
     // TODO: Move this to async ...
-    this.currentState = this.gameplayTimeMachine.gameStateAt(1e9);
+    this.lastState = this.gameplayTimeMachine.gameStateAt(1e9);
     this.currentInfo = defaultGameplayInfo;
     // this.currentState = finalState...
-    this.replayEvents$.next(retrieveEvents(this.currentState, beatmap.hitObjects));
+    this.replayEvents$.next(retrieveEvents(this.lastState, beatmap.hitObjects));
     this.judgements = this.replayEvents$.getValue().filter(isHitObjectJudgement);
     console.log("Judgements ", this.judgements.length);
+
+    this.hits = [];
+    if (!this.lastState) return;
+
+    // In order
+    for (const id of this.lastState.judgedObjects) {
+      const h = beatmap.getHitObject(id);
+      if (h.type === "HIT_CIRCLE") {
+        const s = this.lastState.hitCircleVerdict[id];
+        const hitCircle = beatmap.getHitCircle(id);
+        const offset = s.judgementTime - hitCircle.hitTime;
+        const hit = s.type !== "MISS";
+        this.hits.push([s.judgementTime, offset, hit]);
+      }
+    }
+    // not sure if this is needed
+    this.hits.sort((a, b) => a[0] - b[0]);
   }
 
   // Simulates the game to be at the given time
