@@ -15,6 +15,6 @@ The latest release for Windows/Linux can be found at the [release page](https://
 ## Questions / Feedback / Discussions
 
 If you have any questions about Rewind or want to contribute by submitting ideas, feel free to join
-the [osu! University Discord](https://discord.gg/QubdHdnBVg). osu! University is an improvement-focused osu! hub, osu!
+the [osu! University Discord](https://discord.gg/QubdHdnBVg). It is an improvement-focused osu! hub, osu!
 coaching hub, and a platform for experienced players to spread their game knowledge to the public.
 
