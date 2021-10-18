@@ -32,7 +32,7 @@ export class RewindElectronApp {
       height,
       minWidth,
       minHeight,
-      show: true,
+      show: false,
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: true, // This MUST be true in order for PageVisibility API to work.
@@ -40,6 +40,12 @@ export class RewindElectronApp {
       },
     });
     this.mainWindow.center();
+
+    // It still takes a while to load, so maybe a splash screen in the future could be shown while it is "not ready to
+    // show".
+    this.mainWindow.on("ready-to-show", () => {
+      this.mainWindow?.show();
+    });
 
     this.mainWindow.setMenu(
       Menu.buildFromTemplate([
