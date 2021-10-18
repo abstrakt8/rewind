@@ -1,7 +1,15 @@
-import { Box, darken, Slider, Stack, Tooltip } from "@mui/material";
-import { formatGameTime } from "@rewind/osu/math";
+import { Box, Slider, styled } from "@mui/material";
+import { formatGameTime, rgbToInt } from "@rewind/osu/math";
 import { ignoreFocus } from "../utils/IgnoreFocus";
-import { useMemo } from "react";
+import { useEffect, useRef } from "react";
+import { Renderer, Sprite, Texture } from "pixi.js";
+import { AdjustmentFilter } from "@pixi/filter-adjustment";
+import { Container } from "@pixi/display";
+import { Chart, registerables } from "chart.js";
+import colorString from "color-string";
+
+//
+Chart.register(...registerables);
 
 interface EventLineProps {
   color: string;
@@ -9,45 +17,7 @@ interface EventLineProps {
   positions: number[];
 }
 
-const EventLine = ({ color, tooltip, positions }: EventLineProps) => {
-  return (
-    <Tooltip title={tooltip} placement={"right"}>
-      <div>
-        <Box
-          sx={{
-            height: "12px",
-            // backgroundColor: darken(color, 0.9),
-            "&:hover": {
-              backgroundColor: darken(color, 0.4),
-            },
-            position: "relative",
-          }}
-        >
-          {positions.map((p, i) => (
-            <Box
-              key={i}
-              sx={{
-                position: "absolute",
-                transform: "translate(-50%)",
-                backgroundColor: color,
-
-                // TODO: Introduce this only if it's actually possible to go there, otherwise might confuse
-                // backgroundColor: darken(color, 0.2),
-                // "&:hover": {
-                //   backgroundColor: color,
-                // },
-                width: "2px",
-                height: "100%",
-
-                left: `${p * 100}%`,
-              }}
-            />
-          ))}
-        </Box>
-      </div>
-    </Tooltip>
-  );
-};
+type EventType = { timings: number[]; tooltip: string; color: string };
 
 export interface BaseGameTimeSliderProps {
   backgroundEnable?: boolean;
@@ -58,39 +28,135 @@ export interface BaseGameTimeSliderProps {
   // When the slider is dragged
   onChange: (value: number) => any;
 
-  events: { timings: number[]; tooltip: string; color: string }[];
+  events: EventType[];
+  difficulties: number[];
+}
+
+function drawPlaybarEvents(canvas: HTMLCanvasElement, eventTypes: EventType[], duration: number) {
+  const renderer = new Renderer({ view: canvas, backgroundAlpha: 0.0 });
+  const stage = new Container();
+  const { height, width } = renderer.screen;
+  const eventLineHeight = height / eventTypes.length;
+  for (let i = 0; i < eventTypes.length; i++) {
+    const eventType = eventTypes[i];
+    const container = new Container();
+    const descriptor = colorString.get(eventType.color);
+    if (!descriptor) break;
+    const tint = rgbToInt(descriptor.value);
+    // console.log(`Event ${i} has color ${tint} and ${descriptor.value}`);
+    for (const timing of eventType.timings) {
+      const sprite = Sprite.from(Texture.WHITE);
+      sprite.tint = tint;
+      // TODO: This needs to be centered -> but doesn't really matter since it's kinda negligible
+      sprite.width = 1;
+      sprite.height = eventLineHeight;
+      sprite.position.set((timing / duration) * width, 0);
+      container.addChild(sprite);
+    }
+    stage.addChild(container);
+    container.position.set(0, i * eventLineHeight);
+  }
+  stage.filters = [new AdjustmentFilter({ brightness: 0.7 })];
+
+  stage.interactive = false;
+  stage.interactiveChildren = false;
+  renderer.render(stage);
+  // Doesn't need ticker right?
+}
+
+const PlaybarEventsCanvas = styled("canvas")`
+  //background: aqua;
+  position: absolute;
+  height: 40px;
+  width: 100%;
+  top: 0;
+  left: 0;
+  transform: translate(0, -50%);
+`;
+
+const DifficultyCanvas = styled("canvas")`
+  //position: absolute;
+  //top: 0;
+  //left: 0;
+  //transform: translate(0, -100%);
+  //background: aqua;
+`;
+
+function drawDifficulty(canvas: HTMLCanvasElement, data: number[]) {
+  // const labels = [0, 20, 40, 50, 99, 1000];
+  const labels = data.map((_) => "");
+
+  const chart = new Chart(canvas, {
+    type: "line",
+    options: {
+      maintainAspectRatio: false,
+
+      // To hide the little "knobs"
+      elements: {
+        point: {
+          radius: 0,
+        },
+      },
+      scales: {
+        x: {
+          display: false,
+        },
+        y: {
+          display: false,
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          enabled: false,
+        },
+      },
+    },
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          fill: true,
+          // borderColor: "rgba(255, 255, 255, 0.5)",
+          // borderColor: "hsla(0,4%,31%,0.77)",
+          backgroundColor: "hsla(0, 2%, 44%, 0.3)",
+          tension: 0.5,
+        },
+      ],
+    },
+  });
+  chart.draw();
+  return chart;
 }
 
 export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
-  const { backgroundEnable, duration, currentTime, onChange, events } = props;
+  const { backgroundEnable, duration, currentTime, onChange, events, difficulties } = props;
   const valueLabelFormat = (value: number) => formatGameTime(value);
 
-  const eventLines = useMemo(() => {
-    return events.map((e) => (
-      <EventLine
-        key={e.tooltip + e.color}
-        color={e.color}
-        tooltip={e.tooltip}
-        positions={e.timings.map((t) => t / duration)}
-      />
-    ));
-  }, [events, duration]);
+  const eventsCanvas = useRef<HTMLCanvasElement>(null!);
+  const difficultyCanvas = useRef<HTMLCanvasElement>(null!);
+
+  useEffect(() => {
+    drawPlaybarEvents(eventsCanvas.current, events, duration);
+  }, [eventsCanvas, events, duration]);
+  useEffect(() => {
+    const chart = drawDifficulty(difficultyCanvas.current, difficulties);
+    return () => {
+      chart.destroy();
+    };
+  }, [difficultyCanvas, difficulties]);
 
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
-      {/*TODO: Optimize with canvas*/}
-      {backgroundEnable && (
-        <Stack
-          sx={{
-            overflow: "hidden",
-            // borderRadius: 1,
-            // visibility: backgroundEnable ? "visible" : "hidden",
-            filter: "brightness(50%)",
-          }}
-        >
-          {eventLines}
-        </Stack>
-      )}
+      <PlaybarEventsCanvas ref={eventsCanvas} />
+      <Box sx={{ position: "absolute", top: 0, transform: "translate(0, -100%)", width: "100%" }}>
+        <Box sx={{ position: "relative", height: "56px", width: "100%" }}>
+          <DifficultyCanvas ref={difficultyCanvas} />
+        </Box>
+      </Box>
       <Slider
         onFocus={ignoreFocus}
         size={"small"}

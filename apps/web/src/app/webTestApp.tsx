@@ -9,9 +9,10 @@ const tunaReplayId =
   "exported:FlyingTuna - sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) [KEMOMIMI EDM SQUAD] (2021-08-02) Osu.osr";
 const centipede =
   "exported:- Knife Party - Centipede [This isn't a map, just a simple visualisation] (2021-10-04) Osu.osr";
+const sidetrackedDay = "exported:Umbre - VINXIS - Sidetracked Day [Sojourn Collab] (2020-09-24) Osu.osr";
 
 const chosenBlueprintId = akatsukiId;
-const chosenReplayId = centipede;
+const chosenReplayId = sidetrackedDay;
 // const skin = DEFAULT_SKIN_ID;
 const skin: SkinId = { source: "osu", name: "-        # re;owoTuna v1.1 『Selyu』 #        -" };
 

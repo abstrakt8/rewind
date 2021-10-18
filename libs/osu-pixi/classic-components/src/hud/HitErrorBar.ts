@@ -1,5 +1,5 @@
 import { Container, Sprite, Texture } from "pixi.js";
-import { applyInterpolation, rgbToInt } from "@rewind/osu/math";
+import { applyInterpolation, Easing, rgbToInt } from "@rewind/osu/math";
 
 type HitEvent = {
   offset: number;
@@ -70,13 +70,15 @@ export class OsuClassicHitErrorBar {
     this.bg100.width = hitWindow100 * 2;
     this.bg300.width = hitWindow300 * 2;
 
+    const maxTime = 10000;
     this.hitsContainer.removeChildren();
     hits.forEach((h) => {
       const s = coloredSprite(colorFromHitEvent(h));
+      const p = applyInterpolation(h.timeAgo, 0, maxTime, 1.0, 0.0, Easing.OUT_QUINT);
       s.width = 1;
-      s.height = hitHeight;
+      s.height = hitHeight * p;
       s.position.set(h.offset, 0);
-      s.alpha = applyInterpolation(h.timeAgo, 0, 3000, 1.0, 0.0);
+      s.alpha = p;
       this.hitsContainer.addChild(s);
     });
   }

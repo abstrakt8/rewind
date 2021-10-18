@@ -58,6 +58,7 @@ export class HitObjectsContainer {
       }
     }
 
+    this.hitCircleFactory.freeResources();
     this.sliderFactory.postUpdate();
   }
 }

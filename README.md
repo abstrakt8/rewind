@@ -1,49 +1,20 @@
 <h1 align="center">Rewind</h1>
 
-<p align="center">osu! replay viewer that enables you see to it.</p>
+![Github releases](https://img.shields.io/github/v/release/abstrakt8/rewind?include_prereleases)
+[![GitHub Releases Downloads](https://img.shields.io/github/downloads/abstrakt8/rewind/total?label=Downloads)](https://github.com/abstrakt8/rewind/releases/latest)
+[![Discord](https://img.shields.io/discord/841454370888351784.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QubdHdnBVg)
 
-## Library structure
+Rewind is a beatmap/replay analyzer for [osu!](https://osu.ppy.sh/) and is currently in development phase.
 
-`osu` contains general game logic that can be used in browser and on node.js
+<img src="resources/readme/ed_can_fc_ror.gif" alt="BTMC on Road of Resistance" /><br/>
 
-`osu-local` on the other hand contains node.js libraries that focus on retrieving the osu! data.
+## Download
 
-`osu-pixi` contains libraries that deal with the rendering of the game with PixiJS.
+The latest release for Windows/Linux can be found at the [release page](https://github.com/abstrakt8/rewind/releases).
 
-## Generating a new library
+## Questions / Feedback / Discussions
 
-* `osu`: `@nrwl/workspace:library`
-* `osu-local`: `nrwl/nodejs:library`
-* `osu-pixi`: `@nrwl/workspace:library`
+If you have any questions about Rewind or want to contribute by submitting ideas, feel free to join
+the [osu! University Discord](https://discord.gg/QubdHdnBVg). osu! University is an improvement-focused osu! hub, osu!
+coaching hub, and a platform for experienced players to spread their game knowledge to the public.
 
-
-# Running the desktop app
-
-
-```shell
-yarn run desktop:serve
-```
-
-# Testing
-
-Set environment variable appropriately, e.g.:
-
-```
-REWIND_TEST_DIR=E:\RewindTests\osu!
-```
-
-# Building
-
-The default skin (currently "- YUGEN - ") should be put into `resources/`
-
-
-```
-```
-
-# Dependencies
-
-History should stay at `4.10.1` due to incompatibility issues with react-router-dom
-
-```
-"history": "4.10.1",
-```

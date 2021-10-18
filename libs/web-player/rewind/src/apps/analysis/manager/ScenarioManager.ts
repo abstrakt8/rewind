@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { BehaviorSubject } from "rxjs";
-import { buildBeatmap, determineDefaultPlaybackSpeed } from "@rewind/osu/core";
+import { buildBeatmap, determineDefaultPlaybackSpeed, modsToBitmask, parseBlueprint } from "@rewind/osu/core";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 import { ModSettingsManager } from "./ModSettingsManager";
 import { AudioService } from "../../../core/audio/AudioService";
@@ -43,13 +43,16 @@ export class ScenarioManager {
 
     const replay = await this.replayService.retrieveReplay(replayId);
     const blueprintId = replay.beatmapMd5;
-    const blueprint = await this.blueprintService.retrieveBlueprint(blueprintId);
+    const rawBlueprint = await this.blueprintService.retrieveRawBlueprint(blueprintId);
+    const blueprint = parseBlueprint(rawBlueprint);
 
     await this.blueprintService.retrieveBlueprintResources(blueprintId);
 
     this.audioEngine.setSong(await this.audioService.loadAudio(blueprintId));
     this.audioEngine.song?.mediaElement.addEventListener("loadedmetadata", () => {
-      this.gameClock.setDuration((this.audioEngine.song?.mediaElement.duration ?? 0) * 1000);
+      const duration = (this.audioEngine.song?.mediaElement.duration ?? 0) * 1000;
+      this.gameClock.setDuration(duration);
+      this.gameSimulator.calculateDifficulties(rawBlueprint, duration, modsToBitmask(replay.mods));
     });
 
     // If the building is too slow or unbearable, we should push the building to a WebWorker, but right now it's ok
@@ -71,7 +74,6 @@ export class ScenarioManager {
     this.beatmapManager.setBeatmap(beatmap);
     this.replayManager.setMainReplay(replay);
 
-    // After this is done -> Get ready for
     await this.gameSimulator.simulateReplay(beatmap, replay);
     await this.sceneManager.startAnalysisScene();
 

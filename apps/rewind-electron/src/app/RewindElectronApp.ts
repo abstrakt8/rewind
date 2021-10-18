@@ -1,9 +1,11 @@
-import { BrowserWindow, dialog, Menu, screen, shell, ipcMain } from "electron";
+import { BrowserWindow, dialog, Menu, screen, shell } from "electron";
 import { join } from "path";
 import { format } from "url";
 
-const DEFAULT_WIDTH = 1280;
-const DEFAULT_HEIGHT = 720;
+const DEFAULT_WIDTH = 1600;
+const DEFAULT_HEIGHT = 900;
+const MIN_WIDTH = 1024;
+const MIN_HEIGHT = 600;
 
 const rendererAppName = "desktop-frontend";
 const rendererAppDevPort = 4200;
@@ -22,11 +24,15 @@ export class RewindElectronApp {
     const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
     const width = Math.min(DEFAULT_WIDTH, workAreaSize.width || DEFAULT_WIDTH);
     const height = Math.min(DEFAULT_HEIGHT, workAreaSize.height || DEFAULT_HEIGHT);
+    const minWidth = Math.min(MIN_WIDTH, workAreaSize.width || MIN_WIDTH);
+    const minHeight = Math.min(MIN_HEIGHT, workAreaSize.height || MIN_HEIGHT);
 
     this.mainWindow = new BrowserWindow({
       width,
       height,
-      show: true,
+      minWidth,
+      minHeight,
+      show: false,
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: true, // This MUST be true in order for PageVisibility API to work.
@@ -34,6 +40,12 @@ export class RewindElectronApp {
       },
     });
     this.mainWindow.center();
+
+    // It still takes a while to load, so maybe a splash screen in the future could be shown while it is "not ready to
+    // show".
+    this.mainWindow.on("ready-to-show", () => {
+      this.mainWindow?.show();
+    });
 
     this.mainWindow.setMenu(
       Menu.buildFromTemplate([

@@ -179,6 +179,8 @@ function PlayButton() {
 }
 
 // https://css-tricks.com/using-requestanimationframe-with-react-hooks/
+const timeAnimateFPS = 30;
+
 function CurrentTime() {
   const analyzer = useAnalysisApp();
   const requestRef = useRef<number>();
@@ -188,10 +190,19 @@ function CurrentTime() {
 
   useEffect(() => {
     // requestRef.current = requestAnimationFrame(animate);
-    requestRef.current = requestAnimationFrame(function animate() {
-      if (timeRef.current) timeRef.current.updateTime(analyzer.gameClock.timeElapsedInMs);
+    let last = -1;
+    const requiredElapsed = 1000 / timeAnimateFPS;
+
+    function animate(currentTimestamp: number) {
+      const elapsed = currentTimestamp - last;
+      if (elapsed > requiredElapsed) {
+        if (timeRef.current) timeRef.current.updateTime(analyzer.gameClock.timeElapsedInMs);
+        last = currentTimestamp;
+      }
       requestRef.current = requestAnimationFrame(animate);
-    });
+    }
+
+    requestRef.current = requestAnimationFrame(animate);
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
@@ -199,7 +210,7 @@ function CurrentTime() {
   return (
     // We MUST fix the width because the font is not monospace e.g. "111" is thinner than "000"
     // Also if the duration is more than an hour there will also be a slight shift
-    <Box sx={{ width: "6em" }}>
+    <Box sx={{ width: "7em" }}>
       <BaseCurrentTime ref={timeRef} />
     </Box>
   );
@@ -243,6 +254,7 @@ function GameTimeSlider() {
   const { seekTo, duration } = useGameClockControls();
   const { gameSimulator } = useAnalysisApp();
   const replayEvents = useObservable(() => gameSimulator.replayEvents$, []);
+  const difficulties = useObservable(() => gameSimulator.difficulties$, []);
 
   const events = useMemo(() => {
     const { sliderBreakTimings, missTimings, mehTimings, okTimings } = groupTimings(replayEvents);
@@ -261,6 +273,8 @@ function GameTimeSlider() {
       currentTime={currentTime}
       onChange={seekTo}
       events={events}
+      difficulties={difficulties}
+      // difficulties={[0, 0, 0, 0, 0, 0.2, 0.3, 0.5, 0.2, 0.1, 0, 0, 0]}
     />
   );
 }
