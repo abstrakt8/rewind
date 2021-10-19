@@ -52,6 +52,7 @@ export function createRewindTheater({ apiUrl }: Settings) {
   // Regarding `skipBaseClassChecks`: https://github.com/inversify/InversifyJS/issues/522#issuecomment-682246076
   const container = new Container({ defaultScope: "Singleton", skipBaseClassChecks: true });
   container.bind(TYPES.API_URL).toConstantValue(apiUrl);
+  container.bind(TYPES.WS_URL).toConstantValue(apiUrl); // Might change in the future
   container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
   container.bind(BlueprintService).toSelf();
   container.bind(ReplayService).toSelf();
