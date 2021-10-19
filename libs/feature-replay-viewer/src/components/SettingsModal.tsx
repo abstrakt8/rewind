@@ -28,6 +28,7 @@ import {
 } from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks";
 import { DEFAULT_HIT_ERROR_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/HitErrorBarSettings";
+import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/PlaybarSettings";
 
 const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",
@@ -131,17 +132,17 @@ function ReplayCursorSettingsSection() {
             }
             label={"Enabled"}
           />
-          <Typography>Scale</Typography>
-          <Slider
-            value={Math.round(settings.scale * 100)}
-            valueLabelFormat={formatToPercent}
-            disabled={!settings.enabled}
-            min={10}
-            max={200}
-            onChange={(_, v) => replayCursorSettingsStore.changeSettings((s) => (s.scale = (v as number) / 100))}
-            valueLabelDisplay={"auto"}
-          />
         </FormGroup>
+        <Typography>Scale</Typography>
+        <Slider
+          value={Math.round(settings.scale * 100)}
+          valueLabelFormat={formatToPercent}
+          disabled={!settings.enabled}
+          min={10}
+          max={200}
+          onChange={(_, v) => replayCursorSettingsStore.changeSettings((s) => (s.scale = (v as number) / 100))}
+          valueLabelDisplay={"auto"}
+        />
       </Stack>
     </Paper>
   );
@@ -167,6 +168,32 @@ function HitErrorBarSettingsSection() {
   );
 }
 
+function PlaybarSettingsSection() {
+  const { playbarSettingsStore } = useCommonManagers();
+  const settings = useObservable(() => playbarSettingsStore.settings$, DEFAULT_PLAY_BAR_SETTINGS);
+
+  return (
+    <Paper elevation={1} sx={{ boxShadow: "none", p: 2 }}>
+      <Stack gap={1}>
+        <Typography variant={"h6"}>Playbar</Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={settings.difficultyGraphEnabled}
+                onChange={(event) =>
+                  playbarSettingsStore.changeSettings((s) => (s.difficultyGraphEnabled = event.target.checked))
+                }
+              />
+            }
+            label={"Show difficulty graph"}
+          />
+        </FormGroup>
+      </Stack>
+    </Paper>
+  );
+}
+
 function GeneralSettings() {
   return (
     <Stack p={2} gap={1}>
@@ -174,6 +201,7 @@ function GeneralSettings() {
       <AnalysisCursorSettingsSection />
       <HitErrorBarSettingsSection />
       <BeatmapBackgroundSettings />
+      <PlaybarSettingsSection />
       <BeatmapRenderSettings />
     </Stack>
   );

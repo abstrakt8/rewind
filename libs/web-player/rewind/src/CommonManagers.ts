@@ -17,6 +17,7 @@ import { RewindLocalStorage } from "./services/RewindLocalStorage";
 import { SkinManager } from "./services/SkinManager";
 import { SkinSettingsStore } from "./services/SkinSettingsStore";
 import { HitErrorBarSettingsStore } from "./services/HitErrorBarSettingsStore";
+import { PlaybarSettingsStore } from "./services/PlaybarSettingsStore";
 
 /**
  * Creates the Rewind app that serves multiple useful osu! tools.
@@ -36,6 +37,7 @@ export class CommonManagers {
     public readonly hitErrorBarSettingsStore: HitErrorBarSettingsStore,
     public readonly analysisCursorSettingsStore: AnalysisCursorSettingsStore,
     public readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
+    public readonly playbarSettingsStore: PlaybarSettingsStore,
     private readonly rewindLocalStorage: RewindLocalStorage,
   ) {}
 
@@ -71,6 +73,7 @@ export function createRewindTheater({ apiUrl }: Settings) {
   container.bind(PlayfieldBorderSettingsStore).toSelf();
   container.bind(ReplayCursorSettingsStore).toSelf();
   container.bind(SkinSettingsStore).toSelf();
+  container.bind(PlaybarSettingsStore).toSelf();
 
   container.bind(RewindLocalStorage).toSelf();
 
