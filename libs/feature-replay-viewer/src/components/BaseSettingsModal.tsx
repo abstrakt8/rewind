@@ -33,7 +33,13 @@ export function BaseSettingsModal(props: SettingsProps) {
 
   return (
     <Paper
-      sx={{ filter: `opacity(${opacity}%)`, height: "100%", display: "flex", flexDirection: "column" }}
+      sx={{
+        filter: `opacity(${opacity}%)`,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
       elevation={2}
     >
       <Stack sx={{ py: 1, px: 2, alignItems: "center" }} direction={"row"} gap={1}>
@@ -45,19 +51,20 @@ export function BaseSettingsModal(props: SettingsProps) {
         </IconButton>
       </Stack>
       <Divider />
-      <Stack direction={"row"} sx={{ flexGrow: 1 }}>
+      <Stack direction={"row"} sx={{ flexGrow: 1, overflow: "auto" }}>
+        {/*TODO: Holy moly, the CSS here needs to be changed a bit*/}
         <Tabs
           orientation="vertical"
           variant="scrollable"
           value={tabIndex}
           onChange={handleTabChange}
-          sx={{ borderRight: 1, borderColor: "divider" }}
+          sx={{ borderRight: 1, borderColor: "divider", position: "absolute" }}
         >
           {tabs.map(({ label }, index) => (
             <Tab label={label} key={index} tabIndex={index} sx={{ textTransform: "none" }} />
           ))}
         </Tabs>
-        {displayedTab}
+        <Box sx={{ marginLeft: "90px" }}>{displayedTab}</Box>
       </Stack>
       <Divider />
       <Stack sx={{ px: 2, py: 1, flexDirection: "row", alignItems: "center" }}>
