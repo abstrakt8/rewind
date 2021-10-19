@@ -26,11 +26,14 @@ import {
   stringToSkinId,
 } from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks";
+import { DEFAULT_HIT_ERROR_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/HitErrorBarSettings";
 
 const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",
   rewind: "Rewind",
 };
+
+const formatToPercent = (value: number) => `${value}%`;
 
 function BeatmapBackgroundSettings() {
   const theater = useCommonManagers();
@@ -43,12 +46,14 @@ function BeatmapBackgroundSettings() {
         value={Math.round(settings.blur * 100)}
         onChange={(_, v) => beatmapBackgroundSettingsStore.setBlur((v as number) / 100)}
         valueLabelDisplay={"auto"}
+        valueLabelFormat={formatToPercent}
       />
       <Typography>Background dim</Typography>
       <Slider
         value={Math.round(settings.dim * 100)}
         onChange={(_, v) => beatmapBackgroundSettingsStore.setDim((v as number) / 100)}
         valueLabelDisplay={"auto"}
+        valueLabelFormat={formatToPercent}
       />
     </Stack>
   );
@@ -118,6 +123,24 @@ function ReplayCursorSettingsPanel() {
   );
 }
 
+function HitErrorBarSettingsPanel() {
+  const { hitErrorBarSettingsStore } = useCommonManagers();
+  const settings = useObservable(() => hitErrorBarSettingsStore.settings$, DEFAULT_HIT_ERROR_BAR_SETTINGS);
+  return (
+    <Stack>
+      {/*TODO: Enabled*/}
+      <Typography>Hit Error Bar Scaling</Typography>
+      <Slider
+        value={Math.round(settings.scale * 100)}
+        valueLabelFormat={formatToPercent}
+        max={300}
+        onChange={(_, v) => hitErrorBarSettingsStore.changeSettings((s) => (s.scale = (v as number) / 100))}
+        valueLabelDisplay={"auto"}
+      />
+    </Stack>
+  );
+}
+
 function GeneralSettings() {
   return (
     <Stack p={2}>
@@ -125,6 +148,7 @@ function GeneralSettings() {
       <BeatmapRenderSettings />
       <ReplayCursorSettingsPanel />
       <AnalysisCursorSettingsPanel />
+      <HitErrorBarSettingsPanel />
     </Stack>
   );
 }
