@@ -7,17 +7,24 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictNullChecks": true,  // Introduced because of JSONSchemaType
+    "strictNullChecks": true,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@rewind/api/common": ["libs/api/common/src/index.ts"],
-      "@rewind/api/desktop": ["libs/api/desktop/src/index.ts"],
+      "@rewind/api/common": [
+        "libs/api/common/src/index.ts"
+      ],
+      "@rewind/api/desktop": [
+        "libs/api/desktop/src/index.ts"
+      ],
       "@rewind/desktop/api": ["libs/desktop/api/src/index.ts"],
       "@rewind/electron/api": ["libs/electron/api/src/index.ts"],
       "@rewind/feature-replay-viewer": ["libs/feature-replay-viewer/src/index.ts"],

@@ -26,93 +26,34 @@
       }
     ]
   },
-  "projects": {
-    ".-desktop": {
-      "tags": []
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "css",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint"
+      }
     },
-    "api-common": {
-      "tags": []
+    "@nrwl/web:application": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "none"
     },
-    "api-desktop": {
-      "tags": []
-    },
-    "desktop": {
-      "tags": []
-    },
-    "desktop-backend": {
-      "tags": []
-    },
-    "desktop-backend-preload": {
-      "tags": []
-    },
-    "desktop-frontend": {
-      "tags": []
-    },
-    "desktop-frontend-e2e": {
-      "tags": [],
-      "implicitDependencies": ["desktop-frontend"]
-    },
-    "desktop-frontend-preload": {
-      "tags": []
-    },
-    "electron-api": {
-      "tags": []
-    },
-    "feature-replay-viewer": {
-      "tags": []
-    },
-    "feature-replay-viewer-e2e": {
-      "tags": [],
-      "implicitDependencies": ["feature-replay-viewer"]
-    },
-    "osu-core": {
-      "tags": []
-    },
-    "osu-local-db-reader": {
-      "tags": []
-    },
-    "osu-local-gosumemory": {
-      "tags": []
-    },
-    "osu-local-osr-reader": {
-      "tags": []
-    },
-    "osu-local-skin-reader": {
-      "tags": []
-    },
-    "osu-local-utils": {
-      "tags": []
-    },
-    "osu-math": {
-      "tags": []
-    },
-    "osu-pixi-classic-components": {
-      "tags": []
-    },
-    "osu-pixi-rewind": {
-      "tags": []
-    },
-    "osu-skin": {
-      "tags": []
-    },
-    "osu-stable-test-generator": {
-      "tags": []
-    },
-    "rewind-electron": {
-      "tags": []
-    },
-    "web": {
-      "tags": []
-    },
-    "web-api": {
-      "tags": []
-    },
-    "web-e2e": {
-      "tags": [],
-      "implicitDependencies": ["web"]
-    },
-    "web-player-rewind": {
-      "tags": []
+    "@nrwl/web:library": {
+      "style": "css",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
     }
   }
 }
