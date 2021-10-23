@@ -57,6 +57,7 @@ export function LeftMenuSidebar() {
       </Tooltip>
       {/*Nothing*/}
       <Box flexGrow={1} />
+      {/*TODO: Discord and Update Icon*/}
       {/*<Tooltip title={"Settings"} placement={"right"}>*/}
       {/*  <IconButton onClick={handleOpenSettings}>*/}
       {/*    <Settings />*/}

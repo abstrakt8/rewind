@@ -1,14 +1,15 @@
 import { IconButton, Link, Typography } from "@mui/material";
-import { FaDiscord } from "react-icons/all";
+import { FaDiscord } from "react-icons/fa";
 import React from "react";
 import { RewindLinks } from "../utils/Constants";
+import { useAppInfo } from "../providers/AppInfoProvider";
 
 export function PromotionFooter() {
+  const { appVersion } = useAppInfo();
   return (
     <Typography fontSize={"caption.fontSize"} color={"text.secondary"}>
-      {/*TODO: Version dynamic*/}
-      Rewind v0.0.2 by{" "}
-      <Link href={RewindLinks.abstraktOsu} target={"_blank"} color={"text.secondary"}>
+      Rewind {appVersion} by{" "}
+      <Link href={RewindLinks.OsuPpyShAbstrakt} target={"_blank"} color={"text.secondary"}>
         abstrakt
       </Link>{" "}
       | osu! University

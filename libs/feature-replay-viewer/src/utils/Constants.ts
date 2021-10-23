@@ -1,6 +1,6 @@
 const osuUniDiscord = "https://discord.gg/QubdHdnBVg";
 export const RewindLinks = {
-  abstraktOsu: "https://osu.ppy.sh/users/5773957",
+  OsuPpyShAbstrakt: "https://osu.ppy.sh/users/5773957",
   OsuUniDiscord: osuUniDiscord,
   Guide: "https://bit.ly/3BOF3P2",
 };

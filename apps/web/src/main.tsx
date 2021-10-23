@@ -1,4 +1,4 @@
-import { RewindTheme, TheaterProvider } from "@rewind/feature-replay-viewer";
+import { AppInfoProvider, RewindTheme, TheaterProvider } from "@rewind/feature-replay-viewer";
 import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";
 import { WebTestApp } from "./app/webTestApp";
@@ -13,14 +13,21 @@ export const theater = createRewindTheater({ apiUrl });
 theater.common.initialize();
 theater.analyzer.initialize();
 
+const appInfo = {
+  appVersion: "0.1.0",
+  platform: "Windows",
+};
+
 ReactDOM.render(
   <StrictMode>
-    <TheaterProvider theater={theater}>
-      <ThemeProvider theme={RewindTheme}>
-        <CssBaseline />
-        <WebTestApp />
-      </ThemeProvider>
-    </TheaterProvider>
+    <AppInfoProvider appInfo={appInfo}>
+      <TheaterProvider theater={theater}>
+        <ThemeProvider theme={RewindTheme}>
+          <CssBaseline />
+          <WebTestApp />
+        </ThemeProvider>
+      </TheaterProvider>
+    </AppInfoProvider>
   </StrictMode>,
 
   document.getElementById("root"),

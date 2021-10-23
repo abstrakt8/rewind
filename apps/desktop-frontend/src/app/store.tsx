@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
-import localBlueprintInfoReducer from "./blueprints/LocalBlueprintInfo";
 import backendReducer from "./backend/slice";
 import settingsReducer from "./settings/slice";
 import { createRewindRootSaga } from "./RootSaga";
@@ -14,7 +13,6 @@ export const history = createHashHistory({});
 
 const reducer = {
   router: connectRouter(history),
-  localBlueprintInfo: localBlueprintInfoReducer,
   backend: backendReducer,
   settings: settingsReducer,
   [rewindDesktopApi.reducerPath]: rewindDesktopApi.reducer,

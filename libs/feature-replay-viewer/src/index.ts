@@ -1,7 +1,8 @@
-// export * from "./react/GameStage";
-// export * from "./react/components/StageProvider/StageProvider";
+// Providers
 export * from "./providers/TheaterProvider";
-// export * from "./react/Theater";
+export * from "./providers/AppInfoProvider";
+export * from "./providers/SettingsProvider";
+
 export { ignoreFocus } from "./utils/IgnoreFocus";
 export * from "./RewindTheme";
 
