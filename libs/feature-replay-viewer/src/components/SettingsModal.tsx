@@ -133,6 +133,20 @@ function ReplayCursorSettingsSection() {
             label={"Enabled"}
           />
         </FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            disabled={!settings.enabled}
+            control={
+              <Switch
+                checked={settings.smoothCursorTrail}
+                onChange={(event) =>
+                  replayCursorSettingsStore.changeSettings((s) => (s.smoothCursorTrail = event.target.checked))
+                }
+              />
+            }
+            label={"Smooth Cursor Trail"}
+          />
+        </FormGroup>
         <Typography>Scale</Typography>
         <Slider
           value={Math.round(settings.scale * 100)}
