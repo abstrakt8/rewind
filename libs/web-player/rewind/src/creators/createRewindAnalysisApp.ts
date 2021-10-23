@@ -29,7 +29,6 @@ import { AudioEngine } from "../core/audio/AudioEngine";
 import { ScenarioManager } from "../apps/analysis/manager/ScenarioManager";
 import { ScreenshotTaker } from "../apps/analysis/manager/ScreenshotTaker";
 import { ReplayWatcher } from "../core/api/ReplayWatcher";
-import { TYPES } from "../types/types";
 import { ClipRecorder } from "../apps/analysis/manager/ClipRecorder";
 
 /**
@@ -45,8 +44,6 @@ export function createRewindAnalysisApp(commonContainer: Container) {
   const container = new Container({ defaultScope: "Singleton" });
   container.parent = commonContainer;
   container.bind(STAGE_TYPES.EVENT_EMITTER).toConstantValue(new EventEmitter2());
-  // TODO
-  container.bind(TYPES.WS_URL).toConstantValue("http://localhost:7271");
 
   container.bind(ReplayManager).toSelf();
   container.bind(BeatmapManager).toSelf();

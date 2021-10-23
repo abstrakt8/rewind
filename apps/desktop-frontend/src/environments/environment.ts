@@ -3,4 +3,7 @@
 
 export const environment = {
   production: false,
+  url: "http://localhost:7271",
+  platform: "Win32",
+  appVersion: "DEV",
 };

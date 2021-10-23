@@ -13,6 +13,7 @@ import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { BeatmapManager } from "../../../apps/analysis/manager/BeatmapManager";
 import { standardDeviation } from "simple-statistics";
+import { HitErrorBarSettingsStore } from "../../../services/HitErrorBarSettingsStore";
 
 function calculateUR(x: number[]) {
   const r = x.length === 0 ? 0 : standardDeviation(x) * 10;
@@ -35,6 +36,7 @@ export class ForegroundHUDPreparer {
     private readonly skinManager: SkinHolder,
     private readonly gameSimulator: GameSimulator,
     private readonly gameplayClock: GameplayClock,
+    private readonly hitErrorBarSettingsStore: HitErrorBarSettingsStore,
   ) {
     this.container = new Container();
     this.stats = new Text("", { fontSize: 16, fill: 0xeeeeee, fontFamily: "Arial", align: "left" });
@@ -93,7 +95,7 @@ export class ForegroundHUDPreparer {
       // ],
     });
     this.hitErrorBar.container.position.set(STAGE_WIDTH / 2, STAGE_HEIGHT - 20);
-    this.hitErrorBar.container.scale.set(2.0);
+    this.hitErrorBar.container.scale.set(this.hitErrorBarSettingsStore.settings.scale);
     this.container.addChild(this.hitErrorBar.container);
   }
 

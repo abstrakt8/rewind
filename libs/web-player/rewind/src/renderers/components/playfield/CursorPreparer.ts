@@ -38,7 +38,7 @@ export class CursorPreparer {
   }
 
   updateOsuCursor() {
-    const { enabled, scaleWithCS, scale, showTrail } = this.replayCursorSettingsStore.settings;
+    const { enabled, scaleWithCS, scale, showTrail, smoothCursorTrail } = this.replayCursorSettingsStore.settings;
 
     if (!enabled) {
       return;
@@ -59,16 +59,30 @@ export class CursorPreparer {
     const position = interpolateReplayPosition(frames[pi], frames[pi + 1], time);
 
     const trailPositions: Position[] = [];
+    const numberOfTrailSprites = 10;
     if (showTrail) {
-      for (let i = 1; i <= 5 && pi - i >= 0; i++) {
-        trailPositions.push(frames[pi - i].position);
+      if (smoothCursorTrail) {
+        const fps = 144;
+        const deltaCursorSmoothingTime = Math.floor(1000 / fps);
+        let t = time - deltaCursorSmoothingTime,
+          j = pi + 1;
+        while (j > 0 && trailPositions.length < numberOfTrailSprites) {
+          while (j > 0 && frames[j - 1].time > t) {
+            j--;
+          }
+          if (j === 0) {
+            trailPositions.push(frames[j].position);
+          } else {
+            trailPositions.push(interpolateReplayPosition(frames[j - 1], frames[j], t));
+          }
+          t -= deltaCursorSmoothingTime;
+        }
+      } else {
+        for (let i = 1; i <= numberOfTrailSprites && pi - i >= 0; i++) {
+          trailPositions.push(frames[pi - i].position);
+        }
       }
     }
-
-    // For motion blurring or similar
-    // const velocity = Vec2.sub(frames[pi + 1].position, frames[pi].position).divide(
-    //   frames[pi + 1].time - frames[pi].time,
-    // );
 
     cursor.prepare({
       position,
@@ -77,8 +91,6 @@ export class CursorPreparer {
       cursorTexture: skin.getTexture("CURSOR"),
       cursorTrailTexture: skin.getTexture("CURSOR_TRAIL"),
     });
-
-    // console.log(velocity);
 
     this.container.addChild(cursor.container);
   }

@@ -1,27 +1,12 @@
+import React from "react";
 import { FaDiscord, FaTwitter, FaYoutube } from "react-icons/fa";
 import { discordUrl, twitterUrl, youtubeUrl } from "../../constants";
 import { IconButton, Link, Stack, Typography } from "@mui/material";
-import React from "react";
 import { FastRewind } from "@mui/icons-material";
-import { RewindLinks } from "@rewind/feature-replay-viewer";
-
-function Socials() {
-  return (
-    <Stack direction={"row"} gap={2}>
-      <IconButton href={discordUrl} target={"_blank"}>
-        <FaDiscord />
-      </IconButton>
-      <IconButton href={discordUrl} target={"_blank"}>
-        <FaTwitter />
-      </IconButton>
-      <IconButton href={discordUrl} target={"_blank"}>
-        <FaYoutube />
-      </IconButton>
-    </Stack>
-  );
-}
+import { RewindLinks, useAppInfo } from "@rewind/feature-replay-viewer";
 
 export function HomeScreen() {
+  const { appVersion } = useAppInfo();
   return (
     <Stack gap={4} sx={{ justifyContent: "center", alignItems: "center", margin: "auto", height: "100%" }}>
       <Stack alignItems={"center"}>
@@ -30,9 +15,8 @@ export function HomeScreen() {
           REWIND
         </Typography>
         <Typography fontSize={"caption.fontSize"} color={"text.secondary"}>
-          {/*TODO: Version dynamic*/}
-          Rewind v0.0.2 by{" "}
-          <Link href={RewindLinks.abstraktOsu} target={"_blank"} color={"text.secondary"}>
+          Rewind {appVersion} by{" "}
+          <Link href={RewindLinks.OsuPpyShAbstrakt} target={"_blank"} color={"text.secondary"}>
             abstrakt
           </Link>
         </Typography>
@@ -48,14 +32,7 @@ export function HomeScreen() {
             <FaYoutube />
           </IconButton>
         </Typography>
-        {/*<Typography color={"text.secondary"} fontSize={"0.8em"}>*/}
-        {/*  by{" "}*/}
-        {/*  <Link href={RewindLinks.abstraktOsu} target={"_blank"} color={"text.secondary"}>*/}
-        {/*    abstrakt*/}
-        {/*  </Link>*/}
-        {/*</Typography>*/}
       </Stack>
-      {/*<Socials />*/}
     </Stack>
   );
 }

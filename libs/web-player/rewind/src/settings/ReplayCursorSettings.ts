@@ -3,7 +3,7 @@ import { CursorSettings } from "./CursorSettings";
 
 export interface ReplayCursorSettings extends CursorSettings {
   showTrail: boolean;
-  // Maybe there will be a smooth cursor trail
+  smoothCursorTrail: boolean;
 }
 
 export const DEFAULT_REPLAY_CURSOR_SETTINGS: ReplayCursorSettings = Object.freeze({
@@ -11,6 +11,7 @@ export const DEFAULT_REPLAY_CURSOR_SETTINGS: ReplayCursorSettings = Object.freez
   scale: 0.8,
   enabled: true,
   scaleWithCS: true,
+  smoothCursorTrail: true,
 });
 
 export const ReplayCursorSettingsSchema: JSONSchemaType<ReplayCursorSettings> = {
@@ -20,6 +21,7 @@ export const ReplayCursorSettingsSchema: JSONSchemaType<ReplayCursorSettings> = 
     scale: { type: "number", default: DEFAULT_REPLAY_CURSOR_SETTINGS.scale },
     enabled: { type: "boolean", default: DEFAULT_REPLAY_CURSOR_SETTINGS.enabled },
     scaleWithCS: { type: "boolean", default: DEFAULT_REPLAY_CURSOR_SETTINGS.scaleWithCS },
+    smoothCursorTrail: { type: "boolean", default: DEFAULT_REPLAY_CURSOR_SETTINGS.smoothCursorTrail },
   },
   required: [],
 };

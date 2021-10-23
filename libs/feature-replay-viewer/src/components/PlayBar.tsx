@@ -32,13 +32,14 @@ import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
 import { useModControls } from "../hooks/mods";
 import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
 import { ALLOWED_SPEEDS } from "../utils/Constants";
-import { BaseCurrentTime, GameCurrentTimeHandle, ignoreFocus, useAnalysisApp } from "..";
+import { BaseCurrentTime, GameCurrentTimeHandle, ignoreFocus, useAnalysisApp, useCommonManagers } from "..";
 import { useSettingsModalContext } from "../providers/SettingsProvider";
 import { PlaybarColors } from "../utils/PlaybarColors";
 import { ReplayAnalysisEvent } from "@rewind/osu/core";
 import { useObservable } from "rxjs-hooks";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { HelpModalDialog } from "./HelpModal";
+import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/PlaybarSettings";
 
 const centerUp = {
   anchorOrigin: {
@@ -253,8 +254,10 @@ function GameTimeSlider() {
   const currentTime = useGameClockTime(15);
   const { seekTo, duration } = useGameClockControls();
   const { gameSimulator } = useAnalysisApp();
+  const { playbarSettingsStore } = useCommonManagers();
   const replayEvents = useObservable(() => gameSimulator.replayEvents$, []);
   const difficulties = useObservable(() => gameSimulator.difficulties$, []);
+  const playbarSettings = useObservable(() => playbarSettingsStore.settings$, DEFAULT_PLAY_BAR_SETTINGS);
 
   const events = useMemo(() => {
     const { sliderBreakTimings, missTimings, mehTimings, okTimings } = groupTimings(replayEvents);
@@ -273,8 +276,7 @@ function GameTimeSlider() {
       currentTime={currentTime}
       onChange={seekTo}
       events={events}
-      difficulties={difficulties}
-      // difficulties={[0, 0, 0, 0, 0, 0.2, 0.3, 0.5, 0.2, 0.1, 0, 0, 0]}
+      difficulties={playbarSettings.difficultyGraphEnabled ? difficulties : []}
     />
   );
 }

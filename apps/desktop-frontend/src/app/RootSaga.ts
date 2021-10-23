@@ -5,6 +5,8 @@ import { SagaIterator } from "redux-saga";
 import { push } from "connected-react-router";
 import { RewindTheater } from "@rewind/web-player/rewind";
 
+// TODO: This whole thing should be rewritten
+
 function* waitForBackendState(state: BackendState): SagaIterator {
   while (true) {
     const action = yield take(stateChanged.type);

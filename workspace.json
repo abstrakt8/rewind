@@ -57,17 +57,22 @@
           "options": {
             "lintFilePatterns": ["apps/desktop/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/desktop"],
+          "outputs": [
+            "coverage/apps/desktop"
+          ],
           "options": {
             "jestConfig": "apps/desktop/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-common": {
       "root": "libs/api/common",
@@ -79,17 +84,22 @@
           "options": {
             "lintFilePatterns": ["libs/api/common/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/api/common"],
+          "outputs": [
+            "coverage/libs/api/common"
+          ],
           "options": {
             "jestConfig": "libs/api/common/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-desktop": {
       "root": "libs/api/desktop",
@@ -101,17 +111,22 @@
           "options": {
             "lintFilePatterns": ["libs/api/desktop/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/api/desktop"],
+          "outputs": [
+            "coverage/libs/api/desktop"
+          ],
           "options": {
             "jestConfig": "libs/api/desktop/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "desktop": {
       "root": "apps/desktop",
@@ -167,17 +182,22 @@
           "options": {
             "lintFilePatterns": ["apps/desktop/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/desktop"],
+          "outputs": [
+            "coverage/apps/desktop"
+          ],
           "options": {
             "jestConfig": "apps/desktop/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "desktop-backend": {
       "root": "apps/desktop-backend",
@@ -218,17 +238,22 @@
           "options": {
             "lintFilePatterns": ["apps/desktop-backend/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/desktop-backend"],
+          "outputs": [
+            "coverage/apps/desktop-backend"
+          ],
           "options": {
             "jestConfig": "apps/desktop-backend/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "desktop-backend-preload": {
       "root": "apps/desktop-backend-preload",
@@ -269,17 +294,22 @@
           "options": {
             "lintFilePatterns": ["apps/desktop-backend-preload/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/desktop-backend-preload"],
+          "outputs": [
+            "coverage/apps/desktop-backend-preload"
+          ],
           "options": {
             "jestConfig": "apps/desktop-backend-preload/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "desktop-frontend": {
       "root": "apps/desktop-frontend",
@@ -345,17 +375,22 @@
           "options": {
             "lintFilePatterns": ["apps/desktop-frontend/**/*.{ts,tsx,js,jsx}"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/desktop-frontend"],
+          "outputs": [
+            "coverage/apps/desktop-frontend"
+          ],
           "options": {
             "jestConfig": "apps/desktop-frontend/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "desktop-frontend-e2e": {
       "root": "apps/desktop-frontend-e2e",
@@ -378,11 +413,19 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/desktop-frontend-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "apps/desktop-frontend-e2e/**/*.{js,ts}"
+            ]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": [
+        "desktop-frontend"
+      ]
     },
     "desktop-frontend-preload": {
       "root": "apps/desktop-frontend-preload",
@@ -423,17 +466,22 @@
           "options": {
             "lintFilePatterns": ["apps/desktop-frontend-preload/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/desktop-frontend-preload"],
+          "outputs": [
+            "coverage/apps/desktop-frontend-preload"
+          ],
           "options": {
             "jestConfig": "apps/desktop-frontend-preload/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "electron-api": {
       "root": "libs/electron/api",
@@ -445,17 +493,22 @@
           "options": {
             "lintFilePatterns": ["libs/electron/api/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/electron/api"],
+          "outputs": [
+            "coverage/libs/electron/api"
+          ],
           "options": {
             "jestConfig": "libs/electron/api/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "feature-replay-viewer": {
       "root": "libs/feature-replay-viewer",
@@ -508,7 +561,8 @@
             }
           }
         }
-      }
+      },
+      "tags": []
     },
     "feature-replay-viewer-e2e": {
       "root": "apps/feature-replay-viewer-e2e",
@@ -531,11 +585,19 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/feature-replay-viewer-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "apps/feature-replay-viewer-e2e/**/*.{js,ts}"
+            ]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": [
+        "feature-replay-viewer"
+      ]
     },
     "osu-core": {
       "root": "libs/osu/core",
@@ -547,17 +609,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu/core/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu/core"],
+          "outputs": [
+            "coverage/libs/osu/core"
+          ],
           "options": {
             "jestConfig": "libs/osu/core/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-local-db-reader": {
       "root": "libs/osu-local/db-reader",
@@ -569,17 +636,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/db-reader/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu-local/db-reader"],
+          "outputs": [
+            "coverage/libs/osu-local/db-reader"
+          ],
           "options": {
             "jestConfig": "libs/osu-local/db-reader/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-local-gosumemory": {
       "root": "libs/osu-local/gosumemory",
@@ -591,17 +663,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/gosumemory/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu-local/gosumemory"],
+          "outputs": [
+            "coverage/libs/osu-local/gosumemory"
+          ],
           "options": {
             "jestConfig": "libs/osu-local/gosumemory/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-local-osr-reader": {
       "root": "libs/osu-local/osr-reader",
@@ -613,17 +690,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/osr-reader/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu-local/osr-reader"],
+          "outputs": [
+            "coverage/libs/osu-local/osr-reader"
+          ],
           "options": {
             "jestConfig": "libs/osu-local/osr-reader/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-local-skin-reader": {
       "root": "libs/osu-local/skin-reader",
@@ -635,17 +717,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/skin-reader/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu-local/skin-reader"],
+          "outputs": [
+            "coverage/libs/osu-local/skin-reader"
+          ],
           "options": {
             "jestConfig": "libs/osu-local/skin-reader/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-local-utils": {
       "root": "libs/osu-local/utils",
@@ -657,17 +744,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/utils/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu-local/utils"],
+          "outputs": [
+            "coverage/libs/osu-local/utils"
+          ],
           "options": {
             "jestConfig": "libs/osu-local/utils/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-math": {
       "root": "libs/osu/math",
@@ -679,17 +771,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu/math/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu/math"],
+          "outputs": [
+            "coverage/libs/osu/math"
+          ],
           "options": {
             "jestConfig": "libs/osu/math/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-pixi-classic-components": {
       "root": "libs/osu-pixi/classic-components",
@@ -701,17 +798,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu-pixi/classic-components/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu-pixi/classic-components"],
+          "outputs": [
+            "coverage/libs/osu-pixi/classic-components"
+          ],
           "options": {
             "jestConfig": "libs/osu-pixi/classic-components/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-pixi-rewind": {
       "root": "libs/osu-pixi/rewind",
@@ -727,13 +829,16 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu-pixi/rewind"],
+          "outputs": [
+            "coverage/libs/osu-pixi/rewind"
+          ],
           "options": {
             "jestConfig": "libs/osu-pixi/rewind/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-skin": {
       "root": "libs/osu/skin",
@@ -745,17 +850,22 @@
           "options": {
             "lintFilePatterns": ["libs/osu/skin/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/osu/skin"],
+          "outputs": [
+            "coverage/libs/osu/skin"
+          ],
           "options": {
             "jestConfig": "libs/osu/skin/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "osu-stable-test-generator": {
       "root": "apps/osu-stable-test-generator",
@@ -796,17 +906,22 @@
           "options": {
             "lintFilePatterns": ["apps/osu-stable-test-generator/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/osu-stable-test-generator"],
+          "outputs": [
+            "coverage/apps/osu-stable-test-generator"
+          ],
           "options": {
             "jestConfig": "apps/osu-stable-test-generator/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "rewind-electron": {
       "root": "apps/rewind-electron",
@@ -847,17 +962,22 @@
           "options": {
             "lintFilePatterns": ["apps/rewind-electron/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/rewind-electron"],
+          "outputs": [
+            "coverage/apps/rewind-electron"
+          ],
           "options": {
             "jestConfig": "apps/rewind-electron/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "web": {
       "root": "apps/web",
@@ -922,17 +1042,22 @@
           "options": {
             "lintFilePatterns": ["apps/web/**/*.{ts,tsx,js,jsx}"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/web"],
+          "outputs": [
+            "coverage/apps/web"
+          ],
           "options": {
             "jestConfig": "apps/web/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "web-api": {
       "root": "apps/web-api",
@@ -973,17 +1098,22 @@
           "options": {
             "lintFilePatterns": ["apps/web-api/**/*.ts"]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/web-api"],
+          "outputs": [
+            "coverage/apps/web-api"
+          ],
           "options": {
             "jestConfig": "apps/web-api/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "web-e2e": {
       "root": "apps/web-e2e",
@@ -1006,11 +1136,19 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/web-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": [
+              "apps/web-e2e/**/*.{js,ts}"
+            ]
           },
-          "outputs": ["{options.outputFile}"]
+          "outputs": [
+            "{options.outputFile}"
+          ]
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": [
+        "web"
+      ]
     },
     "web-player-rewind": {
       "root": "libs/web-player/rewind",
@@ -1026,43 +1164,16 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/web-player/rewind"],
+          "outputs": [
+            "coverage/libs/web-player/rewind"
+          ],
           "options": {
             "jestConfig": "libs/web-player/rewind/jest.config.js",
             "passWithNoTests": true
           }
         }
-      }
-    }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/react"
-  },
-  "generators": {
-    "@nrwl/react": {
-      "application": {
-        "style": "css",
-        "linter": "eslint",
-        "babel": true
       },
-      "component": {
-        "style": "css"
-      },
-      "library": {
-        "style": "css",
-        "linter": "eslint"
-      }
-    },
-    "@nrwl/web:application": {
-      "style": "css",
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "e2eTestRunner": "none"
-    },
-    "@nrwl/web:library": {
-      "style": "css",
-      "linter": "eslint",
-      "unitTestRunner": "jest"
+      "tags": []
     }
   }
 }

@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   FormGroup,
   Modal,
+  Paper,
   Slider,
   Stack,
   Switch,
@@ -26,31 +27,42 @@ import {
   stringToSkinId,
 } from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks";
+import { DEFAULT_HIT_ERROR_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/HitErrorBarSettings";
+import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/PlaybarSettings";
 
 const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",
   rewind: "Rewind",
 };
 
+const formatToPercent = (value: number) => `${value}%`;
+
 function BeatmapBackgroundSettings() {
   const theater = useCommonManagers();
   const { beatmapBackgroundSettingsStore } = theater;
   const settings = useObservable(() => beatmapBackgroundSettingsStore.settings$, { blur: 0, enabled: false, dim: 0 });
   return (
-    <Stack>
-      <Typography>Background blur</Typography>
-      <Slider
-        value={Math.round(settings.blur * 100)}
-        onChange={(_, v) => beatmapBackgroundSettingsStore.setBlur((v as number) / 100)}
-        valueLabelDisplay={"auto"}
-      />
-      <Typography>Background dim</Typography>
-      <Slider
-        value={Math.round(settings.dim * 100)}
-        onChange={(_, v) => beatmapBackgroundSettingsStore.setDim((v as number) / 100)}
-        valueLabelDisplay={"auto"}
-      />
-    </Stack>
+    <Paper sx={{ boxShadow: "none", p: 2 }}>
+      <Stack gap={1}>
+        <Typography variant={"h6"}>Beatmap Background</Typography>
+        <Stack>
+          <Typography>Blur</Typography>
+          <Slider
+            value={Math.round(settings.blur * 100)}
+            onChange={(_, v) => beatmapBackgroundSettingsStore.setBlur((v as number) / 100)}
+            valueLabelDisplay={"auto"}
+            valueLabelFormat={formatToPercent}
+          />
+          <Typography>Dim</Typography>
+          <Slider
+            value={Math.round(settings.dim * 100)}
+            onChange={(_, v) => beatmapBackgroundSettingsStore.setDim((v as number) / 100)}
+            valueLabelDisplay={"auto"}
+            valueLabelFormat={formatToPercent}
+          />
+        </Stack>
+      </Stack>
+    </Paper>
   );
 }
 
@@ -76,66 +88,138 @@ function BeatmapRenderSettings() {
   );
 }
 
-function AnalysisCursorSettingsPanel() {
+function AnalysisCursorSettingsSection() {
   const { analysisCursorSettingsStore } = useCommonManagers();
   const settings = useObservable(() => analysisCursorSettingsStore.settings$, DEFAULT_ANALYSIS_CURSOR_SETTINGS);
 
   return (
-    <Stack gap={2}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={settings.enabled}
-              onChange={(event) => analysisCursorSettingsStore.setEnabled(event.target.checked)}
-            />
-          }
-          label={"Analysis Cursor"}
-        />
-      </FormGroup>
-    </Stack>
+    <Paper sx={{ boxShadow: "none", p: 2 }}>
+      <Stack gap={1}>
+        <Typography variant={"h6"}>Analysis Cursor</Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={settings.enabled}
+                onChange={(event) => analysisCursorSettingsStore.setEnabled(event.target.checked)}
+              />
+            }
+            label={"Enabled"}
+          />
+        </FormGroup>
+      </Stack>
+    </Paper>
   );
 }
 
-function ReplayCursorSettingsPanel() {
+function ReplayCursorSettingsSection() {
   const { replayCursorSettingsStore } = useCommonManagers();
   const settings = useObservable(() => replayCursorSettingsStore.settings$, DEFAULT_REPLAY_CURSOR_SETTINGS);
 
   return (
-    <Stack gap={2}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={settings.enabled}
-              onChange={(event) => replayCursorSettingsStore.changeSettings((s) => (s.enabled = event.target.checked))}
-            />
-          }
-          label={"Replay Cursor"}
+    <Paper sx={{ boxShadow: "none", p: 2 }}>
+      <Stack gap={1}>
+        <Typography variant={"h6"}>Replay Cursor</Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={settings.enabled}
+                onChange={(event) =>
+                  replayCursorSettingsStore.changeSettings((s) => (s.enabled = event.target.checked))
+                }
+              />
+            }
+            label={"Enabled"}
+          />
+        </FormGroup>
+        <FormGroup>
+          <FormControlLabel
+            disabled={!settings.enabled}
+            control={
+              <Switch
+                checked={settings.smoothCursorTrail}
+                onChange={(event) =>
+                  replayCursorSettingsStore.changeSettings((s) => (s.smoothCursorTrail = event.target.checked))
+                }
+              />
+            }
+            label={"Smooth Cursor Trail"}
+          />
+        </FormGroup>
+        <Typography>Scale</Typography>
+        <Slider
+          value={Math.round(settings.scale * 100)}
+          valueLabelFormat={formatToPercent}
+          disabled={!settings.enabled}
+          min={10}
+          max={200}
+          onChange={(_, v) => replayCursorSettingsStore.changeSettings((s) => (s.scale = (v as number) / 100))}
+          valueLabelDisplay={"auto"}
         />
-      </FormGroup>
-    </Stack>
+      </Stack>
+    </Paper>
+  );
+}
+
+function HitErrorBarSettingsSection() {
+  const { hitErrorBarSettingsStore } = useCommonManagers();
+  const settings = useObservable(() => hitErrorBarSettingsStore.settings$, DEFAULT_HIT_ERROR_BAR_SETTINGS);
+  return (
+    <Paper elevation={1} sx={{ boxShadow: "none", p: 2 }}>
+      <Stack>
+        {/*TODO: Enabled*/}
+        <Typography>Hit Error Bar Scaling</Typography>
+        <Slider
+          value={Math.round(settings.scale * 100)}
+          valueLabelFormat={formatToPercent}
+          max={300}
+          onChange={(_, v) => hitErrorBarSettingsStore.changeSettings((s) => (s.scale = (v as number) / 100))}
+          valueLabelDisplay={"auto"}
+        />
+      </Stack>
+    </Paper>
+  );
+}
+
+function PlaybarSettingsSection() {
+  const { playbarSettingsStore } = useCommonManagers();
+  const settings = useObservable(() => playbarSettingsStore.settings$, DEFAULT_PLAY_BAR_SETTINGS);
+
+  return (
+    <Paper elevation={1} sx={{ boxShadow: "none", p: 2 }}>
+      <Stack gap={1}>
+        <Typography variant={"h6"}>Playbar</Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={settings.difficultyGraphEnabled}
+                onChange={(event) =>
+                  playbarSettingsStore.changeSettings((s) => (s.difficultyGraphEnabled = event.target.checked))
+                }
+              />
+            }
+            label={"Show difficulty graph"}
+          />
+        </FormGroup>
+      </Stack>
+    </Paper>
   );
 }
 
 function GeneralSettings() {
   return (
-    <Stack p={2}>
+    <Stack p={2} gap={1}>
+      <ReplayCursorSettingsSection />
+      <AnalysisCursorSettingsSection />
+      <HitErrorBarSettingsSection />
       <BeatmapBackgroundSettings />
+      <PlaybarSettingsSection />
       <BeatmapRenderSettings />
-      <ReplayCursorSettingsPanel />
-      <AnalysisCursorSettingsPanel />
     </Stack>
   );
 }
-
-// { source: "osu", name: "- # BTMC   ⌞Freedom Dive  ↓⌝" },
-// { source: "osu", name: "-         《CK》 WhiteCat 2.1 _ old -lite" },
-// { source: "osu", name: "idke+1.2" },
-// { source: "osu", name: "Joie's Seoul v9 x owoTuna + whale" },
-// { source: "osu", name: "Millhiore Lite" },
-// { source: "osu", name: "Rafis 2018-03-26 HDDT" },
-// { source: "osu", name: "Toy 2018-09-07" },
 
 function SkinsSettings() {
   // TODO: Button for synchronizing skin list again
@@ -167,7 +251,7 @@ function SkinsSettings() {
           console.error(`Could not load skin ${skinId}`);
         }
       })();
-      // TODO: ERror handling
+      // TODO: Error handling
     },
     [theater],
   );

@@ -19,6 +19,10 @@ import { AnalysisCursorSettingsStore } from "./AnalysisCursorSettingsStore";
 import { BeatmapBackgroundSettingsStore } from "./BeatmapBackgroundSettingsStore";
 import { BeatmapRenderSettingsStore } from "./BeatmapRenderSettingsStore";
 import { ReplayCursorSettingsStore } from "./ReplayCursorSettingsStore";
+import { DEFAULT_HIT_ERROR_BAR_SETTINGS, HitErrorBarSettingsSchema } from "../settings/HitErrorBarSettings";
+import { HitErrorBarSettingsStore } from "./HitErrorBarSettingsStore";
+import { DEFAULT_PLAY_BAR_SETTINGS, PlaybarSettingsSchema } from "../settings/PlaybarSettings";
+import { PlaybarSettingsStore } from "./PlaybarSettingsStore";
 
 @injectable()
 export class RewindLocalStorage {
@@ -31,6 +35,8 @@ export class RewindLocalStorage {
     private readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
     private readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
     private readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
+    private readonly hitErrorBarSettingsStore: HitErrorBarSettingsStore,
+    private readonly playbarSettingsStore: PlaybarSettingsStore,
   ) {
     this.helper = new LocalStorageHelper();
   }
@@ -74,6 +80,20 @@ export class RewindLocalStorage {
       schema: ReplayCursorSettingsSchema,
       defaultValue: DEFAULT_REPLAY_CURSOR_SETTINGS,
       subject: this.replayCursorSettingsStore.settings$,
+    });
+
+    this.helper.register({
+      key: "hit-error-bar-settings",
+      schema: HitErrorBarSettingsSchema,
+      defaultValue: DEFAULT_HIT_ERROR_BAR_SETTINGS,
+      subject: this.hitErrorBarSettingsStore.settings$,
+    });
+
+    this.helper.register({
+      key: "playbar-settings",
+      schema: PlaybarSettingsSchema,
+      defaultValue: DEFAULT_PLAY_BAR_SETTINGS,
+      subject: this.playbarSettingsStore.settings$,
     });
 
     this.helper.loadAll();

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { FaBug, FaDiscord, FaGraduationCap } from "react-icons/all";
+import { FaBug, FaDiscord, FaGraduationCap } from "react-icons/fa";
 import { RewindLinks } from "../utils/Constants";
 import { Box, Divider, IconButton, Modal, Paper, Stack, Typography } from "@mui/material";
 import { Close, Help } from "@mui/icons-material";

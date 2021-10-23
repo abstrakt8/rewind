@@ -1,4 +1,5 @@
 import { createRewindTheater } from "@rewind/web-player/rewind";
+import { environment } from "../environments/environment";
 
-const apiUrl = "http://localhost:7271";
+const apiUrl = environment.url;
 export const theater = createRewindTheater({ apiUrl });
