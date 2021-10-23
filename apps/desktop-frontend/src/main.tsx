@@ -35,9 +35,6 @@ async function initialize() {
 
   console.log(`Initializing with version=${appVersion} on platform=${platform}`);
 
-  // This starts off with /splash -> Maybe do it somewhere else?
-  store.dispatch(push("/splash"));
-
   ReactDOM.render(
     <StrictMode>
       <AppInfoProvider appInfo={appInfo}>
@@ -55,6 +52,9 @@ async function initialize() {
     </StrictMode>,
     document.getElementById("root"),
   );
+
+  // This starts off with /splash -> Maybe do it somewhere else?
+  store.dispatch(push("/splash"));
 }
 
 initialize();
