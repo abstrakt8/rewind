@@ -1,9 +1,18 @@
 import { app, dialog, ipcMain } from "electron";
-import { BackendPreloadAPI, FrontendPreloadAPI } from "@rewind/electron/api";
+import { BackendPreloadAPI } from "@rewind/electron/api";
 import { RewindElectronApp } from "./RewindElectronApp";
 
 async function userSelectDirectory(defaultPath: string) {
   const { canceled, filePaths } = await dialog.showOpenDialog({ defaultPath, properties: ["openDirectory"] });
+  if (canceled || filePaths.length === 0) {
+    return null;
+  } else {
+    return filePaths[0];
+  }
+}
+
+async function userSelectFile(defaultPath: string) {
+  const { canceled, filePaths } = await dialog.showOpenDialog({ defaultPath, properties: ["openFile"] });
   if (canceled || filePaths.length === 0) {
     return null;
   } else {
@@ -29,16 +38,6 @@ const backendPreloadAPI: BackendPreloadAPI = {
   },
 };
 
-const frontendPreloadAPI: FrontendPreloadAPI = {
-  getAppVersion: () => Promise.resolve(app.getVersion()),
-  getPlatform: () => Promise.resolve(process.platform),
-  reboot: () => {
-    app.relaunch();
-    app.quit();
-  },
-  selectDirectory: userSelectDirectory,
-};
-
 export function setupEventListeners(rewindElectronApp: RewindElectronApp) {
   // BackendAPI
   ipcMain.handle("getPath", (event, type) => backendPreloadAPI.getPath(type));
@@ -49,9 +48,14 @@ export function setupEventListeners(rewindElectronApp: RewindElectronApp) {
   // for (const [key, handler] of Object.entries(frontendPreloadAPI)) {
   //   ipcMain.handle(key, (event, args) => handler(...args));
   // }
+  const app = rewindElectronApp.application;
 
-  ipcMain.handle("selectDirectory", (event, defaultPath) => frontendPreloadAPI.selectDirectory(defaultPath));
-  ipcMain.handle("getPlatform", () => frontendPreloadAPI.getPlatform());
-  ipcMain.handle("getAppVersion", () => frontendPreloadAPI.getAppVersion());
-  ipcMain.handle("reboot", () => frontendPreloadAPI.reboot());
+  ipcMain.handle("selectDirectory", (event, defaultPath) => userSelectDirectory(defaultPath));
+  ipcMain.handle("selectFile", (event, defaultPath) => userSelectFile(defaultPath));
+  ipcMain.handle("getPlatform", () => process.platform);
+  ipcMain.handle("getAppVersion", () => app.getVersion());
+  ipcMain.handle("reboot", () => {
+    app.relaunch();
+    app.quit();
+  });
 }

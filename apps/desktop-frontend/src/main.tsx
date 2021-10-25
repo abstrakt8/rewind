@@ -28,12 +28,18 @@ async function initialize() {
       getPlatform: () => Promise.resolve(environment.platform),
       reboot: () => console.log("Rebooting ..."),
       selectDirectory: () => Promise.resolve("C:\\Mocked\\Path"),
+      selectFile: () => Promise.resolve("C:\\Mocked\\File.osr"),
+      onManualReplayOpen: (listener) => console.log(`Registered a listener for opening replay files manually`),
     };
   }
   const [appVersion, platform] = await Promise.all([api.getAppVersion(), api.getPlatform()]);
   const appInfo = { appVersion, platform };
 
   console.log(`Initializing with version=${appVersion} on platform=${platform}`);
+
+  api.onManualReplayOpen((file) => {
+    theater.analyzer.loadReplay(`local:${file}`);
+  });
 
   ReactDOM.render(
     <StrictMode>

@@ -1,6 +1,7 @@
 import { BrowserWindow, dialog, Menu, screen, shell } from "electron";
 import { join } from "path";
 import { format } from "url";
+import { RewindElectronSettings } from "./config";
 
 const DEFAULT_WIDTH = 1600;
 const DEFAULT_HEIGHT = 900;
@@ -18,7 +19,11 @@ export class RewindElectronApp {
   apiWindow?: BrowserWindow;
   isQuitting = false;
 
-  constructor(readonly application: Electron.App, private readonly isDevMode = false) {}
+  constructor(
+    readonly application: Electron.App,
+    private readonly settings: RewindElectronSettings,
+    private readonly isDevMode = false,
+  ) {}
 
   createMainWindow() {
     const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
@@ -44,15 +49,32 @@ export class RewindElectronApp {
     // It still takes a while to load, so maybe a splash screen in the future could be shown while it is "not ready to
     // show".
     this.mainWindow.on("ready-to-show", () => {
+      console.log("ReadyToShow");
       this.mainWindow?.show();
     });
 
+    const osuFolder = this.settings.osuPath;
+    const osuFolderKnown = !!osuFolder as boolean;
     this.mainWindow.setMenu(
       Menu.buildFromTemplate([
         {
           label: "File",
           submenu: [
-            { label: "Open Replay", accelerator: "CommandOrControl+O", enabled: false },
+            {
+              label: "Open Replay",
+              accelerator: "CommandOrControl+O",
+              enabled: osuFolderKnown,
+              click: async () => {
+                const { canceled, filePaths } = await dialog.showOpenDialog({
+                  defaultPath: join(osuFolder, "Replays"),
+                  properties: ["openFile"],
+                });
+                if (!canceled && filePaths.length > 0) {
+                  const file = filePaths[0];
+                  this.mainWindow?.webContents.send("onManualReplayOpen", file);
+                }
+              },
+            },
             { type: "separator" },
             {
               label: "Open Installation Folder",
@@ -76,10 +98,9 @@ export class RewindElectronApp {
             {
               label: "Open osu! Folder",
               click: async () => {
-                // TODO: !!!
-                await shell.openPath("E:\\osu!");
+                await shell.openPath(osuFolder);
               },
-              enabled: false,
+              enabled: osuFolderKnown,
             },
             { type: "separator" },
             { role: "close" },
@@ -101,7 +122,7 @@ export class RewindElectronApp {
             {
               label: "Documentation",
               click: async () => {
-                await shell.openExternal("https://bit.ly/3BOF3P2");
+                await shell.openExternal("https://github.com/abstrakt8/rewind/wiki");
               },
             },
             {
@@ -165,9 +186,7 @@ export class RewindElectronApp {
         this.apiWindow = undefined;
       }
     });
-    // if (this.isDevMode) {
     this.apiWindow.webContents.openDevTools();
-    // }
   }
 
   loadApiWindow() {
@@ -222,9 +241,11 @@ export class RewindElectronApp {
   }
 
   boot() {
+    console.log("boot");
     this.application.on("window-all-closed", () => this.handleWindowAllClosed());
     this.application.on("ready", () => this.handleReady());
     this.application.on("activate", () => this.handleActivate());
     this.application.on("before-quit", () => (this.isQuitting = true));
+    console.log("done");
   }
 }
