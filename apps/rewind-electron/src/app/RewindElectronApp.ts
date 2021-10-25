@@ -68,6 +68,10 @@ export class RewindElectronApp {
                 const { canceled, filePaths } = await dialog.showOpenDialog({
                   defaultPath: join(osuFolder, "Replays"),
                   properties: ["openFile"],
+                  filters: [
+                    { name: "osu! Replay", extensions: ["osr"] },
+                    { name: "All Files", extensions: ["*"] },
+                  ],
                 });
                 if (!canceled && filePaths.length > 0) {
                   const file = filePaths[0];
@@ -241,11 +245,9 @@ export class RewindElectronApp {
   }
 
   boot() {
-    console.log("boot");
     this.application.on("window-all-closed", () => this.handleWindowAllClosed());
     this.application.on("ready", () => this.handleReady());
     this.application.on("activate", () => this.handleActivate());
     this.application.on("before-quit", () => (this.isQuitting = true));
-    console.log("done");
   }
 }
