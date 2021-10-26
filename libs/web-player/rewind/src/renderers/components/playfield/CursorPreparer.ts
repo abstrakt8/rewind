@@ -59,7 +59,7 @@ export class CursorPreparer {
     const position = interpolateReplayPosition(frames[pi], frames[pi + 1], time);
 
     const trailPositions: Position[] = [];
-    const numberOfTrailSprites = 10;
+    const numberOfTrailSprites = 8;
     if (showTrail) {
       if (smoothCursorTrail) {
         const fps = 144;
