@@ -12,12 +12,15 @@ import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
 import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { BeatmapManager } from "../../../apps/analysis/manager/BeatmapManager";
-import { standardDeviation } from "simple-statistics";
+import { mean, standardDeviation } from "simple-statistics";
 import { HitErrorBarSettingsStore } from "../../../services/HitErrorBarSettingsStore";
 
-function calculateUR(x: number[]) {
-  const r = x.length === 0 ? 0 : standardDeviation(x) * 10;
-  return r.toFixed(2);
+function calculateUnstableRate(x: number[]) {
+  return x.length === 0 ? 0 : standardDeviation(x) * 10;
+}
+
+function calculateMean(x: number[]) {
+  return x.length === 0 ? 0 : mean(x);
 }
 
 @injectable()
@@ -28,6 +31,8 @@ export class ForegroundHUDPreparer {
 
   hitMinIndex = 0;
   hitMaxIndex = 0;
+
+  // these are game clock rate adjusted
   allHits: number[] = [];
   recentHits: number[] = [];
 
@@ -47,6 +52,7 @@ export class ForegroundHUDPreparer {
     const time = this.gameplayClock.timeElapsedInMs;
 
     const beatmap = this.beatmapManager.getBeatmap();
+    const gameClockRate = beatmap.gameClockRate;
     const maxHitErrorTime = 10000;
     const hits: any[] = [];
     this.allHits = [];
@@ -56,8 +62,8 @@ export class ForegroundHUDPreparer {
       if (timeAgo < 0) break;
       if (timeAgo <= maxHitErrorTime) hits.push({ timeAgo: time - judgementTime, offset, miss: !hit });
       if (hit) {
-        this.allHits.push(offset);
-        if (timeAgo < 1000) this.recentHits.push(offset);
+        this.allHits.push(offset / gameClockRate);
+        if (timeAgo < 1000) this.recentHits.push(offset / gameClockRate);
       }
     }
 
@@ -146,9 +152,12 @@ export class ForegroundHUDPreparer {
       const count = gameplayInfo.verdictCounts;
       const maxCombo = gameplayInfo.maxComboSoFar;
 
-      // TODO: Divide by game clock rate
-      const ur = calculateUR(this.allHits);
-      const lastSecondUR = calculateUR(this.recentHits);
+      const digits = 2;
+      const globalMean = calculateMean(this.allHits);
+      const globalDeviation = calculateUnstableRate(this.allHits);
+
+      const localMean = calculateMean(this.recentHits);
+      const localDeviation = calculateUnstableRate(this.recentHits);
 
       this.stats.text = `Time: ${formatGameTime(time, true)}
 300: ${count[0]}
@@ -158,9 +167,15 @@ Misses: ${count[3]}
 
 MaxCombo: ${maxCombo}
 
-UR: ${ur}
-LS-UR: ${lastSecondUR}
+Global
+UR: ${globalDeviation.toFixed(digits)}
+Mean: ${globalMean.toFixed(digits)}ms
+
+Local
+UR: ${localDeviation.toFixed(digits)}
+Mean: ${localMean.toFixed(digits)}ms
 `;
+
       this.stats.position.set(25, 50);
       this.container.addChild(this.stats);
     }

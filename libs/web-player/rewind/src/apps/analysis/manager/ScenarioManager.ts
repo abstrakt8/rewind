@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { BehaviorSubject } from "rxjs";
-import { buildBeatmap, determineDefaultPlaybackSpeed, modsToBitmask, parseBlueprint } from "@rewind/osu/core";
+import { buildBeatmap, modsToBitmask, parseBlueprint } from "@rewind/osu/core";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 import { ModSettingsManager } from "./ModSettingsManager";
 import { AudioService } from "../../../core/audio/AudioService";
@@ -62,7 +62,7 @@ export class ScenarioManager {
     console.log(`Beatmap built with ${beatmap.hitObjects.length} hitobjects`);
     console.log(`Replay loaded with ${replay.frames.length} frames`);
     const modHidden = replay.mods.includes("HIDDEN");
-    const initialSpeed = determineDefaultPlaybackSpeed(replay.mods);
+    const initialSpeed = beatmap.gameClockRate;
 
     this.modSettingsManager.setHidden(modHidden);
     // Not supported yet
