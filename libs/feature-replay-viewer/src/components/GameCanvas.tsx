@@ -43,6 +43,13 @@ export const GameCanvas = () => {
       containerRef.current.append(analysisApp.stats());
     }
   }, [analysisApp]);
+  useEffect(() => {
+    if (status === "INIT") {
+      analysisApp.stats().hidden = true;
+    } else {
+      analysisApp.stats().hidden = false;
+    }
+  }, [status, analysisApp]);
 
   useEffect(() => {
     if (canvas.current) {
