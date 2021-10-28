@@ -35,6 +35,7 @@ export class PixiRendererManager {
   }
 
   destroy() {
+    this.renderer?.clear();
     this.renderer?.destroy();
     this.renderer = undefined;
   }

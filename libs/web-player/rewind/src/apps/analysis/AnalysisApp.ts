@@ -62,13 +62,13 @@ export class AnalysisApp {
 
   onEnter(canvas: HTMLCanvasElement) {
     this.pixiRenderer.initializeRenderer(canvas);
-    this.gameLoop.startTicker();
+    // this.gameLoop.startTicker();
   }
 
   onHide() {
     this.gameClock.pause();
     this.pixiRenderer.destroy();
-    this.gameLoop.stopTicker();
+    // this.gameLoop.stopTicker();
   }
 
   // If no replay is loaded, then an empty "perfect" replay is used as simulation

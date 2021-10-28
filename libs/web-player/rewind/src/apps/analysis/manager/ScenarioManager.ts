@@ -11,6 +11,8 @@ import { ReplayManager } from "./ReplayManager";
 import { AnalysisSceneKeys, AnalysisSceneManager } from "./AnalysisSceneManager";
 import { AudioEngine } from "../../../core/audio/AudioEngine";
 import { GameplayClock } from "../../../core/game/GameplayClock";
+import { GameLoop } from "../../../core/game/GameLoop";
+import { PixiRendererManager } from "../../../renderers/PixiRendererManager";
 
 interface Scenario {
   status: "LOADING" | "ERROR" | "DONE" | "INIT";
@@ -22,6 +24,8 @@ export class ScenarioManager {
 
   constructor(
     private readonly gameClock: GameplayClock,
+    private readonly renderer: PixiRendererManager,
+    private readonly gameLoop: GameLoop,
     private readonly gameSimulator: GameSimulator,
     private readonly modSettingsManager: ModSettingsManager,
     private readonly audioService: AudioService,
@@ -40,9 +44,11 @@ export class ScenarioManager {
     this.gameClock.clear();
     this.replayManager.setMainReplay(null);
     this.audioEngine.destroy();
+    this.renderer.getRenderer()?.clear();
     this.beatmapManager.setBeatmap(Beatmap.EMPTY_BEATMAP);
     this.gameSimulator.clear();
-    await this.sceneManager.changeToScene(AnalysisSceneKeys.IDLE);
+    this.gameLoop.stopTicker();
+    // await this.sceneManager.changeToScene(AnalysisSceneKeys.IDLE);
     this.scenario$.next({ status: "INIT" });
   }
 
@@ -88,6 +94,7 @@ export class ScenarioManager {
     await this.gameSimulator.simulateReplay(beatmap, replay);
     await this.sceneManager.changeToScene(AnalysisSceneKeys.ANALYSIS);
 
+    this.gameLoop.startTicker();
     this.scenario$.next({ status: "DONE" });
   }
 
