@@ -126,4 +126,12 @@ export class GameplayClock {
   onPaused(fn: ListenerFn) {
     this.eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, fn);
   }
+
+  clear() {
+    this.pause();
+    this.speed$.next(1.0);
+    // This is just ahot fix
+    this.durationInMs$.next(1);
+    this.timeElapsedInMs = 0;
+  }
 }

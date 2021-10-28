@@ -22,6 +22,7 @@ export class SceneManager {
 
   stop(scene: ManagedScene) {
     scene.destroy();
+    scene.state = "SLEEPING";
   }
 
   update(deltaTimeMs: number) {

@@ -135,4 +135,9 @@ export class GameSimulator {
   async calculateEvents() {
     // In case it takes unbearably long -> we might need a web worker
   }
+
+  clear() {
+    this.replayEvents$.next([]);
+    this.difficulties$.next([]);
+  }
 }

@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useAnalysisApp } from "../providers/TheaterProvider";
-import { Box, CircularProgress, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { useObservable } from "rxjs-hooks";
 import { LightningBoltIcon } from "@heroicons/react/solid";
 import InfoIcon from "@mui/icons-material/Info";
+import { ignoreFocus } from "../utils/IgnoreFocus";
+import CloseIcon from "@mui/icons-material/Close";
 
 function EmptyState() {
   return (
@@ -52,6 +54,17 @@ export const GameCanvas = () => {
 
   return (
     <Box ref={containerRef} sx={{ borderRadius: 2, overflow: "hidden", position: "relative", flex: 1 }}>
+      {status === "DONE" && (
+        <Tooltip title={"Close replay"}>
+          <IconButton
+            sx={{ position: "absolute", right: "0", top: "0" }}
+            onClick={() => analysisApp.scenarioManager.clearReplay()}
+            onFocus={ignoreFocus}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Tooltip>
+      )}
       <canvas
         style={{ width: "100%", height: "100%", pointerEvents: "none" }}
         ref={canvas}
