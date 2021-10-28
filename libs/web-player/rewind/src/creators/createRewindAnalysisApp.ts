@@ -30,6 +30,7 @@ import { ScenarioManager } from "../apps/analysis/manager/ScenarioManager";
 import { ScreenshotTaker } from "../apps/analysis/manager/ScreenshotTaker";
 import { ReplayWatcher } from "../core/api/ReplayWatcher";
 import { ClipRecorder } from "../apps/analysis/manager/ClipRecorder";
+import { IdleScene } from "../apps/analysis/scenes/IdleScene";
 
 /**
  * This is a Rewind specific constructor of the "Analysis" tool (not to be used outside of Rewind).
@@ -69,8 +70,9 @@ export function createRewindAnalysisApp(commonContainer: Container) {
   // Skin is given by above
   // container.bind(SkinManager).toSelf();
 
-  // AnalysisScene
+  // AnalysisScenes
   container.bind(AnalysisScene).toSelf();
+  container.bind(IdleScene).toSelf();
 
   // Sliders
   container.bind(SliderTextureManager).toSelf();

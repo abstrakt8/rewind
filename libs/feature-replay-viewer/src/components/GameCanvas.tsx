@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useAnalysisApp } from "../providers/TheaterProvider";
-import { Box, CircularProgress, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { useObservable } from "rxjs-hooks";
 import { LightningBoltIcon } from "@heroicons/react/solid";
 import InfoIcon from "@mui/icons-material/Info";
+import { ignoreFocus } from "../utils/IgnoreFocus";
+import CloseIcon from "@mui/icons-material/Close";
 
 function EmptyState() {
   return (
@@ -16,6 +18,12 @@ function EmptyState() {
         <Box component={LightningBoltIcon} sx={{ height: "1em", color: "text.secondary" }} />
         <Typography color={"text.secondary"}>
           In osu! press F2 while being at a score/fail screen to load the replay
+        </Typography>
+      </Stack>
+      <Stack gap={1} alignItems={"center"} direction={"row"}>
+        <Box component={LightningBoltIcon} sx={{ height: "1em", color: "text.secondary" }} />
+        <Typography color={"text.secondary"}>
+          You can also load a replay with the menu action "File &gt; Open Replay (Ctrl+O)"
         </Typography>
       </Stack>
     </Stack>
@@ -36,15 +44,34 @@ export const GameCanvas = () => {
     }
   }, [analysisApp]);
   useEffect(() => {
+    if (status === "INIT") {
+      analysisApp.stats().hidden = true;
+    } else {
+      analysisApp.stats().hidden = false;
+    }
+  }, [status, analysisApp]);
+
+  useEffect(() => {
     if (canvas.current) {
       console.log("Initializing renderer to the canvas");
-      analysisApp.initializeRenderer(canvas.current);
+      analysisApp.onEnter(canvas.current);
     }
-    return () => analysisApp.destroyRenderer();
+    return () => analysisApp.onHide();
   }, [analysisApp]);
 
   return (
     <Box ref={containerRef} sx={{ borderRadius: 2, overflow: "hidden", position: "relative", flex: 1 }}>
+      {status === "DONE" && (
+        <Tooltip title={"Close replay"}>
+          <IconButton
+            sx={{ position: "absolute", right: "0", top: "0" }}
+            onClick={() => analysisApp.scenarioManager.clearReplay()}
+            onFocus={ignoreFocus}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Tooltip>
+      )}
       <canvas
         style={{ width: "100%", height: "100%", pointerEvents: "none" }}
         ref={canvas}

@@ -1,6 +1,6 @@
 {
   "name": "rewind",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
   "author": "abstrakt",
@@ -98,18 +98,18 @@
     "@babel/preset-typescript": "7.15.0",
     "@nestjs/schematics": "^8.0.3",
     "@nestjs/testing": "^8.0.6",
-    "@nrwl/cli": "13.0.1",
-    "@nrwl/cypress": "13.0.1",
-    "@nrwl/eslint-plugin-nx": "13.0.1",
-    "@nrwl/jest": "13.0.1",
-    "@nrwl/linter": "13.0.1",
-    "@nrwl/nest": "13.0.1",
-    "@nrwl/node": "13.0.1",
-    "@nrwl/react": "13.0.1",
-    "@nrwl/storybook": "13.0.1",
-    "@nrwl/tao": "13.0.1",
-    "@nrwl/web": "13.0.1",
-    "@nrwl/workspace": "13.0.1",
+    "@nrwl/cli": "13.1.1",
+    "@nrwl/cypress": "13.1.1",
+    "@nrwl/eslint-plugin-nx": "13.1.1",
+    "@nrwl/jest": "13.1.1",
+    "@nrwl/linter": "13.1.1",
+    "@nrwl/nest": "13.1.1",
+    "@nrwl/node": "13.1.1",
+    "@nrwl/react": "13.1.1",
+    "@nrwl/storybook": "13.1.1",
+    "@nrwl/tao": "13.1.1",
+    "@nrwl/web": "13.1.1",
+    "@nrwl/workspace": "13.1.1",
     "@storybook/addon-actions": "^6.3.8",
     "@storybook/addon-essentials": "^6.3.8",
     "@storybook/addon-links": "^6.3.8",
@@ -171,3 +171,4 @@
     ]
   }
 }
+

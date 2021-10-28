@@ -1,5 +1,5 @@
 import { BeatmapDifficulty, DEFAULT_BEATMAP_DIFFICULTY } from "./BeatmapDifficulty";
-import { normalizeHitObjects } from "../utils";
+import { determineDefaultPlaybackSpeed, normalizeHitObjects } from "../utils";
 import { Slider } from "../hitobjects/Slider";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { OsuClassicMod } from "../mods/Mods";
@@ -12,7 +12,9 @@ import { AllHitObjects, OsuHitObject } from "../hitobjects/Types";
  */
 export class Beatmap {
   static EMPTY_BEATMAP = new Beatmap([], DEFAULT_BEATMAP_DIFFICULTY, []);
+
   private readonly hitObjectDict: Record<string, AllHitObjects>;
+  public readonly gameClockRate: number;
 
   constructor(
     public readonly hitObjects: Array<OsuHitObject>,
@@ -20,6 +22,7 @@ export class Beatmap {
     public readonly appliedMods: OsuClassicMod[],
   ) {
     this.hitObjectDict = normalizeHitObjects(hitObjects);
+    this.gameClockRate = determineDefaultPlaybackSpeed(appliedMods);
   }
 
   getHitObject(id: string): AllHitObjects {

@@ -10,7 +10,7 @@ export interface AnalysisCursorSettings extends CursorSettings {
 
 export const DEFAULT_ANALYSIS_CURSOR_SETTINGS: AnalysisCursorSettings = Object.freeze({
   scale: 0.8,
-  enabled: false,
+  enabled: true,
   scaleWithCS: true,
   colorNoKeys: 0x5d6463, // gray
   colorKey1: 0xffa500, // orange)

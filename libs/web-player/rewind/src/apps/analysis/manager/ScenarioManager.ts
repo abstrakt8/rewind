@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { BehaviorSubject } from "rxjs";
-import { buildBeatmap, determineDefaultPlaybackSpeed, modsToBitmask, parseBlueprint } from "@rewind/osu/core";
+import { Beatmap, buildBeatmap, modsToBitmask, parseBlueprint } from "@rewind/osu/core";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 import { ModSettingsManager } from "./ModSettingsManager";
 import { AudioService } from "../../../core/audio/AudioService";
@@ -8,9 +8,11 @@ import { BlueprintService } from "../../../core/api/BlueprintService";
 import { ReplayService } from "../../../core/api/ReplayService";
 import { BeatmapManager } from "./BeatmapManager";
 import { ReplayManager } from "./ReplayManager";
-import { AnalysisSceneManager } from "./AnalysisSceneManager";
+import { AnalysisSceneKeys, AnalysisSceneManager } from "./AnalysisSceneManager";
 import { AudioEngine } from "../../../core/audio/AudioEngine";
 import { GameplayClock } from "../../../core/game/GameplayClock";
+import { GameLoop } from "../../../core/game/GameLoop";
+import { PixiRendererManager } from "../../../renderers/PixiRendererManager";
 
 interface Scenario {
   status: "LOADING" | "ERROR" | "DONE" | "INIT";
@@ -22,6 +24,8 @@ export class ScenarioManager {
 
   constructor(
     private readonly gameClock: GameplayClock,
+    private readonly renderer: PixiRendererManager,
+    private readonly gameLoop: GameLoop,
     private readonly gameSimulator: GameSimulator,
     private readonly modSettingsManager: ModSettingsManager,
     private readonly audioService: AudioService,
@@ -35,8 +39,21 @@ export class ScenarioManager {
     this.scenario$ = new BehaviorSubject<Scenario>({ status: "INIT" });
   }
 
+  // This is a temporary solution to
+  async clearReplay() {
+    this.gameClock.clear();
+    this.replayManager.setMainReplay(null);
+    this.audioEngine.destroy();
+    this.renderer.getRenderer()?.clear();
+    this.beatmapManager.setBeatmap(Beatmap.EMPTY_BEATMAP);
+    this.gameSimulator.clear();
+    this.gameLoop.stopTicker();
+    // await this.sceneManager.changeToScene(AnalysisSceneKeys.IDLE);
+    this.scenario$.next({ status: "INIT" });
+  }
+
   async loadReplay(replayId: string) {
-    // TODO: Hotfix
+    // TODO: Clean this up
     this.audioEngine.destroy();
 
     this.scenario$.next({ status: "LOADING" });
@@ -62,7 +79,7 @@ export class ScenarioManager {
     console.log(`Beatmap built with ${beatmap.hitObjects.length} hitobjects`);
     console.log(`Replay loaded with ${replay.frames.length} frames`);
     const modHidden = replay.mods.includes("HIDDEN");
-    const initialSpeed = determineDefaultPlaybackSpeed(replay.mods);
+    const initialSpeed = beatmap.gameClockRate;
 
     this.modSettingsManager.setHidden(modHidden);
     // Not supported yet
@@ -75,8 +92,9 @@ export class ScenarioManager {
     this.replayManager.setMainReplay(replay);
 
     await this.gameSimulator.simulateReplay(beatmap, replay);
-    await this.sceneManager.startAnalysisScene();
+    await this.sceneManager.changeToScene(AnalysisSceneKeys.ANALYSIS);
 
+    this.gameLoop.startTicker();
     this.scenario$.next({ status: "DONE" });
   }
 

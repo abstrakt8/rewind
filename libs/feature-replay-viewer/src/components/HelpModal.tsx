@@ -1,7 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { FaBug, FaDiscord, FaGraduationCap } from "react-icons/fa";
-import { RewindLinks } from "../utils/Constants";
 import { Box, Divider, IconButton, Modal, Paper, Stack, Typography } from "@mui/material";
 import { Close, Help } from "@mui/icons-material";
 import { PromotionFooter } from "./BaseDialog";
@@ -103,31 +101,6 @@ function PlaybarNavigationShortcuts() {
         <KeyBindings keys={["f"]} /> <span>Toggle hidden</span>
       </ShortcutBox>
     </Stack>
-  );
-}
-
-function OtherResources() {
-  return (
-    <div className={"pl-8 pr-4 flex flex-col gap-4"}>
-      <Title>Other resources</Title>
-      <ul>
-        <li>
-          <a href={RewindLinks.Guide} target={"_blank"}>
-            <FaGraduationCap className={"inline"} /> Tutorial
-          </a>
-        </li>
-        <li>
-          <a href={RewindLinks.OsuUniDiscord} target={"_blank"}>
-            <FaBug className={"inline"} /> Report a bug
-          </a>
-        </li>
-        <li>
-          <a href={RewindLinks.OsuUniDiscord} target={"_blank"}>
-            <FaDiscord className={"inline"} /> osu! University
-          </a>
-        </li>
-      </ul>
-    </div>
   );
 }
 

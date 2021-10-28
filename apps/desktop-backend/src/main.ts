@@ -14,10 +14,10 @@ const isDevMode = !environment.production;
 async function getSettings(): Promise<RewindBootstrapSettings> {
   if (isDevMode) {
     return {
-      userDataPath: "C:\\Users\\me\\AppData\\Roaming\\rewind",
-      appDataPath: "C:\\Users\\me\\AppData\\Roaming",
-      appResourcesPath: "C:\\Users\\me\\Dev\\rewind\\resources",
-      logDirectory: "C:\\Users\\me\\Dev\\rewind\\logs",
+      userDataPath: environment.userDataPath,
+      appDataPath: environment.appDataPath,
+      appResourcesPath: environment.appResourcesPath,
+      logDirectory: environment.logDirectory,
     };
   } else {
     const [userDataPath, appDataPath, appResourcesPath, logDirectory] = await Promise.all([

@@ -21,7 +21,7 @@ function* watchForBackendReady(theater: RewindTheater): SagaIterator {
   yield call(waitForBackendState, "READY");
   yield put(push("/home")); // Theater
   yield call(common.initialize.bind(common));
-  yield call(analyzer.initialize.bind(analyzer));
+  yield call(analyzer.startWatching.bind(analyzer));
 }
 
 function* watchForBackendMissingSetup(): SagaIterator {

@@ -3,8 +3,10 @@
 // In the future -> show a cool looking logo
 
 import { UserScene } from "../../../core/scenes/IScene";
-import { Container, Text } from "pixi.js";
+import { Container } from "pixi.js";
+import { injectable } from "inversify";
 
+@injectable()
 export class IdleScene implements UserScene {
   stage = new Container();
 
@@ -24,13 +26,13 @@ export class IdleScene implements UserScene {
 
   create(): void {
     this.stage = new Container();
-    const text = new Text("Load a beatmap/replay to get started!", {
-      fontSize: 16,
-      fill: 0xeeeeee,
-      fontFamily: "Arial",
-      align: "left",
-    });
-    // Maybe center it somewhere
-    this.stage.addChild(text);
+    // const text = new Text("Load a beatmap/replay to get started!", {
+    //   fontSize: 16,
+    //   fill: 0xeeeeee,
+    //   fontFamily: "Arial",
+    //   align: "left",
+    // });
+    // // Maybe center it somewhere
+    // this.stage.addChild(text);
   }
 }
