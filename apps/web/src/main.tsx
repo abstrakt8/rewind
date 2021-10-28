@@ -11,7 +11,7 @@ import { createRewindTheater } from "@rewind/web-player/rewind";
 const apiUrl = environment.url;
 export const theater = createRewindTheater({ apiUrl });
 theater.common.initialize();
-theater.analyzer.initialize();
+theater.analyzer.startWatching();
 
 const appInfo = {
   appVersion: "0.1.0",

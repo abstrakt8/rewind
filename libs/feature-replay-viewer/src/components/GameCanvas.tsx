@@ -41,12 +41,13 @@ export const GameCanvas = () => {
       containerRef.current.append(analysisApp.stats());
     }
   }, [analysisApp]);
+
   useEffect(() => {
     if (canvas.current) {
       console.log("Initializing renderer to the canvas");
-      analysisApp.initializeRenderer(canvas.current);
+      analysisApp.onEnter(canvas.current);
     }
-    return () => analysisApp.destroyRenderer();
+    return () => analysisApp.onHide();
   }, [analysisApp]);
 
   return (

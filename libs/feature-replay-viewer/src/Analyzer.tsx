@@ -1,23 +1,12 @@
 import { Paper, Stack } from "@mui/material";
 import { PlayBar } from "./components/PlayBar";
-import { useEffect } from "react";
 import { useShortcuts } from "./hooks/useShortcuts";
 import { GameCanvas } from "./components/GameCanvas";
-import { useAnalysisApp } from "./providers/TheaterProvider";
 import { SettingsModal } from "./components/SettingsModal";
 import { SettingsModalProvider } from "./providers/SettingsProvider";
 
-function useInitializeAnalyzer() {
-  const analyzer = useAnalysisApp();
-  useEffect(() => {
-    console.log("Analyzer: Ticker started");
-    analyzer.startTicker();
-    return () => analyzer.destroy();
-  }, [analyzer]);
-}
-
 export function Analyzer() {
-  useInitializeAnalyzer();
+  // Short cuts will then only be available when this page is <Analyzer/> is open
   useShortcuts();
 
   return (

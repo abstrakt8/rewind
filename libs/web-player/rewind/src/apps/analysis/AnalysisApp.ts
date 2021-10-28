@@ -54,27 +54,21 @@ export class AnalysisApp {
     return this.gameLoop.stats();
   }
 
-  initialize() {
+  startWatching() {
     console.log("AnalysisApp: Initialize");
     // Do not @postConstruct or the startWatching happens twice ... (???)
     this.replayWatcher.startWatching();
   }
 
-  startTicker() {
+  onEnter(canvas: HTMLCanvasElement) {
+    this.pixiRenderer.initializeRenderer(canvas);
     this.gameLoop.startTicker();
   }
 
-  destroy() {
-    this.gameLoop.stopTicker();
-    console.log("Game loop stopped");
-  }
-
-  initializeRenderer(canvas: HTMLCanvasElement) {
-    this.pixiRenderer.initializeRenderer(canvas);
-  }
-
-  destroyRenderer() {
+  onHide() {
+    this.gameClock.pause();
     this.pixiRenderer.destroy();
+    this.gameLoop.stopTicker();
   }
 
   // If no replay is loaded, then an empty "perfect" replay is used as simulation

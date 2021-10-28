@@ -52,10 +52,6 @@ export class GameLoop {
     this.ticker.stop();
   }
 
-  destroy() {
-    this.ticker.destroy();
-  }
-
   private update(deltaTimeMs: number) {
     this.sceneManager.update(deltaTimeMs);
   }

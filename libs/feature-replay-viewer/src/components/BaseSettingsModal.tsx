@@ -19,8 +19,8 @@ export interface SettingsProps {
   onTabIndexChange: (i: number) => unknown;
 }
 
-const minOpacity = 25;
-const maxOpacity = 100;
+const MIN_OPACITY = 25;
+const MAX_OPACITY = 100;
 
 export function BaseSettingsModal(props: SettingsProps) {
   const { onClose, tabs, opacity, onOpacityChange, tabIndex, onTabIndexChange } = props;
@@ -71,20 +71,20 @@ export function BaseSettingsModal(props: SettingsProps) {
         <PromotionFooter />
         <Box flexGrow={1} />
         <Stack direction={"row"} alignItems={"center"} gap={2}>
-          <IconButton onClick={() => onOpacityChange(minOpacity)}>
+          <IconButton onClick={() => onOpacityChange(MIN_OPACITY)}>
             <VisibilityOff />
           </IconButton>
           <Slider
             value={opacity}
             onChange={(_, v) => onOpacityChange(v as number)}
             step={5}
-            min={minOpacity}
-            max={maxOpacity}
+            min={MIN_OPACITY}
+            max={MAX_OPACITY}
             valueLabelFormat={(value: number) => `${value}%`}
             sx={{ width: "12em" }}
             valueLabelDisplay={"auto"}
           />
-          <IconButton onClick={() => onOpacityChange(maxOpacity)}>
+          <IconButton onClick={() => onOpacityChange(MAX_OPACITY)}>
             <Visibility />
           </IconButton>
         </Stack>
