@@ -1,11 +1,12 @@
 import { RewindLogo } from "./RewindLogo";
-import { Box, Divider, IconButton, Stack, Tooltip } from "@mui/material";
+import { Badge, Box, Divider, IconButton, Stack, Tooltip } from "@mui/material";
 import { Home } from "@mui/icons-material";
 import { FaMicroscope } from "react-icons/fa";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { push } from "connected-react-router";
 import { useAppDispatch, useAppSelector } from "./hooks/hooks";
-import { settingsModalOpened } from "./settings/slice";
+import { useAppInfo } from "@rewind/feature-replay-viewer";
+import UpdateIcon from "@mui/icons-material/Update";
 
 const tooltipPosition = {
   anchorOrigin: {
@@ -18,6 +19,42 @@ const tooltipPosition = {
   },
 };
 
+const repoOwner = "abstrakt8";
+const repoName = "rewind";
+// const repoOwner = "pixijs";
+// const repoName = "pixijs";
+
+const latestReleaseUrl = `https://github.com/${repoOwner}/${repoName}/releases/latest`;
+const latestReleaseApi = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`;
+
+function useCheckForUpdate() {
+  const { appVersion } = useAppInfo();
+  const [state, setState] = useState<{ hasNewUpdate: boolean; latestVersion: string }>({
+    hasNewUpdate: false,
+    latestVersion: "",
+  });
+  useEffect(() => {
+    (async function () {
+      const response = await fetch(latestReleaseApi);
+      const json = await response.json();
+
+      // Should be something like "v0.1.0"
+      const tagName = json["tag_name"] as string;
+      if (!tagName) {
+        return;
+      }
+      // Removes the "v" prefix
+      const latestVersion = tagName.substring(1);
+      const hasNewUpdate = appVersion !== latestVersion;
+      setState({ hasNewUpdate, latestVersion });
+      console.log(
+        `Current release: ${appVersion} and latest release: ${latestVersion}, therefore hasNewUpdate=${hasNewUpdate}`,
+      );
+    })();
+  }, [appVersion]);
+  return state;
+}
+
 export function LeftMenuSidebar() {
   // const LinkBehavior = React.forwardRef((props, ref) => <Link ref={ref} to="/" {...props} role={undefined} />);
   const dispatch = useAppDispatch();
@@ -25,12 +62,13 @@ export function LeftMenuSidebar() {
 
   const handleLinkClick = (to: string) => () => dispatch(push(to));
   const buttonColor = (name: string) => (name === pathname ? "primary" : "default");
-  const handleOpenSettings = () => dispatch(settingsModalOpened());
+  const updateState = useCheckForUpdate();
 
   return (
     <Stack
       sx={{
         width: (theme) => theme.spacing(10),
+        paddingBottom: 2,
       }}
       gap={1}
       p={1}
@@ -57,12 +95,15 @@ export function LeftMenuSidebar() {
       </Tooltip>
       {/*Nothing*/}
       <Box flexGrow={1} />
-      {/*TODO: Discord and Update Icon*/}
-      {/*<Tooltip title={"Settings"} placement={"right"}>*/}
-      {/*  <IconButton onClick={handleOpenSettings}>*/}
-      {/*    <Settings />*/}
-      {/*  </IconButton>*/}
-      {/*</Tooltip>*/}
+      {updateState.hasNewUpdate && (
+        <Tooltip title={`New version ${updateState.latestVersion} available!`} placement={"right"}>
+          <IconButton onClick={() => window.open(latestReleaseUrl)}>
+            <Badge variant={"dot"} color={"error"}>
+              <UpdateIcon />
+            </Badge>
+          </IconButton>
+        </Tooltip>
+      )}
     </Stack>
   );
 }

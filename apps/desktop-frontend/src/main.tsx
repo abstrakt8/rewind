@@ -38,6 +38,9 @@ async function initialize() {
   console.log(`Initializing with version=${appVersion} on platform=${platform}`);
 
   api.onManualReplayOpen((file) => {
+    // todo: refactor
+    // Changes to the analyzer page
+    store.dispatch(push("/analyzer"));
     theater.analyzer.loadReplay(`local:${file}`);
   });
 
