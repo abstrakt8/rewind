@@ -11,7 +11,7 @@ function text(status: BackendState) {
     case "LOADING":
       return "Services are getting ready ... ";
     case "READY":
-      return "Ready!";
+      return "Just a moment ...";
     case "SETUP_MISSING":
       return "Setup is missing, you will be redirected to the setup screen ...";
     case "NOT_STARTED":
@@ -20,7 +20,8 @@ function text(status: BackendState) {
 }
 
 export function SplashScreen({ status }: Props) {
-  const showSpinner = status === "LOADING" || status === "NOT_STARTED" || status === "SETUP_MISSING";
+  const showSpinner =
+    status === "LOADING" || status === "NOT_STARTED" || status === "SETUP_MISSING" || status === "READY";
   const loadingText = text(status);
   return (
     <Stack

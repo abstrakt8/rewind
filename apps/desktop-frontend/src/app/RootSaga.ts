@@ -19,9 +19,9 @@ function* waitForBackendState(state: BackendState): SagaIterator {
 function* watchForBackendReady(theater: RewindTheater): SagaIterator {
   const { common, analyzer } = theater;
   yield call(waitForBackendState, "READY");
-  yield put(push("/home")); // Theater
   yield call(common.initialize.bind(common));
   yield call(analyzer.startWatching.bind(analyzer));
+  yield put(push("/analyzer")); // Theater
 }
 
 function* watchForBackendMissingSetup(): SagaIterator {
