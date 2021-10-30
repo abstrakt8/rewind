@@ -10,7 +10,7 @@ Rewind is a beatmap/replay analyzer for [osu!](https://osu.ppy.sh/) and is curre
 
 ## Features
 
-This [video](https://www.youtube.com/watch?v=KDatdxvjdmc) shows most of the feature listed down below:
+This [video](https://www.youtube.com/watch?v=KDatdxvjdmc) shows most of the features listed down below:
 
 * Music playback
 * Speed change 0.25x-4.0x
