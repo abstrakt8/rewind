@@ -8,6 +8,28 @@ Rewind is a beatmap/replay analyzer for [osu!](https://osu.ppy.sh/) and is curre
 
 <img src="resources/readme/ed_can_fc_ror.gif" alt="BTMC on Road of Resistance" /><br/>
 
+## Features
+
+This [video](https://www.youtube.com/watch?v=KDatdxvjdmc) shows most of the feature listed down below:
+
+* Music playback
+* Speed change 0.25x-4.0x
+* Scrubbing (jumping to a specific time)
+* Toggling the "Hidden" mod
+* Analysis cursor
+* Slider dev mode
+* Hit error bar (slightly improved)
+* Statistics such as UR
+* Watching frame by frame
+* Skin support
+* Difficulty graph on the timeline
+* Gameplay events (Miss/SB/50/100) in the timeline
+* Support for unsubmitted maps
+* File watcher
+* Customizability of many elements (e.g. cursor size)
+* Shortcuts
+* ...
+
 ## Download
 
 The latest release for Windows/Linux can be found at the [release page](https://github.com/abstrakt8/rewind/releases).
