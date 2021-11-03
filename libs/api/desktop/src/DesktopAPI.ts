@@ -7,6 +7,7 @@ import {
   LocalReplayController,
   LocalReplayService,
   OSU_FOLDER,
+  OSU_SONGS_FOLDER,
   OsuDBDao,
   ReplayWatcher,
   SKIN_NAME_RESOLVER_CONFIG,
@@ -17,7 +18,7 @@ import {
 } from "@rewind/api/common";
 import { join } from "path";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
-import { osuFolderSanityCheck } from "./config/utils";
+import { determineSongsFolder, osuFolderSanityCheck } from "./config/utils";
 import { DesktopConfigService, REWIND_CFG_PATH } from "./config/DesktopConfigService";
 import { DesktopConfigController } from "./config/DesktopConfigController";
 import { NormalStatusController, SetupStatusController } from "./status/SetupStatusController";
@@ -25,6 +26,8 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { WinstonModule } from "nest-winston";
 import * as winston from "winston";
 import { format } from "winston";
+import { stat } from "fs/promises";
+import username = require("username");
 
 const globalPrefix = "/api";
 const REWIND_CFG_NAME = "rewind.cfg";
@@ -76,11 +79,12 @@ function createLogger(logDirectory: string) {
  */
 async function normalBootstrap(settings: {
   osuFolder: string;
+  songsFolder: string;
   userDataPath: string;
   appResourcesPath: string;
   logDirectory: string;
 }) {
-  const { osuFolder, userDataPath, appResourcesPath, logDirectory } = settings;
+  const { osuFolder, userDataPath, appResourcesPath, logDirectory, songsFolder } = settings;
   // Find out osu! folder through settings
   const rewindCfgPath = getRewindCfgPath(userDataPath);
   const skinNameResolverConfig: SkinNameResolverConfig = [
@@ -99,6 +103,7 @@ async function normalBootstrap(settings: {
     ],
     providers: [
       { provide: OSU_FOLDER, useValue: osuFolder },
+      { provide: OSU_SONGS_FOLDER, useValue: songsFolder },
       { provide: REWIND_CFG_PATH, useValue: rewindCfgPath },
       { provide: SKIN_NAME_RESOLVER_CONFIG, useValue: skinNameResolverConfig },
       SkinNameResolver,
@@ -120,9 +125,13 @@ async function normalBootstrap(settings: {
         this.moduleRef.resolve(ReplayWatcher),
         this.moduleRef.resolve(LocalBlueprintService),
       ]);
-      // Maybe do it at the ReplayWatcher ??
-      replayWatcher.watchForReplays(join(osuFolder, "Replays"));
-      localBlueprintService.getAllBlueprints().then(() => Logger.log("Loaded all blueprints."));
+
+      const replaysFolder = join(osuFolder, "Replays");
+
+      const s = await stat(replaysFolder);
+      localBlueprintService
+        .getAllBlueprints()
+        .then((blueprints) => Logger.log(`Loaded all ${Object.keys(blueprints).length} blueprints.`));
       // TODO: Emit and then set the status to booted
       Logger.log(`RewindDesktopModule onModuleInit finished with settings: ${JSON.stringify(settings)}`);
     }
@@ -139,7 +148,7 @@ async function normalBootstrap(settings: {
   skinNameResolverConfig.forEach((config) => {
     app.useStaticAssets(config.path, { prefix: `/static/skins/${config.prefix}` });
   });
-  app.useStaticAssets(join(osuFolder, "Songs"), { prefix: "/static/songs" });
+  app.useStaticAssets(songsFolder, { prefix: "/static/songs" });
   // app.useLogger();
 
   await app.listen(port, listenCallback);
@@ -189,10 +198,19 @@ export async function bootstrapRewindDesktopBackend(settings: RewindBootstrapSet
   console.log(`Bootstrapping with settings: ${JSON.stringify(settings)}`);
   const { appDataPath, userDataPath, appResourcesPath, logDirectory } = settings;
   const osuFolder = await readOsuFolder(userDataPath);
-  const requiresSetup = osuFolder === undefined || !(await osuFolderSanityCheck(osuFolder));
-  if (requiresSetup) {
+
+  if (osuFolder === undefined || !(await osuFolderSanityCheck(osuFolder))) {
     return setupBootstrap({ userDataPath, logDirectory });
   } else {
-    return normalBootstrap({ userDataPath, osuFolder, appResourcesPath, logDirectory });
+    // This is the fallback songs folder in case username can't be determined or config file is corrupt
+    let songsFolder = join(osuFolder, "Songs");
+    const userId = await username();
+    if (userId !== undefined) {
+      const configuredSongsFolder = await determineSongsFolder(osuFolder, userId);
+      if (configuredSongsFolder !== undefined) {
+        songsFolder = configuredSongsFolder;
+      }
+    }
+    return normalBootstrap({ userDataPath, osuFolder, songsFolder, appResourcesPath, logDirectory });
   }
 }

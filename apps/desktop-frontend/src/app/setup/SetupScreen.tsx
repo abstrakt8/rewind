@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useUpdateOsuDirectoryMutation } from "../backend/api";
 import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "@mui/material";
 import { RewindLogo } from "../RewindLogo";
-import { Loop } from "@mui/icons-material";
+import { Help, Loop } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
 
 interface DirectorySelectionProps {
@@ -43,6 +43,8 @@ function DirectorySelection({ value, onChange, placeHolder, badgeOnEmpty }: Dire
     </Paper>
   );
 }
+
+const setupWikiUrl = "https://github.com/abstrakt8/rewind/wiki/Setup";
 
 // TODO: Maybe tell which file is actually missing
 export function SetupScreen() {
@@ -94,10 +96,8 @@ export function SetupScreen() {
           <RewindLogo />
           {showErrorMessage && (
             <>
-              <Alert severity="error">Does not look a valid osu! directory!</Alert>
-              <Alert severity="info">
-                <div>Make sure it has the following files:</div>
-                <div>"osu!.db", "scores.db", "Replays", "Skins", "Songs"</div>
+              <Alert severity="error">
+                <div>Does not look a valid osu! directory!</div>
               </Alert>
             </>
           )}
@@ -107,9 +107,12 @@ export function SetupScreen() {
             placeHolder={"Select your osu! directory"}
             badgeOnEmpty={true}
           />
-          <Stack direction={"row-reverse"}>
+          <Stack direction={"row-reverse"} gap={2}>
             <Button variant={"contained"} startIcon={<Loop />} disabled={!saveEnabled} onClick={handleConfirmClick}>
               Save & Restart
+            </Button>
+            <Button variant={"text"} onClick={() => window.open(setupWikiUrl)} startIcon={<Help />}>
+              Help
             </Button>
           </Stack>
         </Stack>

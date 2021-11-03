@@ -5,7 +5,7 @@ import { promises as fsPromises } from "fs";
 import { join } from "path";
 import { filterFilenamesInDirectory } from "@rewind/osu-local/utils";
 import { Blueprint, BlueprintSection, parseBlueprint } from "@rewind/osu/core";
-import { OSU_FOLDER } from "../constants";
+import { OSU_SONGS_FOLDER } from "../constants";
 
 import { createHash } from "crypto";
 
@@ -38,13 +38,7 @@ export class LocalBlueprintService {
   blueprints: Record<string, BlueprintInfo> = {};
   private logger = new Logger(LocalBlueprintService.name);
 
-  constructor(private readonly osuDbDao: OsuDBDao, @Inject(OSU_FOLDER) private readonly osuFolder: string) {}
-
-  get songsFolder() {
-    return join(this.osuFolder, "Songs");
-  }
-
-  // osu!.db + Songs folder read
+  constructor(private readonly osuDbDao: OsuDBDao, @Inject(OSU_SONGS_FOLDER) private readonly songsFolder: string) {}
 
   async completeRead() {
     const freshBlueprints = await this.osuDbDao.getAllBlueprints();
@@ -87,10 +81,7 @@ export class LocalBlueprintService {
     }
     const s = await stat(this.songsFolder);
     const t = await this.osuDbDao.getOsuDbLastModifiedTime();
-    if (s.mtime.getTime() > t) {
-      return true;
-    }
-    return false;
+    return s.mtime.getTime() > t;
   }
 
   async getAllBlueprints(): Promise<Record<string, BlueprintInfo>> {
