@@ -1,4 +1,3 @@
-// TODO: Move to new package
 export function osuUserConfigParse(data: string) {
   const lines = data.split(/\r?\n/);
   const records: Record<string, string> = {};

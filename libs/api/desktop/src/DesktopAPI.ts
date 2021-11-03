@@ -26,7 +26,6 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { WinstonModule } from "nest-winston";
 import * as winston from "winston";
 import { format } from "winston";
-import { stat } from "fs/promises";
 import username = require("username");
 
 const globalPrefix = "/api";
@@ -127,8 +126,8 @@ async function normalBootstrap(settings: {
       ]);
 
       const replaysFolder = join(osuFolder, "Replays");
+      replayWatcher.watchForReplays(replaysFolder);
 
-      const s = await stat(replaysFolder);
       localBlueprintService
         .getAllBlueprints()
         .then((blueprints) => Logger.log(`Loaded all ${Object.keys(blueprints).length} blueprints.`));
