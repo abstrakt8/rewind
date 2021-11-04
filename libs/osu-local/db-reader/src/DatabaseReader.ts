@@ -2,7 +2,7 @@ import { OsuBuffer } from "./OsuBuffer";
 
 // .db and .osr files can be read with this
 export class Reader {
-  private readonly buffer: OsuBuffer;
+  protected readonly buffer: OsuBuffer;
 
   constructor(buffer: Buffer) {
     this.buffer = new OsuBuffer(buffer);

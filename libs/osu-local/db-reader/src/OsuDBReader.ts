@@ -1,16 +1,21 @@
 import { Beatmap, OsuDB, StarRatings, TimingPoint } from "./DatabaseTypes";
 import { Reader } from "./DatabaseReader";
 
+// Sources:
+// https://github.com/Piotrekol/CollectionManager/blob/cb870d363d593035c97dc65f316a93f2d882c98b/CollectionManagerDll/Modules/FileIO/OsuDb/OsuDatabaseReader.cs#L232
+// https://github.com/mrflashstudio/OsuParsers/blob/a0d9d18a079f83fd679b31c66d9f315d4b72ca9c/OsuParsers/Serialization/SerializationReader.cs#L52
 export class OsuDBReader extends Reader {
   readStarRatings(): StarRatings {
-    const count = this.readInt();
+    const buffer = this.buffer;
+    // Count can actually be negative
+    const count = buffer.readInt32();
     const list: StarRatings = [];
     for (let i = 0; i < count; i++) {
-      this.readByte(); // === 0x08
-      const mods = this.readInt();
-      this.readByte(); // === 0x0d
-      const stars = this.readDouble();
-      list.push([mods, stars]);
+      const b1 = this.readByte(); // === 0x08
+      const mods = buffer.readInt32();
+      const b2 = buffer.readByte(); // === 0x0d
+      const stars = buffer.readDouble();
+      if (mods !== undefined && stars !== undefined) list.push([mods, stars]);
     }
     return list;
   }
