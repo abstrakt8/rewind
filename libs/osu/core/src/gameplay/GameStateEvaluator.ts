@@ -273,7 +273,7 @@ export class GameStateEvaluator {
         break;
       }
 
-      // If this hitobject is too early, then the other ones will be as well, so break.
+      // If this hitobject is too early for relax, then the other ones will be as well, so break.
       const delta = currentTime - hitCircle.hitTime;
       if (hasRelax && delta < -RELAX_LENIENCY) break;
 
