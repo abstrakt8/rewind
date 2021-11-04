@@ -40,3 +40,8 @@ If you have any questions about Rewind or want to contribute by submitting ideas
 the [osu! University Discord](https://discord.gg/QubdHdnBVg). It is an improvement-focused osu! hub, osu!
 coaching hub, and a platform for experienced players to spread their game knowledge to the public.
 
+## Contribution (development, testing, documentation, ...)
+
+If you want to contribute, please join the [Dev Discord](https://discord.gg/pwCVATunVt).
+
+Currently, a large portion of the code is in a "volatile" / "prototype" / "proof of concept" state. So if you want to contribute by developing, please notify me beforehand.
