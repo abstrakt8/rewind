@@ -6,6 +6,7 @@ import { Slider } from "../hitobjects/Slider";
 import { OsuAction, ReplayFrame } from "../replays/Replay";
 import { MainHitObjectVerdict } from "./Verdicts";
 import { HitCircle } from "../hitobjects/HitCircle";
+import { RELAX_LENIENCY } from "../mods/Mods";
 
 /**
  * In the real osu game, the slider body will be evaluated at every game tick (?), which is something we can not do.
@@ -232,7 +233,8 @@ export class GameStateEvaluator {
 
   handleAliveHitCircles() {
     // There is only action if there is also a click in this frame ...
-    if (!this.hasFreshClickThisFrame) {
+    const hasRelax = this.beatmap.appliedMods.includes("RELAX");
+    if (!this.hasFreshClickThisFrame && !hasRelax) {
       return;
     }
     const { noteLockStyle } = this.options;
@@ -271,7 +273,10 @@ export class GameStateEvaluator {
         break;
       }
 
+      // If this hitobject is too early, then the other ones will be as well, so break.
       const delta = currentTime - hitCircle.hitTime;
+      if (hasRelax && delta < -RELAX_LENIENCY) break;
+
       let judged = false;
       for (const verdict of ["GREAT", "OK", "MEH"] as const) {
         if (isWithinHitWindow(this.hitWindows, delta, verdict)) {
@@ -315,7 +320,8 @@ export class GameStateEvaluator {
 
       const headHitTime: number | undefined = this.headHitTime(slider.head.id);
       const wasTracking: boolean = this.gameState.sliderBodyState.get(id)?.isTracking ?? false;
-      const isTracking = determineTracking(wasTracking, slider, cursorPosition, time, pressingSince, headHitTime);
+      const hasRelax = this.beatmap.appliedMods.includes("RELAX");
+      const isTracking = determineTracking(wasTracking, slider, cursorPosition, time, pressingSince, headHitTime, hasRelax);
       this.gameState.sliderBodyState.set(id, { isTracking });
     }
   }
@@ -389,10 +395,11 @@ function determineTracking(
   time: number,
   pressingSince: PressingSinceTimings,
   headHitTime?: number,
+  hasRelax?: boolean
 ): boolean {
   const keyIsBeingPressed = pressingSince.findIndex((x) => x !== NOT_PRESSING) >= 0;
   // Zeroth condition
-  if (!keyIsBeingPressed) return false;
+  if (!keyIsBeingPressed && !hasRelax) return false;
 
   // First condition
   if (time < slider.startTime || slider.endTime <= time) return false;

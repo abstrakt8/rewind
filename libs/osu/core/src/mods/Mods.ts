@@ -61,3 +61,6 @@ export const ModSettings: Record<OsuClassicMod, ModSetting> = {
   SPUN_OUT: { name: "Spun Out" },
   SUDDEN_DEATH: { name: "Sudden Death" },
 };
+
+// How early before a hitobject's time Relax can hit. (in ms)
+export const RELAX_LENIENCY = 12;
