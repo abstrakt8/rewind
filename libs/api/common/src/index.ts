@@ -2,7 +2,7 @@ export * from "./api-common.module";
 export * from "./blueprints/LocalBlueprintController";
 export * from "./blueprints/LocalBlueprintService";
 
-export { OSU_FOLDER } from "./constants";
+export * from "./constants";
 export { LocalReplayController } from "./replays/LocalReplayController";
 
 export { SkinController } from "./skins/SkinController";

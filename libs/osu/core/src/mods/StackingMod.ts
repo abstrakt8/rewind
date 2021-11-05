@@ -28,10 +28,7 @@ const position = (o: StackableHitObject) => hitCircle(o).position;
 const endPosition = (o: StackableHitObject) => (isSlider(o) ? o.endPosition : o.position);
 const endTime = (o: StackableHitObject) => (isSlider(o) ? o.endTime : o.hitTime);
 
-function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): Map<string, number> {
-  const startIndex = 0;
-  const endIndex = hitObjects.length - 1;
-  const extendedEndIndex = endIndex;
+function createStackingHeights(hitObjects: OsuHitObject[]) {
   const stackingHeights = new Map<string, number>();
 
   function setH(o: StackableHitObject, val: number) {
@@ -48,6 +45,14 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
       setH(ho, 0);
     }
   }
+  return { stackingHeights, setH, H };
+}
+
+function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): Map<string, number> {
+  const startIndex = 0;
+  const endIndex = hitObjects.length - 1;
+  const extendedEndIndex = endIndex;
+  const { stackingHeights, setH, H } = createStackingHeights(hitObjects);
 
   // Reverse pass for stack calculation
   let extendedStartIndex = startIndex;
@@ -103,6 +108,41 @@ function newStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number): 
   return stackingHeights;
 }
 
+function oldStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number) {
+  const { stackingHeights, H, setH } = createStackingHeights(hitObjects);
+  for (let i = 0; i < hitObjects.length; i++) {
+    const currHitObject = hitObjects[i];
+    if (isSpinner(currHitObject)) continue;
+    if (H(currHitObject) !== 0 && !isSlider(currHitObject)) {
+      continue;
+    }
+
+    let startTime = endTime(currHitObject);
+    let sliderStack = 0;
+
+    for (let j = i + 1; j < hitObjects.length; j++) {
+      const stackThreshold = approachDuration(currHitObject) * stackLeniency;
+      const nextHitObject = hitObjects[j];
+
+      if (isSpinner(nextHitObject)) continue;
+      if (hitTime(nextHitObject) - stackThreshold > startTime) {
+        break;
+      }
+
+      const position2 = isSlider(currHitObject) ? currHitObject.endPosition : currHitObject.position;
+      if (Vec2.withinDistance(position(nextHitObject), position(currHitObject), STACK_DISTANCE)) {
+        setH(currHitObject, H(currHitObject) + 1);
+        startTime = endTime(nextHitObject);
+      } else if (Vec2.withinDistance(position(nextHitObject), position2, STACK_DISTANCE)) {
+        sliderStack++;
+        setH(nextHitObject, H(nextHitObject) - sliderStack);
+        startTime = endTime(nextHitObject);
+      }
+    }
+  }
+  return stackingHeights;
+}
+
 export function modifyStackingPosition(
   beatmapVersion: number,
   hitObjects: OsuHitObject[],
@@ -112,7 +152,7 @@ export function modifyStackingPosition(
     if (beatmapVersion >= 6) {
       return newStackingHeights(hitObjects, stackLeniency);
     } else {
-      throw Error("No old stacking algorithm implemented");
+      return oldStackingHeights(hitObjects, stackLeniency);
     }
   })();
   return produce(hitObjects, (list) => {
