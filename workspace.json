@@ -1,79 +1,6 @@
 {
   "version": 2,
   "projects": {
-    ".-desktop": {
-      "root": "apps/desktop",
-      "sourceRoot": "apps/desktop/src",
-      "projectType": "application",
-      "prefix": ".-desktop",
-      "targets": {
-        "build": {
-          "executor": "nx-electron:build",
-          "options": {
-            "outputPath": "dist/apps/desktop",
-            "main": "apps/desktop/src/main.ts",
-            "tsConfig": "apps/desktop/tsconfig.app.json",
-            "assets": ["apps/desktop/src/assets"]
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/desktop/src/environments/environment.ts",
-                  "with": "apps/desktop/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "nx-electron:execute",
-          "options": {
-            "buildTarget": ".-desktop:build"
-          }
-        },
-        "package": {
-          "executor": "nx-electron:package",
-          "options": {
-            "name": ".-desktop",
-            "frontendProject": "desktop-frontend",
-            "outputPath": "dist/packages",
-            "prepackageOnly": true
-          }
-        },
-        "make": {
-          "executor": "nx-electron:make",
-          "options": {
-            "name": ".-desktop",
-            "frontendProject": "desktop-frontend",
-            "outputPath": "dist/executables"
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/desktop/**/*.ts"]
-          },
-          "outputs": [
-            "{options.outputFile}"
-          ]
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/desktop"
-          ],
-          "options": {
-            "jestConfig": "apps/desktop/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
     "api-common": {
       "root": "libs/api/common",
       "sourceRoot": "libs/api/common/src",
@@ -122,77 +49,6 @@
           ],
           "options": {
             "jestConfig": "libs/api/desktop/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "desktop": {
-      "root": "apps/desktop",
-      "sourceRoot": "apps/desktop/src",
-      "projectType": "application",
-      "prefix": "desktop",
-      "targets": {
-        "build": {
-          "executor": "nx-electron:build",
-          "options": {
-            "outputPath": "dist/apps/desktop",
-            "main": "apps/desktop/src/main.ts",
-            "tsConfig": "apps/desktop/tsconfig.app.json",
-            "assets": ["apps/desktop/src/assets"]
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/desktop/src/environments/environment.ts",
-                  "with": "apps/desktop/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "nx-electron:execute",
-          "options": {
-            "buildTarget": "desktop:build"
-          }
-        },
-        "package": {
-          "executor": "nx-electron:package",
-          "options": {
-            "name": "desktop",
-            "outputPath": "dist/packages",
-            "prepackageOnly": true
-          }
-        },
-        "make": {
-          "executor": "nx-electron:make",
-          "options": {
-            "name": "desktop",
-            "outputPath": "dist/executables"
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/desktop/**/*.ts"]
-          },
-          "outputs": [
-            "{options.outputFile}"
-          ]
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/desktop"
-          ],
-          "options": {
-            "jestConfig": "apps/desktop/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -392,41 +248,6 @@
       },
       "tags": []
     },
-    "desktop-frontend-e2e": {
-      "root": "apps/desktop-frontend-e2e",
-      "sourceRoot": "apps/desktop-frontend-e2e/src",
-      "projectType": "application",
-      "targets": {
-        "e2e": {
-          "executor": "@nrwl/cypress:cypress",
-          "options": {
-            "cypressConfig": "apps/desktop-frontend-e2e/cypress.json",
-            "tsConfig": "apps/desktop-frontend-e2e/tsconfig.e2e.json",
-            "devServerTarget": "desktop-frontend:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "desktop-frontend:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "apps/desktop-frontend-e2e/**/*.{js,ts}"
-            ]
-          },
-          "outputs": [
-            "{options.outputFile}"
-          ]
-        }
-      },
-      "tags": [],
-      "implicitDependencies": [
-        "desktop-frontend"
-      ]
-    },
     "desktop-frontend-preload": {
       "root": "apps/desktop-frontend-preload",
       "sourceRoot": "apps/desktop-frontend-preload/src",
@@ -563,41 +384,6 @@
         }
       },
       "tags": []
-    },
-    "feature-replay-viewer-e2e": {
-      "root": "apps/feature-replay-viewer-e2e",
-      "sourceRoot": "apps/feature-replay-viewer-e2e/src",
-      "projectType": "application",
-      "targets": {
-        "e2e": {
-          "executor": "@nrwl/cypress:cypress",
-          "options": {
-            "cypressConfig": "apps/feature-replay-viewer-e2e/cypress.json",
-            "tsConfig": "apps/feature-replay-viewer-e2e/tsconfig.e2e.json",
-            "devServerTarget": "feature-replay-viewer:storybook"
-          },
-          "configurations": {
-            "ci": {
-              "devServerTarget": "feature-replay-viewer:storybook:ci"
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "apps/feature-replay-viewer-e2e/**/*.{js,ts}"
-            ]
-          },
-          "outputs": [
-            "{options.outputFile}"
-          ]
-        }
-      },
-      "tags": [],
-      "implicitDependencies": [
-        "feature-replay-viewer"
-      ]
     },
     "osu-core": {
       "root": "libs/osu/core",
@@ -1058,41 +844,6 @@
         }
       },
       "tags": []
-    },
-    "web-e2e": {
-      "root": "apps/web-e2e",
-      "sourceRoot": "apps/web-e2e/src",
-      "projectType": "application",
-      "targets": {
-        "e2e": {
-          "executor": "@nrwl/cypress:cypress",
-          "options": {
-            "cypressConfig": "apps/web-e2e/cypress.json",
-            "tsConfig": "apps/web-e2e/tsconfig.e2e.json",
-            "devServerTarget": "web:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "web:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "apps/web-e2e/**/*.{js,ts}"
-            ]
-          },
-          "outputs": [
-            "{options.outputFile}"
-          ]
-        }
-      },
-      "tags": [],
-      "implicitDependencies": [
-        "web"
-      ]
     },
     "web-player-rewind": {
       "root": "libs/web-player/rewind",
