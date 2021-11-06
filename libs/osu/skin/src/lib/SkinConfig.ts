@@ -93,7 +93,7 @@ export const generateDefaultSkinConfig = (didFileExist: boolean): SkinConfig => 
     menuGlow: [0, 78, 155],
     sliderBall: [2, 170, 255],
     sliderBorder: [255, 255, 255],
-    sliderTrackOverride: undefined, // This means use current combo color
+    sliderTrackOverride: undefined, // this means to "use current combo color"
     songSelectActiveText: [0, 0, 0],
     songSelectInactiveText: [255, 255, 255],
     spinnerBackground: [100, 100, 100],
@@ -101,7 +101,7 @@ export const generateDefaultSkinConfig = (didFileExist: boolean): SkinConfig => 
   },
   fonts: {
     hitCirclePrefix: "default",
-    hitCircleOverlap: -2, // adds a gap
+    hitCircleOverlap: -2,
     scorePrefix: "score",
     scoreOverlap: -2,
     comboPrefix: "score",
