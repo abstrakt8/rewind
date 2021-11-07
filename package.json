@@ -131,6 +131,7 @@
     "@types/stats.js": "^0.17.0",
     "@types/styled-components": "5.1.15",
     "@types/supertest": "^2.0.11",
+    "@types/ws": "^8.2.0",
     "@typescript-eslint/eslint-plugin": "4.33.0",
     "@typescript-eslint/parser": "4.33.0",
     "adm-zip": "^0.5.6",

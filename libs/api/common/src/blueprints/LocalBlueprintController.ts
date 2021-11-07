@@ -12,7 +12,7 @@ export class LocalBlueprintController {
   async blueprint(md5: string) {
     const b = await this.blueprintService.getBlueprintByMD5(md5);
     if (b === undefined) {
-      throw Error("Not found");
+      throw Error(`Blueprint with md5=${md5} not found`);
     }
     return b;
   }

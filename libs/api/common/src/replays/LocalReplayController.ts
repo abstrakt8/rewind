@@ -21,7 +21,7 @@ export class LocalReplayController {
   @Get(":name")
   async decodeReplay(@Res() res: Response, @Param("name") encodedName: string) {
     const name = decodeURIComponent(encodedName);
-    this.logger.log(`Received request to decode ${name}`);
+    this.logger.log(`Received request to decode replay '${name}'`);
 
     const replay = await this.localReplayService.decodeReplay(name);
     res.json(replay);

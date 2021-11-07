@@ -1,7 +1,5 @@
-# electron-api
+This module will probably be changed / removed.
 
-This library was generated with [Nx](https://nx.dev).
+Just serves some interfaces that are going to be shared between `desktop-frontend` and `desktop-frontend-preload` (and
+for `backend` too).
 
-## Running unit tests
-
-Run `nx test electron-api` to execute the unit tests via [Jest](https://jestjs.io).
