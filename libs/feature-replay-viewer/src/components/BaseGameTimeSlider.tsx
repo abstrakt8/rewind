@@ -153,7 +153,7 @@ export function BaseGameTimeSlider(props: BaseGameTimeSliderProps) {
     <Box sx={{ width: "100%", position: "relative" }}>
       <PlaybarEventsCanvas ref={eventsCanvas} />
       <Box sx={{ position: "absolute", top: 0, transform: "translate(0, -100%)", width: "100%" }}>
-        <Box sx={{ position: "relative", height: "56px", width: "100%" }}>
+        <Box sx={{ position: "relative", height: "48px", width: "100%" }}>
           <DifficultyCanvas ref={difficultyCanvas} />
         </Box>
       </Box>
