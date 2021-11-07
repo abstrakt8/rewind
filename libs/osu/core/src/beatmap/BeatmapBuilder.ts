@@ -14,20 +14,8 @@ import { Slider } from "../hitobjects/Slider";
 import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
 import { Beatmap } from "./Beatmap";
 import { Spinner } from "../hitobjects/Spinner";
-import { difficultyRange } from "@rewind/osu/math";
+import { approachRateToApproachDuration, circleSizeToScale } from "@rewind/osu/math";
 import { OsuHitObject } from "../hitobjects/Types";
-
-// Minimum preempt time at AR=10
-const DEFAULT_FADE_IN = 400;
-const PREEMPT_MIN = 450;
-
-function approachDurationFromAR(AR: number) {
-  return difficultyRange(AR, 1800, 1200, PREEMPT_MIN);
-}
-
-function circleScaleFromCS(CS: number) {
-  return (1.0 - (0.7 * (CS - 5)) / 5) / 2;
-}
 
 function createHitCircle(
   id: string,
@@ -39,8 +27,8 @@ function createHitCircle(
   hitCircle.id = id;
   hitCircle.position = hitCircleSettings.position;
   hitCircle.hitTime = hitCircleSettings.time;
-  hitCircle.scale = circleScaleFromCS(beatmapDifficulty.circleSize);
-  hitCircle.approachDuration = approachDurationFromAR(beatmapDifficulty.approachRate);
+  hitCircle.scale = circleSizeToScale(beatmapDifficulty.circleSize);
+  hitCircle.approachDuration = approachRateToApproachDuration(beatmapDifficulty.approachRate);
   return hitCircle;
 }
 
@@ -81,8 +69,8 @@ function createSlider(
   controlPointInfo: ControlPointInfo,
   difficulty: BeatmapDifficulty,
 ): Slider {
-  const approachDuration = approachDurationFromAR(difficulty.approachRate);
-  const scale = circleScaleFromCS(difficulty.circleSize);
+  const approachDuration = approachRateToApproachDuration(difficulty.approachRate);
+  const scale = circleSizeToScale(difficulty.circleSize);
   const hitTime = sliderSettings.time;
   const timingPoint: TimingControlPoint = controlPointInfo.timingPointAt(hitTime);
   const difficultyPoint = controlPointInfo.difficultyPointAt(hitTime);
