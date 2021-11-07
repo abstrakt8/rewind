@@ -5,7 +5,8 @@ function parseToBool(val: string): boolean {
   return v !== 0;
 }
 
-export class SkinConfigParser {
+// TODO: No need for classes, need refactoring
+class SkinConfigParser {
   data: string;
   skinConfig: SkinConfig;
   section: SkinIniSection;
@@ -222,10 +223,14 @@ export class SkinConfigParser {
 
   parse(): SkinConfig {
     if (!this.data) throw Error("No data given");
-    const lines = this.data.split("\n").map((v) => v.trim());
+    const lines = this.data.split(/\r?\n/).map((v) => v.trim());
     for (const line of lines) {
       this.parseLine(line);
     }
     return this.skinConfig;
   }
+}
+
+export function parseSkinIni(data: string): SkinConfig {
+  return new SkinConfigParser(data).parse();
 }
