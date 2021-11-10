@@ -765,6 +765,122 @@
       },
       "tags": []
     },
+    "sound-test": {
+      "root": "apps/sound-test",
+      "sourceRoot": "apps/sound-test/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "defaultConfiguration": "production",
+          "options": {
+            "outputPath": "dist/apps/sound-test",
+            "index": "apps/sound-test/src/index.html",
+            "baseHref": "/",
+            "main": "apps/sound-test/src/main.tsx",
+            "polyfills": "apps/sound-test/src/polyfills.ts",
+            "tsConfig": "apps/sound-test/tsconfig.app.json",
+            "assets": [
+              "apps/sound-test/src/favicon.ico",
+              "apps/sound-test/src/assets"
+            ],
+            "styles": [
+              "apps/sound-test/src/styles.css"
+            ],
+            "scripts": [],
+            "webpackConfig": "@nrwl/react/plugins/webpack"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/sound-test/src/environments/environment.ts",
+                  "with": "apps/sound-test/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "sound-test:build",
+            "hmr": true
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "sound-test:build:production",
+              "hmr": false
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "apps/sound-test/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/sound-test"
+          ],
+          "options": {
+            "jestConfig": "apps/sound-test/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "sound-test-e2e": {
+      "root": "apps/sound-test-e2e",
+      "sourceRoot": "apps/sound-test-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/sound-test-e2e/cypress.json",
+            "devServerTarget": "sound-test:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "sound-test:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "apps/sound-test-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      },
+      "tags": [],
+      "implicitDependencies": [
+        "sound-test"
+      ]
+    },
     "web": {
       "root": "apps/web",
       "sourceRoot": "apps/web/src",
@@ -772,15 +888,22 @@
       "targets": {
         "build": {
           "executor": "@nrwl/web:build",
-          "outputs": ["{options.outputPath}"],
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
             "outputPath": "dist/apps/web",
             "index": "apps/web/src/index.html",
             "main": "apps/web/src/main.tsx",
             "polyfills": "apps/web/src/polyfills.ts",
             "tsConfig": "apps/web/tsconfig.app.json",
-            "assets": ["apps/web/src/favicon.ico", "apps/web/src/assets"],
-            "styles": ["apps/web/src/styles.css"],
+            "assets": [
+              "apps/web/src/favicon.ico",
+              "apps/web/src/assets"
+            ],
+            "styles": [
+              "apps/web/src/styles.css"
+            ],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
           },

@@ -55,5 +55,6 @@
       "linter": "eslint",
       "unitTestRunner": "jest"
     }
-  }
+  },
+  "defaultProject": "sound-test"
 }
