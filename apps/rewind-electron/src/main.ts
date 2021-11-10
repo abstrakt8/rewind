@@ -3,15 +3,27 @@ import { environment } from "./environments/environment";
 import { RewindElectronApp } from "./app/RewindElectronApp";
 import { setupEventListeners } from "./app/rewind.events";
 import { readRewindElectronSettings } from "./app/config";
+import { autoUpdater } from "electron-updater";
+import log from "electron-log";
 
 function isDevelopmentMode() {
   if (process.env.ELECTRON_IS_DEV) return true;
   return !environment.production;
 }
 
-// TODO: Squirrel events
-
 (function main() {
+  log.transports.file.level = "info";
+
+  // Checking for updates
+  autoUpdater.channel = "latest";
+  autoUpdater.logger = log;
+  autoUpdater.allowPrerelease = true;
+  autoUpdater.checkForUpdatesAndNotify();
+  const logFile = log.transports.file.getFile();
+  console.log("LogFilePath" + logFile.path);
+
+  log.info("Test");
+
   console.log(`AppDataPath=${app.getPath("appData")}`);
   const userDataPath = app.getPath("userData");
   const settings = readRewindElectronSettings(userDataPath);
