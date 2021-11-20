@@ -1,4 +1,4 @@
-import { Blueprint } from "./Blueprint";
+import { Blueprint, BlueprintInfo } from "./Blueprint";
 import { clamp, floatEqual, Position, Vec2 } from "@rewind/osu/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 import { PathType } from "../hitobjects/slider/PathType";
@@ -11,14 +11,22 @@ import { EffectControlPoint } from "../beatmap/ControlPoints/EffectControlPoint"
 import { SampleControlPoint } from "../beatmap/ControlPoints/SampleControlPoint";
 import { HitSampleInfo } from "../audio/HitSampleInfo";
 import { LegacySampleBank } from "../audio/LegacySampleBank";
-import { HitCircleSettings, SliderSettings, SpinnerSettings } from "./HitObjectSettings";
+import { HitCircleSettings, HitObjectSettings, SliderSettings, SpinnerSettings } from "./HitObjectSettings";
+import { BeatmapDifficulty } from "../beatmap/BeatmapDifficulty";
+import { Optional } from "utility-types";
+import { ControlPointInfo } from "../beatmap/ControlPoints/ControlPointInfo";
 
 const SECTION_REGEX = /^\s*\[(.+?)]\s*$/;
 const DEFAULT_LEGACY_TICK_OFFSET = 36;
 
+/**
+ *  Will make sure that the comment at the end of line is removed
+ *  Given "0, 1, 2 // <- Test"
+ *  Returns "0, 1, 2"
+ */
 function stripComments(line: string): string {
   const index = line.indexOf("//");
-  if (index > 0) {
+  if (index >= 0) {
     return line.substr(0, index);
   } else {
     return line;
@@ -260,176 +268,42 @@ export function parseOsuHitObjectSetting(line: string): HitCircleSettings | Slid
   throw Error("Unknown type");
 }
 
-/*
-export class OsuHitObjectParser {
-  offset: number;
-  formatVersion: number;
+type BlueprintDifficulty = Optional<BeatmapDifficulty, "approachRate">;
 
-  forceNewCombo = false;
-  extraComboOffset = 0;
+const DEFAULT_BLUEPRINT_INFO: BlueprintInfo = {
+  audioLeadIn: 0,
+  beatmapVersion: 0,
+  stackLeniency: 0.7,
+  onlineBeatmapId: undefined,
+  metadata: {
+    artist: "",
+    title: "",
+    titleUnicode: "",
+    audioFile: "",
+    artistUnicode: "",
+    source: "",
+    tags: "",
+    previewTime: 0,
+    backgroundFile: "",
+    backgroundOffset: { x: 0, y: 0 },
+  },
+};
 
-  // Can only be used once
-  firstObject: boolean;
-
-  constructor(offset: number, formatVersion: number) {
-    this.offset = offset;
-    this.formatVersion = formatVersion;
-    this.firstObject = true;
-  }
-
-  convertSoundType(type: LegacyHitSoundType, bankInfo: SampleBankInfo): HitSampleInfo[] {
-    if (bankInfo.fileName) {
-      // TODO: Some FileHitSampleInfo
-      return []; // TODO: Probably has something to do with custom sample bank
-    }
-    const soundTypes: HitSampleInfo[] = [
-      new LegacyHitSampleInfo(
-        HitSampleInfo.HIT_NORMAL,
-        bankInfo.normal,
-        bankInfo.volume,
-        bankInfo.customSampleBank,
-        // if the sound type doesn't have the Normal flag set, attach it anyway as a layered sample.
-        // None also counts as a normal non-layered sample: https://osu.ppy.sh/help/wiki/osu!_File_Formats/Osu_(file_format)#hitsounds
-        type !== LegacyHitSoundType.None && !hasFlag(type, LegacyHitSoundType.Normal)
-      )
-    ];
-
-    if (hasFlag(type, LegacyHitSoundType.Finish)) {
-      soundTypes.push(
-        new LegacyHitSampleInfo(HitSampleInfo.HIT_FINISH, bankInfo.add, bankInfo.volume, bankInfo.customSampleBank)
-      );
-    }
-    if (hasFlag(type, LegacyHitSoundType.Whistle)) {
-      soundTypes.push(
-        new LegacyHitSampleInfo(HitSampleInfo.HIT_WHISTLE, bankInfo.add, bankInfo.volume, bankInfo.customSampleBank)
-      );
-    }
-    if (hasFlag(type, LegacyHitSoundType.Clap)) {
-      soundTypes.push(
-        new LegacyHitSampleInfo(HitSampleInfo.HIT_CLAP, bankInfo.add, bankInfo.volume, bankInfo.customSampleBank)
-      );
-    }
-
-    return soundTypes;
-  }
-
-  readCustomSampleBanks(str: string, bankInfo: SampleBankInfo) {
-    if (!str) {
-      return;
-    }
-    // TODO
-    const split = str.split(":");
-    const bank = parseInt(split[0]);
-    const addBank = parseInt(split[1]);
-  }
-
-  // TODO: Directly convert to like in OsuBeatmapConverter
-  createSpinner(position: Vec2, newCombo: boolean, comboOffset: number, duration: number) {
-    // Convert spinners don't create the new combo themselves, but force the next non-spinner hitobject to create a new combo
-    // Their combo offset is still added to that next hitobject's combo index
-    this.forceNewCombo = this.forceNewCombo || this.formatVersion <= 8 || newCombo;
-    this.extraComboOffset += comboOffset;
-
-    // startTime is set later on ..
-    const spinner = new Spinner();
-    spinner.position = position;
-    spinner.duration = duration;
-    spinner.newCombo = newCombo;
-    spinner.comboOffset = comboOffset;
-    return spinner;
-  }
-
-  convertPathString(pointString: string, offset: Vec2): PathControlPoint[] {
-    const pointSplit = pointString.split("|");
-    const controlPoints = [];
-    let startIndex = 0;
-    let endIndex = 0;
-    let first = true;
-
-    while (++endIndex < pointSplit.length) {
-      // Keep incrementing endIndex while it's not the start of a new segment (indicated by having a type descriptor of length 1).
-      if (pointSplit[endIndex].length > 1) continue;
-      // Multi-segmented sliders DON'T contain the end point as part of the current segment as it's assumed to be the start of the next segment.
-      // The start of the next segment is the index after the type descriptor.
-      const endPoint = endIndex < pointSplit.length - 1 ? pointSplit[endIndex + 1] : null;
-
-      const points = this.convertPoints(pointSplit.slice(startIndex, endIndex), endPoint, first, offset);
-      controlPoints.push(...points);
-      startIndex = endIndex;
-      first = false;
-    }
-    if (endIndex > startIndex) {
-      controlPoints.push(...this.convertPoints(pointSplit.slice(startIndex, endIndex), null, first, offset));
-    }
-    return controlPoints;
-  }
-
-  // reads the relative position from the given `startPos`
-  readPoint(value: string, startPos: Vec2, points: PathControlPoint[], index: number): void {
-    const vertexSplit = value.split(":");
-    const pos = new Vec2(parseFloat(vertexSplit[0]), parseFloat(vertexSplit[1])).sub(startPos);
-    points[index] = new PathControlPoint();
-    points[index].position = pos;
-  }
-
-  isLinear(p: Vec2[]): boolean {
-    return floatEqual(0, (p[1].y - p[0].y) * (p[2].x - p[0].x) - (p[1].x - p[0].x) * (p[2].y - p[0].y));
-  }
-
-  convertPoints(points: string[], endPoint: string | null, first: boolean, offset: Vec2): PathControlPoint[] {
-    let type: PathType = convertPathType(points[0]);
-    const readOffset = first ? 1 : 0;
-    const readablePoints = points.length - 1;
-    const endPointLength = endPoint !== null ? 1 : 0;
-
-    const vertices: PathControlPoint[] = new Array(readOffset + readablePoints + endPointLength);
-
-    // Fill any non-read points
-    for (let i = 0; i < readOffset; i++) vertices[i] = new PathControlPoint();
-    // Parse into control points.
-    for (let i = 1; i < points.length; i++) this.readPoint(points[i], offset, vertices, readOffset + i - 1);
-    if (endPoint !== null) this.readPoint(endPoint, offset, vertices, vertices.length - 1);
-
-    if (type === PathType.PerfectCurve) {
-      if (vertices.length !== 3) type = PathType.Bezier;
-      else if (this.isLinear(vertices.map(v => v.position))) type = PathType.Linear;
-    }
-
-    vertices[0].type = type;
-    let startIndex = 0;
-    let endIndex = 0;
-
-    const result = [];
-
-    // this is just some logic to not have duplicated positions at the end
-    while (++endIndex < vertices.length - endPointLength) {
-      if (!vertices[endIndex].position.equals(vertices[endIndex - 1].position)) {
-        continue;
-      }
-
-      vertices[endIndex - 1].type = type;
-      result.push(...vertices.slice(startIndex, endIndex));
-
-      startIndex = endIndex + 1;
-    }
-    if (endIndex > startIndex) {
-      result.push(...vertices.slice(startIndex, endIndex));
-    }
-    return result;
-  }
-
-}
-
- */
+const DEFAULT_BLUEPRINT_DIFFICULTY: BlueprintDifficulty = {
+  circleSize: 5,
+  drainRate: 5,
+  overallDifficulty: 5,
+  // approachRate omitted because it depends on OD
+  sliderMultiplier: 1,
+  sliderTickRate: 1,
+};
 
 class BlueprintParser {
   static LATEST_VERSION = 14;
 
   data: string;
-  section: BlueprintSection | null;
+  currentSection: BlueprintSection | null;
 
-  blueprint: Blueprint;
-  // hitObjectParser: OsuHitObjectParser;
   offset: number;
 
   // Disable for testing purposes
@@ -438,18 +312,20 @@ class BlueprintParser {
   formatVersion: number;
 
   defaultSampleVolume = 100;
+  blueprintInfo: BlueprintInfo = DEFAULT_BLUEPRINT_INFO;
+  blueprintDifficulty: BlueprintDifficulty = DEFAULT_BLUEPRINT_DIFFICULTY;
+  hitObjectSettings: HitObjectSettings[] = [];
+  controlPointInfo: ControlPointInfo = new ControlPointInfo();
 
-  //
   defaultSampleBank: LegacySampleBank = LegacySampleBank.None;
 
-  // TODO: Don't know if we should support stream reading because this does read the entire file into memory though.
-  private sectionsToRead: readonly BlueprintSection[];
-  private sectionsFinishedReading: string[];
+  readonly sectionsToRead: readonly BlueprintSection[];
+  readonly sectionsFinishedReading: string[];
 
   constructor(data: string, options: BlueprintParseOptions = defaultOptions) {
     this.data = data;
-    this.blueprint = new Blueprint();
-    this.section = null;
+    // this.blueprint = new Blueprint();
+    this.currentSection = null;
     this.formatVersion = options.formatVersion;
     this.sectionsToRead = options.sectionsToRead;
     this.sectionsFinishedReading = [];
@@ -459,7 +335,7 @@ class BlueprintParser {
     // this.hitObjectParser = new OsuHitObjectParser(this.offset, this.formatVersion);
   }
 
-  finishedReading() {
+  isFinishedReading() {
     return this.sectionsToRead <= this.sectionsFinishedReading;
   }
 
@@ -468,26 +344,26 @@ class BlueprintParser {
     // strippedLine can be empty
     if (!strippedLine) return;
     // Parse the file format
-    if (!this.section && strippedLine.includes("osu file format v")) {
-      this.blueprint.blueprintInfo.beatmapVersion = parseInt(strippedLine.split("osu file format v")[1], 10);
+    if (!this.currentSection && strippedLine.includes("osu file format v")) {
+      this.blueprintInfo.beatmapVersion = parseInt(strippedLine.split("osu file format v")[1], 10);
       return;
     }
     if (SECTION_REGEX.test(strippedLine)) {
       // We only add sections we want to read to the list
-      if (this.section !== null && this.sectionsToRead.includes(this.section)) {
-        this.sectionsFinishedReading.push(this.section);
+      if (this.currentSection !== null && this.sectionsToRead.includes(this.currentSection)) {
+        this.sectionsFinishedReading.push(this.currentSection);
       }
-      this.section = (SECTION_REGEX.exec(strippedLine) as RegExpExecArray)[1] as BlueprintSection;
+      this.currentSection = (SECTION_REGEX.exec(strippedLine) as RegExpExecArray)[1] as BlueprintSection;
       // It will stop when we are done with reading all required sections
       return;
     }
 
     // We skip reading sections we don't want to read for optimization
-    if (this.section === null || this.sectionsToRead.indexOf(this.section) === -1) {
+    if (this.currentSection === null || this.sectionsToRead.indexOf(this.currentSection) === -1) {
       return;
     }
 
-    switch (this.section) {
+    switch (this.currentSection) {
       case "General":
         this.handleGeneral(strippedLine);
         break;
@@ -521,8 +397,8 @@ class BlueprintParser {
       case "0": {
         const [filename, xOffset, yOffset] = eventParams;
         // The quotes can optionally be given ...
-        this.blueprint.blueprintInfo.metadata.backgroundFile = filename.replace(/"/g, "");
-        this.blueprint.blueprintInfo.metadata.backgroundOffset = {
+        this.blueprintInfo.metadata.backgroundFile = filename.replace(/"/g, "");
+        this.blueprintInfo.metadata.backgroundOffset = {
           // In case they weren't provided: 0,0 should be used according to docs.
           x: parseInt(xOffset ?? "0"),
           y: parseInt(yOffset ?? "0"),
@@ -534,7 +410,7 @@ class BlueprintParser {
 
   handleGeneral(line: string): void {
     const [key, value] = splitKeyVal(line);
-    const blueprintInfo = this.blueprint.blueprintInfo;
+    const blueprintInfo = this.blueprintInfo;
     const metadata = blueprintInfo.metadata;
     switch (key) {
       case "AudioFilename":
@@ -586,7 +462,7 @@ class BlueprintParser {
 
   handleMetadata(line: string): void {
     const [key, value] = splitKeyVal(line);
-    const blueprintInfo = this.blueprint.blueprintInfo;
+    const blueprintInfo = this.blueprintInfo;
     const metaData = blueprintInfo.metadata;
     switch (key) {
       case "Title":
@@ -621,7 +497,7 @@ class BlueprintParser {
 
   handleDifficulty(line: string): void {
     const [key, value] = splitKeyVal(line);
-    const difficulty = this.blueprint.defaultDifficulty;
+    const difficulty = this.blueprintDifficulty;
     switch (key) {
       case "HPDrainRate":
         difficulty.drainRate = parseFloat(value);
@@ -647,7 +523,7 @@ class BlueprintParser {
   handleHitObjects(line: string): void {
     const obj = parseOsuHitObjectSetting(line);
     if (obj) {
-      this.blueprint.hitObjectSettings.push(obj);
+      this.hitObjectSettings.push(obj);
     }
   }
 
@@ -742,7 +618,7 @@ class BlueprintParser {
       const type: string = this.pendingControlPoints[i].type;
       if (this.pendingControlPointTypes[type]) continue;
       this.pendingControlPointTypes[type] = true;
-      this.blueprint.controlPointInfo.add(this.pendingControlPointsTime, this.pendingControlPoints[i]);
+      this.controlPointInfo.add(this.pendingControlPointsTime, this.pendingControlPoints[i]);
     }
     this.pendingControlPoints = [];
     this.pendingControlPointTypes = {};
@@ -757,12 +633,22 @@ class BlueprintParser {
     const lines = this.data.split("\n").map((v) => v.trim());
     for (const line of lines) {
       this.parseLine(line);
-      if (this.finishedReading()) {
+      if (this.isFinishedReading()) {
         break;
       }
     }
     this.flushPendingPoints();
-    return this.blueprint;
+    return {
+      blueprintInfo: this.blueprintInfo,
+      defaultDifficulty: {
+        ...this.blueprintDifficulty,
+        // Reasoning:
+        // https://github.com/ppy/osu/blob/b1fcb840a9ff4d866aac262ace7f54fa88b5e0ce/osu.Game/Beatmaps/BeatmapDifficulty.cs#L35
+        approachRate: this.blueprintDifficulty.approachRate ?? this.blueprintDifficulty.overallDifficulty,
+      },
+      hitObjectSettings: this.hitObjectSettings,
+      controlPointInfo: this.controlPointInfo,
+    };
   }
 }
 

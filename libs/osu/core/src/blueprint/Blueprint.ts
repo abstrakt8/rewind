@@ -1,8 +1,10 @@
 import { ControlPointInfo } from "../beatmap/ControlPoints/ControlPointInfo";
 import { HitObjectSettings } from "./HitObjectSettings";
-import { BeatmapDifficulty, DEFAULT_BEATMAP_DIFFICULTY } from "../beatmap/BeatmapDifficulty";
+import { BeatmapDifficulty } from "../beatmap/BeatmapDifficulty";
 
 /**
+ * Blueprints define the default settings of the hitobjects.
+ *
  * Beatmaps are instances of blueprints with additional modifications:
  * - Game mods, e.g. HardRock flips the map vertically
  * - Hit object stacking
@@ -13,30 +15,30 @@ import { BeatmapDifficulty, DEFAULT_BEATMAP_DIFFICULTY } from "../beatmap/Beatma
  * * ...
  */
 
-export class Blueprint {
-  blueprintInfo: BlueprintInfo = new BlueprintInfo();
-  defaultDifficulty: BeatmapDifficulty = { ...DEFAULT_BEATMAP_DIFFICULTY };
-  controlPointInfo: ControlPointInfo = new ControlPointInfo();
-  hitObjectSettings: HitObjectSettings[] = [];
+export interface Blueprint {
+  blueprintInfo: BlueprintInfo;
+  defaultDifficulty: BeatmapDifficulty;
+  controlPointInfo: ControlPointInfo;
+  hitObjectSettings: HitObjectSettings[];
 }
 
-class BlueprintInfo {
-  beatmapVersion = 0;
+export interface BlueprintInfo {
+  beatmapVersion: number;
   onlineBeatmapId?: number;
-  metadata: BlueprintMetadata = new BlueprintMetadata();
-  audioLeadIn = 0;
-  stackLeniency = 0.7;
+  metadata: BlueprintMetadata;
+  audioLeadIn: number; // 0
+  stackLeniency: number; // 0.7
 }
 
-class BlueprintMetadata {
-  artist = "";
-  title = "";
-  titleUnicode = "";
-  artistUnicode = "";
-  source = "";
-  tags = "";
-  previewTime = 0;
-  audioFile = "";
-  backgroundFile = "";
-  backgroundOffset = { x: 0, y: 0 };
+export interface BlueprintMetadata {
+  artist: string;
+  title: string;
+  titleUnicode: string;
+  artistUnicode: string;
+  source: string;
+  tags: string;
+  previewTime: number;
+  audioFile: string;
+  backgroundFile: string;
+  backgroundOffset: { x: number; y: number };
 }
