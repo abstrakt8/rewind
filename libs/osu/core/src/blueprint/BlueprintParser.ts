@@ -1,4 +1,4 @@
-import { Blueprint } from "../blueprint/Blueprint";
+import { Blueprint } from "./Blueprint";
 import { clamp, floatEqual, Position, Vec2 } from "@rewind/osu/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 import { PathType } from "../hitobjects/slider/PathType";
@@ -11,10 +11,8 @@ import { EffectControlPoint } from "../beatmap/ControlPoints/EffectControlPoint"
 import { SampleControlPoint } from "../beatmap/ControlPoints/SampleControlPoint";
 import { HitSampleInfo } from "../audio/HitSampleInfo";
 import { LegacySampleBank } from "../audio/LegacySampleBank";
-import { HitCircleSettings, SliderSettings, SpinnerSettings } from "../blueprint/HitObjectSettings";
+import { HitCircleSettings, SliderSettings, SpinnerSettings } from "./HitObjectSettings";
 
-// Credit to osu-bpdpc
-// Something like [General]
 const SECTION_REGEX = /^\s*\[(.+?)]\s*$/;
 const DEFAULT_LEGACY_TICK_OFFSET = 36;
 
@@ -86,7 +84,8 @@ class LegacyDifficultyControlPoint extends DifficultyControlPoint {
 
   constructor(beatLength: number) {
     super();
-    // Note: In stable, the division occurs on floats, but with compiler optimisations turned on actually seems to occur on doubles via some .NET black magic (possibly inlining?).
+    // Note: In stable, the division occurs on floats, but with compiler optimisations turned on actually seems to
+    // occur on doubles via some .NET black magic (possibly inlining?).
     this.bpmMultiplier = beatLength < 0 ? clamp(-beatLength, 10, 10000) / 100.0 : 1;
   }
 }
@@ -108,10 +107,11 @@ function convertPathString(pointString: string, offset: Position): PathControlPo
   let first = true;
 
   while (++endIndex < pointSplit.length) {
-    // Keep incrementing endIndex while it's not the start of a new segment (indicated by having a type descriptor of length 1).
+    // Keep incrementing endIndex while it's not the start of a new segment (indicated by having a type descriptor of
+    // length 1).
     if (pointSplit[endIndex].length > 1) continue;
-    // Multi-segmented sliders DON'T contain the end point as part of the current segment as it's assumed to be the start of the next segment.
-    // The start of the next segment is the index after the type descriptor.
+    // Multi-segmented sliders DON'T contain the end point as part of the current segment as it's assumed to be the
+    // start of the next segment. The start of the next segment is the index after the type descriptor.
     const endPoint = endIndex < pointSplit.length - 1 ? pointSplit[endIndex + 1] : null;
 
     const points = convertPoints(pointSplit.slice(startIndex, endIndex), endPoint, first, offset);
@@ -422,7 +422,7 @@ export class OsuHitObjectParser {
 
  */
 
-export class OsuBlueprintParser {
+class BlueprintParser {
   static LATEST_VERSION = 14;
 
   data: string;
@@ -736,7 +736,8 @@ export class OsuBlueprintParser {
   }
 
   flushPendingPoints(): void {
-    // Changes from non-timing-points are added to the end of the list (see addControlPoint()) and should override any changes from timing-points (added to the start of the list).
+    // Changes from non-timing-points are added to the end of the list (see addControlPoint()) and should override any
+    // changes from timing-points (added to the start of the list).
     for (let i = this.pendingControlPoints.length - 1; i >= 0; i--) {
       const type: string = this.pendingControlPoints[i].type;
       if (this.pendingControlPointTypes[type]) continue;
@@ -783,12 +784,19 @@ interface BlueprintParseOptions {
 }
 
 const defaultOptions: BlueprintParseOptions = {
-  formatVersion: OsuBlueprintParser.LATEST_VERSION,
+  // TODO: Format version should actually be parsed
+  formatVersion: BlueprintParser.LATEST_VERSION,
   sectionsToRead: BlueprintSections,
 };
 
+/**
+ * Parses the blueprint that is given in the legacy `.osu` format.
+ * @param data the .osu file string
+ * @param {BlueprintParseOptions} options config options
+ * @param {BlueprintParseOptions} options.sectionsToRead list of sections that should be read
+ */
 export function parseBlueprint(data: string, options?: Partial<BlueprintParseOptions>) {
   const allOptions = Object.assign({ ...defaultOptions }, options);
-  const parser = new OsuBlueprintParser(data, allOptions);
+  const parser = new BlueprintParser(data, allOptions);
   return parser.parse();
 }

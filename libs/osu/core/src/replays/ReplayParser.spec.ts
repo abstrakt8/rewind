@@ -1,4 +1,5 @@
-import { OsuAction, parseReplayFramesFromRaw, ReplayFrame } from "../src";
+import { OsuAction, ReplayFrame } from "./Replay";
+import { parseReplayFramesFromRaw } from "./ReplayParser";
 
 // w, x, y, z
 // w time since last action
@@ -10,8 +11,6 @@ describe("Parsing rawReplayData (from node-osr)", function () {
     const raw = "0|256|-500|0,-1|256|-500|0,-1171|257.0417|124.7764|1";
     const actual = parseReplayFramesFromRaw(raw);
     expect(actual).toStrictEqual([]);
-    // assert.deepStrictEqual(actual, []);
-    console.log(actual);
   });
   it("should have the first correct frame", function () {
     // From RyuK +HDDT Akatsuki Zukuyo replay

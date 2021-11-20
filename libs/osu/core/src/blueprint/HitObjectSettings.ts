@@ -2,10 +2,6 @@
 import { Position } from "@rewind/osu/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 
-/**
- * Basically these settings are used as a
- */
-
 export type HitObjectSettingsType = "HIT_CIRCLE" | "SLIDER" | "SPINNER" | "MANIA_HOLD";
 
 // In the future (osu!lazer) there might be other settings such as custom circle size, custom AR, ...
