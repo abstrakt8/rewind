@@ -1,4 +1,4 @@
-import { formatGameTime } from "../src/time";
+import { formatGameTime } from "./time";
 
 const dateHMS = (h: number, m: number, s: number, ms: number) => h * 1000 * 60 * 60 + m * 60 * 1000 + s * 1000 + ms;
 

@@ -1,4 +1,4 @@
-import { approachRateToApproachDuration, circleSizeToScale } from "./Difficulty";
+import { approachRateToApproachDuration, circleSizeToScale } from "./difficulty";
 
 test("approachRateToApproachDuration", function () {
   expect(approachRateToApproachDuration(10)).toEqual(450);
