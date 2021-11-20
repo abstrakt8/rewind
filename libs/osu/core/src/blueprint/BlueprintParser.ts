@@ -270,7 +270,7 @@ export function parseOsuHitObjectSetting(line: string): HitCircleSettings | Slid
 
 type BlueprintDifficulty = Optional<BeatmapDifficulty, "approachRate">;
 
-const DEFAULT_BLUEPRINT_INFO: BlueprintInfo = {
+const defaultBlueprintInfo = (): BlueprintInfo => ({
   audioLeadIn: 0,
   beatmapVersion: 0,
   stackLeniency: 0.7,
@@ -287,16 +287,16 @@ const DEFAULT_BLUEPRINT_INFO: BlueprintInfo = {
     backgroundFile: "",
     backgroundOffset: { x: 0, y: 0 },
   },
-};
+});
 
-const DEFAULT_BLUEPRINT_DIFFICULTY: BlueprintDifficulty = {
+const defaultBlueprintDifficulty = (): BlueprintDifficulty => ({
   circleSize: 5,
   drainRate: 5,
   overallDifficulty: 5,
   // approachRate omitted because it depends on OD
   sliderMultiplier: 1,
   sliderTickRate: 1,
-};
+});
 
 class BlueprintParser {
   static LATEST_VERSION = 14;
@@ -312,8 +312,8 @@ class BlueprintParser {
   formatVersion: number;
 
   defaultSampleVolume = 100;
-  blueprintInfo: BlueprintInfo = DEFAULT_BLUEPRINT_INFO;
-  blueprintDifficulty: BlueprintDifficulty = DEFAULT_BLUEPRINT_DIFFICULTY;
+  blueprintInfo: BlueprintInfo;
+  blueprintDifficulty: BlueprintDifficulty;
   hitObjectSettings: HitObjectSettings[] = [];
   controlPointInfo: ControlPointInfo = new ControlPointInfo();
 
@@ -328,6 +328,8 @@ class BlueprintParser {
     this.currentSection = null;
     this.formatVersion = options.formatVersion;
     this.sectionsToRead = options.sectionsToRead;
+    this.blueprintInfo = defaultBlueprintInfo();
+    this.blueprintDifficulty = defaultBlueprintDifficulty();
     this.sectionsFinishedReading = [];
 
     // BeatmapVersion 4 and lower had an incorrect offset (stable has this set as 24ms off)
