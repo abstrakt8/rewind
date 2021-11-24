@@ -1,4 +1,6 @@
-import { newPressingSince, NOT_PRESSING, OsuAction } from "@rewind/osu/core";
+import { newPressingSince } from "./GameStateEvaluator";
+import { NOT_PRESSING } from "./GameState";
+import { OsuAction } from "../replays/Replay";
 
 describe("newPressingSince", function () {
   it("initial with new value at new click", function () {

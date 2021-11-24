@@ -9,7 +9,7 @@ import { BeatmapDifficulty } from "../beatmap/BeatmapDifficulty";
  * - Game mods, e.g. HardRock flips the map vertically
  * - Hit object stacking
  *
- * The reason that we use have to explicitly distinguish between beatmaps and blueprint is due to clarity:
+ * The reason that we have to explicitly distinguish between beatmaps and blueprint is due to clarity:
  * * Players don't play on blueprints, they play on beatmaps.
  * * Difficulty calculation is also not done on blueprints, but on beatmaps.
  * * ...
