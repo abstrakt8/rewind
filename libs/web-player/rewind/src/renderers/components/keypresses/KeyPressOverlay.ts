@@ -158,6 +158,34 @@ export class KeyPressOverlay {
       middleLine.position.set(WIDTH / 2, 0);
       this.container.addChild(middleLine);
     }
+
+    {
+      const tickHeight = 5,
+        tickWidth = 1;
+      const tickAlpha = 0.2;
+
+      for (let i = 0; i <= 100; i += 5) {
+        // Bottom
+        {
+          const tick = new Sprite(Texture.WHITE);
+          tick.width = tickWidth;
+          tick.height = i % 25 === 0 ? tickHeight * 2 : tickHeight;
+          tick.alpha = tickAlpha;
+          tick.position.set(WIDTH / 2 - i, HEIGHT - tick.height);
+          this.container.addChild(tick);
+        }
+
+        // Top
+        {
+          const tick = new Sprite(Texture.WHITE);
+          tick.width = tickWidth;
+          tick.height = i % 25 === 0 ? tickHeight * 2 : tickHeight;
+          tick.alpha = tickAlpha;
+          tick.position.set(WIDTH / 2 - i, 0);
+          this.container.addChild(tick);
+        }
+      }
+    }
   }
 
   onTimeWindowChange(timeWindow: number) {
