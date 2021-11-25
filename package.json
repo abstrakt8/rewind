@@ -33,7 +33,7 @@
     "electron:build": "electron-builder",
     "downloadDefaultSkins": "node tools/downloadDefaultSkin.js",
     "desktop:build:dev": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --parallel",
-    "desktop:build:prod": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --prod --force",
+    "desktop:build:prod": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --prod --skip-nx-cache",
     "desktop:build-package:prod": "yarn run desktop:build:prod && yarn run electron:build",
     "desktop:build": "nx run-many --target=build --projects=desktop-frontend,desktop --parallel",
     "desktop:serve": "electron dist/apps/rewind-electron/main.js",
