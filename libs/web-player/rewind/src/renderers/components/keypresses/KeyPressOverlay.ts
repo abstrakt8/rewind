@@ -1,6 +1,9 @@
 import { TemporaryObjectPool } from "../../../utils/pooling/TemporaryObjectPool";
-import { Container, Sprite, Texture } from "pixi.js";
-import { TimeInterval, TimeIntervals } from "@rewind/osu/core";
+import { Container, Graphics, Sprite, Texture } from "pixi.js";
+import { calculateReplayClicks, TimeInterval, TimeIntervals } from "@rewind/osu/core";
+import { injectable } from "inversify";
+import { ReplayManager } from "../../../apps/analysis/manager/ReplayManager";
+import { GameplayClock } from "../../../core/game/GameplayClock";
 
 /**
  *
@@ -19,11 +22,11 @@ function timeIntervalIntersection(a: TimeInterval, b: TimeInterval) {
 }
 
 class NonIntersectingTimeIntervalsTracker {
-  constructor(private readonly intervals: TimeIntervals, private timeWindow: number) {}
+  constructor(public intervals: TimeIntervals, public timeWindow: number) {}
 
   findIntervals(time: number) {
     // dummy implementation can be improved with sliding window
-    const w: TimeInterval = [time, time + this.timeWindow];
+    const w: TimeInterval = [-this.timeWindow + time, time + this.timeWindow];
     const res: number[] = [];
     for (let i = 0; i < this.intervals.length; i++) {
       const t = timeIntervalIntersection(this.intervals[i], w);
@@ -33,11 +36,6 @@ class NonIntersectingTimeIntervalsTracker {
     }
     return res;
   }
-
-  changeTimeWindow(timeWindow: number) {
-    this.timeWindow = timeWindow;
-    // TODO: Should reset some work
-  }
 }
 
 // interface KeyPressOverlayRowSettings {
@@ -45,15 +43,16 @@ class NonIntersectingTimeIntervalsTracker {
 //
 // }
 
-const keyPressOverlayWidth = 720;
-const keyPressOverlayHeight = 200;
+const WIDTH = 800;
+const HEIGHT = 100;
+const KEY_HEIGHT = 25;
 
 export class KeyPressOverlayRow {
   spritePool: TemporaryObjectPool<Sprite>;
   tracker: NonIntersectingTimeIntervalsTracker;
   container: Container;
 
-  constructor(private timeIntervals: TimeIntervals, private hitWindowTime: number) {
+  constructor(timeIntervals: TimeIntervals, hitWindowTime: number) {
     this.spritePool = new TemporaryObjectPool<Sprite>(
       () => new Sprite(),
       (g) => {
@@ -67,22 +66,57 @@ export class KeyPressOverlayRow {
 
   update(time: number) {
     const intervalsIndices: number[] = this.tracker.findIntervals(time);
-    const mainWindow: TimeInterval = [-this.hitWindowTime + time, time + this.hitWindowTime];
+    const mainWindow: TimeInterval = [-this.tracker.timeWindow + time, time + this.tracker.timeWindow];
+    const pastWindow: TimeInterval = [-this.tracker.timeWindow + time, time];
+    const futureWindow: TimeInterval = [time, time + this.tracker.timeWindow];
 
     this.container.removeChildren();
 
+    const msToPx = (x: number) => ((x - mainWindow[0]) / (this.tracker.timeWindow * 2)) * WIDTH;
+
     for (const i of intervalsIndices) {
-      const interval = this.timeIntervals[i];
-      const [sprite] = this.spritePool.allocate("timeInterval" + i);
-      sprite.texture = Texture.WHITE;
+      const interval = this.tracker.intervals[i];
 
-      const intersection = timeIntervalIntersection(mainWindow, interval);
-      sprite.width = intersection[1] - intersection[0];
-      sprite.height = 100;
-      sprite.position.set(intersection[0]);
-      this.container.addChild(sprite);
+      {
+        const pastIntersection = timeIntervalIntersection(pastWindow, interval);
+        if (pastIntersection[0] < pastIntersection[1]) {
+          // const [sprite] = this.spritePool.allocate("pastTimeInterval" + i);
+          const sprite = new Sprite();
+          sprite.texture = Texture.WHITE;
+          sprite.width = ((pastIntersection[1] - pastIntersection[0]) / (this.tracker.timeWindow * 2)) * WIDTH;
+          sprite.height = KEY_HEIGHT;
+          sprite.position.set(msToPx(pastIntersection[0]), 0);
+          sprite.alpha = 0.8;
+          this.container.addChild(sprite);
+        }
+      }
+      {
+        const futureIntersection = timeIntervalIntersection(futureWindow, interval);
+        if (futureIntersection[0] < futureIntersection[1]) {
+          // const [sprite] = this.spritePool.allocate("futureTimeInterval" + i);
+          const sprite = new Sprite();
+          sprite.texture = Texture.WHITE;
+          sprite.width = ((futureIntersection[1] - futureIntersection[0]) / (this.tracker.timeWindow * 2)) * WIDTH;
+          sprite.height = KEY_HEIGHT;
+          sprite.position.set(msToPx(futureIntersection[0]), 0);
+          sprite.alpha = 0.05;
+          this.container.addChild(sprite);
+        }
+      }
+
+      // console.log(`width=${sprite.width} height=${sprite.height} position=[${intersection[0]}]`);
     }
+    // console.log(`IntervalsIndices.length= ${intervalsIndices.length}`);
 
+    // const futureMask = new Sprite(Texture.WHITE);
+    // futureMask.tint = 0x111111;
+    // futureMask.alpha = 0.9;
+    // futureMask.width = WIDTH / 2;
+    // futureMask.height = HEIGHT / 2;
+    // futureMask.position.set(WIDTH / 2, 0);
+    // this.container.addChild(futureMask);
+    // this.container.filters = [new AlphaFilter(0.1)];
+    // this.container.filterArea = new Rectangle(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
     this.spritePool.releaseUntouched();
   }
 }
@@ -90,32 +124,83 @@ export class KeyPressOverlayRow {
 // As a reusable component
 // interface KeyPressOverlaySettings {}
 
+const defaultTimeWindow = 500;
+
 export class KeyPressOverlay {
-  private lastTime = 0;
   public container: Container;
   private key1: KeyPressOverlayRow;
   private key2: KeyPressOverlayRow;
 
   constructor() {
     this.container = new Container();
-    this.key1 = new KeyPressOverlayRow([], 3);
-    this.key2 = new KeyPressOverlayRow([], 3);
+    this.container.width = WIDTH;
+    this.container.height = HEIGHT;
+
+    // Just for debugging
+    {
+      const rectangle = new Graphics();
+      rectangle.lineStyle(2, 0xffffff);
+      rectangle.drawRect(0, 0, WIDTH, HEIGHT);
+      this.container.addChild(rectangle);
+    }
+    this.key1 = new KeyPressOverlayRow([], defaultTimeWindow);
+    this.key2 = new KeyPressOverlayRow([], defaultTimeWindow);
     this.container.addChild(this.key1.container, this.key2.container);
-    this.key1.container.position.set(0, 100);
-    this.key2.container.position.set(0, 200);
+    const margin = 10;
+    this.key1.container.position.set(0, margin);
+    this.key2.container.position.set(0, HEIGHT - KEY_HEIGHT - margin);
+
+    {
+      const middleLine = new Sprite(Texture.WHITE);
+      middleLine.width = 1;
+      middleLine.height = HEIGHT;
+      middleLine.alpha = 0.4;
+      middleLine.position.set(WIDTH / 2, 0);
+      this.container.addChild(middleLine);
+    }
   }
 
   onTimeWindowChange(timeWindow: number) {
-    this.key1.tracker.changeTimeWindow(timeWindow);
-    this.key2.tracker.changeTimeWindow(timeWindow);
+    this.key1.tracker.timeWindow = timeWindow;
+    this.key2.tracker.timeWindow = timeWindow;
   }
 
-  // onReplayChange() {
-  //   // give me new time intervals
-  // }
+  onKeyPressesChange(timeIntervals: TimeIntervals[]) {
+    this.key1.tracker.intervals = timeIntervals[0];
+    this.key2.tracker.intervals = timeIntervals[1];
+  }
 
   update(currentTime: number) {
     this.key1.update(currentTime);
     this.key2.update(currentTime);
+  }
+}
+
+@injectable()
+export class KeyPressOverlayPreparer {
+  keyPressOverlay: KeyPressOverlay;
+
+  constructor(private readonly gameplayClock: GameplayClock, private readonly replayManager: ReplayManager) {
+    this.keyPressOverlay = new KeyPressOverlay();
+
+    this.replayManager.mainReplay$.subscribe((replay) => {
+      if (replay === null) {
+        this.keyPressOverlay.onKeyPressesChange([[], []]);
+      } else {
+        const clicks = calculateReplayClicks(replay.frames);
+        console.log(`Calculated clicks: [${clicks[0].length}, ${clicks[1].length}]`);
+        console.log(clicks);
+        this.keyPressOverlay.onKeyPressesChange(clicks);
+      }
+    });
+  }
+
+  get container() {
+    return this.keyPressOverlay.container;
+  }
+
+  update() {
+    const time = this.gameplayClock.timeElapsedInMs;
+    this.keyPressOverlay.update(time);
   }
 }

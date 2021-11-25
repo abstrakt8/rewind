@@ -1,4 +1,4 @@
-import { ReplayFrame } from "@rewind/osu/core";
+import { ReplayFrame } from "./Replay";
 
 export type TimeInterval = [number, number];
 export type TimeIntervals = TimeInterval[];

@@ -7,8 +7,10 @@ import { ForegroundHUDPreparer } from "../hud/ForegroundHUDPreparer";
 import { PixiRendererManager } from "../../PixiRendererManager";
 import { BeatmapBackgroundFactory } from "../background/BeatmapBackground";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
+import { KeyPressOverlayPreparer } from "../keypresses/KeyPressOverlay";
 
 const ratio = STAGE_WIDTH / STAGE_HEIGHT;
+const showNoteKeyOverlay = true;
 
 // This is a custom analysis stage that composes all the things it needs
 // Other stages for example do not want a foreground HUD and should therefore compose differently.
@@ -19,36 +21,55 @@ export class AnalysisStage {
 
   public stage: Container;
   private playfield: Playfield;
-  private foregroundHUD: Container;
 
   constructor(
     private rendererManager: PixiRendererManager,
     private beatmapBackground: BeatmapBackgroundFactory,
     private playfieldFactory: PlayfieldFactory,
     private foregroundHUDPreparer: ForegroundHUDPreparer,
+    private keyPressOverlayPreparer: KeyPressOverlayPreparer,
   ) {
     const width = STAGE_WIDTH;
     const height = STAGE_HEIGHT;
     const background = beatmapBackground.createBeatmapBackground({ width, height });
     this.playfield = playfieldFactory.createPlayfield();
-    this.foregroundHUD = this.foregroundHUDPreparer.container;
 
     this.stage = new PIXI.Container();
-    this.stage.addChild(background.sprite, this.playfield.container, this.foregroundHUD);
+    this.stage.addChild(
+      background.sprite,
+      this.playfield.container,
+      this.foregroundHUDPreparer.container,
+      this.keyPressOverlayPreparer.container,
+    );
 
     // Making them non interactive -> reduces lags when hovering because certain mouse events such as `onhover` don't
     // get fired and the tree traversal also stops about here.
     this.stage.interactiveChildren = false;
     this.stage.interactive = false;
 
-    const playfieldScaling = (STAGE_HEIGHT * 0.8) / OSU_PLAYFIELD_HEIGHT;
+    let playfieldScaling;
+    const overlayHeight = 0.1;
 
-    this.playfield.container.position.set(
-      (STAGE_WIDTH - OSU_PLAYFIELD_WIDTH * playfieldScaling) / 2,
-      (STAGE_HEIGHT - OSU_PLAYFIELD_HEIGHT * playfieldScaling) / 2,
-    );
+    if (showNoteKeyOverlay) {
+      playfieldScaling = (STAGE_HEIGHT * 0.7) / OSU_PLAYFIELD_HEIGHT;
+      this.playfield.container.position.set(
+        (STAGE_WIDTH - OSU_PLAYFIELD_WIDTH * playfieldScaling) / 2,
+        (STAGE_HEIGHT - OSU_PLAYFIELD_HEIGHT * playfieldScaling) / 2 + OSU_PLAYFIELD_HEIGHT * overlayHeight,
+      );
+    } else {
+      playfieldScaling = (STAGE_HEIGHT * 0.8) / OSU_PLAYFIELD_HEIGHT;
+      this.playfield.container.position.set(
+        (STAGE_WIDTH - OSU_PLAYFIELD_WIDTH * playfieldScaling) / 2,
+        (STAGE_HEIGHT - OSU_PLAYFIELD_HEIGHT * playfieldScaling) / 2,
+      );
+    }
+
+    this.keyPressOverlayPreparer.container.position.set((STAGE_WIDTH - OSU_PLAYFIELD_WIDTH * playfieldScaling) / 2, 15);
+    this.keyPressOverlayPreparer.container.visible = showNoteKeyOverlay;
+
     this.playfield.container.scale.set(playfieldScaling);
   }
+
   /**
    *  So the virtual screen is supposed to have the dimensions 1600x900.
    */
@@ -82,6 +103,7 @@ export class AnalysisStage {
     this.resizeTo();
     this.playfield.updatePlayfield();
     this.foregroundHUDPreparer.updateHUD();
+    this.keyPressOverlayPreparer.update();
   }
 
   destroy(): void {
