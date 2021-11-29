@@ -7,7 +7,7 @@ import { ForegroundHUDPreparer } from "../hud/ForegroundHUDPreparer";
 import { PixiRendererManager } from "../../PixiRendererManager";
 import { BeatmapBackgroundFactory } from "../background/BeatmapBackground";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
-import { KeyPressOverlayPreparer } from "../keypresses/KeyPressOverlay";
+import { KeyPressWithNoteSheetPreparer } from "../keypresses/KeyPressOverlay";
 
 const ratio = STAGE_WIDTH / STAGE_HEIGHT;
 const showNoteKeyOverlay = true;
@@ -27,7 +27,7 @@ export class AnalysisStage {
     private beatmapBackground: BeatmapBackgroundFactory,
     private playfieldFactory: PlayfieldFactory,
     private foregroundHUDPreparer: ForegroundHUDPreparer,
-    private keyPressOverlayPreparer: KeyPressOverlayPreparer,
+    private keyPressOverlayPreparer: KeyPressWithNoteSheetPreparer,
   ) {
     const width = STAGE_WIDTH;
     const height = STAGE_HEIGHT;
