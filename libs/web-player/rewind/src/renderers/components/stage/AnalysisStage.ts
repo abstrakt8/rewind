@@ -42,10 +42,8 @@ export class AnalysisStage {
       this.keyPressOverlayPreparer.container,
     );
 
-    // Making them non interactive -> reduces lags when hovering because certain mouse events such as `onhover` don't
-    // get fired and the tree traversal also stops about here.
-    this.stage.interactiveChildren = false;
-    this.stage.interactive = false;
+    // Optimization
+    this.playfield.container.interactiveChildren = false;
 
     let playfieldScaling;
     const overlayHeight = 0.1;
