@@ -1,16 +1,17 @@
 // Holds the beatmap
 import { Beatmap } from "@rewind/osu/core";
 import { injectable } from "inversify";
+import { BehaviorSubject } from "rxjs";
 
 @injectable()
 export class BeatmapManager {
-  beatmap: Beatmap = Beatmap.EMPTY_BEATMAP;
+  beatmap$: BehaviorSubject<Beatmap> = new BehaviorSubject<Beatmap>(Beatmap.EMPTY_BEATMAP);
 
   setBeatmap(beatmap: Beatmap) {
-    this.beatmap = beatmap;
+    this.beatmap$.next(beatmap);
   }
 
   getBeatmap() {
-    return this.beatmap;
+    return this.beatmap$.value;
   }
 }

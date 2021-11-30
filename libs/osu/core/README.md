@@ -1,7 +1,3 @@
-# osu-core
+Gameplay related functionalities are implemented in this package.
 
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `nx test osu-core` to execute the unit tests via [Jest](https://jestjs.io).
+Unit tests are found inside the `src` while integration tests are in the `test` folder.

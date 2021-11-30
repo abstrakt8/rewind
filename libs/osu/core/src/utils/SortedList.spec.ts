@@ -1,5 +1,4 @@
-import { Comparable, SortedList } from "../src/utils/SortedList";
-import * as assert from "assert";
+import { Comparable, SortedList } from "./SortedList";
 
 describe("SortedList with a simple Comparable class", function () {
   class A implements Comparable<A> {
@@ -18,15 +17,15 @@ describe("SortedList with a simple Comparable class", function () {
     const list = new SortedList<A>();
     list.add(new A(309));
     list.add(new A(400));
-    assert.strictEqual(list.get(0).value, 309);
-    assert.strictEqual(list.get(1).value, 400);
+    expect(list.get(0).value).toBe(309);
+    expect(list.get(1).value).toBe(400);
   });
 
   it("should be sorted after adding two elements in non sorted order", function () {
     const list = new SortedList<A>();
     list.add(new A(400));
     list.add(new A(309));
-    assert.strictEqual(list.get(0).value, 309);
-    assert.strictEqual(list.get(1).value, 400);
+    expect(list.get(0).value).toBe(309);
+    expect(list.get(1).value).toBe(400);
   });
 });

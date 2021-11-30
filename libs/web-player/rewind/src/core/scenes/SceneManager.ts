@@ -6,9 +6,15 @@ import { injectable } from "inversify";
 @injectable()
 export class SceneManager {
   managedScene: ManagedScene[] = [];
+  container: Container;
+
+  constructor() {
+    this.container = new Container();
+  }
 
   add(scene: UserScene, key: string) {
-    this.managedScene.push(new ManagedScene(scene, key));
+    const managedScene = new ManagedScene(scene, key);
+    this.managedScene.push(managedScene);
   }
 
   async start(scene: ManagedScene, data: unknown) {
@@ -34,12 +40,12 @@ export class SceneManager {
   }
 
   createStage() {
-    const container = new Container();
+    this.container.removeChildren();
     this.managedScene.forEach((scene) => {
       if (scene.state === "PLAYING" || scene.state === "PAUSED") {
-        container.addChild(scene.stage);
+        this.container.addChild(scene.stage);
       }
     });
-    return container;
+    return this.container;
   }
 }

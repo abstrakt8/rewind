@@ -15,9 +15,9 @@ export * from "./beatmap/Beatmap";
 
 // blueprints
 export * from "./blueprint/Blueprint";
-export * from "./blueprint/BlueprintInfo";
-export * from "./blueprint/BlueprintMetadata";
 export * from "./blueprint/HitObjectSettings";
+export { parseBlueprint } from "./blueprint/BlueprintParser";
+export type { BlueprintSection } from "./blueprint/BlueprintParser";
 
 // hitobjects
 
@@ -30,9 +30,6 @@ export * from "./hitobjects/Types";
 export * from "./hitobjects/Slider";
 export * from "./hitobjects/SliderCheckPoint";
 export * from "./hitobjects/Spinner";
-
-// parsers
-export * from "./parsers/OsuBlueprintParser";
 
 // gameplay
 

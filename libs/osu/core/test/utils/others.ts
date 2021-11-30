@@ -12,9 +12,9 @@ import {
   GameStateEvaluator,
   GameStateEvaluatorOptions,
   modsFromBitmask,
-  OsuBlueprintParser,
   OsuClassicMod,
   OsuHitObject,
+  parseBlueprint,
   parseReplayFramesFromRaw,
   ReplayFrame,
   Slider,
@@ -24,8 +24,7 @@ import {
 
 export function parseBlueprintFromFS(name: string): Blueprint {
   const data = fs.readFileSync(name);
-  const parser = new OsuBlueprintParser(data.toString());
-  return parser.parse();
+  return parseBlueprint(data.toString());
 }
 
 export function parseReplayFramesFromFS(replayFile: string) {

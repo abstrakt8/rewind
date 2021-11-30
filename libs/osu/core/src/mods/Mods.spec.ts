@@ -1,6 +1,6 @@
-import { DEFAULT_BEATMAP_DIFFICULTY } from "../../src/beatmap/BeatmapDifficulty";
-import { HardRockMod } from "../../src/mods/HardRockMod";
-import { EasyMod } from "../../src/mods/EasyMod";
+import { DEFAULT_BEATMAP_DIFFICULTY } from "../beatmap/BeatmapDifficulty";
+import { HardRockMod } from "./HardRockMod";
+import { EasyMod } from "./EasyMod";
 
 describe("HardRock", function () {
   describe("BeatmapDifficulty adjusting", function () {

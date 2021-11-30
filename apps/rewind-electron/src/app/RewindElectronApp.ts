@@ -11,8 +11,8 @@ const MIN_HEIGHT = 600;
 const rendererAppName = "desktop-frontend";
 const rendererAppDevPort = 4200;
 
-const desktopFrontendPreload = join(__dirname, "..", "desktop-frontend-preload", "main.js");
-const desktopBackendPreload = join(__dirname, "..", "desktop-backend-preload", "main.js");
+const desktopFrontendPreloadPath = join(__dirname, "..", "desktop-frontend-preload", "main.js");
+const desktopBackendPreloadPath = join(__dirname, "..", "desktop-backend-preload", "main.js");
 
 export class RewindElectronApp {
   mainWindow?: BrowserWindow;
@@ -41,7 +41,7 @@ export class RewindElectronApp {
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: true, // This MUST be true in order for PageVisibility API to work.
-        preload: desktopFrontendPreload,
+        preload: desktopFrontendPreloadPath,
       },
     });
     this.mainWindow.center();
@@ -117,7 +117,7 @@ export class RewindElectronApp {
             { role: "forceReload" },
             { type: "separator" },
             { role: "toggleDevTools" },
-            { label: "Open Backend", click: async () => this.apiWindow?.show() },
+            { label: "Open Backend", click: () => this.apiWindow?.show() },
           ],
         },
         {
@@ -178,7 +178,7 @@ export class RewindElectronApp {
         // We can be a little bit reckless here because we don't load remote content in the backend.
         contextIsolation: false,
         nodeIntegration: true,
-        preload: desktopBackendPreload,
+        preload: desktopBackendPreloadPath,
       },
     });
     this.apiWindow.on("close", (e) => {
@@ -206,7 +206,7 @@ export class RewindElectronApp {
   loadMainWindow() {
     const handleFinishedLoading = () => console.log("Finished loading");
 
-    // In DEV mode we want to utilize hot reloading, therefore we are going to connect a development server.
+    // In DEV mode we want to utilize hot reloading, therefore we are going to connect to the development server.
     // Therefore `nx run desktop-frontend:serve` must be run first before this is executed.
     if (this.isDevMode) {
       this.mainWindow?.loadURL(`http://localhost:${rendererAppDevPort}`).then(handleFinishedLoading);

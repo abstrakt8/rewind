@@ -31,6 +31,7 @@ import { ScreenshotTaker } from "../apps/analysis/manager/ScreenshotTaker";
 import { ReplayWatcher } from "../core/api/ReplayWatcher";
 import { ClipRecorder } from "../apps/analysis/manager/ClipRecorder";
 import { IdleScene } from "../apps/analysis/scenes/IdleScene";
+import { KeyPressWithNoteSheetPreparer } from "../renderers/components/keypresses/KeyPressOverlay";
 
 /**
  * This is a Rewind specific constructor of the "Analysis" tool (not to be used outside of Rewind).
@@ -81,6 +82,7 @@ export function createRewindAnalysisApp(commonContainer: Container) {
   {
     container.bind(BeatmapBackgroundFactory).toSelf();
     container.bind(ForegroundHUDPreparer).toSelf();
+    container.bind(KeyPressWithNoteSheetPreparer).toSelf();
     container.bind(PlayfieldFactory).toSelf();
     {
       container.bind(PlayfieldBorderFactory).toSelf();

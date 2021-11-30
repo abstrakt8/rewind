@@ -73,7 +73,11 @@ export const GameCanvas = () => {
         </Tooltip>
       )}
       <canvas
-        style={{ width: "100%", height: "100%", pointerEvents: "none" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          // , pointerEvents: "none"
+        }}
         ref={canvas}
         // This does not work
       />
