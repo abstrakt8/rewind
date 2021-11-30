@@ -1,6 +1,7 @@
 <h1 align="center">Rewind</h1>
 
-![Github releases](https://img.shields.io/github/v/release/abstrakt8/rewind?include_prereleases)
+![Github releases](https://img.shields.io/github/v/release/abstrakt8/rewind?label=stable)
+![Github releases](https://img.shields.io/github/v/release/abstrakt8/rewind?include_prereleases&label=latest)
 [![GitHub Releases Downloads](https://img.shields.io/github/downloads/abstrakt8/rewind/total?label=Downloads)](https://github.com/abstrakt8/rewind/releases/latest)
 [![Discord](https://img.shields.io/discord/841454370888351784.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/QubdHdnBVg)
 
