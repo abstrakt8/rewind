@@ -146,6 +146,13 @@ function hitObjectWindow(hitObject: MainHitObject): TimeInterval {
   return [hitObject.startTime, hitObject.startTime + hitObject.duration];
 }
 
+function preventBrowserShortcuts(e: KeyboardEvent) {
+  if (e.key === "Alt") {
+    // console.log("Prevented Alt");
+    e.preventDefault();
+  }
+}
+
 export class KeyPressOverlay {
   public container: Container;
   private key1: KeyPressOverlayRow;
@@ -167,7 +174,7 @@ export class KeyPressOverlay {
   private debugRectangle = new Graphics();
   private hovered = false;
 
-  constructor() {
+  constructor(private readonly gameplayClock: GameplayClock) {
     this.container = new Container();
     this.container.width = WIDTH;
     this.container.height = HEIGHT;
@@ -223,30 +230,52 @@ export class KeyPressOverlay {
     // We need this hitArea otherwise we can only zoom when hovering over a child, which is awkward
     this.container.hitArea = new Rectangle(0, 0, WIDTH, HEIGHT);
 
-    window.addEventListener("wheel", (ev) => {
-      if (this.hovered) {
-        // It's something like 100 or 200
-        // console.log("wheel deltaY=", ev.deltaY);
-        const scaling = 0.5;
-        const newWindowDuration = clamp(
-          ev.deltaY * scaling + this.windowDuration,
-          MIN_WINDOW_DURATION,
-          MAX_WINDOW_DURATION,
-        );
-        this.onWindowDurationChange(newWindowDuration);
-      }
-    });
-    // TODO: Delete the event listener
+    window.addEventListener("wheel", this.onWheelEvent.bind(this));
+  }
+
+  onWheelEvent(ev: WheelEvent) {
+    if (!this.hovered) {
+      return;
+    }
+    // It's something like 100 or 200
+    // console.log("wheel deltaY=", ev.deltaY);
+
+    // When holding the alt key, we can zoom
+    if (ev.altKey) {
+      const scaling = 0.5;
+      const newWindowDuration = clamp(
+        ev.deltaY * scaling + this.windowDuration,
+        MIN_WINDOW_DURATION,
+        MAX_WINDOW_DURATION,
+      );
+      this.onWindowDurationChange(newWindowDuration);
+    } else {
+      // Currently this is a very dumb way of scrolling
+      // In the future we should make the scrolling work like in the editor where it snaps to the note / beat snap
+      // divisor.
+      const scaling = 0.1;
+      const newTime = clamp(
+        ev.deltaY * scaling + this.gameplayClock.timeElapsedInMs,
+        0,
+        this.gameplayClock.durationInMs,
+      );
+      this.gameplayClock.seekTo(newTime);
+    }
   }
 
   onMouseOver() {
     this.hovered = true;
     this.debugRectangle.alpha = 1;
+
+    // Otherwise the browser menu will be opened, which is pretty annoying
+    window.addEventListener("keydown", preventBrowserShortcuts);
   }
 
   onMouseOut() {
     this.hovered = false;
     this.debugRectangle.alpha = DEFAULT_DEBUG_RECTANGLE_ALPHA;
+
+    window.removeEventListener("keydown", preventBrowserShortcuts);
   }
 
   onWindowDurationChange(windowDuration: number) {
@@ -348,7 +377,7 @@ export class KeyPressWithNoteSheetPreparer {
     private readonly replayManager: ReplayManager,
     private readonly beatmapManager: BeatmapManager,
   ) {
-    this.keyPressOverlay = new KeyPressOverlay();
+    this.keyPressOverlay = new KeyPressOverlay(gameplayClock);
 
     this.replayManager.mainReplay$.subscribe((replay) => {
       if (replay === null) {
