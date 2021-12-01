@@ -118,7 +118,7 @@ export class KeyPressOverlayRow {
           sprite.width = ((futureIntersection[1] - futureIntersection[0]) / (this.tracker.timeWindow * 2)) * WIDTH;
           sprite.height = KEY_HEIGHT;
           sprite.position.set(msToPx(futureIntersection[0]), 0);
-          sprite.alpha = 0.05;
+          sprite.alpha = 0.1;
           sprite.tint = this.tint;
           this.container.addChild(sprite);
         }
