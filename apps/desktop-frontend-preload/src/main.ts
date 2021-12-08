@@ -10,6 +10,10 @@ const frontendAPI: FrontendPreloadAPI = {
   getAppVersion: () => ipcRenderer.invoke("getAppVersion"),
   getPlatform: () => ipcRenderer.invoke("getPlatform"),
   onManualReplayOpen: (listener) => ipcRenderer.on("onManualReplayOpen", (event, file) => listener(file)),
+  onUpdateAvailable: (listener) => ipcRenderer.on("onUpdateAvailable", (event, version) => listener(version)),
+  onUpdateProgress: (listener) => ipcRenderer.on("onUpdateProgress", (event, info) => listener(info)),
+  startDownloadingUpdate: () => ipcRenderer.invoke("startDownloadingUpdate"),
+  onDownloadFinished: (listener) => ipcRenderer.on("onDownloadFinished", (event) => listener()),
 };
 
 contextBridge.exposeInMainWorld("api", frontendAPI);

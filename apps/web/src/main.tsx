@@ -1,4 +1,4 @@
-import { AppInfoProvider, RewindTheme, TheaterProvider } from "@rewind/feature-replay-viewer";
+import { AppInfoProvider, rewindTheme, TheaterProvider } from "@rewind/feature-replay-viewer";
 import { StrictMode } from "react";
 import * as ReactDOM from "react-dom";
 import { WebTestApp } from "./app/webTestApp";
@@ -22,7 +22,7 @@ ReactDOM.render(
   <StrictMode>
     <AppInfoProvider appInfo={appInfo}>
       <TheaterProvider theater={theater}>
-        <ThemeProvider theme={RewindTheme}>
+        <ThemeProvider theme={rewindTheme}>
           <CssBaseline />
           <WebTestApp />
         </ThemeProvider>
