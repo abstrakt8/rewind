@@ -32,7 +32,7 @@ if (window.api) {
     // Updates
     onUpdateAvailable: (listener) => console.log(`Registered a listener for receiving a manual update`),
     startDownloadingUpdate: () => console.log("Starting the update..."),
-    onUpdateProgress: (listener) => console.log(`Registered a listener for receiving a download progress`),
+    onUpdateDownloadProgress: (listener) => console.log(`Registered a listener for receiving a download progress`),
     onDownloadFinished: (listener) => console.log(`Registered a listener for onDowlnoadFinished`),
   };
 }
@@ -50,7 +50,7 @@ function attachListeners() {
   api.onDownloadFinished(() => {
     store.dispatch(downloadFinished());
   });
-  api.onUpdateProgress((updateInfo) => {
+  api.onUpdateDownloadProgress((updateInfo) => {
     const { total, bytesPerSecond, transferred } = updateInfo;
     store.dispatch(downloadProgressed({ downloadedBytes: transferred, totalBytes: total, bytesPerSecond }));
   });

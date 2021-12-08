@@ -11,7 +11,7 @@ const frontendAPI: FrontendPreloadAPI = {
   getPlatform: () => ipcRenderer.invoke("getPlatform"),
   onManualReplayOpen: (listener) => ipcRenderer.on("onManualReplayOpen", (event, file) => listener(file)),
   onUpdateAvailable: (listener) => ipcRenderer.on("onUpdateAvailable", (event, version) => listener(version)),
-  onUpdateProgress: (listener) => ipcRenderer.on("onUpdateProgress", (event, info) => listener(info)),
+  onUpdateDownloadProgress: (listener) => ipcRenderer.on("onUpdateDownloadProgress", (event, info) => listener(info)),
   startDownloadingUpdate: () => ipcRenderer.invoke("startDownloadingUpdate"),
   onDownloadFinished: (listener) => ipcRenderer.on("onDownloadFinished", (event) => listener()),
 };

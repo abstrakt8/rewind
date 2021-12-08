@@ -70,7 +70,7 @@ export function UpdateModal() {
                   <Typography>
                     {downloadFinished ? "Finished downloading!" : "Downloading..."}{" "}
                     <Typography variant={"caption"}>
-                      {`${niceBytes(downloadedBytes)} / ${niceBytes(totalBytes)} (${downloadProgress} %)`}
+                      {`${niceBytes(downloadedBytes)} / ${niceBytes(totalBytes)} (${downloadProgress.toFixed(2)} %)`}
                     </Typography>
                   </Typography>
                 )}

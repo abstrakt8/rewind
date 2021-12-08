@@ -47,7 +47,6 @@ export function setupEventListeners() {
   // for (const [key, handler] of Object.entries(frontendPreloadAPI)) {
   //   ipcMain.handle(key, (event, args) => handler(...args));
   // }
-  ipcMain.handle("startDownloadingUpdate", () => {});
   ipcMain.handle("selectDirectory", (event, defaultPath) => userSelectDirectory(defaultPath));
   ipcMain.handle("selectFile", (event, defaultPath) => userSelectFile(defaultPath));
   ipcMain.handle("getPlatform", () => process.platform);

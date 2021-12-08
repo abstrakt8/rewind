@@ -28,7 +28,9 @@ function niceBytes(x: any) {
 }
 
 function checkForUpdates() {
-  void autoUpdater.checkForUpdates();
+  void autoUpdater.checkForUpdates().then((value => {
+    log.info("[checkForUpdates] ", JSON.stringify(value));
+  }));
 }
 
 function pollForUpdates() {
@@ -43,7 +45,7 @@ function attachListeners() {
   autoUpdater.on("download-progress", (info: ProgressInfo) => {
     log.info("[Updater] Update download progress ", info);
     const { delta, percent, total, transferred, bytesPerSecond } = info;
-    windows.frontend?.webContents.send("onDownloadProgress", { total, transferred, bytesPerSecond });
+    windows.frontend?.webContents.send("onUpdateDownloadProgress", { total, transferred, bytesPerSecond });
   });
 
   autoUpdater.on("error", (error) => {
@@ -77,8 +79,13 @@ export function initializeAutoUpdater() {
   autoUpdater.channel = channel;
   autoUpdater.allowPrerelease = allowPrerelease;
   autoUpdater.logger = log;
+  // Needed
+  log.transports.file.level = "info";
+
   autoUpdater.autoDownload = false;
+  log.info(`Initialized auto-updater with allowPrerelease=${allowPrerelease} and channel=${channel}`);
   app.whenReady().then(async () => {
+    log.info("WhenReady called")
     attachListeners();
     pollForUpdates();
   });
