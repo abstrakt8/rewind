@@ -28,12 +28,14 @@ if (window.api) {
     selectDirectory: () => Promise.resolve("C:\\Mocked\\Path"),
     selectFile: () => Promise.resolve("C:\\Mocked\\File.osr"),
     onManualReplayOpen: (listener) => console.log(`Registered a listener for opening replay files manually`),
+    quitAndInstall: () => console.log("Sent QuitAndInstall to the main process"),
 
     // Updates
     onUpdateAvailable: (listener) => console.log(`Registered a listener for receiving a manual update`),
     startDownloadingUpdate: () => console.log("Starting the update..."),
     onUpdateDownloadProgress: (listener) => console.log(`Registered a listener for receiving a download progress`),
     onDownloadFinished: (listener) => console.log(`Registered a listener for onDowlnoadFinished`),
+    checkForUpdate: () => console.log(`Checking for updates`),
   };
 }
 
@@ -56,11 +58,12 @@ function attachListeners() {
   });
 }
 
-(async function () {
+(async function() {
   const [appVersion, platform] = await Promise.all([api.getAppVersion(), api.getPlatform()]);
   const appInfo = { appVersion, platform };
 
   attachListeners();
+  api.checkForUpdate();
 
   console.log(`Initializing with version=${appVersion} on platform=${platform}`);
 

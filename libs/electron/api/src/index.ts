@@ -13,6 +13,8 @@ export interface FrontendPreloadAPI {
   reboot: () => void;
 
   startDownloadingUpdate: () => void;
+  checkForUpdate: () => void;
+  quitAndInstall: () => void;
 
   // Main process -> Renderer
   onUpdateDownloadProgress: (listener: (updateInfo: UpdateInfo) => any) => any;

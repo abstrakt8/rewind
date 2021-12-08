@@ -34,7 +34,8 @@ function checkForUpdates() {
 }
 
 function pollForUpdates() {
-  checkForUpdates();
+  // The first update should be manually done by the frontend since it might have not set up the listeners
+  // checkForUpdates();
   setInterval(() => {
     checkForUpdates();
   }, fifteenMinutes);
@@ -71,6 +72,12 @@ function attachListeners() {
     // Cancellation token can be given
     void autoUpdater.downloadUpdate();
   });
+  ipcMain.handle("checkForUpdate", () => {
+    checkForUpdates();
+  });
+  ipcMain.handle("quitAndInstall", () => {
+    void autoUpdater.quitAndInstall(true, true);
+  });
 }
 
 export function initializeAutoUpdater() {
@@ -85,7 +92,7 @@ export function initializeAutoUpdater() {
   autoUpdater.autoDownload = false;
   log.info(`Initialized auto-updater with allowPrerelease=${allowPrerelease} and channel=${channel}`);
   app.whenReady().then(async () => {
-    log.info("WhenReady called")
+    log.info("WhenReady called");
     attachListeners();
     pollForUpdates();
   });

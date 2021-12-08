@@ -14,6 +14,8 @@ const frontendAPI: FrontendPreloadAPI = {
   onUpdateDownloadProgress: (listener) => ipcRenderer.on("onUpdateDownloadProgress", (event, info) => listener(info)),
   startDownloadingUpdate: () => ipcRenderer.invoke("startDownloadingUpdate"),
   onDownloadFinished: (listener) => ipcRenderer.on("onDownloadFinished", (event) => listener()),
+  checkForUpdate: () => ipcRenderer.invoke("checkForUpdate"),
+  quitAndInstall: () => ipcRenderer.invoke("quitAndInstall"),
 };
 
 contextBridge.exposeInMainWorld("api", frontendAPI);

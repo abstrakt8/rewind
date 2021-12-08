@@ -89,7 +89,7 @@ export function UpdateModal() {
                     </Button>
                   )}
                   {downloadFinished && (
-                    <Button variant={"contained"} onClick={() => window.api.reboot()}>
+                    <Button variant={"contained"} onClick={() => window.api.quitAndInstall()}>
                       Restart and install
                     </Button>
                   )}
