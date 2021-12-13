@@ -62,7 +62,7 @@
     "connected-react-router": "^6.9.1",
     "core-js": "^3.17.2",
     "electron-log": "^4.4.1",
-    "electron-updater": "^4.3.9",
+    "electron-updater": "^4.6.1",
     "eventemitter2": "^6.4.4",
     "history": "4.10.1",
     "immer": "^9.0.6",
