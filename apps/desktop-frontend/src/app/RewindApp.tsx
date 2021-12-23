@@ -33,7 +33,7 @@ function NormalView() {
       <Divider orientation={"vertical"} />
       <Box sx={{ flexGrow: 1, height: "100%" }}>
         <Switch>
-          <Route exact path={"/home"} render={() => <HomeScreen />} />
+          <Route exact={true} path={"/home"} render={() => <HomeScreen />} />
           <Route exact path={"/analyzer"} render={() => <ConnectedAnalyzer />} />
         </Switch>
       </Box>

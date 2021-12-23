@@ -58,7 +58,7 @@ function attachListeners() {
   });
 }
 
-(async function() {
+(async function () {
   const [appVersion, platform] = await Promise.all([api.getAppVersion(), api.getPlatform()]);
   const appInfo = { appVersion, platform };
 

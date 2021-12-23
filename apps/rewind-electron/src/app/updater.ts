@@ -28,9 +28,9 @@ function niceBytes(x: any) {
 }
 
 function checkForUpdates() {
-  void autoUpdater.checkForUpdates().then((value => {
+  void autoUpdater.checkForUpdates().then((value) => {
     log.info("[checkForUpdates] ", JSON.stringify(value));
-  }));
+  });
 }
 
 function pollForUpdates() {

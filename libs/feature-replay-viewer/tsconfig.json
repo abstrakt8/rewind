@@ -9,7 +9,6 @@
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
     // Required for inversifyjs
     "types": ["reflect-metadata"],
     "experimentalDecorators": true,
