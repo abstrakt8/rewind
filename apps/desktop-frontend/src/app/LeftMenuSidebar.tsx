@@ -3,10 +3,11 @@ import { Badge, Box, Divider, IconButton, Stack, Tooltip } from "@mui/material";
 import { Home } from "@mui/icons-material";
 import { FaMicroscope } from "react-icons/fa";
 import React from "react";
-import { push } from "connected-react-router";
 import { useAppDispatch, useAppSelector } from "./hooks/hooks";
 import UpdateIcon from "@mui/icons-material/Update";
 import { setUpdateModalOpen } from "./update/slice";
+import { useLocation } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 
 const tooltipPosition = {
   anchorOrigin: {
@@ -20,14 +21,14 @@ const tooltipPosition = {
 };
 
 export function LeftMenuSidebar() {
-  // const LinkBehavior = React.forwardRef((props, ref) => <Link ref={ref} to="/" {...props} role={undefined} />);
   const dispatch = useAppDispatch();
-  const pathname = useAppSelector((state) => state.router.location.pathname);
+  const location = useLocation();
+  const navigate = useNavigate();
   const { newVersion } = useAppSelector((state) => state.updater);
 
   const openUpdateModal = () => dispatch(setUpdateModalOpen(true));
-  const handleLinkClick = (to: string) => () => dispatch(push(to));
-  const buttonColor = (name: string) => (name === pathname ? "primary" : "default");
+  const handleLinkClick = (to: string) => () => navigate(to);
+  const buttonColor = (name: string) => (location.pathname.endsWith(name) ? "primary" : "default");
 
   return (
     <Stack
@@ -40,23 +41,26 @@ export function LeftMenuSidebar() {
       alignItems={"center"}
       component={"nav"}
     >
-      <Box onClick={handleLinkClick("/home")} sx={{ cursor: "pointer" }}>
+      <Box onClick={handleLinkClick("home")} sx={{ cursor: "pointer" }}>
         <RewindLogo />
       </Box>
       <Divider orientation={"horizontal"} sx={{ borderWidth: 1, width: "80%" }} />
       <Tooltip title={"Overview"} placement={"right"}>
-        <IconButton color={buttonColor("/home")} onClick={handleLinkClick("/home")}>
-          <Home />
-        </IconButton>
+        <Link to={"home"}>
+          <IconButton color={buttonColor("/home")}>
+            <Home />
+          </IconButton>
+        </Link>
       </Tooltip>
       <Tooltip title={"Analyzer"} placement={"right"}>
-        <IconButton
-          // These are not centered
-          onClick={handleLinkClick("/analyzer")}
-          color={buttonColor("/analyzer")}
-        >
-          <FaMicroscope height={"0.75em"} />
-        </IconButton>
+        <Link to={"analyzer"}>
+          <IconButton
+            // These are not centered
+            color={buttonColor("/analyzer")}
+          >
+            <FaMicroscope height={"0.75em"} />
+          </IconButton>
+        </Link>
       </Tooltip>
       {/*Nothing*/}
       <Box flexGrow={1} />

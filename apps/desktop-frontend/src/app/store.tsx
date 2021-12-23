@@ -4,16 +4,11 @@ import backendReducer from "./backend/slice";
 import settingsReducer from "./settings/slice";
 import updaterReducer from "./update/slice";
 import { createRewindRootSaga } from "./RootSaga";
-import { createHashHistory } from "history";
-import { connectRouter, routerMiddleware } from "connected-react-router";
 import { rewindDesktopApi } from "./backend/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { theater } from "./theater";
 
-export const history = createHashHistory({});
-
 const reducer = {
-  router: connectRouter(history),
   backend: backendReducer,
   settings: settingsReducer,
   updater: updaterReducer,
@@ -31,9 +26,10 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   reducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(sagaMiddleware).concat(routerMiddleware(history)).concat(rewindDesktopApi.middleware),
+    getDefaultMiddleware().concat(sagaMiddleware).concat(rewindDesktopApi.middleware),
 });
 
+// Setting up redux-toolkit API listeners
 setupListeners(store.dispatch);
 
 sagaMiddleware.run(createRewindRootSaga({ theater }));

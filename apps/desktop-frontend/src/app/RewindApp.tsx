@@ -1,19 +1,26 @@
-import { useAppSelector } from "./hooks/hooks";
-import { Route, Switch } from "react-router-dom"; // react-router v4/v5
+import { useAppDispatch, useAppSelector } from "./hooks/hooks";
+import { Routes } from "react-router";
+import { Navigate, Outlet, Route, useNavigate } from "react-router-dom";
 import { LeftMenuSidebar } from "./LeftMenuSidebar";
 import { SplashScreen } from "./splash/SplashScreen";
 import { SetupScreen } from "./setup/SetupScreen";
 import { HomeScreen } from "./home/HomeScreen";
 import { Box, Divider, Stack } from "@mui/material";
-import { Analyzer } from "@rewind/feature-replay-viewer";
+import { Analyzer, useTheaterContext } from "@rewind/feature-replay-viewer";
 import { UpdateModal } from "./UpdateModal";
-
-function ConnectedAnalyzer() {
-  return <Analyzer />;
-}
+import { useEffect } from "react";
+import { downloadFinished, downloadProgressed, newVersionAvailable } from "./update/slice";
+import { frontendAPI } from "./api";
+import { BackendState } from "./backend/slice";
 
 function ConnectedSplashScreen() {
-  const status = useAppSelector((state) => state.backend.status);
+  const status: BackendState = useAppSelector((state) => state.backend.status);
+  if (status === "READY") {
+    return <Navigate to={"/app/analyzer"} replace />;
+  }
+  if (status === "SETUP_MISSING") {
+    return <Navigate to={"/setup"} />;
+  }
   return <SplashScreen status={status} />;
 }
 
@@ -32,10 +39,7 @@ function NormalView() {
       <LeftMenuSidebar />
       <Divider orientation={"vertical"} />
       <Box sx={{ flexGrow: 1, height: "100%" }}>
-        <Switch>
-          <Route exact={true} path={"/home"} render={() => <HomeScreen />} />
-          <Route exact path={"/analyzer"} render={() => <ConnectedAnalyzer />} />
-        </Switch>
+        <Outlet />
       </Box>
       <UpdateModal />
     </Stack>
@@ -43,11 +47,38 @@ function NormalView() {
 }
 
 export function RewindApp() {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const theater = useTheaterContext();
+
+  useEffect(() => {
+    frontendAPI.onManualReplayOpen((file) => {
+      navigate("/app/analyzer");
+      void theater.analyzer.loadReplay(`local:${file}`);
+    });
+    frontendAPI.onUpdateAvailable((version) => {
+      dispatch(newVersionAvailable(version));
+    });
+    frontendAPI.onDownloadFinished(() => {
+      dispatch(downloadFinished());
+    });
+    frontendAPI.onUpdateDownloadProgress((updateInfo) => {
+      const { total, bytesPerSecond, transferred } = updateInfo;
+      dispatch(downloadProgressed({ downloadedBytes: transferred, totalBytes: total, bytesPerSecond }));
+    });
+    // We start checking for update on the front end, otherwise if we start it from the Electron main process, the
+    // notification might get lost (probably need a message queue if we want to start from the Electron main process)
+    frontendAPI.checkForUpdate();
+  }, [dispatch, navigate, theater.analyzer]);
+
   return (
-    <Switch>
-      <Route exact path={"/splash"} render={() => <ConnectedSplashScreen />} />
-      <Route exact path={"/setup"} render={() => <ConnectedSetupScreen />} />
-      <Route render={() => <NormalView />} />
-    </Switch>
+    <Routes>
+      <Route index element={<ConnectedSplashScreen />} />
+      <Route path={"setup"} element={<ConnectedSetupScreen />} />
+      <Route path={"app"} element={<NormalView />}>
+        <Route path={"home"} element={<HomeScreen />} />
+        <Route path={"analyzer"} element={<Analyzer />} />
+      </Route>
+    </Routes>
   );
 }
