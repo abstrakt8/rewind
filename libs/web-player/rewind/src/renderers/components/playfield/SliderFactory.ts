@@ -16,6 +16,7 @@ import { TemporaryObjectPool } from "../../../utils/pooling/TemporaryObjectPool"
 import { SliderTextureManager } from "../../managers/SliderTextureManager";
 import { ModSettingsManager } from "../../../apps/analysis/manager/ModSettingsManager";
 import { BeatmapRenderSettingsStore } from "../../../services/BeatmapRenderSettingsStore";
+import { GameSimulator } from "../../../core/game/GameSimulator";
 
 const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;
 const DEBUG_PIXEL_BALL_COLOR = 0x00ff00;
@@ -28,6 +29,7 @@ export class SliderFactory {
 
   constructor(
     private readonly gameClock: GameplayClock,
+    private readonly gameSimulator: GameSimulator,
     private readonly modSettingsManager: ModSettingsManager,
     private readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
     private readonly stageSkinService: SkinHolder,
@@ -145,6 +147,13 @@ export class SliderFactory {
   private prepareSliderBall(slider: Slider) {
     const { time: gameTime, skin } = this;
     if (gameTime < slider.startTime || slider.endTime < gameTime) return [];
+    let hit = true;
+
+    const currentState = this.gameSimulator.getCurrentState();
+    if (currentState) {
+      // In case the slider body state of slider.id has not been found, it means that tracking hasn't even started yet.
+      hit = currentState.sliderBodyState.get(slider.id)?.isTracking ?? false;
+    }
 
     const sliderAnalysis = this.sliderDevMode;
 
@@ -156,7 +165,7 @@ export class SliderFactory {
     sliderBall.prepare({
       ballTint: null, // TODO
       ballTexture: skin.getTexture("SLIDER_BALL"),
-      followCircleTexture: skin.getTexture("SLIDER_FOLLOW_CIRCLE"),
+      followCircleTexture: hit ? skin.getTexture("SLIDER_FOLLOW_CIRCLE") : Texture.EMPTY,
       position,
       scale: slider.scale,
     });
@@ -168,7 +177,7 @@ export class SliderFactory {
         rawFollowCircle.clear();
         rawFollowCircle.lineStyle(1, DEBUG_FOLLOW_CIRCLE_COLOR);
         // TODO: Depending on if inside or not
-        rawFollowCircle.drawCircle(position.x, position.y, slider.radius * 2.4);
+        rawFollowCircle.drawCircle(position.x, position.y, slider.radius * (hit ? 2.4 : 1));
         displayObjects.push(rawFollowCircle);
       }
       {
