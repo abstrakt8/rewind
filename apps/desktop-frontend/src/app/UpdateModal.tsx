@@ -70,7 +70,7 @@ export function UpdateModal() {
                   <Typography>
                     {downloadFinished ? "Finished downloading!" : "Downloading..."}{" "}
                     <Typography variant={"caption"}>
-                      {`${niceBytes(downloadedBytes)} / ${niceBytes(totalBytes)} (${downloadProgress} %)`}
+                      {`${niceBytes(downloadedBytes)} / ${niceBytes(totalBytes)} (${downloadProgress.toFixed(2)} %)`}
                     </Typography>
                   </Typography>
                 )}
@@ -89,7 +89,7 @@ export function UpdateModal() {
                     </Button>
                   )}
                   {downloadFinished && (
-                    <Button variant={"contained"} onClick={() => window.api.reboot()}>
+                    <Button variant={"contained"} onClick={() => window.api.quitAndInstall()}>
                       Restart and install
                     </Button>
                   )}
