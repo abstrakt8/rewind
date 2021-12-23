@@ -19,6 +19,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@osujs/pp": [
+        "libs/osu/pp/src/index.ts"
+      ],
       "@rewind/api/common": [
         "libs/api/common/src/index.ts"
       ],

@@ -697,6 +697,50 @@
       },
       "tags": []
     },
+    "osu-pp": {
+      "root": "libs/osu/pp",
+      "sourceRoot": "libs/osu/pp/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "libs/osu/pp/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/osu/pp"
+          ],
+          "options": {
+            "jestConfig": "libs/osu/pp/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/libs/osu/pp",
+            "tsConfig": "libs/osu/pp/tsconfig.lib.json",
+            "packageJson": "libs/osu/pp/package.json",
+            "main": "libs/osu/pp/src/index.ts",
+            "assets": [
+              "libs/osu/pp/*.md"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "osu-skin": {
       "root": "libs/osu/skin",
       "sourceRoot": "libs/osu/skin/src",
@@ -705,7 +749,9 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/osu/skin/**/*.ts"]
+            "lintFilePatterns": [
+              "libs/osu/skin/**/*.ts"
+            ]
           },
           "outputs": [
             "{options.outputFile}"
