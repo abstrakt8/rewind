@@ -71,12 +71,13 @@ export class GameSimulator {
       }
       res.push(q.isEmpty() ? 0 : sum / q.size());
     }
-    // normalize
-    const m = max(res);
-    if (m > 0) {
-      const normalizedRes = res.map((r) => r / m);
-      console.log(normalizedRes);
-      this.difficulties$.next(normalizedRes);
+    if (res.length > 0) {
+      // normalize
+      const m = max(res);
+      if (m > 0) {
+        const normalizedRes = res.map((r) => r / m);
+        this.difficulties$.next(normalizedRes);
+      }
     }
   }
 

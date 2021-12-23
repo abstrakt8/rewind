@@ -6,7 +6,7 @@ import { SettingsModal } from "./components/SettingsModal";
 import { SettingsModalProvider } from "./providers/SettingsProvider";
 
 export function Analyzer() {
-  // Short cuts will then only be available when this page is <Analyzer/> is open
+  // Shortcuts will then only be available when this page is <Analyzer/> is open
   useShortcuts();
 
   return (

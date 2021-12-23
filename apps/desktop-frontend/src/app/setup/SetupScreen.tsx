@@ -6,6 +6,7 @@ import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "
 import { RewindLogo } from "../RewindLogo";
 import { Help, Loop } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
+import { frontendAPI } from "../api";
 
 interface DirectorySelectionProps {
   value: string | null;
@@ -16,7 +17,7 @@ interface DirectorySelectionProps {
 
 function DirectorySelection({ value, onChange, placeHolder, badgeOnEmpty }: DirectorySelectionProps) {
   const handleSelectFolderClick = useCallback(() => {
-    window.api.selectDirectory(value ?? "").then((path) => {
+    frontendAPI.selectDirectory(value ?? "").then((path) => {
       if (path !== null) {
         onChange(path);
       }
@@ -63,7 +64,7 @@ export function SetupScreen() {
 
   useEffect(() => {
     if (updateState.isSuccess) {
-      window.api.reboot();
+      frontendAPI.reboot();
     } else if (updateState.isError) {
       setShowErrorMessage(true);
     }

@@ -4,6 +4,7 @@ import { setUpdateModalOpen } from "./update/slice";
 import { Close } from "@mui/icons-material";
 import React from "react";
 import { useAppInfo } from "@rewind/feature-replay-viewer";
+import { frontendAPI } from "./api";
 
 const units = ["bytes", "KB", "MB", "GB", "TB", "PB"];
 
@@ -82,14 +83,14 @@ export function UpdateModal() {
                   {!downloadFinished && (
                     <Button
                       variant={"contained"}
-                      onClick={() => window.api.startDownloadingUpdate()}
+                      onClick={() => frontendAPI.startDownloadingUpdate()}
                       disabled={isDownloading}
                     >
                       Download update
                     </Button>
                   )}
                   {downloadFinished && (
-                    <Button variant={"contained"} onClick={() => window.api.quitAndInstall()}>
+                    <Button variant={"contained"} onClick={() => frontendAPI.quitAndInstall()}>
                       Restart and install
                     </Button>
                   )}
