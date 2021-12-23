@@ -8,47 +8,38 @@
   "generateUpdatesFilesForAllChannels": true,
   "directories": {
     "output": "dist/electron",
-    "buildResources": "tools/electron-builder/build-resources",
-    "app": "."
+    "buildResources": "../../tools/electron-builder/build-resources"
   },
   "files": [
     {
-      "from": "dist/apps/rewind-electron",
+      "from": "../../dist/apps/rewind-electron",
       "to": "rewind-electron",
       "filter": [
-        "main.js",
-        "preload.js",
-        "assets"
+        "main.js"
       ]
     },
     {
-      "from": "dist/apps/desktop-frontend",
+      "from": "../../dist/apps/desktop-frontend",
       "to": "desktop-frontend"
     },
     {
-      "from": "dist/apps/desktop-backend",
+      "from": "../../dist/apps/desktop-backend",
       "to": "desktop-backend"
     },
     {
-      "from": "dist/apps/desktop-backend-preload",
+      "from": "../../dist/apps/desktop-backend-preload",
       "to": "desktop-backend-preload"
     },
     {
-      "from": "dist/apps/desktop-frontend-preload",
+      "from": "../../dist/apps/desktop-frontend-preload",
       "to": "desktop-frontend-preload"
     },
-    {
-      "from": "tools/electron-builder",
-      "to": "",
-      "filter": [
-        "index.js"
-      ]
-    },
+    "index.js",
     "package.json"
   ],
   "extraResources": [
     {
-      "from": "resources/Skins",
+      "from": "../../resources/Skins",
       "to": "Skins"
     }
   ]

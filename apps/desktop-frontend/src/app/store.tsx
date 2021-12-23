@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import backendReducer from "./backend/slice";
 import settingsReducer from "./settings/slice";
+import updaterReducer from "./update/slice";
 import { createRewindRootSaga } from "./RootSaga";
 import { createHashHistory } from "history";
 import { connectRouter, routerMiddleware } from "connected-react-router";
@@ -15,6 +16,7 @@ const reducer = {
   router: connectRouter(history),
   backend: backendReducer,
   settings: settingsReducer,
+  updater: updaterReducer,
   [rewindDesktopApi.reducerPath]: rewindDesktopApi.reducer,
 };
 

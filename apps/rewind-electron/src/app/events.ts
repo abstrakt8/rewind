@@ -1,6 +1,5 @@
 import { app, dialog, ipcMain } from "electron";
 import { BackendPreloadAPI } from "@rewind/electron/api";
-import { RewindElectronApp } from "./RewindElectronApp";
 
 async function userSelectDirectory(defaultPath: string) {
   const { canceled, filePaths } = await dialog.showOpenDialog({ defaultPath, properties: ["openDirectory"] });
@@ -38,7 +37,7 @@ const backendPreloadAPI: BackendPreloadAPI = {
   },
 };
 
-export function setupEventListeners(rewindElectronApp: RewindElectronApp) {
+export function setupEventListeners() {
   // BackendAPI
   ipcMain.handle("getPath", (event, type) => backendPreloadAPI.getPath(type));
 
@@ -48,8 +47,6 @@ export function setupEventListeners(rewindElectronApp: RewindElectronApp) {
   // for (const [key, handler] of Object.entries(frontendPreloadAPI)) {
   //   ipcMain.handle(key, (event, args) => handler(...args));
   // }
-  const app = rewindElectronApp.application;
-
   ipcMain.handle("selectDirectory", (event, defaultPath) => userSelectDirectory(defaultPath));
   ipcMain.handle("selectFile", (event, defaultPath) => userSelectFile(defaultPath));
   ipcMain.handle("getPlatform", () => process.platform);

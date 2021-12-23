@@ -6,6 +6,7 @@ import { SetupScreen } from "./setup/SetupScreen";
 import { HomeScreen } from "./home/HomeScreen";
 import { Box, Divider, Stack } from "@mui/material";
 import { Analyzer } from "@rewind/feature-replay-viewer";
+import { UpdateModal } from "./UpdateModal";
 
 function ConnectedAnalyzer() {
   return <Analyzer />;
@@ -36,6 +37,7 @@ function NormalView() {
           <Route exact path={"/analyzer"} render={() => <ConnectedAnalyzer />} />
         </Switch>
       </Box>
+      <UpdateModal />
     </Stack>
   );
 }

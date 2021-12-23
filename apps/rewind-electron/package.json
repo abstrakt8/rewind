@@ -1,0 +1,46 @@
+{
+  "private": true,
+  "name": "rewind",
+  "author": "Rewind",
+  "description": "Will this popup in installation?",
+  "version": "0.1.3-alpha.1",
+  "main": "index.js",
+  "scripts": {
+    "build": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "devDependencies": {
+    "electron": "^16.0.4",
+    "electron-builder": "^22.14.5"
+  },
+  "dependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "@nestjs/common": "^8.2.3",
+    "@nestjs/core": "^8.2.3",
+    "@nestjs/event-emitter": "^1.0.0",
+    "@nestjs/platform-express": "^8.2.3",
+    "@nestjs/platform-socket.io": "^8.2.3",
+    "@nestjs/testing": "^8.2.3",
+    "@nestjs/websockets": "^8.2.3",
+    "ajv": "^8.8.2",
+    "chokidar": "^3.5.2",
+    "dotenv": "^10.0.0",
+    "electron-log": "^4.4.1",
+    "electron-updater": "^4.6.1",
+    "immer": "^9.0.7",
+    "nest-winston": "^1.6.2",
+    "node-osr": "^1.2.1",
+    "ojsama": "^2.2.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.4.0",
+    "simple-statistics": "^7.7.0",
+    "socket.io": "^4.4.0",
+    "supertest": "^6.1.6",
+    "tslib": "^2.3.1",
+    "username": "^5.1.0",
+    "utility-types": "^3.10.0",
+    "winston": "^3.3.3"
+  }
+}
