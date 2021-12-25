@@ -41,7 +41,7 @@ const OSU_STD_HIT_WINDOW_RANGES: [number, number, number][] = [
 
 /**
  * Returns the hit windows in the following order:
- * Hit300, Hit100, Hit50, HitMiss
+ * [Hit300, Hit100, Hit50, HitMiss]
  * @param overallDifficulty
  * @param lazerStyle
  */

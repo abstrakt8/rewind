@@ -51,3 +51,13 @@ export function applyInterpolation(
   const p = applyEasing((time - startTime) / (endTime - startTime), easing);
   return (valB - valA) * p + valA;
 }
+
+/**
+ * Linear interpolation
+ * @param start start value
+ * @param final final value
+ * @param amount number between 0 and 1
+ */
+export function lerp(start: number, final: number, amount: number) {
+  return start + (final - start) * amount;
+}

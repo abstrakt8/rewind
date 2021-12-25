@@ -1,7 +1,7 @@
 # osu-pp
 
-This library was generated with [Nx](https://nx.dev).
+Calculates the difficulty values / pp.
 
-## Running unit tests
+TODO:
 
-Run `nx test osu-pp` to execute the unit tests via [Jest](https://jestjs.io).
+* Support for different versions?
