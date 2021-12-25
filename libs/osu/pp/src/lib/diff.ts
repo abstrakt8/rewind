@@ -60,9 +60,9 @@ function computeSliderCursorPosition(slider: Slider) {
   // this makes the maths easier with the thresholds being
   // used.
 
-  // TODO: Start from i=1 or 0?
   const numCheckPoints = slider.checkPoints.length;
-  for (let i = 1; i < numCheckPoints; i++) {
+  // We start from 0 because the head is NOT a slider checkpoint here
+  for (let i = 0; i < numCheckPoints; i++) {
     const currMovementObj = slider.checkPoints[i];
 
     let currMovement = Vec2.sub(currMovementObj.position, currCursorPosition);
