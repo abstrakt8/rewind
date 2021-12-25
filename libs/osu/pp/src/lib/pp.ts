@@ -1,19 +1,6 @@
 import { OsuClassicMod } from "@rewind/osu/core";
 import { clamp } from "@rewind/osu/math";
 
-interface OsuDifficultyAttributes {
-  aimDifficulty: number;
-  speedDifficulty: number;
-  flashlightDifficulty: number;
-  sliderFactor: number;
-  approachRate: number;
-  overallDifficulty: number;
-  drainRate: number;
-  hitCircleCount: number;
-  sliderCount: number;
-  spinnerCount: number;
-}
-
 interface OsuPerformanceAttributes {
   // The "PP" value that is then displayed and used for calculations
   total: number;
@@ -26,7 +13,7 @@ interface OsuPerformanceAttributes {
 }
 
 // parameters extracted from ScoreInfo
-interface ScoreParams {
+export interface ScoreParams {
   mods: OsuClassicMod[];
   accuracy: number;
   maxCombo: number;
@@ -38,23 +25,23 @@ interface ScoreParams {
 
 // aka OsuDifficultyAttribute
 interface BeatmapParams {
+  // Notice that these values can exceed 10 (when DT mod is used)
+  approachRate: number;
+  overallDifficulty: number;
+  // Surprisingly, HP is also used but only for the "Blinds" mod
+  drainRate: number;
+
+  // Can be easily calculated from beatmap
+  maxCombo: number;
   hitCircleCount: number;
   sliderCount: number;
   spinnerCount: number;
 
+  // Have to be calculated using the difficulty calculator
   sliderFactor: number;
-  maxCombo: number;
-
   aimDifficulty: number;
   speedDifficulty: number;
   flashlightDifficulty: number;
-
-  // Notice that these values can exceed 10 (when DT mod is used)
-  approachRate: number;
-  overallDifficulty: number;
-
-  // Surprisingly, HP is also used but only for the "Blinds" mod
-  drainRate: number;
 }
 
 //
@@ -117,7 +104,7 @@ export function calculatePerformanceAttributes(
 
     let approachRateFactor = 0.0;
     if (approachRate > 10.33) approachRateFactor = 0.3 * (approachRate - 10.33);
-    else if (approachRateFactor < 8) approachRateFactor = 0.1 * (8.0 - approachRate);
+    else if (approachRate < 8) approachRateFactor = 0.1 * (8.0 - approachRate);
 
     aimValue *= 1.0 + approachRateFactor * lengthBonus; // Buff for long maps with high AR
 

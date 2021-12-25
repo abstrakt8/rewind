@@ -23,8 +23,16 @@ export function approachRateToApproachDuration(AR: number) {
   return difficultyRange(AR, 1800, 1200, PREEMPT_MIN);
 }
 
-function difficultyRangeForOd(difficulty: number, range: { od0: number; od5: number; od10: number }): number {
+export function approachDurationToApproachRate(approachDurationInMs: number) {
+  return approachDurationInMs > 1200 ? (1800 - approachDurationInMs) / 120 : (1200 - approachDurationInMs) / 150 + 5;
+}
+
+export function difficultyRangeForOd(difficulty: number, range: { od0: number; od5: number; od10: number }): number {
   return difficultyRange(difficulty, range.od0, range.od5, range.od10);
+}
+
+export function hitWindowGreatToOD(hitWindowGreat: number) {
+  return (80 - hitWindowGreat) / 6;
 }
 
 // HitWindows is just an array of four numbers, for example [5, 10, 15, 100] means:
@@ -57,4 +65,10 @@ export function hitWindowsForOD(overallDifficulty: number, lazerStyle?: boolean)
   }
   // https://github.com/ppy/osu/issues/11311
   return lazerHitWindowsForOD(overallDifficulty).map((w) => w - 1);
+}
+
+// Lazer style
+export function overallDifficultyToHitWindowGreat(od: number) {
+  const [od0, od5, od10] = OSU_STD_HIT_WINDOW_RANGES[0];
+  return difficultyRange(od, od0, od5, od10);
 }
