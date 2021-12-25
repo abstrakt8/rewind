@@ -195,7 +195,7 @@ export function calculateSpeedStrains(
 
 export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], hitWindowGreat: number) {
   const strains = calculateSpeedStrains(hitObjects, diffs, hitWindowGreat);
-  return calculateDifficultyValues(hitObjects, strains, {
+  return calculateDifficultyValues(diffs, strains, {
     decayWeight: 0.9,
     difficultyMultiplier: 1.04,
     sectionDuration: 400,

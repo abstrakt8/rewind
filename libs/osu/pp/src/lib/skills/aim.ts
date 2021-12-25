@@ -168,7 +168,7 @@ export function calculateAim(hitObjects: OsuHitObject[], diffs: OsuDifficultyHit
   // Contains the highest peaks so far
   const strains = calculateAimStrains(hitObjects, diffs, withSliders);
   // Problem at i=27
-  return calculateDifficultyValues(hitObjects, strains, {
+  return calculateDifficultyValues(diffs, strains, {
     decayWeight: 0.9,
     difficultyMultiplier: 1.06,
     sectionDuration: 400,

@@ -1,5 +1,6 @@
 import { clamp, lerp } from "@rewind/osu/math";
 import { isHitCircle, OsuHitObject } from "@rewind/osu/core";
+import { OsuDifficultyHitObject } from "../diff";
 
 interface StrainDifficultyParams {
   // Usually always 400ms except for in osu!catch with 700ms
@@ -40,7 +41,7 @@ const REDUCED_STRAIN_BASELINE = 0.75;
  * This is O(n * D * log D) but can be optimized to O(n) by having a breakpoint (when the precision gets very low)
  */
 export function calculateDifficultyValues(
-  hitObjects: OsuHitObject[],
+  hitObjects: OsuDifficultyHitObject[],
   strains: number[],
   { sectionDuration, reducedSectionCount, difficultyMultiplier, strainDecay, decayWeight }: StrainDifficultyParams,
 ) {
@@ -51,14 +52,12 @@ export function calculateDifficultyValues(
   const peaks: number[] = [];
   const difficultyValues: number[] = [0];
 
-  let currentSectionBegin = calcSectionBegin(sectionDuration, startTime(hitObjects[0]));
+  let currentSectionBegin = calcSectionBegin(sectionDuration, hitObjects[0].startTime);
   let currentSectionPeak = 0;
 
   for (let i = 1; i < hitObjects.length; i++) {
-    const prev = hitObjects[i - 1];
-    const curr = hitObjects[i];
-    const prevStartTime = startTime(prev);
-    const currStartTime = startTime(curr);
+    const prevStartTime = hitObjects[i - 1].startTime;
+    const currStartTime = hitObjects[i].startTime;
 
     // Let's see if we can close off the other sections
     while (currentSectionBegin + sectionDuration < currStartTime) {
