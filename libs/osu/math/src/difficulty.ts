@@ -50,8 +50,8 @@ export function hitWindowsForOD(overallDifficulty: number, lazerStyle?: boolean)
     return OSU_STD_HIT_WINDOW_RANGES.map(([od0, od5, od10]) => difficultyRange(od, od0, od5, od10));
   }
 
-  // Short explanation: currently in lazer the hit windows are actually +1ms bigger due to them using <= instead of
-  // < check.
+  // Short explanation: currently in lazer the hit windows are actually +1ms bigger due to them using the LTE <=
+  // operator instead of LT <  <= instead of < check.
   if (lazerStyle) {
     return lazerHitWindowsForOD(overallDifficulty);
   }

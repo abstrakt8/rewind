@@ -9,13 +9,10 @@ const slider_multiplier = 1.5;
 const velocity_change_multiplier = 0.75;
 
 const skillMultiplier = 23.25;
+
 const strainDecayBase = 0.15;
-
-// For OsuStrainSkill
-const difficultyMultiplier = 1.06;
-const decayWeight = 0.9;
-
 const strainDecay = (ms: number) => Math.pow(strainDecayBase, ms / 1000);
+
 const calcWideAngleBonus = (angle: number) =>
   Math.pow(Math.sin((3.0 / 4) * (Math.min((5.0 / 6) * Math.PI, Math.max(Math.PI / 6, angle)) - Math.PI / 6)), 2);
 const calcAcuteAngleBonus = (angle: number) => 1 - calcWideAngleBonus(angle);
@@ -28,6 +25,8 @@ function calculateAimStrains(
   diffs: OsuDifficultyHitObject[],
   withSliders: boolean,
 ): number[] {
+  if (hitObjects.length === 0) return [];
+
   const strains: number[] = [0];
   let currentStrain = 0;
 
@@ -42,12 +41,12 @@ function calculateAimStrains(
     const diffCurrent = diffs[i];
 
     const strainValueOf = (function () {
-      // We need at least three elements for this calculation
-      if (i <= 1 || isSpinner(current) || isSpinner(last)) return 0;
+      // We need at least three non-dummy elements for this calculation
+      if (i <= 2 || isSpinner(current) || isSpinner(last)) return 0;
 
       let currVelocity = diffCurrent.lazyJumpDistance / diffCurrent.strainTime;
 
-      if (isSlider(current) && withSliders) {
+      if (isSlider(last) && withSliders) {
         const travelVelocity = diffLast.travelDistance / diffLast.travelTime;
         const movementVelocity = diffCurrent.minimumJumpDistance / diffCurrent.minimumJumpTime;
         currVelocity = Math.max(currVelocity, movementVelocity + travelVelocity);
@@ -67,11 +66,11 @@ function calculateAimStrains(
       let aimStrain = currVelocity; // Start strain with regular velocity.
 
       if (
+        // If rhythms are the same.
         Math.max(diffCurrent.strainTime, diffLast.strainTime) <
         1.25 * Math.min(diffCurrent.strainTime, diffLast.strainTime)
       ) {
-        // If rhythms are the same.
-        if (diffCurrent.angle != null && diffLast.angle != null && diffLastLast.angle != null) {
+        if (diffCurrent.angle !== null && diffLast.angle !== null && diffLastLast.angle !== null) {
           const currAngle = diffCurrent.angle;
           const lastAngle = diffLast.angle;
           const lastLastAngle = diffLastLast.angle;
@@ -101,7 +100,8 @@ function calculateAimStrains(
         }
       }
 
-      if (Math.max(prevVelocity, currVelocity) != 0) {
+      // TODO: floatEqual?
+      if (Math.max(prevVelocity, currVelocity) !== 0) {
         // We want to use the average velocity over the whole object when awarding differences, not the individual jump
         // and slider path velocities.
         prevVelocity = (diffLast.lazyJumpDistance + diffLastLast.travelDistance) / diffLast.strainTime;
@@ -157,24 +157,22 @@ function calculateAimStrains(
       return aimStrain;
     })();
 
-    currentStrain *= strainDecay(diffCurrent.strainTime);
+    currentStrain *= strainDecay(diffCurrent.deltaTime);
     currentStrain += strainValueOf * skillMultiplier;
     strains.push(currentStrain);
   }
   return strains;
 }
 
-const sectionCount = 10;
-const sectionDuration = 400;
-
 export function calculateAim(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], withSliders: boolean) {
   // Contains the highest peaks so far
   const strains = calculateAimStrains(hitObjects, diffs, withSliders);
+  // Problem at i=27
   return calculateDifficultyValues(hitObjects, strains, {
-    decayWeight,
-    difficultyMultiplier,
-    sectionDuration,
-    sectionCount,
+    decayWeight: 0.9,
+    difficultyMultiplier: 1.06,
+    sectionDuration: 400,
+    reducedSectionCount: 10,
     strainDecay,
   });
 }

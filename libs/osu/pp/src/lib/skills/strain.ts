@@ -1,12 +1,12 @@
-import { insertDecreasing } from "../utils";
 import { clamp, lerp } from "@rewind/osu/math";
 import { isHitCircle, OsuHitObject } from "@rewind/osu/core";
 
 interface StrainDifficultyParams {
+  // Usually always 400ms except for in osu!catch with 700ms
   sectionDuration: number;
 
-  // Usually always 400ms except for in osu!catch with 700ms
-  sectionCount: number;
+  // 10 for aim and 5 in speed
+  reducedSectionCount: number;
 
   // 0.9 except for 1.0 in FL
   decayWeight: number;
@@ -33,14 +33,16 @@ const REDUCED_STRAIN_BASELINE = 0.75;
  * beginning of a section
  *
  * - Finally the difficulty value of a strain skill considers the largest K strain peaks (K=10 in osu!std) and
- * calculates the weighted sum of it sum(P_i * W^i) where W=0.9 in osu!std (and a bit adjusted)
+ * nerfs them so that the extremly unique difficulty spikes get nerfed.
+ *
+ * - Then it uses the weighted sum to calculate the difficultyValue.
+ *
+ * This is O(n * D * log D) but can be optimized to O(n) by having a breakpoint (when the precision gets very low)
  */
-
-// Performance notes: calculates the aim values in O(n) instead of O(n * D) where D is the map duration in seconds
 export function calculateDifficultyValues(
   hitObjects: OsuHitObject[],
   strains: number[],
-  { sectionDuration, sectionCount, difficultyMultiplier, strainDecay, decayWeight }: StrainDifficultyParams,
+  { sectionDuration, reducedSectionCount, difficultyMultiplier, strainDecay, decayWeight }: StrainDifficultyParams,
 ) {
   if (hitObjects.length === 0) return [];
   // osu!lazer note: sectionBegin = sectionDuration if t is dividable by sectionDuration (bug?)
@@ -52,37 +54,16 @@ export function calculateDifficultyValues(
   let currentSectionBegin = calcSectionBegin(sectionDuration, startTime(hitObjects[0]));
   let currentSectionPeak = 0;
 
-  function closeCurrentSection() {
-    insertDecreasing(peaks, currentSectionPeak, sectionCount);
-  }
-
   for (let i = 1; i < hitObjects.length; i++) {
     const prev = hitObjects[i - 1];
     const curr = hitObjects[i];
     const prevStartTime = startTime(prev);
     const currStartTime = startTime(curr);
 
-    // Between i - 1 and i there might be empty sections with a peak strain always on the beginning of the section.
-    // We will now consider those and stop when it's not needed (otherwise we get a O(D) performance factor like in
-    // Lazer)
-    while (currentSectionBegin + 2 * sectionDuration < currStartTime) {
-      closeCurrentSection();
+    // Let's see if we can close off the other sections
+    while (currentSectionBegin + sectionDuration < currStartTime) {
+      peaks.push(currentSectionPeak);
       currentSectionBegin += sectionDuration;
-      currentSectionPeak = strains[i - 1] * strainDecay(currentSectionBegin - prevStartTime);
-      // This checks if the current highest peaks can be improved or not
-      if (peaks.length < sectionCount || peaks[peaks.length - 1] > currentSectionPeak) {
-        // We basically jump to the last section before the new section for hit object i
-        currentSectionBegin = calcSectionBegin(sectionDuration, currStartTime) - sectionDuration;
-        currentSectionPeak = -1;
-        break;
-      }
-    }
-
-    // Now the currentSection can only be the one that we are supposed to be in or the one before
-    // Recalculate currentSectionBegin and currentSectionPeak if the latter case is true
-    if (currentSectionBegin + sectionDuration <= currStartTime) {
-      closeCurrentSection();
-      currentSectionBegin = calcSectionBegin(sectionDuration, currStartTime);
       currentSectionPeak = strains[i - 1] * strainDecay(currentSectionBegin - prevStartTime);
     }
 
@@ -91,18 +72,19 @@ export function calculateDifficultyValues(
 
     // We do not push the currentSectionPeak to the peaks yet because currentSectionPeak is still in a jelly state and
     // can be improved by the future hit objects in the same section.
-    const peaksWithCurrent = [...peaks];
-    insertDecreasing(peaksWithCurrent, currentSectionPeak, sectionCount);
+    const peaksWithCurrent = [...peaks, currentSectionPeak];
+    const descending = (a: number, b: number) => b - a;
 
+    peaksWithCurrent.sort(descending);
     // This is now part of DifficultyValue()
-    for (let i = 0; i < peaksWithCurrent.length; i++) {
+    for (let i = 0; i < Math.min(peaksWithCurrent.length, reducedSectionCount); i++) {
       // Scale might be precalculated since it uses some expensive operation (log10)
-      const scale = Math.log10(lerp(1, 10, clamp(i / sectionCount, 0, 1)));
+      const scale = Math.log10(lerp(1, 10, clamp(i / reducedSectionCount, 0, 1)));
       peaksWithCurrent[i] *= lerp(REDUCED_STRAIN_BASELINE, 1.0, scale);
     }
     let weight = 1;
     // Decreasingly
-    peaksWithCurrent.sort((a, b) => b - a);
+    peaksWithCurrent.sort(descending);
     let difficultyValue = 0;
     for (const peak of peaksWithCurrent) {
       difficultyValue += peak * weight;

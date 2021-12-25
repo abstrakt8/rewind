@@ -122,7 +122,7 @@ const defaultOsuDifficultyHitObject = (): OsuDifficultyHitObject => ({
 });
 
 /**
- * Returns n OsuDifficultyHitObjects
+ * Returns n OsuDifficultyHitObjects where the first one is a dummy value
  */
 function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: number): OsuDifficultyHitObject[] {
   const difficultyHitObjects: OsuDifficultyHitObject[] = [defaultOsuDifficultyHitObject()];
@@ -141,7 +141,7 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
   }
 
   for (let i = 1; i < hitObjects.length; i++) {
-    const lastLast: OsuHitObject | undefined = hitObjects[i - 1];
+    const lastLast: OsuHitObject | undefined = hitObjects[i - 2];
     const last = hitObjects[i - 1];
     const current = hitObjects[i];
 
@@ -176,11 +176,9 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
         return lazyEndPosition ?? o.startPosition; // TODO: How can it be nullable?
       }
 
-      const lastCursorPosition = getEndCursorPosition(current);
-      result.lazyJumpDistance = Vec2.distance(
-        Vec2.scale(position(current), scalingFactor),
-        Vec2.scale(lastCursorPosition, scalingFactor),
-      );
+      const lastCursorPosition = getEndCursorPosition(last);
+      // sqrt((x1*c-x2*c)^2+(y1*c-y2*c)^2) = sqrt(c^2 (x1-x2)^2 + c^2 (y1-y2)^2) = c * dist((x1,y1),(x2,y2))
+      result.lazyJumpDistance = scalingFactor * Vec2.distance(position(current), lastCursorPosition);
       result.minimumJumpTime = strainTime;
       result.minimumJumpDistance = result.lazyJumpDistance;
 
@@ -235,9 +233,9 @@ export function calculateDifficultyAttributes(
   const clockRate = determineDefaultPlaybackSpeed(mods);
   const diffs = preprocessDifficultyHitObject(hitObjects, clockRate);
 
-  const hitWindowGreat = hitWindowsForOD(overallDifficulty)[0] / clockRate;
+  const hitWindowGreat = hitWindowsForOD(overallDifficulty, true)[0] / clockRate;
 
-  const aimValues = calculateAim(hitObjects, diffs, false);
+  const aimValues = calculateAim(hitObjects, diffs, true);
   const aimValuesNoSliders = calculateAim(hitObjects, diffs, false);
   const speedValues = calculateSpeed(hitObjects, diffs, hitWindowGreat);
 

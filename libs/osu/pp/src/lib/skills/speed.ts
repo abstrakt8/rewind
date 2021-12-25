@@ -199,7 +199,7 @@ export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyH
     decayWeight: 0.9,
     difficultyMultiplier: 1.04,
     sectionDuration: 400,
-    sectionCount: 5,
+    reducedSectionCount: 5,
     strainDecay,
   });
 }
