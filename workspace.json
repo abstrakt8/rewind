@@ -479,6 +479,21 @@
             "jestConfig": "libs/osu/core/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/libs/osu/core",
+            "tsConfig": "libs/osu/core/tsconfig.lib.json",
+            "packageJson": "libs/osu/core/package.json",
+            "main": "libs/osu/core/src/index.ts",
+            "assets": [
+              "libs/osu/core/*.md"
+            ]
+          }
         }
       },
       "tags": []
@@ -640,6 +655,21 @@
           "options": {
             "jestConfig": "libs/osu/math/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/libs/osu/math",
+            "tsConfig": "libs/osu/math/tsconfig.lib.json",
+            "packageJson": "libs/osu/math/package.json",
+            "main": "libs/osu/math/src/index.ts",
+            "assets": [
+              "libs/osu/math/*.md"
+            ]
           }
         }
       },

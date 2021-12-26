@@ -8,7 +8,6 @@ import {
   isSpinner,
   OsuClassicMod,
   OsuHitObject,
-  osuStableAccuracy,
   parseBlueprint,
 } from "@rewind/osu/core";
 import { calculateDifficultyAttributes } from "./diff";
@@ -163,7 +162,6 @@ describe("PP calculation", function () {
         calculatePP(blueprint, {
           mods: ["HARD_ROCK", "HIDDEN"],
           maxCombo: 569,
-          accuracy: 1,
           countGreat: 352,
           countOk: 0,
           countMeh: 0,
@@ -182,7 +180,6 @@ describe("PP calculation", function () {
         calculatePP(blueprint, {
           mods: ["DOUBLE_TIME", "HIDDEN"],
           maxCombo: 1484,
-          accuracy: osuStableAccuracy(counts)!,
           countGreat,
           countOk,
           countMeh,

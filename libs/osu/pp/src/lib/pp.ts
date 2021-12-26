@@ -1,4 +1,4 @@
-import { OsuClassicMod } from "@rewind/osu/core";
+import { OsuClassicMod, osuStableAccuracy } from "@rewind/osu/core";
 import { clamp } from "@rewind/osu/math";
 
 interface OsuPerformanceAttributes {
@@ -15,7 +15,6 @@ interface OsuPerformanceAttributes {
 // parameters extracted from ScoreInfo
 export interface ScoreParams {
   mods: OsuClassicMod[];
-  accuracy: number;
   maxCombo: number;
   countGreat: number;
   countOk: number;
@@ -62,7 +61,8 @@ export function calculatePerformanceAttributes(
     sliderFactor,
     maxCombo: beatmapMaxCombo,
   } = beatmapParams;
-  const { mods, countMeh, countGreat, countMiss, countOk, maxCombo: scoreMaxCombo, accuracy } = scoreParams;
+  const { mods, countMeh, countGreat, countMiss, countOk, maxCombo: scoreMaxCombo } = scoreParams;
+  const accuracy = osuStableAccuracy([countGreat, countOk, countMeh, countMiss]) ?? 0;
   const totalHits = countGreat + countOk + countMeh + countMiss;
 
   let effectiveMissCount = (function calculateEffectiveMissCount() {
