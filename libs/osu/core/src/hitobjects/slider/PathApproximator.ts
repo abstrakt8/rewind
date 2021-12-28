@@ -1,5 +1,4 @@
-import { Vec2 } from "@rewind/osu/math";
-import { floatEqual } from "@rewind/osu/math";
+import { floatEqual, Vec2 } from "@osujs/math";
 
 // TODO: Move to osu-math
 // https://github.com/ppy/osu-framework/blob/f9d44b1414e30ad507894ef7eaaf5d1b0118be82/osu.Framework/Utils/PathApproximator.cs

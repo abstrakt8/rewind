@@ -9,7 +9,7 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
-import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
+import { formatGameTime, hitWindowsForOD } from "@osujs/math";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { BeatmapManager } from "../../../apps/analysis/manager/BeatmapManager";
 import { mean, standardDeviation } from "simple-statistics";

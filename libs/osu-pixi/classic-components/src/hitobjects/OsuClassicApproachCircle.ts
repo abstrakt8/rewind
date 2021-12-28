@@ -1,7 +1,7 @@
 import { Sprite } from "@pixi/sprite";
 import { AnimationTimeSetting, ModHiddenSetting } from "../DrawableSettings";
 import { PrepareSetting } from "../utils/Preparable";
-import { Position } from "@rewind/osu/math";
+import { Position } from "@osujs/math";
 import { Texture } from "pixi.js";
 import {
   applyPropertiesToDisplayObject,

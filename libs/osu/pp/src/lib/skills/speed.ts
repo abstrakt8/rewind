@@ -1,6 +1,6 @@
-import { isSlider, isSpinner, OsuHitObject } from "@rewind/osu/core";
+import { isSlider, isSpinner, OsuHitObject } from "@osujs/core";
 import { OsuDifficultyHitObject } from "../diff";
-import { clamp, lerp } from "@rewind/osu/math";
+import { clamp, lerp } from "@osujs/math";
 import { calculateDifficultyValues } from "./strain";
 
 const single_spacing_threshold = 125;

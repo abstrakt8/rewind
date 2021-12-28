@@ -4,7 +4,7 @@ import {
   DisplayObjectTransformationProcess,
   evaluateTransformationsToProperties,
 } from "../utils/Pixi";
-import { Easing, Position } from "@rewind/osu/math";
+import { Easing, Position } from "@osujs/math";
 import { fadeInT, fadeOutT } from "../utils/Transformations";
 import { PrepareSetting } from "../utils/Preparable";
 import { Container, Texture } from "pixi.js";

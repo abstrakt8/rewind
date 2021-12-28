@@ -1,5 +1,5 @@
-import { isSlider, isSpinner, OsuHitObject } from "@rewind/osu/core";
-import { clamp } from "@rewind/osu/math";
+import { isSlider, isSpinner, OsuHitObject } from "@osujs/core";
+import { clamp } from "@osujs/math";
 import { OsuDifficultyHitObject } from "../diff";
 import { calculateDifficultyValues } from "./strain";
 

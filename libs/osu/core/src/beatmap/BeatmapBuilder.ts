@@ -14,7 +14,7 @@ import { Slider } from "../hitobjects/Slider";
 import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
 import { Beatmap } from "./Beatmap";
 import { Spinner } from "../hitobjects/Spinner";
-import { approachRateToApproachDuration, circleSizeToScale } from "@rewind/osu/math";
+import { approachRateToApproachDuration, circleSizeToScale } from "@osujs/math";
 import { OsuHitObject } from "../hitobjects/Types";
 
 function createHitCircle(

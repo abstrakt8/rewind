@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { HitCircle } from "@rewind/osu/core";
+import { HitCircle } from "@osujs/core";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import {
   HitResult,

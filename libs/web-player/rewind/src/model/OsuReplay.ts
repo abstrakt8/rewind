@@ -1,5 +1,5 @@
 // TODO: Rename this to replay or something
-import { OsuClassicMod, ReplayFrame } from "@rewind/osu/core";
+import { OsuClassicMod, ReplayFrame } from "@osujs/core";
 
 export type OsuReplay = {
   md5hash: string;

@@ -1,5 +1,5 @@
-import { OsuClassicMod, osuStableAccuracy } from "@rewind/osu/core";
-import { clamp } from "@rewind/osu/math";
+import { OsuClassicMod, osuStableAccuracy } from "@osujs/core";
+import { clamp } from "@osujs/math";
 
 interface OsuPerformanceAttributes {
   // The "PP" value that is then displayed and used for calculations

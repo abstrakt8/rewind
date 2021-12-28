@@ -2,14 +2,14 @@ import { Container } from "pixi.js";
 import { OsuClassicCursor } from "@rewind/osu-pixi/classic-components";
 import { findIndexInReplayAtTime, interpolateReplayPosition } from "../../../Replay";
 import { AnalysisCursor, AnalysisPoint } from "@rewind/osu-pixi/rewind";
-import { OsuAction } from "@rewind/osu/core";
+import { OsuAction } from "@osujs/core";
 import { injectable } from "inversify";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { ReplayManager } from "../../../apps/analysis/manager/ReplayManager";
 import { AnalysisCursorSettingsStore } from "../../../services/AnalysisCursorSettingsStore";
 import { ReplayCursorSettingsStore } from "../../../services/ReplayCursorSettingsStore";
-import { Position } from "@rewind/osu/math";
+import { Position } from "@osujs/math";
 
 @injectable()
 export class CursorPreparer {

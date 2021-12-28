@@ -8,8 +8,8 @@ import {
   OsuClassicMod,
   OsuHitObject,
   Slider,
-} from "@rewind/osu/core";
-import { hitWindowsForOD, Position, Vec2 } from "@rewind/osu/math";
+} from "@osujs/core";
+import { hitWindowsForOD, Position, Vec2 } from "@osujs/math";
 import { calculateAim } from "./skills/aim";
 import { calculateSpeed } from "./skills/speed";
 

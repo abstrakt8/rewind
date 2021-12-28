@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { readSync } from "node-osr";
 import { normalizeHitObjects } from "../../src/utils";
-import { formatGameTime, hitWindowsForOD } from "@rewind/osu/math";
+import { formatGameTime, hitWindowsForOD } from "@osujs/math";
 import { average, max, median, min } from "simple-statistics";
 import {
   Blueprint,

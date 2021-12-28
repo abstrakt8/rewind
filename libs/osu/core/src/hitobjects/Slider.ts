@@ -1,5 +1,5 @@
 import { SliderPath } from "./slider/SliderPath";
-import { Position, Vec2 } from "@rewind/osu/math";
+import { Position, Vec2 } from "@osujs/math";
 import { HitCircle } from "./HitCircle";
 import { SliderCheckPoint } from "./SliderCheckPoint";
 import { HasId } from "./Properties";

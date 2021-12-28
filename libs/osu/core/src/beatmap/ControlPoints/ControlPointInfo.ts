@@ -4,7 +4,7 @@ import { ControlPoint } from "./ControlPoint";
 import { EffectControlPoint } from "./EffectControlPoint";
 import { SampleControlPoint } from "./SampleControlPoint";
 import { ControlPointGroup } from "./ControlPointGroup";
-import { floatEqual } from "@rewind/osu/math";
+import { floatEqual } from "@osujs/math";
 import { SortedList } from "../../utils/SortedList";
 
 export class ControlPointInfo {

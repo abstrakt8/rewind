@@ -1,5 +1,5 @@
 import { Blueprint, BlueprintInfo } from "./Blueprint";
-import { clamp, floatEqual, Position, Vec2 } from "@rewind/osu/math";
+import { clamp, floatEqual, Position, Vec2 } from "@osujs/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 import { PathType } from "../hitobjects/slider/PathType";
 import { TimeSignatures } from "../beatmap/TimeSignatures";

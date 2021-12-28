@@ -1,5 +1,5 @@
 import { Box, Slider, styled } from "@mui/material";
-import { formatGameTime, rgbToInt } from "@rewind/osu/math";
+import { formatGameTime, rgbToInt } from "@osujs/math";
 import { ignoreFocus } from "../utils/IgnoreFocus";
 import { useEffect, useRef } from "react";
 import { Renderer, Sprite, Texture } from "pixi.js";

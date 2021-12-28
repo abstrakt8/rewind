@@ -19,7 +19,7 @@ import {
 import { fadeInT, fadeOutT, scaleToT } from "../utils/Transformations";
 import { OsuClassicConstants } from "./OsuClassicConstants";
 import { PrepareSetting } from "../utils/Preparable";
-import { Easing } from "@rewind/osu/math";
+import { Easing } from "@osujs/math";
 import { calculateDigits } from "../utils/numbers";
 
 // Legacy, in osu!lazer there is a bunch of more stuff such as triangles

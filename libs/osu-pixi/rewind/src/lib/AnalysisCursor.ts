@@ -1,6 +1,6 @@
 import { Container } from "@pixi/display";
 import { Graphics } from "pixi.js";
-import { applyEasing, Easing, Position, Vec2 } from "@rewind/osu/math";
+import { applyEasing, Easing, Position, Vec2 } from "@osujs/math";
 
 export class AnalysisCross extends Graphics {
   prepare(color: number, interesting?: boolean) {

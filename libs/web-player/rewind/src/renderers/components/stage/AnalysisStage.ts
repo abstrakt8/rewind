@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import { Container } from "pixi.js";
 import { injectable } from "inversify";
 import { Playfield, PlayfieldFactory } from "../playfield/PlayfieldFactory";
-import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "@rewind/osu/core";
+import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "@osujs/core";
 import { ForegroundHUDPreparer } from "../hud/ForegroundHUDPreparer";
 import { PixiRendererManager } from "../../PixiRendererManager";
 import { BeatmapBackgroundFactory } from "../background/BeatmapBackground";

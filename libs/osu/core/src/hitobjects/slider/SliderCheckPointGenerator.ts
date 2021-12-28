@@ -1,4 +1,4 @@
-import { clamp, floatEqual } from "@rewind/osu/math";
+import { clamp, floatEqual } from "@osujs/math";
 import { SliderCheckPointDescriptor } from "./SliderCheckPointDescriptor";
 
 function* generateTicks(

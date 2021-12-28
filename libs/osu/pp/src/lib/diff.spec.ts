@@ -9,7 +9,7 @@ import {
   OsuClassicMod,
   OsuHitObject,
   parseBlueprint,
-} from "@rewind/osu/core";
+} from "@osujs/core";
 import { calculateDifficultyAttributes } from "./diff";
 import { calculatePerformanceAttributes, ScoreParams } from "./pp";
 import {
@@ -17,7 +17,7 @@ import {
   approachRateToApproachDuration,
   hitWindowGreatToOD,
   overallDifficultyToHitWindowGreat,
-} from "@rewind/osu/math";
+} from "@osujs/math";
 
 // Move these to integration tests
 

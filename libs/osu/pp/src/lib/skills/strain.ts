@@ -1,5 +1,5 @@
-import { clamp, lerp } from "@rewind/osu/math";
-import { isHitCircle, OsuHitObject } from "@rewind/osu/core";
+import { clamp, lerp } from "@osujs/math";
+import { isHitCircle, OsuHitObject } from "@osujs/core";
 import { OsuDifficultyHitObject } from "../diff";
 
 interface StrainDifficultyParams {

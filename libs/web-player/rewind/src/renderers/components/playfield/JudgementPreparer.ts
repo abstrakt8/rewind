@@ -1,8 +1,8 @@
 import { injectable } from "inversify";
 import { Container } from "pixi.js";
 import { OsuClassicJudgement } from "@rewind/osu-pixi/classic-components";
-import { circleSizeToScale } from "@rewind/osu/math";
-import { MainHitObjectVerdict } from "@rewind/osu/core";
+import { circleSizeToScale } from "@osujs/math";
+import { MainHitObjectVerdict } from "@osujs/core";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { GameSimulator } from "../../../core/game/GameSimulator";

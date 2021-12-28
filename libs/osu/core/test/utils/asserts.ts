@@ -1,4 +1,4 @@
-import { Position } from "@rewind/osu/math";
+import { Position } from "@osujs/math";
 
 export function assertPositionEqual(actual: Position, expected: Position, numDigits?: number) {
   expect(actual.x).toBeCloseTo(expected.x, numDigits);

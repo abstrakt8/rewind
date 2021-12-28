@@ -1,6 +1,6 @@
-import { Texture, Sprite } from "pixi.js";
+import { Sprite, Texture } from "pixi.js";
 import { AnimationTimeSetting, PositionSetting, ScaleSetting } from "../DrawableSettings";
-import { Easing, Position } from "@rewind/osu/math";
+import { Easing, Position } from "@osujs/math";
 import { PrepareSetting } from "../utils/Preparable";
 import {
   applyPropertiesToDisplayObject,

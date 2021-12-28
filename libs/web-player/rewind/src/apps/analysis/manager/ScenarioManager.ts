@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { BehaviorSubject } from "rxjs";
-import { Beatmap, buildBeatmap, modsToBitmask, parseBlueprint } from "@rewind/osu/core";
+import { Beatmap, buildBeatmap, modsToBitmask, parseBlueprint } from "@osujs/core";
 import { GameSimulator } from "../../../core/game/GameSimulator";
 import { ModSettingsManager } from "./ModSettingsManager";
 import { AudioService } from "../../../core/audio/AudioService";

@@ -1,7 +1,6 @@
 import { PathControlPoint } from "./PathControlPoint";
 import { PathType } from "./PathType";
-import { Position, Vec2 } from "@rewind/osu/math";
-import { floatEqual } from "@rewind/osu/math";
+import { floatEqual, Position, Vec2 } from "@osujs/math";
 import { PathApproximator } from "./PathApproximator";
 
 function mapToVector2(p: Position[]) {

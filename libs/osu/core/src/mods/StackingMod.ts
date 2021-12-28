@@ -1,6 +1,6 @@
 import produce from "immer";
 import { HitCircle } from "../hitobjects/HitCircle";
-import { Position, Vec2 } from "@rewind/osu/math";
+import { Position, Vec2 } from "@osujs/math";
 import { Slider } from "../hitobjects/Slider";
 import { isHitCircle, isSlider, isSpinner, OsuHitObject } from "../hitobjects/Types";
 

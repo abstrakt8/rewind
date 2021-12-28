@@ -7,13 +7,13 @@ import {
   OsuHitObject,
   TimeInterval,
   TimeIntervals,
-} from "@rewind/osu/core";
+} from "@osujs/core";
 import { injectable } from "inversify";
 import { ReplayManager } from "../../../apps/analysis/manager/ReplayManager";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { BeatmapManager } from "../../../apps/analysis/manager/BeatmapManager";
 import { DEFAULT_ANALYSIS_CURSOR_SETTINGS } from "../../../settings/AnalysisCursorSettings";
-import { clamp } from "@rewind/osu/math";
+import { clamp } from "@osujs/math";
 
 /**
  *

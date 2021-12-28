@@ -1,5 +1,5 @@
-import { OsuAction, ReplayFrame } from "@rewind/osu/core";
-import { Position, Vec2 } from "@rewind/osu/math";
+import { OsuAction, ReplayFrame } from "@osujs/core";
+import { Position, Vec2 } from "@osujs/math";
 
 // TODO: Could be useful in osu/core
 // Finds the index of the highest time that is not greater the given one.

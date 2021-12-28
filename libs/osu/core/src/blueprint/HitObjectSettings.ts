@@ -1,5 +1,5 @@
 // https://osu.ppy.sh/wiki/en/osu%21_File_Formats/Osu_%28file_format%29#type
-import { Position } from "@rewind/osu/math";
+import { Position } from "@osujs/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 
 export type HitObjectSettingsType = "HIT_CIRCLE" | "SLIDER" | "SPINNER" | "MANIA_HOLD";

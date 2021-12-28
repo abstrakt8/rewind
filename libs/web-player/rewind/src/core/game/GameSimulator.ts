@@ -9,7 +9,7 @@ import {
   isHitObjectJudgement,
   ReplayAnalysisEvent,
   retrieveEvents,
-} from "@rewind/osu/core";
+} from "@osujs/core";
 import { injectable } from "inversify";
 import type { OsuReplay } from "../../model/OsuReplay";
 import { BehaviorSubject } from "rxjs";

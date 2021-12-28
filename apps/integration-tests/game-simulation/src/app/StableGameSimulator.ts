@@ -1,5 +1,5 @@
 import { GameSimulator } from "./GameSimulator";
-import { Beatmap } from "@rewind/osu/core";
+import { Beatmap } from "@osujs/core";
 import { Replay } from "node-osr";
 
 export class StableGameSimulator implements GameSimulator {
