@@ -1,4 +1,3 @@
-import produce from "immer";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { Position, Vec2 } from "@osujs/math";
 import { Slider } from "../hitobjects/Slider";
@@ -143,11 +142,8 @@ function oldStackingHeights(hitObjects: OsuHitObject[], stackLeniency: number) {
   return stackingHeights;
 }
 
-export function modifyStackingPosition(
-  beatmapVersion: number,
-  hitObjects: OsuHitObject[],
-  stackLeniency: number,
-): OsuHitObject[] {
+// Modifies the hitObjects according to the stacking algorithm.
+export function modifyStackingPosition(hitObjects: OsuHitObject[], stackLeniency: number, beatmapVersion: number) {
   const heights = (() => {
     if (beatmapVersion >= 6) {
       return newStackingHeights(hitObjects, stackLeniency);
@@ -155,15 +151,13 @@ export function modifyStackingPosition(
       return oldStackingHeights(hitObjects, stackLeniency);
     }
   })();
-  return produce(hitObjects, (list) => {
-    list.forEach((hitObject) => {
-      if (isSpinner(hitObject as OsuHitObject)) return;
-      const h = hitCircle(hitObject as StackableHitObject);
-      const height = heights.get(h.id);
-      if (height === undefined) {
-        throw Error("Stack height can't be undefined");
-      }
-      h.position = stackedPosition(h.position, height, h.scale);
-    });
+  hitObjects.forEach((hitObject) => {
+    if (isSpinner(hitObject as OsuHitObject)) return;
+    const h = hitCircle(hitObject as StackableHitObject);
+    const height = heights.get(h.id);
+    if (height === undefined) {
+      throw Error("Stack height can't be undefined");
+    }
+    h.position = stackedPosition(h.position, height, h.scale);
   });
 }

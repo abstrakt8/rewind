@@ -37,10 +37,10 @@ function runTestSuite({ filename, cases }: TestSuite) {
   describe(filename, function () {
     // const blueprint = getBlueprintFromTestDir(filename);
     cases.forEach(({ mods: modAcronyms, starRating }) => {
+      const blueprint = getBlueprintFromTestDir(filename);
       const testCaseName = modAcronyms.length === 0 ? "NM" : modAcronyms.join(",");
       const mods = modAcronyms.map(translateModAcronym);
       it(testCaseName, function () {
-        const blueprint = getBlueprintFromTestDir(filename);
         const actual = calculateStarRating(blueprint, mods);
         expect(actual).toBeCloseTo(starRating, SR_EXPECTED_PRECISION);
       });

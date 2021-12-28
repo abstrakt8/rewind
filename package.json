@@ -31,6 +31,7 @@
     "build-storybook": "build-storybook",
     "postinstall": "exitzero electron-builder install-app-deps",
     "electron:build": "electron-builder",
+    "osujs:local:publish": "cd dist/libs/osu && yalc push core && yalc push math && yalc push pp",
     "downloadDefaultSkins": "node tools/downloadDefaultSkin.js",
     "desktop:build:dev": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --parallel",
     "desktop:build:prod": "nx run-many --target=build --projects=desktop-frontend,desktop-backend,desktop-frontend-preload,desktop-backend-preload,rewind-electron --prod",

@@ -1,10 +1,8 @@
 import { Position } from "@osujs/math";
-import { immerable } from "immer";
 import { HitObjectType } from "./Types";
 import { HasHitTime, HasId, HasPosition, HasSpawnTime } from "./Properties";
 
 export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
-  [immerable] = true;
   static OBJECT_RADIUS = 64;
 
   id = "";
