@@ -1,3 +1,4 @@
+import { join } from "path";
 import { readFileSync } from "fs";
 import {
   Blueprint,
@@ -63,6 +64,10 @@ const speedAdjustedAR = (AR: number, clockRate: number) =>
 const speedAdjustedOD = (OD: number, clockRate: number) =>
   hitWindowGreatToOD(overallDifficultyToHitWindowGreat(OD) / clockRate);
 
+// TODO: Make it more dynamic
+// Once a rework hits, we need to adjust the test cases again, but I think then you want to generate those SR
+// with the official osu! lazer code instead -> output it into a json file or something
+
 function calculatePP(blueprint: Blueprint, scoreParams: ScoreParams) {
   const mods = scoreParams.mods;
   const { appliedMods, difficulty, hitObjects } = buildBeatmap(blueprint, { mods });
@@ -98,11 +103,25 @@ function calculatePP(blueprint: Blueprint, scoreParams: ScoreParams) {
 }
 
 // Whenever there are some crazy accurate values, these are directly from osu!lazer
-const violetPerfume =
-  "E:\\osu!\\Songs\\1010865 SHK - Violet Perfume [no video]\\SHK - Violet Perfume (ktgster) [Insane].osu";
-const lonelyGo =
-  "E:\\osu!\\Songs\\863227 Brian The Sun - Lonely Go! (TV Size) [no video]\\Brian The Sun - Lonely Go! (TV Size) (Nevo) [Fiery's Extreme].osu";
-const hidamariNoUta = "E:\\osu!\\Songs\\931596 Apol - Hidamari no Uta\\Apol - Hidamari no Uta (-Keitaro) [Expert].osu";
+
+const rewindTestOsuDir = join(process.env.REWIND_TEST_DIR || "", "osu!");
+
+export function testBlueprintPath(fileName: string): string {
+  return join(rewindTestOsuDir, "Songs", fileName);
+}
+
+const violetPerfume = testBlueprintPath(
+  "1010865 SHK - Violet Perfume [no video]\\SHK - Violet Perfume (ktgster) [Insane].osu",
+);
+const lonelyGo = testBlueprintPath(
+  "863227 Brian The Sun - Lonely Go! (TV Size) [no video]\\Brian The Sun - Lonely Go! (TV Size) (Nevo) [Fiery's Extreme].osu",
+);
+const hidamariNoUta = testBlueprintPath(
+  "931596 Apol - Hidamari no Uta\\Apol - Hidamari no Uta (-Keitaro) [Expert].osu",
+);
+const timeFreeze = testBlueprintPath(
+  "158023 UNDEAD CORPORATION - Everything will freeze\\UNDEAD CORPORATION - Everything will freeze (Ekoro) [Time Freeze].osu",
+);
 
 describe("SR calculation", function () {
   // Only has hit circles
@@ -149,6 +168,16 @@ describe("SR calculation", function () {
     const blueprint = getBlueprint(hidamariNoUta);
     it("HDDT", function () {
       expect(starRating(blueprint, ["HIDDEN", "DOUBLE_TIME"])).toBeCloseTo(8.34, 1);
+    });
+  });
+
+  describe("Everything will freeze (Time Freeze)", function () {
+    const blueprint = getBlueprint(timeFreeze);
+    it("NM -> HR -> NM", function () {
+      const nmStarRating = 8.05;
+      expect(starRating(blueprint, [])).toBeCloseTo(nmStarRating, 2);
+      expect(starRating(blueprint, ["HARD_ROCK"])).toBeCloseTo(9.0, 2);
+      expect(starRating(blueprint, [])).toBeCloseTo(nmStarRating, 2);
     });
   });
 });

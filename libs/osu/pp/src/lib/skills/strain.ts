@@ -38,7 +38,14 @@ const REDUCED_STRAIN_BASELINE = 0.75;
  *
  * - Then it uses the weighted sum to calculate the difficultyValue.
  *
- * This is O(n * D * log D) but can be optimized to O(n) by having a breakpoint (when the precision gets very low)
+ * Performance notes:
+ * 1. O(n + D + D * log D) if only calculating the last value
+ * 2. If we want to calculate for every value:
+ *   This is O(n * D * log D) but can be optimized to O(n) by having a precision breakpoint
+ *   -> For example, if we now want to push a peak that'd be the 150th highest value, then best it could get in
+ *    is to become the 140th highest value -> its value multiplied with the weight 0.9^140 should be
+ *    greater than some precision (let's say 10^-6), otherwise we just don't push it to the peaks. In theory, we should
+ *    just be maintaining about ~100-150 peak values depending on the required precision which is O(1) compared to O(D).
  */
 export function calculateDifficultyValues(
   hitObjects: OsuDifficultyHitObject[],

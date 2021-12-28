@@ -64,9 +64,6 @@
       "@osujs/math": [
         "libs/osu/math/src/index.ts"
       ],
-      "@osujs/math": [
-        "libs/osu/math/src/index.ts"
-      ],
       "@rewind/osu/skin": [
         "libs/osu/skin/src/index.ts"
       ],

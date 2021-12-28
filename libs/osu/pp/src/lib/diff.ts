@@ -28,9 +28,9 @@ export interface OsuDifficultyHitObject {
   endTime: number;
 
   strainTime: number;
-  lazyJumpDistance: number;
-  minimumJumpDistance: number;
-  minimumJumpTime: number;
+  jumpDistance: number;
+  movementDistance: number;
+  movementTime: number;
   travelDistance: number;
   travelTime: number;
   angle: number | null;
@@ -112,9 +112,9 @@ const defaultOsuDifficultyHitObject = (): OsuDifficultyHitObject => ({
   deltaTime: 0,
   travelTime: 0,
   travelDistance: 0,
-  lazyJumpDistance: 0,
-  minimumJumpDistance: 0,
-  minimumJumpTime: 0,
+  jumpDistance: 0,
+  movementDistance: 0,
+  movementTime: 0,
   strainTime: 0,
   endTime: 0,
   startTime: 0,
@@ -154,12 +154,6 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
       const strainTime = Math.max(result.deltaTime, min_delta_time);
       result.strainTime = strainTime;
 
-      // Special rules are done for sliders
-      if (isSlider(current)) {
-        const { lazyTravelDistance, lazyTravelTime } = computeSliderCursorPositionIfNeeded(current);
-        result.travelDistance = lazyTravelDistance;
-        result.travelTime = Math.max(clockAdjusted(lazyTravelTime), min_delta_time);
-      }
       if (isSpinner(current) || isSpinner(last)) return result;
 
       let scalingFactor = normalised_radius / current.radius;
@@ -178,23 +172,27 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
 
       const lastCursorPosition = getEndCursorPosition(last);
       // sqrt((x1*c-x2*c)^2+(y1*c-y2*c)^2) = sqrt(c^2 (x1-x2)^2 + c^2 (y1-y2)^2) = c * dist((x1,y1),(x2,y2))
-      result.lazyJumpDistance = scalingFactor * Vec2.distance(position(current), lastCursorPosition);
-      result.minimumJumpTime = strainTime;
-      result.minimumJumpDistance = result.lazyJumpDistance;
+      result.jumpDistance = scalingFactor * Vec2.distance(position(current), lastCursorPosition);
 
       if (isSlider(last)) {
-        // No need to store into the Slider object! BatChest
-        const { lazyTravelTime: lastLazyTravelTime } = computeSliderCursorPositionIfNeeded(last);
-        const lastTravelTime = Math.max(clockAdjusted(lastLazyTravelTime), min_delta_time);
-        result.minimumJumpTime = Math.max(strainTime - lastTravelTime, min_delta_time);
+        // No need to store into the Slider object!
+        const { lazyTravelTime: lastSliderLazyTravelTime, lazyTravelDistance: lastSliderLazyTravelDistance } =
+          computeSliderCursorPositionIfNeeded(last);
+        result.travelDistance = lastSliderLazyTravelDistance;
+        result.travelTime = Math.max(lastSliderLazyTravelTime / clockRate, min_delta_time);
+        result.movementTime = Math.max(strainTime - result.travelTime, min_delta_time);
+
         const tailJumpDistance = Vec2.distance(last.endPosition, position(current)) * scalingFactor;
-        result.minimumJumpDistance = Math.max(
+        result.movementDistance = Math.max(
           0,
           Math.min(
-            result.lazyJumpDistance - (maximum_slider_radius - assumed_slider_radius),
+            result.jumpDistance - (maximum_slider_radius - assumed_slider_radius),
             tailJumpDistance - maximum_slider_radius,
           ),
         );
+      } else {
+        result.movementTime = strainTime;
+        result.movementDistance = result.jumpDistance;
       }
 
       if (lastLast !== undefined && !isSpinner(lastLast)) {

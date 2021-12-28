@@ -67,8 +67,7 @@ export function calculateSpeedStrains(
       if (strainTime < min_speed_bonus)
         speedBonus = 1 + 0.75 * Math.pow((min_speed_bonus - strainTime) / speed_balancing_factor, 2);
 
-      const travelDistance = prevIsNonDummy ? diffPrev.travelDistance : 0;
-      const distance = Math.min(single_spacing_threshold, travelDistance + diffCurrent.minimumJumpDistance);
+      const distance = Math.min(single_spacing_threshold, diffCurrent.travelDistance + diffCurrent.jumpDistance);
 
       return (speedBonus + speedBonus * Math.pow(distance / single_spacing_threshold, 3.5)) / strainTime;
     })();
@@ -86,6 +85,8 @@ export function calculateSpeedStrains(
 
       let rhythmStart = 0;
 
+      // From
+      // https://github.com/ppy/osu/commit/c87ff82c1cde3af45c173fcb264de999340b743c#diff-4ed7064eeb60b6f0a19dc16729cd6fc3c3ba9794962a7bcfc830bddbea781000
       while (
         rhythmStart < previousCount - 2 &&
         diffCurrent.startTime - previous(rhythmStart).startTime < history_time_max
@@ -97,20 +98,8 @@ export function calculateSpeedStrains(
         const prevObj = previous(j);
         const lastObj = previous(j + 1);
 
-        let currHistoricalDecay = (history_time_max - (diffCurrent.startTime - currObj.startTime)) / history_time_max; // scales
-        // note
-        // 0
-        // to
-        // 1
-        // from
-        // history
-        // to
-        // now
-
-        currHistoricalDecay = Math.min((previousCount - j) / previousCount, currHistoricalDecay); // either we're
-        // limited by time or
-        // limited by object
-        // count.
+        let currHistoricalDecay = (history_time_max - (diffCurrent.startTime - currObj.startTime)) / history_time_max;
+        currHistoricalDecay = Math.min((previousCount - j) / previousCount, currHistoricalDecay);
 
         const currDelta = currObj.strainTime;
         const prevDelta = prevObj.strainTime;
