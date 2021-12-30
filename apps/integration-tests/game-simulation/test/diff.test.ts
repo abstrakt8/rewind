@@ -21,24 +21,18 @@ interface TestSuite {
 
 function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
   const beatmap = buildBeatmap(blueprint, { mods });
-
-  const [lastAttributes] = calculateDifficultyAttributes(
-    beatmap.hitObjects,
-    beatmap.appliedMods,
-    beatmap.difficulty.overallDifficulty,
-    true,
-  );
+  const [lastAttributes] = calculateDifficultyAttributes(beatmap, true);
   return lastAttributes.starRating;
 }
 
 function runTestSuite({ filename, cases }: TestSuite) {
-  describe(filename, function () {
+  describe(filename, function() {
     // const blueprint = getBlueprintFromTestDir(filename);
     cases.forEach(({ mods: modAcronyms, starRating }) => {
       const blueprint = getBlueprintFromTestDir(filename);
       const testCaseName = modAcronyms.length === 0 ? "NM" : modAcronyms.join(",");
       const mods = modAcronyms.map(translateModAcronym);
-      it(testCaseName, function () {
+      it(testCaseName, function() {
         const actual = calculateStarRating(blueprint, mods);
         expect(actual).toBeCloseTo(starRating, SR_EXPECTED_PRECISION);
       });
@@ -46,7 +40,7 @@ function runTestSuite({ filename, cases }: TestSuite) {
   });
 }
 
-describe("Star rating calculation", function () {
+describe("Star rating calculation", function() {
   const data = readFileSync("E:\\test.json", "utf-8");
   const suites: TestSuite[] = JSON.parse(data);
   suites.forEach(runTestSuite);

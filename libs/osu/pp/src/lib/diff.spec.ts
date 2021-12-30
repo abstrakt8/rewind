@@ -1,24 +1,8 @@
 import { join } from "path";
 import { readFileSync } from "fs";
-import {
-  Blueprint,
-  buildBeatmap,
-  determineDefaultPlaybackSpeed,
-  isHitCircle,
-  isSlider,
-  isSpinner,
-  OsuClassicMod,
-  OsuHitObject,
-  parseBlueprint,
-} from "@osujs/core";
+import { Blueprint, buildBeatmap, OsuClassicMod, parseBlueprint } from "@osujs/core";
 import { calculateDifficultyAttributes } from "./diff";
 import { calculatePerformanceAttributes, ScoreParams } from "./pp";
-import {
-  approachDurationToApproachRate,
-  approachRateToApproachDuration,
-  hitWindowGreatToOD,
-  overallDifficultyToHitWindowGreat,
-} from "@osujs/math";
 
 // Move these to integration tests
 
@@ -29,38 +13,10 @@ function getBlueprint(name: string) {
 
 function starRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
   const beatmap = buildBeatmap(blueprint, { mods });
-
-  const [lastAttributes] = calculateDifficultyAttributes(
-    beatmap.hitObjects,
-    beatmap.appliedMods,
-    beatmap.difficulty.overallDifficulty,
-    true,
-  );
+  const [lastAttributes] = calculateDifficultyAttributes(beatmap, true);
   return lastAttributes.starRating;
 }
 
-function determineMaxCombo(hitObjects: OsuHitObject[]) {
-  let maxCombo = 0;
-  let hitCircleCount = 0,
-    sliderCount = 0,
-    spinnerCount = 0;
-
-  for (const o of hitObjects) {
-    maxCombo++;
-    if (isHitCircle(o)) hitCircleCount++;
-    if (isSpinner(o)) spinnerCount++;
-    if (isSlider(o)) {
-      sliderCount++;
-      maxCombo += o.checkPoints.length;
-    }
-  }
-  return { maxCombo, hitCircleCount, sliderCount, spinnerCount };
-}
-
-const speedAdjustedAR = (AR: number, clockRate: number) =>
-  approachDurationToApproachRate(approachRateToApproachDuration(AR) / clockRate);
-const speedAdjustedOD = (OD: number, clockRate: number) =>
-  hitWindowGreatToOD(overallDifficultyToHitWindowGreat(OD) / clockRate);
 
 // TODO: Make it more dynamic
 // Once a rework hits, we need to adjust the test cases again, but I think then you want to generate those SR
@@ -68,38 +24,10 @@ const speedAdjustedOD = (OD: number, clockRate: number) =>
 
 function calculatePP(blueprint: Blueprint, scoreParams: ScoreParams) {
   const mods = scoreParams.mods;
-  const { appliedMods, difficulty, hitObjects } = buildBeatmap(blueprint, { mods });
-  const [{
-    aimDifficulty,
-    speedDifficulty,
-    flashlightDifficulty,
-    sliderFactor,
-  }] = calculateDifficultyAttributes(hitObjects, appliedMods, difficulty.overallDifficulty, true);
+  const beatmap = buildBeatmap(blueprint, { mods });
 
-  const { hitCircleCount, sliderCount, spinnerCount, maxCombo } = determineMaxCombo(hitObjects);
-  const clockRate = determineDefaultPlaybackSpeed(mods);
-
-  const overallDifficulty = speedAdjustedOD(difficulty.overallDifficulty, clockRate);
-  const approachRate = speedAdjustedAR(difficulty.approachRate, clockRate);
-
-  const { total } = calculatePerformanceAttributes(
-    {
-      aimDifficulty,
-      speedDifficulty,
-      flashlightDifficulty,
-      sliderFactor,
-
-      maxCombo,
-      sliderCount,
-      spinnerCount,
-      hitCircleCount,
-
-      overallDifficulty,
-      approachRate,
-      drainRate: difficulty.drainRate,
-    },
-    scoreParams,
-  );
+  const [finalAttributes] = calculateDifficultyAttributes(beatmap, true);
+  const { total } = calculatePerformanceAttributes(finalAttributes, scoreParams);
   return total;
 }
 

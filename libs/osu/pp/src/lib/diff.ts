@@ -1,25 +1,25 @@
 // Strain
 import {
+  Beatmap,
   determineDefaultPlaybackSpeed,
   HitCircle,
   isHitCircle,
   isSlider,
   isSpinner,
-  OsuClassicMod,
   OsuHitObject,
   Slider,
 } from "@osujs/core";
-import { hitWindowsForOD, Position, Vec2 } from "@osujs/math";
+import {
+  approachDurationToApproachRate,
+  approachRateToApproachDuration,
+  hitWindowGreatToOD,
+  hitWindowsForOD,
+  overallDifficultyToHitWindowGreat,
+  Position,
+  Vec2,
+} from "@osujs/math";
 import { calculateAim } from "./skills/aim";
 import { calculateSpeed } from "./skills/speed";
-
-const decayWeight = 0.9;
-
-// It's the clock rate adjusted duration (so 400ms in real time)
-const sectionDurationInMs = 400;
-
-//
-function difficultyValue() {}
 
 export interface OsuDifficultyHitObject {
   // Game clock adjusted
@@ -212,31 +212,70 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
   return difficultyHitObjects;
 }
 
-interface DifficultyAttributes {
+export interface DifficultyAttributes {
   aimDifficulty: number;
   speedDifficulty: number;
   flashlightDifficulty: number;
   sliderFactor: number;
+
   starRating: number;
+
+  // Can be easily calculated from beatmap
+  maxCombo: number;
+  hitCircleCount: number;
+  sliderCount: number;
+  spinnerCount: number;
+
+  // Notice that these values can exceed 10 (when DT mod is used)
+  approachRate: number;
+  overallDifficulty: number;
+  // Surprisingly, HP is also used but only for the "Blinds" mod
+  drainRate: number;
 }
+
+function determineMaxCombo(hitObjects: OsuHitObject[]) {
+  let maxCombo = 0;
+  let hitCircleCount = 0,
+    sliderCount = 0,
+    spinnerCount = 0;
+
+  for (const o of hitObjects) {
+    maxCombo++;
+    if (isHitCircle(o)) hitCircleCount++;
+    if (isSpinner(o)) spinnerCount++;
+    if (isSlider(o)) {
+      sliderCount++;
+      maxCombo += o.checkPoints.length;
+    }
+  }
+  return { maxCombo, hitCircleCount, sliderCount, spinnerCount };
+}
+
+const DIFFICULTY_MULTIPLIER = 0.0675;
+
+const speedAdjustedAR = (AR: number, clockRate: number) =>
+  approachDurationToApproachRate(approachRateToApproachDuration(AR) / clockRate);
+const speedAdjustedOD = (OD: number, clockRate: number) =>
+  hitWindowGreatToOD(overallDifficultyToHitWindowGreat(OD) / clockRate);
 
 // Calculates the different star ratings after every hit object i
 export function calculateDifficultyAttributes(
-  hitObjects: OsuHitObject[],
-  mods: OsuClassicMod[],
-  overallDifficulty: number,
-  onlyFinalValue,
+  { appliedMods: mods, difficulty, hitObjects }: Beatmap,
+  onlyFinalValue: boolean,
 ) {
-  const DIFFICULTY_MULTIPLIER = 0.0675;
-
   const clockRate = determineDefaultPlaybackSpeed(mods);
   const diffs = preprocessDifficultyHitObject(hitObjects, clockRate);
 
-  const hitWindowGreat = hitWindowsForOD(overallDifficulty, true)[0] / clockRate;
+  const hitWindowGreat = hitWindowsForOD(difficulty.overallDifficulty, true)[0] / clockRate;
 
   const aimValues = calculateAim(hitObjects, diffs, true, onlyFinalValue);
   const aimValuesNoSliders = calculateAim(hitObjects, diffs, false, onlyFinalValue);
   const speedValues = calculateSpeed(hitObjects, diffs, hitWindowGreat, onlyFinalValue);
+
+  // Static values
+  const { hitCircleCount, sliderCount, spinnerCount, maxCombo } = determineMaxCombo(hitObjects);
+  const overallDifficulty = speedAdjustedOD(difficulty.overallDifficulty, clockRate);
+  const approachRate = speedAdjustedAR(difficulty.approachRate, clockRate);
 
   const attributes: DifficultyAttributes[] = [];
   for (let i = 0; i < aimValues.length; i++) {
@@ -257,8 +296,8 @@ export function calculateDifficultyAttributes(
 
     const basePerformance = Math.pow(
       Math.pow(baseAimPerformance, 1.1) +
-        Math.pow(baseSpeedPerformance, 1.1) +
-        Math.pow(baseFlashlightPerformance, 1.1),
+      Math.pow(baseSpeedPerformance, 1.1) +
+      Math.pow(baseFlashlightPerformance, 1.1),
       1.0 / 1.1,
     );
 
@@ -266,12 +305,18 @@ export function calculateDifficultyAttributes(
       basePerformance > 0.00001
         ? Math.cbrt(1.12) * 0.027 * (Math.cbrt((100000 / Math.pow(2, 1 / 1.1)) * basePerformance) + 4)
         : 0;
+
     attributes.push({
       aimDifficulty: aimRating,
       speedDifficulty: speedRating,
       flashlightDifficulty: flashlightRating,
       sliderFactor,
       starRating,
+      // These are actually redundant but idc
+      hitCircleCount, sliderCount, spinnerCount, maxCombo,
+      overallDifficulty,
+      approachRate,
+      drainRate: difficulty.drainRate,
     });
   }
   return attributes;

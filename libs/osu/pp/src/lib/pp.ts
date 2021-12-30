@@ -1,5 +1,6 @@
 import { OsuClassicMod, osuStableAccuracy } from "@osujs/core";
 import { clamp } from "@osujs/math";
+import { DifficultyAttributes } from "./diff";
 
 interface OsuPerformanceAttributes {
   // The "PP" value that is then displayed and used for calculations
@@ -22,30 +23,8 @@ export interface ScoreParams {
   countMiss: number;
 }
 
-// aka OsuDifficultyAttribute
-interface BeatmapParams {
-  // Notice that these values can exceed 10 (when DT mod is used)
-  approachRate: number;
-  overallDifficulty: number;
-  // Surprisingly, HP is also used but only for the "Blinds" mod
-  drainRate: number;
-
-  // Can be easily calculated from beatmap
-  maxCombo: number;
-  hitCircleCount: number;
-  sliderCount: number;
-  spinnerCount: number;
-
-  // Have to be calculated using the difficulty calculator
-  sliderFactor: number;
-  aimDifficulty: number;
-  speedDifficulty: number;
-  flashlightDifficulty: number;
-}
-
-//
 export function calculatePerformanceAttributes(
-  beatmapParams: BeatmapParams,
+  beatmapParams: DifficultyAttributes,
   scoreParams: ScoreParams,
 ): OsuPerformanceAttributes {
   const {
@@ -257,3 +236,4 @@ export function calculatePerformanceAttributes(
     total: totalValue,
   };
 }
+
