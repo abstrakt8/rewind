@@ -225,6 +225,7 @@ export function calculateDifficultyAttributes(
   hitObjects: OsuHitObject[],
   mods: OsuClassicMod[],
   overallDifficulty: number,
+  onlyFinalValue,
 ) {
   const DIFFICULTY_MULTIPLIER = 0.0675;
 
@@ -233,12 +234,12 @@ export function calculateDifficultyAttributes(
 
   const hitWindowGreat = hitWindowsForOD(overallDifficulty, true)[0] / clockRate;
 
-  const aimValues = calculateAim(hitObjects, diffs, true);
-  const aimValuesNoSliders = calculateAim(hitObjects, diffs, false);
-  const speedValues = calculateSpeed(hitObjects, diffs, hitWindowGreat);
+  const aimValues = calculateAim(hitObjects, diffs, true, onlyFinalValue);
+  const aimValuesNoSliders = calculateAim(hitObjects, diffs, false, onlyFinalValue);
+  const speedValues = calculateSpeed(hitObjects, diffs, hitWindowGreat, onlyFinalValue);
 
   const attributes: DifficultyAttributes[] = [];
-  for (let i = 0; i < hitObjects.length; i++) {
+  for (let i = 0; i < aimValues.length; i++) {
     const aimRating = Math.sqrt(aimValues[i]) * DIFFICULTY_MULTIPLIER;
     const aimRatingNoSliders = Math.sqrt(aimValuesNoSliders[i]) * DIFFICULTY_MULTIPLIER;
     let speedRating = Math.sqrt(speedValues[i]) * DIFFICULTY_MULTIPLIER;

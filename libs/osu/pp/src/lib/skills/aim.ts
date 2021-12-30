@@ -162,15 +162,13 @@ function calculateAimStrains(
   return strains;
 }
 
-export function calculateAim(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], withSliders: boolean) {
-  // Contains the highest peaks so far
+export function calculateAim(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], withSliders: boolean, onlyFinalValue: boolean) {
   const strains = calculateAimStrains(hitObjects, diffs, withSliders);
-  // Problem at i=27
   return calculateDifficultyValues(diffs, strains, {
     decayWeight: 0.9,
     difficultyMultiplier: 1.06,
     sectionDuration: 400,
     reducedSectionCount: 10,
     strainDecay,
-  });
+  }, onlyFinalValue);
 }

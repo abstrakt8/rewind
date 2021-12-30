@@ -48,19 +48,25 @@ const REDUCED_STRAIN_BASELINE = 0.75;
  *    just be maintaining about ~100-150 peak values depending on the required precision which is O(1) compared to O(D).
  */
 export function calculateDifficultyValues(
-  hitObjects: OsuDifficultyHitObject[],
+  hitObjects: OsuDifficultyHitObject[], // -> only startTime is used here
   strains: number[],
   { sectionDuration, reducedSectionCount, difficultyMultiplier, strainDecay, decayWeight }: StrainDifficultyParams,
-) {
+  onlyFinalValue: boolean,
+): number[] {
   if (hitObjects.length === 0) return [];
   // osu!lazer note: sectionBegin = sectionDuration if t is dividable by sectionDuration (bug?)
   const calcSectionBegin = (sectionDuration: number, t: number) => Math.floor(t / sectionDuration) * sectionDuration;
 
   const peaks: number[] = [];
-  const difficultyValues: number[] = [0];
+  const difficultyValues: number[] = [];
 
   let currentSectionBegin = calcSectionBegin(sectionDuration, hitObjects[0].startTime);
   let currentSectionPeak = 0;
+
+  if (!onlyFinalValue) {
+    // For the first hitobject it is always 0
+    difficultyValues.push(0);
+  }
 
   for (let i = 1; i < hitObjects.length; i++) {
     const prevStartTime = hitObjects[i - 1].startTime;
@@ -76,6 +82,9 @@ export function calculateDifficultyValues(
     // Now check if the currentSectionPeak can be improved with the current hit object i
     currentSectionPeak = Math.max(currentSectionPeak, strains[i]);
 
+    if (onlyFinalValue && i + 1 < hitObjects.length) {
+      continue;
+    }
     // We do not push the currentSectionPeak to the peaks yet because currentSectionPeak is still in a jelly state and
     // can be improved by the future hit objects in the same section.
     const peaksWithCurrent = [...peaks, currentSectionPeak];

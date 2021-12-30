@@ -22,14 +22,12 @@ interface TestSuite {
 function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
   const beatmap = buildBeatmap(blueprint, { mods });
 
-  const attributes = calculateDifficultyAttributes(
+  const [lastAttributes] = calculateDifficultyAttributes(
     beatmap.hitObjects,
     beatmap.appliedMods,
     beatmap.difficulty.overallDifficulty,
+    true,
   );
-
-  expect(attributes.length).toEqual(beatmap.hitObjects.length);
-  const lastAttributes = attributes[attributes.length - 1];
   return lastAttributes.starRating;
 }
 

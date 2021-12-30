@@ -85,7 +85,7 @@ export function calculateSpeedStrains(
 
       let rhythmStart = 0;
 
-      // From
+      // Optimization from a "future" commit
       // https://github.com/ppy/osu/commit/c87ff82c1cde3af45c173fcb264de999340b743c#diff-4ed7064eeb60b6f0a19dc16729cd6fc3c3ba9794962a7bcfc830bddbea781000
       while (
         rhythmStart < previousCount - 2 &&
@@ -182,7 +182,7 @@ export function calculateSpeedStrains(
   return strains;
 }
 
-export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], hitWindowGreat: number) {
+export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], hitWindowGreat: number, onlyFinalValue: boolean) {
   const strains = calculateSpeedStrains(hitObjects, diffs, hitWindowGreat);
   return calculateDifficultyValues(diffs, strains, {
     decayWeight: 0.9,
@@ -190,5 +190,5 @@ export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyH
     sectionDuration: 400,
     reducedSectionCount: 5,
     strainDecay,
-  });
+  }, onlyFinalValue);
 }
