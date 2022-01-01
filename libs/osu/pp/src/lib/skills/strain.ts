@@ -48,19 +48,19 @@ const REDUCED_STRAIN_BASELINE = 0.75;
  *    just be maintaining about ~100-150 peak values depending on the required precision which is O(1) compared to O(D).
  */
 export function calculateDifficultyValues(
-  hitObjects: OsuDifficultyHitObject[], // -> only startTime is used here
+  diffs: OsuDifficultyHitObject[], // -> only startTime is used here
   strains: number[],
   { sectionDuration, reducedSectionCount, difficultyMultiplier, strainDecay, decayWeight }: StrainDifficultyParams,
   onlyFinalValue: boolean,
 ): number[] {
-  if (hitObjects.length === 0) return [];
+  if (diffs.length === 0) return [];
   // osu!lazer note: sectionBegin = sectionDuration if t is dividable by sectionDuration (bug?)
   const calcSectionBegin = (sectionDuration: number, t: number) => Math.floor(t / sectionDuration) * sectionDuration;
 
   const peaks: number[] = [];
   const difficultyValues: number[] = [];
 
-  let currentSectionBegin = calcSectionBegin(sectionDuration, hitObjects[0].startTime);
+  let currentSectionBegin = calcSectionBegin(sectionDuration, diffs[0].startTime);
   let currentSectionPeak = 0;
 
   if (!onlyFinalValue) {
@@ -68,9 +68,9 @@ export function calculateDifficultyValues(
     difficultyValues.push(0);
   }
 
-  for (let i = 1; i < hitObjects.length; i++) {
-    const prevStartTime = hitObjects[i - 1].startTime;
-    const currStartTime = hitObjects[i].startTime;
+  for (let i = 1; i < diffs.length; i++) {
+    const prevStartTime = diffs[i - 1].startTime;
+    const currStartTime = diffs[i].startTime;
 
     // Let's see if we can close off the other sections
     while (currentSectionBegin + sectionDuration < currStartTime) {
@@ -82,7 +82,7 @@ export function calculateDifficultyValues(
     // Now check if the currentSectionPeak can be improved with the current hit object i
     currentSectionPeak = Math.max(currentSectionPeak, strains[i]);
 
-    if (onlyFinalValue && i + 1 < hitObjects.length) {
+    if (onlyFinalValue && i + 1 < diffs.length) {
       continue;
     }
     // We do not push the currentSectionPeak to the peaks yet because currentSectionPeak is still in a jelly state and

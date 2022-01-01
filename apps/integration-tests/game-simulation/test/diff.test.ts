@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 import { getBlueprintFromTestDir, translateModAcronym } from "../src/app/util";
 import { calculateDifficultyAttributes } from "@osujs/pp";
 
-// 3 digits after floating point
+// n digits after floating point
 const SR_EXPECTED_PRECISION = 3;
 
 type TestCase = {
