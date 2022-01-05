@@ -3,6 +3,8 @@ import { floatEqual } from "./utils";
 // The general type for {x, y} coordinates.
 export type Position = { x: number; y: number };
 
+// TODO: Using 32-bit float as return result everywhere?
+// For example Vector2.Length is returned as float
 export class Vec2 {
   x: number;
   y: number;
@@ -10,8 +12,8 @@ export class Vec2 {
   static Zero = new Vec2(0, 0);
 
   constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
+    this.x = Math.fround(x);
+    this.y = Math.fround(y);
   }
 
   // This should be preferred since it avoids using sqrt
@@ -46,6 +48,7 @@ export class Vec2 {
   }
 
   static scale(a: Position, c: number): Vec2 {
+    c = Math.fround(c);
     return new Vec2(a.x * c, a.y * c);
   }
 
@@ -79,7 +82,7 @@ export class Vec2 {
   }
 
   length(): number {
-    return Math.sqrt(this.lengthSquared());
+    return Math.fround(Math.sqrt(this.x * this.x + this.y * this.y));
   }
 
   equals(b: Position): boolean {
@@ -87,6 +90,9 @@ export class Vec2 {
   }
 
   normalized(): Vec2 {
-    return this.divide(this.length());
+    const num = Math.fround(1 / this.length());
+    this.x *= num;
+    this.y *= num;
+    return this;
   }
 }

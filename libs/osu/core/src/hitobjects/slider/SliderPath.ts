@@ -121,11 +121,12 @@ export class SliderPath {
     this._cumulativeLength[0] = 0.0;
     for (let i = 1; i < this._calculatedPath.length; i++) {
       this._cumulativeLength[i] =
-        this._cumulativeLength[i - 1] + Vec2.distance(this._calculatedPath[i - 1], this._calculatedPath[i]);
+        this._cumulativeLength[i - 1] + Math.fround(Vec2.distance(this._calculatedPath[i - 1], this._calculatedPath[i]));
     }
     const calculatedLength = this._cumulativeLength[this._cumulativeLength.length - 1];
 
     if (this._expectedDistance !== undefined && !floatEqual(calculatedLength, this._expectedDistance)) {
+      // TODO: Check commit 81fee02 there is a special case here missing about last two control points being equal
       // The last length is always incorrect
       this._cumulativeLength.splice(this._cumulativeLength.length - 1);
 
@@ -148,7 +149,7 @@ export class SliderPath {
       const dir = Vec2.sub(this._calculatedPath[pathEndIndex], this._calculatedPath[pathEndIndex - 1]).normalized();
 
       const f = this._expectedDistance - this._cumulativeLength[this._cumulativeLength.length - 1];
-      this._calculatedPath[pathEndIndex] = Vec2.add(this._calculatedPath[pathEndIndex - 1], dir.scale(f));
+      this._calculatedPath[pathEndIndex] = Vec2.add(this._calculatedPath[pathEndIndex - 1], dir.scale(Math.fround(f)));
       this._cumulativeLength.push(this._expectedDistance);
     }
   }

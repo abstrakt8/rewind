@@ -71,9 +71,8 @@ function splitKeyVal(line: string, separator = ":"): [string, string] {
 }
 
 function convertPathType(value: string): PathType {
-  // we only check first character lol
   switch (value[0]) {
-    // what does this mean
+    // TODO: ???
     default:
     case "C":
       return PathType.Catmull;
