@@ -1,4 +1,5 @@
-import { floatEqual } from "./utils";
+import { float32, float32_div, float32_mul } from "./float32";
+
 
 // The general type for {x, y} coordinates.
 export type Position = { x: number; y: number };
@@ -12,17 +13,19 @@ export class Vec2 {
   static Zero = new Vec2(0, 0);
 
   constructor(x: number, y: number) {
-    this.x = Math.fround(x);
-    this.y = Math.fround(y);
+    this.x = float32(x);
+    this.y = float32(y);
   }
 
   // This should be preferred since it avoids using sqrt
+  // TODO: however this might be TOO precise that we will have matching issue with osu!lazer
   static withinDistance(a: Position, b: Position, d: number): boolean {
     return (a.x - b.x) ** 2 + (a.y - b.y) ** 2 <= d ** 2;
   }
 
+  // returns float
   static distance(a: Position, b: Position): number {
-    return Math.sqrt(Vec2.distanceSquared(a, b));
+    return Math.fround(Math.sqrt(Vec2.distanceSquared(a, b)));
   }
 
   static distanceSquared(a: Position, b: Position): number {
@@ -32,7 +35,9 @@ export class Vec2 {
   }
 
   static equal(a: Position, b: Position): boolean {
-    return floatEqual(a.x, b.x) && floatEqual(a.y, b.y);
+    // return floatEqual(a.x, b.x) && floatEqual(a.y, b.y);
+    // I commented out my original solution and replaced it with osu!framework variant (which is ...)
+    return a.x === b.x && a.y === b.y;
   }
 
   static add(a: Position, b: Position): Vec2 {
@@ -40,20 +45,21 @@ export class Vec2 {
   }
 
   static dot(a: Position, b: Position): number {
-    return a.x * b.x + a.y * b.y;
+    return Math.fround(a.x * b.x + a.y * b.y);
   }
 
   static sub(a: Position, b: Position): Vec2 {
     return new Vec2(a.x - b.x, a.y - b.y);
   }
 
+  // c: float
   static scale(a: Position, c: number): Vec2 {
-    c = Math.fround(c);
-    return new Vec2(a.x * c, a.y * c);
+    return new Vec2(float32_mul(a.x, c), float32_mul(a.y, c));
   }
 
+  // c: float
   static divide(a: Position, c: number): Vec2 {
-    return new Vec2(a.x / c, a.y / c);
+    return new Vec2(float32_div(a.x, c), float32_div(a.y, c));
   }
 
   // Order is important
@@ -82,7 +88,7 @@ export class Vec2 {
   }
 
   length(): number {
-    return Math.fround(Math.sqrt(this.x * this.x + this.y * this.y));
+    return float32(Math.sqrt(this.x ** 2 + this.y ** 2));
   }
 
   equals(b: Position): boolean {
@@ -90,9 +96,9 @@ export class Vec2 {
   }
 
   normalized(): Vec2 {
-    const num = Math.fround(1 / this.length());
-    this.x *= num;
-    this.y *= num;
+    const num = this.length();
+    this.x = float32_div(this.x, num);
+    this.y = float32_div(this.y, num);
     return this;
   }
 }

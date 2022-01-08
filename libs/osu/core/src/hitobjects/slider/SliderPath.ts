@@ -1,6 +1,6 @@
 import { PathControlPoint } from "./PathControlPoint";
 import { PathType } from "./PathType";
-import { floatEqual, Position, Vec2 } from "@osujs/math";
+import { clamp, doubleEqual, Position, Vec2 } from "@osujs/math";
 import { PathApproximator } from "./PathApproximator";
 
 function mapToVector2(p: Position[]) {
@@ -61,7 +61,8 @@ export class SliderPath {
 
         // eslint-disable-next-line no-case-declarations
         const subpath = PathApproximator.approximateCircularArc(mapToVector2(subControlPoints));
-        // If for some reason a circular arc could not be fit to the 3 given points, fall back to a numerically stable bezier approximation.
+        // If for some reason a circular arc could not be fit to the 3 given points, fall back to a numerically stable
+        // bezier approximation.
         if (subpath.length === 0) break;
         return subpath;
     }
@@ -125,7 +126,8 @@ export class SliderPath {
     }
     const calculatedLength = this._cumulativeLength[this._cumulativeLength.length - 1];
 
-    if (this._expectedDistance !== undefined && !floatEqual(calculatedLength, this._expectedDistance)) {
+    // TODO: In lazer the != operator is used, but shouldn't the approximate equal be used?
+    if (this._expectedDistance !== undefined && calculatedLength !== this._expectedDistance) {
       // TODO: Check commit 81fee02 there is a special case here missing about last two control points being equal
       // The last length is always incorrect
       this._cumulativeLength.splice(this._cumulativeLength.length - 1);
@@ -135,7 +137,7 @@ export class SliderPath {
         while (
           this._cumulativeLength.length > 0 &&
           this._cumulativeLength[this._cumulativeLength.length - 1] >= this._expectedDistance
-        ) {
+          ) {
           this._cumulativeLength.splice(this._cumulativeLength.length - 1);
           this._calculatedPath.splice(pathEndIndex--, 1);
         }
@@ -176,11 +178,11 @@ export class SliderPath {
    * @param progress a number between 0 (head) and 1 (tail/repeat)
    */
   positionAt(progress: number): Position {
-    const p = Math.min(1, Math.max(0, progress));
-    const partialDistance = this.distance * p;
+    const partialDistance = this.distance * clamp(progress, 0, 1);
     return this.interpolateVertices(this.indexOfDistance(partialDistance), partialDistance);
   }
 
+  // d: double
   private interpolateVertices(i: number, d: number): Position {
     if (this.calculatedPath.length === 0) return Vec2.Zero;
     if (i === 0) return this.calculatedPath[0];
@@ -188,7 +190,7 @@ export class SliderPath {
     const p2 = this.calculatedPath[i];
     const d1 = this.cumulativeLengths[i - 1];
     const d2 = this.cumulativeLengths[i];
-    if (floatEqual(d1, d2)) {
+    if (doubleEqual(d1, d2)) {
       return p1;
     }
     // Number between 0 and 1

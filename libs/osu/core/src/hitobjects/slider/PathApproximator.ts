@@ -1,10 +1,10 @@
-import { floatEqual, Vec2 } from "@osujs/math";
+import { float32, float32_mul, floatEqual, Vec2 } from "@osujs/math";
 
 // TODO: Move to osu-math
 // https://github.com/ppy/osu-framework/blob/f9d44b1414e30ad507894ef7eaaf5d1b0118be82/osu.Framework/Utils/PathApproximator.cs
 
-const bezierTolerance = 0.25;
-const circularArcTolerance = 0.1;
+const bezierTolerance = Math.fround(0.25);
+const circularArcTolerance = Math.fround(0.1);
 // The amount of pieces to calculate for each control point quadruplet.
 const catmullDetail = 50;
 
@@ -138,16 +138,17 @@ export class PathApproximator {
     const a = controlPoints[0];
     const b = controlPoints[1];
     const c = controlPoints[2];
-    if (floatEqual(0, (b.y - a.y) * (c.x - a.x) - (b.x - a.x) * (c.y - a.y))) return undefined; // = invalid
+    if (floatEqual(0, float32(float32_mul(b.y - a.y, c.x - a.x) - float32_mul(b.x - a.x, c.y - a.y))))
+      return undefined; // = invalid
 
-    const d = toFloat(2 * (a.x * b.sub(c).y + b.x * c.sub(a).y + c.x * a.sub(b).y));
+    const d = toFloat(2 * float32(float32_mul(a.x, b.sub(c).y) + float32_mul(b.x, c.sub(a).y) + float32_mul(c.x, a.sub(b).y)));
     const aSq = toFloat(a.lengthSquared());
     const bSq = toFloat(b.lengthSquared());
     const cSq = toFloat(c.lengthSquared());
 
     const center = new Vec2(
-      toFloat(aSq * b.sub(c).y + bSq * c.sub(a).y + cSq * a.sub(b).y),
-      toFloat(aSq * c.sub(b).x + bSq * a.sub(c).x + cSq * b.sub(a).x),
+      toFloat(float32_mul(aSq, b.sub(c).y) + float32_mul(bSq, c.sub(a).y) + float32_mul(cSq, a.sub(b).y)),
+      toFloat(float32_mul(aSq, c.sub(b).x) + float32_mul(bSq, a.sub(c).x) + float32_mul(cSq, b.sub(a).x)),
     ).divide(d);
 
     const dA = a.sub(center);
@@ -407,17 +408,17 @@ export class PathApproximator {
     return new Vec2(
       Math.fround(
         0.5 *
-          (2 * vec2.x +
-            (-vec1.x + vec3.x) * t +
-            (2 * vec1.x - 5 * vec2.x + 4 * vec3.x - vec4.x) * t2 +
-            (-vec1.x + 3 * vec2.x - 3 * vec3.x + vec4.x) * t3),
+        (2 * vec2.x +
+          (-vec1.x + vec3.x) * t +
+          (2 * vec1.x - 5 * vec2.x + 4 * vec3.x - vec4.x) * t2 +
+          (-vec1.x + 3 * vec2.x - 3 * vec3.x + vec4.x) * t3),
       ),
       Math.fround(
         0.5 *
-          (2 * vec2.y +
-            (-vec1.y + vec3.y) * t +
-            (2 * vec1.y - 5 * vec2.y + 4 * vec3.y - vec4.y) * t2 +
-            (-vec1.y + 3 * vec2.y - 3 * vec3.y + vec4.y) * t3),
+        (2 * vec2.y +
+          (-vec1.y + vec3.y) * t +
+          (2 * vec1.y - 5 * vec2.y + 4 * vec3.y - vec4.y) * t2 +
+          (-vec1.y + 3 * vec2.y - 3 * vec3.y + vec4.y) * t3),
       ),
     );
   }

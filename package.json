@@ -128,6 +128,7 @@
     "@testing-library/react-hooks": "7.0.2",
     "@types/add-zero": "^1.0.1",
     "@types/color-string": "^1.5.0",
+    "@types/decimal.js": "^7.4.0",
     "@types/jest": "27.0.2",
     "@types/node": "^16.7.10",
     "@types/node-osr": "file:./libs/@types/node-osr",
