@@ -1,4 +1,4 @@
-import { float32, float32_mul, floatEqual, Vec2 } from "@osujs/math";
+import { float32, float32_add, float32_div, float32_mul, floatEqual, Vec2 } from "@osujs/math";
 
 // TODO: Move to osu-math
 // https://github.com/ppy/osu-framework/blob/f9d44b1414e30ad507894ef7eaaf5d1b0118be82/osu.Framework/Utils/PathApproximator.cs
@@ -141,19 +141,22 @@ export class PathApproximator {
     if (floatEqual(0, float32(float32_mul(b.y - a.y, c.x - a.x) - float32_mul(b.x - a.x, c.y - a.y))))
       return undefined; // = invalid
 
-    const d = toFloat(2 * float32(float32_mul(a.x, b.sub(c).y) + float32_mul(b.x, c.sub(a).y) + float32_mul(c.x, a.sub(b).y)));
+    const d = float32_mul(2, float32_add(float32_add(float32_mul(a.x, b.sub(c).y), float32_mul(b.x, c.sub(a).y)), float32_mul(c.x, a.sub(b).y)));
     const aSq = toFloat(a.lengthSquared());
     const bSq = toFloat(b.lengthSquared());
     const cSq = toFloat(c.lengthSquared());
 
-    const center = new Vec2(
-      toFloat(float32_mul(aSq, b.sub(c).y) + float32_mul(bSq, c.sub(a).y) + float32_mul(cSq, a.sub(b).y)),
-      toFloat(float32_mul(aSq, c.sub(b).x) + float32_mul(bSq, a.sub(c).x) + float32_mul(cSq, b.sub(a).x)),
-    ).divide(d);
+    // Not really exact
+    const centerX =
+      toFloat(float32_add(float32_add(float32_mul(aSq, b.sub(c).y), float32_mul(bSq, c.sub(a).y)), float32_mul(cSq, a.sub(b).y)));
+    const centerY =
+      toFloat(float32_add(float32_add(float32_mul(aSq, c.sub(b).x), float32_mul(bSq, a.sub(c).x)), float32_mul(cSq, b.sub(a).x)));
+    const center = new Vec2(centerX, centerY).divide(d);
 
     const dA = a.sub(center);
     const dC = c.sub(center);
 
+    // Also not exact
     const r = toFloat(dA.length());
     const thetaStart = Math.atan2(dA.y, dA.x);
     let thetaEnd = Math.atan2(dC.y, dC.x);
@@ -185,7 +188,7 @@ export class PathApproximator {
     const amountPoints =
       2 * radius <= circularArcTolerance
         ? 2
-        : Math.max(2, Math.ceil(thetaRange / (2 * Math.acos(1 - circularArcTolerance / radius))));
+        : Math.max(2, Math.ceil(thetaRange / (2 * Math.acos(1 - float32_div(circularArcTolerance, radius)))));
 
     // We select the amount of points for the approximation by requiring the discrete curvature
     // to be smaller than the provided tolerance. The exact angle required to meet the tolerance

@@ -35,13 +35,13 @@ export class Vec2 {
   }
 
   static equal(a: Position, b: Position): boolean {
+    // I commented out my original solution and replaced it with osu!framework variant (which is very strict)
     // return floatEqual(a.x, b.x) && floatEqual(a.y, b.y);
-    // I commented out my original solution and replaced it with osu!framework variant (which is ...)
     return a.x === b.x && a.y === b.y;
   }
 
   static add(a: Position, b: Position): Vec2 {
-    return new Vec2(a.x + b.x, a.y + b.y);
+    return new Vec2(float32(a.x) + float32(b.x), float32(a.y) + float32(b.y));
   }
 
   static dot(a: Position, b: Position): number {
@@ -49,7 +49,7 @@ export class Vec2 {
   }
 
   static sub(a: Position, b: Position): Vec2 {
-    return new Vec2(a.x - b.x, a.y - b.y);
+    return new Vec2(float32(a.x) - float32(b.x), float32(a.y) - float32(b.y));
   }
 
   // c: float
@@ -84,7 +84,7 @@ export class Vec2 {
   }
 
   lengthSquared(): number {
-    return this.x ** 2 + this.y ** 2;
+    return this.x * this.x + this.y * this.y;
   }
 
   length(): number {

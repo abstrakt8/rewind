@@ -41,6 +41,7 @@ function calculateFlashlightStrains(
 
         if (isSpinner(previous)) continue;
 
+        // TODO: Lazer uses the blueprintEndPosition(previous) ... which is a bug probably
         const jumpDistance = Vec2.distance(position(current), endPosition(previous));
         cumulativeStrainTime += diffPrevious.strainTime;
         if (j === 0)

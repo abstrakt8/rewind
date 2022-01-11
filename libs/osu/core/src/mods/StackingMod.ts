@@ -1,10 +1,10 @@
 import { HitCircle } from "../hitobjects/HitCircle";
-import { Position, Vec2 } from "@osujs/math";
+import { float32_mul, Position, Vec2 } from "@osujs/math";
 import { Slider } from "../hitobjects/Slider";
 import { isHitCircle, isSlider, isSpinner, OsuHitObject } from "../hitobjects/Types";
 
 function stackOffset(stackHeight: number, scale: number): Position {
-  const value = stackHeight * scale * -6.4;
+  const value = float32_mul(stackHeight, float32_mul(scale, -6.4));
   return { x: value, y: value };
 }
 

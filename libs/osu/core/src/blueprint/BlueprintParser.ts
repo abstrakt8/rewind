@@ -430,7 +430,7 @@ class BlueprintParser {
       case "SampleVolume":
         break;
       case "StackLeniency":
-        blueprintInfo.stackLeniency = parseFloat(value);
+        blueprintInfo.stackLeniency = Math.fround(parseFloat(value));
         break;
       case "Mode":
         break;
@@ -566,6 +566,7 @@ class BlueprintParser {
 
     if (timingChange) {
       const controlPoint = this.createTimingControlPoint();
+      // TODO: BeatLength also has a lowerbound / upperbound
       controlPoint.beatLength = beatLength;
       controlPoint.timeSignature = timeSignature;
       this.addControlPoint(time, controlPoint, true);
@@ -573,7 +574,7 @@ class BlueprintParser {
 
     {
       const p = new LegacyDifficultyControlPoint(beatLength);
-      p.speedMultiplier = speedMultiplier;
+      p.speedMultiplier = bindableNumberNew(speedMultiplier, { min: 0.1, max: 10, precision: 0.01 });
       this.addControlPoint(time, p, timingChange);
     }
     {
@@ -651,6 +652,11 @@ class BlueprintParser {
       controlPointInfo: this.controlPointInfo,
     };
   }
+}
+
+function bindableNumberNew(val: number, { min, max, precision }: { min: number, max: number, precision: number }) {
+  val = clamp(val, min, max);
+  return Math.round(val / precision) * precision;
 }
 
 export const BlueprintSections = [

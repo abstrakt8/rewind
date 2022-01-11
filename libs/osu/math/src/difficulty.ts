@@ -2,8 +2,10 @@
  * Converts the circle size to a normalized scaling value.
  * @param CS the circle size value
  */
+import { float32 } from "./float32";
+
 export function circleSizeToScale(CS: number) {
-  return (1.0 - (0.7 * (CS - 5)) / 5) / 2;
+  return float32((1.0 - (0.7 * (CS - 5)) / 5) / 2);
 }
 
 // Just a helper function that is commonly used for OD, AR calculation
