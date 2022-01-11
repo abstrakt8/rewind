@@ -72,6 +72,10 @@ export class Slider implements HasId {
     return Vec2.add(this.head.position, this.ballOffsetAt(1.0));
   }
 
+  get unstackedEndPosition(): Position {
+    return Vec2.add(this.head.unstackedPosition, this.ballOffsetAt(1.0));
+  }
+
   /**
    * Returns the absolute position of the ball given the progress p, where p is the percentage of time passed
    * between startTime and endTime.

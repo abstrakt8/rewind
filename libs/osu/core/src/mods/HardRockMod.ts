@@ -22,9 +22,11 @@ export class HardRockMod {
     hitObjects.forEach((h) => {
       if (isHitCircle(h)) {
         h.position = flipY(h.position);
+        h.unstackedPosition = flipY(h.unstackedPosition);
       } else if (isSlider(h)) {
         // TODO: Need to set invalid as well or just recreate the checkpoints from control points
         h.head.position = flipY(h.head.position);
+        h.head.unstackedPosition = flipY(h.head.unstackedPosition);
         h.path.controlPoints.forEach((p) => {
           p.offset.y *= -1;
         });

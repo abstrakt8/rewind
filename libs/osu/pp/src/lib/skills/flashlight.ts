@@ -7,11 +7,12 @@ const skillMultiplier = 0.15;
 const strainDecayBase = 0.15;
 const historyLength = 10; // Look back for 10 notes is added for the sake of flashlight calculations.
 
-// TODO
-
 const strainDecay = (ms: number) => Math.pow(strainDecayBase, ms / 1000);
 const position = (o: HitCircle | Slider) => (isHitCircle(o) ? o.position : o.head.position);
-const endPosition = (o: HitCircle | Slider) => (isHitCircle(o) ? o.position : o.endPosition);
+// In Flashlight it's not using StackedEndPosition so we have to adjust
+const unstackedEndPosition = (o: HitCircle | Slider) => (isHitCircle(o) ? o.unstackedPosition : o.unstackedEndPosition);
+
+// const blueprintEndPosition = (o: HitCircle | Slider) => (isHitCircle(o) ? o.position : o.endPosition);
 
 function calculateFlashlightStrains(
   hitObjects: OsuHitObject[],
@@ -41,8 +42,8 @@ function calculateFlashlightStrains(
 
         if (isSpinner(previous)) continue;
 
-        // TODO: Lazer uses the blueprintEndPosition(previous) ... which is a bug probably
-        const jumpDistance = Vec2.distance(position(current), endPosition(previous));
+        // #LAZERBUG: Lazer doesn't use StackedEndPosition
+        const jumpDistance = Vec2.distance(position(current), unstackedEndPosition(previous));
         cumulativeStrainTime += diffPrevious.strainTime;
         if (j === 0)
           smallDistNerf = Math.min(1.0, jumpDistance / 75.0);

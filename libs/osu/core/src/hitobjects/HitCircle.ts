@@ -15,6 +15,9 @@ export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
   scale = 1;
   position: Position = { x: 0, y: 0 };
 
+  // Only used because there's a bug in the Flashlight difficulty processing
+  unstackedPosition: Position = { x: 0, y: 0 };
+
   sliderId?: string;
 
   get type(): HitObjectType {

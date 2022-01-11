@@ -31,6 +31,7 @@ function createHitCircle(
   const hitCircle = new HitCircle();
   hitCircle.id = id;
   hitCircle.position = copyPosition(hitCircleSettings.position);
+  hitCircle.unstackedPosition = copyPosition(hitCircleSettings.position);
   hitCircle.hitTime = hitCircleSettings.time;
   hitCircle.scale = circleSizeToScale(beatmapDifficulty.circleSize);
   hitCircle.approachDuration = approachRateToApproachDuration(beatmapDifficulty.approachRate);
@@ -91,6 +92,7 @@ function createSlider(
 
   const head = new HitCircle();
   head.id = `${index.toString()}/HEAD`;
+  head.unstackedPosition = copyPosition(sliderSettings.position);
   head.position = copyPosition(sliderSettings.position);
   head.hitTime = sliderSettings.time;
   head.approachDuration = approachDuration;
