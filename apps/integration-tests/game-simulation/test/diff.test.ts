@@ -35,6 +35,11 @@ function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
 
 function runTestSuite({ filename, cases }: TestSuite) {
   describe(filename, function() {
+    console.log(`Reading ${filename}`);
+    let blueprint;
+    beforeAll(() => {
+      blueprint = getBlueprintFromTestDir(filename);
+    });
     cases.forEach(({
                      mods: modAcronyms,
                      starRating,
@@ -42,7 +47,6 @@ function runTestSuite({ filename, cases }: TestSuite) {
                      aimRating,
                      flashlightRating,
                    }) => {
-      const blueprint = getBlueprintFromTestDir(filename);
       const testCaseName = modAcronyms.length === 0 ? "NM" : modAcronyms.join(",");
       const mods = modAcronyms.map(translateModAcronym);
       it(testCaseName, function() {
@@ -51,11 +55,11 @@ function runTestSuite({ filename, cases }: TestSuite) {
           aimRating: actual.aimDifficulty,
           speedRating: actual.speedDifficulty,
           // Test FL with different delta
-          // flashlightRating: actual.flashlightDifficulty,
+          flashlightRating: actual.flashlightDifficulty,
           starRating: actual.starRating,
         }).toMatchObjectCloseTo({
           aimRating,
-          // flashlightRating,
+          flashlightRating,
           speedRating,
           starRating,
         }, SR_EXPECTED_PRECISION);
@@ -71,8 +75,14 @@ describe("Star rating calculation", function() {
 });
 
 describe("Katagiri", function() {
-  // const data = readFileSync("E:\\fl.json", "utf-8");
   const data = readFileSync("E:\\katagiri.json", "utf-8");
   const suites: TestSuite[] = JSON.parse(data);
   suites.forEach(runTestSuite);
 });
+
+describe("xnor", function() {
+  const data = readFileSync("E:\\xnor.json", "utf-8");
+  const suites: TestSuite[] = JSON.parse(data);
+  suites.forEach(runTestSuite);
+});
+

@@ -566,8 +566,8 @@ class BlueprintParser {
 
     if (timingChange) {
       const controlPoint = this.createTimingControlPoint();
-      // TODO: BeatLength also has a lowerbound / upperbound
-      controlPoint.beatLength = beatLength;
+      if (Number.isNaN(beatLength)) throw Error("NaN");
+      else controlPoint.beatLength = clamp(beatLength, MIN_BEAT_LENGTH, MAX_BEAT_LENGTH);
       controlPoint.timeSignature = timeSignature;
       this.addControlPoint(time, controlPoint, true);
     }
@@ -634,7 +634,11 @@ class BlueprintParser {
     if (!this.data) throw new Error("No data given");
     const lines = this.data.split("\n").map((v) => v.trim());
     for (const line of lines) {
-      this.parseLine(line);
+      try {
+        this.parseLine(line);
+      } catch (err) {
+        console.error(`Failed to parse line ${line} due to: `, err);
+      }
       if (this.isFinishedReading()) {
         break;
       }
@@ -653,6 +657,10 @@ class BlueprintParser {
     };
   }
 }
+
+const MIN_BEAT_LENGTH = 6;
+const MAX_BEAT_LENGTH = 60000;
+const DEFAULT_BEAT_LENGTH = 1000;
 
 function bindableNumberNew(val: number, { min, max, precision }: { min: number, max: number, precision: number }) {
   val = clamp(val, min, max);

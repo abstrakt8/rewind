@@ -184,10 +184,12 @@ export class SliderPath {
 
   // d: double
   private interpolateVertices(i: number, d: number): Position {
-    if (this.calculatedPath.length === 0) return Vec2.Zero;
-    if (i === 0) return this.calculatedPath[0];
-    const p1 = this.calculatedPath[i - 1];
-    const p2 = this.calculatedPath[i];
+    const calculatedPath = this.calculatedPath;
+    if (calculatedPath.length === 0) return Vec2.Zero;
+    if (i <= 0) return calculatedPath[0];
+    if (i >= calculatedPath.length) return calculatedPath[calculatedPath.length - 1];
+    const p1 = calculatedPath[i - 1];
+    const p2 = calculatedPath[i];
     const d1 = this.cumulativeLengths[i - 1];
     const d2 = this.cumulativeLengths[i];
     if (doubleEqual(d1, d2)) {
