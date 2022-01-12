@@ -128,7 +128,12 @@ export class SliderPath {
 
     // TODO: In lazer the != operator is used, but shouldn't the approximate equal be used?
     if (this._expectedDistance !== undefined && calculatedLength !== this._expectedDistance) {
-      // TODO: Check commit 81fee02 there is a special case here missing about last two control points being equal
+      // In osu-stable, if the last two control points of a slider are equal, extension is not performed.
+      if (this.controlPoints.length >= 2 && Vec2.equal(this.controlPoints[this.controlPoints.length - 1].offset, this.controlPoints[this.controlPoints.length - 2].offset)
+        && this._expectedDistance > calculatedLength) {
+        this._cumulativeLength.push(calculatedLength);
+        return;
+      }
       // The last length is always incorrect
       this._cumulativeLength.splice(this._cumulativeLength.length - 1);
 

@@ -179,6 +179,11 @@ function convertPoints(
       continue;
     }
 
+    // The last control point of each segment is not allowed to start a new implicit segment.
+    if (endIndex === vertices.length - endPointLength - 1) {
+      continue;
+    }
+
     vertices[endIndex - 1].type = type;
     result.push(...vertices.slice(startIndex, endIndex));
 
