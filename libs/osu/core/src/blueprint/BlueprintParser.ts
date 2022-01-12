@@ -667,9 +667,11 @@ const MIN_BEAT_LENGTH = 6;
 const MAX_BEAT_LENGTH = 60000;
 const DEFAULT_BEAT_LENGTH = 1000;
 
+// So precision is only used when not initializing?
+// The BindableNumber has a precision value but is not used when initialized
 function bindableNumberNew(val: number, { min, max, precision }: { min: number, max: number, precision: number }) {
-  val = clamp(val, min, max);
-  return Math.round(val / precision) * precision;
+  return clamp(val, min, max);
+  // return Math.round(val / precision) * precision;
 }
 
 export const BlueprintSections = [
