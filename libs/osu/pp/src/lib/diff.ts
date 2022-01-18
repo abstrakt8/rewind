@@ -298,7 +298,7 @@ export function calculateDifficultyAttributes(
   const overallDifficulty = speedAdjustedOD(difficulty.overallDifficulty, clockRate);
   const approachRate = speedAdjustedAR(difficulty.approachRate, clockRate);
   const beatLength = mostCommonBeatLength({ hitObjects, timingPoints: controlPointInfo.timingPoints.list });
-  const mostCommonBPM = beatLength === undefined ? 0 : beatLengthToBPM(beatLength);
+  const mostCommonBPM = (beatLength === undefined ? 0 : beatLengthToBPM(beatLength)) * clockRate;
 
   const attributes: DifficultyAttributes[] = [];
   for (let i = 0; i < aimValues.length; i++) {
