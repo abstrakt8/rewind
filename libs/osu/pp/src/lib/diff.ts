@@ -6,12 +6,14 @@ import {
   isHitCircle,
   isSlider,
   isSpinner,
+  mostCommonBeatLength,
   OsuHitObject,
   Slider,
 } from "@osujs/core";
 import {
   approachDurationToApproachRate,
   approachRateToApproachDuration,
+  beatLengthToBPM,
   float32,
   float32_add,
   float32_div,
@@ -241,6 +243,8 @@ export interface DifficultyAttributes {
   hitCircleCount: number;
   sliderCount: number;
   spinnerCount: number;
+  // Just interesting
+  mostCommonBPM: number;
 
   // Notice that these values can exceed 10 (when DT mod is used)
   approachRate: number;
@@ -276,7 +280,7 @@ const speedAdjustedOD = (OD: number, clockRate: number) =>
 
 // Calculates the different star ratings after every hit object i
 export function calculateDifficultyAttributes(
-  { appliedMods: mods, difficulty, hitObjects }: Beatmap,
+  { appliedMods: mods, difficulty, hitObjects, controlPointInfo }: Beatmap,
   onlyFinalValue: boolean,
 ) {
   const clockRate = determineDefaultPlaybackSpeed(mods);
@@ -293,6 +297,8 @@ export function calculateDifficultyAttributes(
   const { hitCircleCount, sliderCount, spinnerCount, maxCombo } = determineMaxCombo(hitObjects);
   const overallDifficulty = speedAdjustedOD(difficulty.overallDifficulty, clockRate);
   const approachRate = speedAdjustedAR(difficulty.approachRate, clockRate);
+  const beatLength = mostCommonBeatLength({ hitObjects, timingPoints: controlPointInfo.timingPoints.list });
+  const mostCommonBPM = beatLength === undefined ? 0 : beatLengthToBPM(beatLength);
 
   const attributes: DifficultyAttributes[] = [];
   for (let i = 0; i < aimValues.length; i++) {
@@ -333,6 +339,7 @@ export function calculateDifficultyAttributes(
       hitCircleCount, sliderCount, spinnerCount, maxCombo,
       overallDifficulty,
       approachRate,
+      mostCommonBPM,
       drainRate: difficulty.drainRate,
     });
   }

@@ -7,12 +7,13 @@ import { Spinner } from "../hitobjects/Spinner";
 import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
 import { AllHitObjects, isHitCircle, OsuHitObject } from "../hitobjects/Types";
 import { TimingControlPoint } from "./ControlPoints/TimingControlPoint";
+import { ControlPointInfo } from "./ControlPoints/ControlPointInfo";
 
 /**
  * A built beatmap that is not supposed to be modified.
  */
 export class Beatmap {
-  static EMPTY_BEATMAP = new Beatmap([], DEFAULT_BEATMAP_DIFFICULTY, []);
+  static EMPTY_BEATMAP = new Beatmap([], DEFAULT_BEATMAP_DIFFICULTY, [], new ControlPointInfo());
 
   private readonly hitObjectDict: Record<string, AllHitObjects>;
   public readonly gameClockRate: number;
@@ -21,6 +22,7 @@ export class Beatmap {
     public readonly hitObjects: Array<OsuHitObject>,
     public readonly difficulty: BeatmapDifficulty,
     public readonly appliedMods: OsuClassicMod[],
+    public readonly controlPointInfo: ControlPointInfo,
   ) {
     this.hitObjectDict = normalizeHitObjects(hitObjects);
     this.gameClockRate = determineDefaultPlaybackSpeed(appliedMods);
@@ -64,7 +66,6 @@ export function mostCommonBeatLength({
     lastTime = endTime(hitObjects[hitObjects.length - 1]);
   else if (timingPoints.length > 0)
     lastTime = timingPoints[timingPoints.length - 1].time;
-
 
   // 1. Group the beat lengths and aggregate the durations
   const durations: Map<number, number> = new Map<number, number>();

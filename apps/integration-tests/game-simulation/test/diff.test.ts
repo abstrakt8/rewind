@@ -37,7 +37,7 @@ function runTestSuite({ filename, cases }: TestSuite) {
   describe(filename, function() {
     console.log(`Reading ${filename}`);
     let blueprint;
-    beforeAll(() => {
+    beforeEach(() => {
       blueprint = getBlueprintFromTestDir(filename);
     });
     cases.forEach(({
