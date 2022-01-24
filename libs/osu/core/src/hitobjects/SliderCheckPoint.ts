@@ -1,5 +1,5 @@
 import { Slider } from "./Slider";
-import { Position, Vec2 } from "@rewind/osu/math";
+import { Position, Vec2 } from "@osujs/math";
 import { HasHitTime, HasId, HasPosition } from "./Properties";
 import { SliderCheckPointType } from "./Types";
 

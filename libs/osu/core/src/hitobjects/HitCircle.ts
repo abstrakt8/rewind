@@ -1,10 +1,8 @@
-import { Position } from "@rewind/osu/math";
-import { immerable } from "immer";
+import { Position } from "@osujs/math";
 import { HitObjectType } from "./Types";
 import { HasHitTime, HasId, HasPosition, HasSpawnTime } from "./Properties";
 
 export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
-  [immerable] = true;
   static OBJECT_RADIUS = 64;
 
   id = "";
@@ -16,6 +14,9 @@ export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
 
   scale = 1;
   position: Position = { x: 0, y: 0 };
+
+  // Only used because there's a bug in the Flashlight difficulty processing
+  unstackedPosition: Position = { x: 0, y: 0 };
 
   sliderId?: string;
 

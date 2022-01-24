@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { Spinner } from "@rewind/osu/core";
+import { Spinner } from "@osujs/core";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { OsuClassicSpinner } from "@rewind/osu-pixi/classic-components";

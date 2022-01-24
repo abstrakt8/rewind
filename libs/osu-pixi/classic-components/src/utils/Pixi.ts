@@ -2,7 +2,7 @@ import { Sprite } from "@pixi/sprite";
 import { DisplayObject } from "@pixi/display";
 import { evaluateTransformations, TransformationProcess } from "./Transformations";
 import { Texture } from "pixi.js";
-import { applyInterpolation, Easing } from "@rewind/osu/math";
+import { applyInterpolation, Easing } from "@osujs/math";
 
 export const createCenteredSprite = (): Sprite => {
   const sprite = new Sprite();

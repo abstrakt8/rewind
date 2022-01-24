@@ -1,4 +1,4 @@
-import { hitWindowsForOD, Position, Vec2 } from "@rewind/osu/math";
+import { hitWindowsForOD, Position, Vec2 } from "@osujs/math";
 import { Beatmap } from "../beatmap/Beatmap";
 import { defaultGameState, GameState, HitCircleVerdict, NOT_PRESSING, PressingSinceTimings } from "./GameState";
 import { isHitCircle, isSlider, isSpinner } from "../hitobjects/Types";
@@ -321,7 +321,15 @@ export class GameStateEvaluator {
       const headHitTime: number | undefined = this.headHitTime(slider.head.id);
       const wasTracking: boolean = this.gameState.sliderBodyState.get(id)?.isTracking ?? false;
       const hasRelax = this.beatmap.appliedMods.includes("RELAX");
-      const isTracking = determineTracking(wasTracking, slider, cursorPosition, time, pressingSince, headHitTime, hasRelax);
+      const isTracking = determineTracking(
+        wasTracking,
+        slider,
+        cursorPosition,
+        time,
+        pressingSince,
+        headHitTime,
+        hasRelax,
+      );
       this.gameState.sliderBodyState.set(id, { isTracking });
     }
   }
@@ -395,7 +403,7 @@ function determineTracking(
   time: number,
   pressingSince: PressingSinceTimings,
   headHitTime?: number,
-  hasRelax?: boolean
+  hasRelax?: boolean,
 ): boolean {
   const keyIsBeingPressed = pressingSince.findIndex((x) => x !== NOT_PRESSING) >= 0;
   // Zeroth condition

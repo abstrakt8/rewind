@@ -19,6 +19,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@osujs/pp": [
+        "libs/osu/pp/src/index.ts"
+      ],
       "@rewind/api/common": [
         "libs/api/common/src/index.ts"
       ],
@@ -55,10 +58,10 @@
       "@rewind/osu-pixi/rewind": [
         "libs/osu-pixi/rewind/src/index.ts"
       ],
-      "@rewind/osu/core": [
+      "@osujs/core": [
         "libs/osu/core/src/index.ts"
       ],
-      "@rewind/osu/math": [
+      "@osujs/math": [
         "libs/osu/math/src/index.ts"
       ],
       "@rewind/osu/skin": [

@@ -1,7 +1,6 @@
 import { PathControlPoint } from "./PathControlPoint";
 import { PathType } from "./PathType";
-import { Position, Vec2 } from "@rewind/osu/math";
-import { floatEqual } from "@rewind/osu/math";
+import { clamp, doubleEqual, Position, Vec2 } from "@osujs/math";
 import { PathApproximator } from "./PathApproximator";
 
 function mapToVector2(p: Position[]) {
@@ -62,7 +61,8 @@ export class SliderPath {
 
         // eslint-disable-next-line no-case-declarations
         const subpath = PathApproximator.approximateCircularArc(mapToVector2(subControlPoints));
-        // If for some reason a circular arc could not be fit to the 3 given points, fall back to a numerically stable bezier approximation.
+        // If for some reason a circular arc could not be fit to the 3 given points, fall back to a numerically stable
+        // bezier approximation.
         if (subpath.length === 0) break;
         return subpath;
     }
@@ -122,11 +122,18 @@ export class SliderPath {
     this._cumulativeLength[0] = 0.0;
     for (let i = 1; i < this._calculatedPath.length; i++) {
       this._cumulativeLength[i] =
-        this._cumulativeLength[i - 1] + Vec2.distance(this._calculatedPath[i - 1], this._calculatedPath[i]);
+        this._cumulativeLength[i - 1] + Math.fround(Vec2.distance(this._calculatedPath[i - 1], this._calculatedPath[i]));
     }
     const calculatedLength = this._cumulativeLength[this._cumulativeLength.length - 1];
 
-    if (this._expectedDistance !== undefined && !floatEqual(calculatedLength, this._expectedDistance)) {
+    // TODO: In lazer the != operator is used, but shouldn't the approximate equal be used?
+    if (this._expectedDistance !== undefined && calculatedLength !== this._expectedDistance) {
+      // In osu-stable, if the last two control points of a slider are equal, extension is not performed.
+      if (this.controlPoints.length >= 2 && Vec2.equal(this.controlPoints[this.controlPoints.length - 1].offset, this.controlPoints[this.controlPoints.length - 2].offset)
+        && this._expectedDistance > calculatedLength) {
+        this._cumulativeLength.push(calculatedLength);
+        return;
+      }
       // The last length is always incorrect
       this._cumulativeLength.splice(this._cumulativeLength.length - 1);
 
@@ -135,7 +142,7 @@ export class SliderPath {
         while (
           this._cumulativeLength.length > 0 &&
           this._cumulativeLength[this._cumulativeLength.length - 1] >= this._expectedDistance
-        ) {
+          ) {
           this._cumulativeLength.splice(this._cumulativeLength.length - 1);
           this._calculatedPath.splice(pathEndIndex--, 1);
         }
@@ -149,7 +156,7 @@ export class SliderPath {
       const dir = Vec2.sub(this._calculatedPath[pathEndIndex], this._calculatedPath[pathEndIndex - 1]).normalized();
 
       const f = this._expectedDistance - this._cumulativeLength[this._cumulativeLength.length - 1];
-      this._calculatedPath[pathEndIndex] = Vec2.add(this._calculatedPath[pathEndIndex - 1], dir.scale(f));
+      this._calculatedPath[pathEndIndex] = Vec2.add(this._calculatedPath[pathEndIndex - 1], dir.scale(Math.fround(f)));
       this._cumulativeLength.push(this._expectedDistance);
     }
   }
@@ -176,19 +183,21 @@ export class SliderPath {
    * @param progress a number between 0 (head) and 1 (tail/repeat)
    */
   positionAt(progress: number): Position {
-    const p = Math.min(1, Math.max(0, progress));
-    const partialDistance = this.distance * p;
+    const partialDistance = this.distance * clamp(progress, 0, 1);
     return this.interpolateVertices(this.indexOfDistance(partialDistance), partialDistance);
   }
 
+  // d: double
   private interpolateVertices(i: number, d: number): Position {
-    if (this.calculatedPath.length === 0) return Vec2.Zero;
-    if (i === 0) return this.calculatedPath[0];
-    const p1 = this.calculatedPath[i - 1];
-    const p2 = this.calculatedPath[i];
+    const calculatedPath = this.calculatedPath;
+    if (calculatedPath.length === 0) return Vec2.Zero;
+    if (i <= 0) return calculatedPath[0];
+    if (i >= calculatedPath.length) return calculatedPath[calculatedPath.length - 1];
+    const p1 = calculatedPath[i - 1];
+    const p2 = calculatedPath[i];
     const d1 = this.cumulativeLengths[i - 1];
     const d2 = this.cumulativeLengths[i];
-    if (floatEqual(d1, d2)) {
+    if (doubleEqual(d1, d2)) {
       return p1;
     }
     // Number between 0 and 1

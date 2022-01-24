@@ -1,5 +1,5 @@
 import React, { forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef } from "react";
-import { formatGameTime } from "@rewind/osu/math";
+import { formatGameTime } from "@osujs/math";
 import { darken, Typography } from "@mui/material";
 
 export type GameCurrentTimeProps = Record<string, unknown>;

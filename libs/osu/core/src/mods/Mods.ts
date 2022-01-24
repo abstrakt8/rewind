@@ -1,10 +1,8 @@
 import { BeatmapDifficulty } from "../beatmap/BeatmapDifficulty";
 import { HardRockMod } from "./HardRockMod";
-import { OsuHitObject } from "../hitobjects/Types";
 import { EasyMod } from "./EasyMod";
 
 export type BeatmapDifficultyAdjuster = (d: BeatmapDifficulty) => BeatmapDifficulty;
-export type HitObjectsAdjuster = (h: OsuHitObject[]) => OsuHitObject[];
 
 // https://osu.ppy.sh/wiki/en/Game_modifier
 
@@ -32,7 +30,6 @@ interface ModSetting {
   name: string;
   scoreMultiplier?: number;
   difficultyAdjuster?: BeatmapDifficultyAdjuster;
-  hitObjectsAdjuster?: HitObjectsAdjuster;
 }
 
 export const ModSettings: Record<OsuClassicMod, ModSetting> = {
@@ -45,7 +42,6 @@ export const ModSettings: Record<OsuClassicMod, ModSetting> = {
     name: "Hard Rock",
     scoreMultiplier: 1.06,
     difficultyAdjuster: HardRockMod.difficultyAdjuster,
-    hitObjectsAdjuster: HardRockMod.hitObjectsAdjuster,
   },
   DOUBLE_TIME: { name: "Double Time", scoreMultiplier: 1.12 },
   FLASH_LIGHT: { name: "Flash Light", scoreMultiplier: 1.12 },

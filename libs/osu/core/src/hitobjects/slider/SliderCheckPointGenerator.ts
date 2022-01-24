@@ -1,4 +1,4 @@
-import { clamp, floatEqual } from "@rewind/osu/math";
+import { clamp } from "@osujs/math";
 import { SliderCheckPointDescriptor } from "./SliderCheckPointDescriptor";
 
 function* generateTicks(
@@ -37,10 +37,11 @@ export function* generateSliderCheckpoints(
 ): IterableIterator<SliderCheckPointDescriptor> {
   const length = Math.min(100000.0, totalDistance);
   tickDistance = clamp(tickDistance, 0.0, length);
-  const minDistanceFromEnd = velocity * 10.0;
+  const minDistanceFromEnd = velocity * 10;
 
   // Generating ticks, repeats
-  if (!floatEqual(tickDistance, 0.0)) {
+  // Using `floatEqual` was my suggestion, but osu!lazer uses tickDistance != 0
+  if (tickDistance !== 0) {
     for (let span = 0; span < spanCount; span++) {
       const spanStartTime = startTime + span * spanDuration;
       const reversed: boolean = span % 2 === 1;

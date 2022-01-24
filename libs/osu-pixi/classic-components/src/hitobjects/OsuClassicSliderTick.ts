@@ -5,7 +5,7 @@ import {
   evaluateTransformationsToProperties,
 } from "../utils/Pixi";
 import { Sprite, Texture } from "pixi.js";
-import { Easing, Position } from "@rewind/osu/math";
+import { Easing, Position } from "@osujs/math";
 import { fadeInT, fadeOutT } from "../utils/Transformations";
 
 // Lazer/DrawableSliderTick.cs

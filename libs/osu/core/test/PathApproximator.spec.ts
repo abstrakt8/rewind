@@ -1,4 +1,4 @@
-import { Vec2 } from "@rewind/osu/math";
+import { Vec2 } from "@osujs/math";
 import { PathApproximator } from "../src/hitobjects/slider/PathApproximator";
 import { buildBeatmap, parseBlueprint } from "../src";
 import { assertPositionEqual } from "./utils/asserts";

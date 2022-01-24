@@ -1,4 +1,4 @@
-import { rgbToInt } from "@rewind/osu/math";
+import { rgbToInt } from "@osujs/math";
 import { Texture } from "@pixi/core";
 import {
   comboDigitFonts,

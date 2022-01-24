@@ -1,4 +1,4 @@
-import { Position } from "@rewind/osu/math";
+import { Position } from "@osujs/math";
 import { normalizeHitObjects } from "../utils";
 import { GameState } from "./GameState";
 import { Slider } from "../hitobjects/Slider";

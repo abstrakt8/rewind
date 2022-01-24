@@ -1,6 +1,6 @@
 import { cloneGameState, defaultGameState, GameState } from "./GameState";
 import { ReplayFrame } from "../replays/Replay";
-import { Vec2 } from "@rewind/osu/math";
+import { Vec2 } from "@osujs/math";
 import { Beatmap } from "../beatmap/Beatmap";
 import { GameStateEvaluator, GameStateEvaluatorOptions } from "./GameStateEvaluator";
 

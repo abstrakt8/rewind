@@ -392,44 +392,11 @@
       },
       "tags": []
     },
-    "integration-tests-game-simulation": {
-      "root": "apps/integration-tests/game-simulation",
-      "sourceRoot": "apps/integration-tests/game-simulation/src",
+    "tests-game-simulation": {
+      "root": "tests/game-simulation",
+      "sourceRoot": "tests/game-simulation/src",
       "projectType": "application",
       "targets": {
-        "build": {
-          "executor": "@nrwl/node:build",
-          "outputs": [
-            "{options.outputPath}"
-          ],
-          "options": {
-            "outputPath": "dist/apps/integration-tests/game-simulation",
-            "main": "apps/integration-tests/game-simulation/src/main.ts",
-            "tsConfig": "apps/integration-tests/game-simulation/tsconfig.app.json",
-            "assets": [
-              "apps/integration-tests/game-simulation/src/assets"
-            ]
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/integration-tests/game-simulation/src/environments/environment.ts",
-                  "with": "apps/integration-tests/game-simulation/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "integration-tests-game-simulation:build"
-          }
-        },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": [
@@ -437,17 +404,17 @@
           ],
           "options": {
             "lintFilePatterns": [
-              "apps/integration-tests/game-simulation/**/*.ts"
+              "tests/game-simulation/**/*.ts"
             ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": [
-            "coverage/apps/integration-tests/game-simulation"
+            "coverage/tests/game-simulation"
           ],
           "options": {
-            "jestConfig": "apps/integration-tests/game-simulation/jest.config.js",
+            "jestConfig": "tests/game-simulation/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -478,6 +445,21 @@
           "options": {
             "jestConfig": "libs/osu/core/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/libs/osu/core",
+            "tsConfig": "libs/osu/core/tsconfig.lib.json",
+            "packageJson": "libs/osu/core/package.json",
+            "main": "libs/osu/core/src/index.ts",
+            "assets": [
+              "libs/osu/core/*.md"
+            ]
           }
         }
       },
@@ -641,6 +623,21 @@
             "jestConfig": "libs/osu/math/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/libs/osu/math",
+            "tsConfig": "libs/osu/math/tsconfig.lib.json",
+            "packageJson": "libs/osu/math/package.json",
+            "main": "libs/osu/math/src/index.ts",
+            "assets": [
+              "libs/osu/math/*.md"
+            ]
+          }
         }
       },
       "tags": []
@@ -697,6 +694,50 @@
       },
       "tags": []
     },
+    "osu-pp": {
+      "root": "libs/osu/pp",
+      "sourceRoot": "libs/osu/pp/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": [
+            "{options.outputFile}"
+          ],
+          "options": {
+            "lintFilePatterns": [
+              "libs/osu/pp/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/osu/pp"
+          ],
+          "options": {
+            "jestConfig": "libs/osu/pp/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/libs/osu/pp",
+            "tsConfig": "libs/osu/pp/tsconfig.lib.json",
+            "packageJson": "libs/osu/pp/package.json",
+            "main": "libs/osu/pp/src/index.ts",
+            "assets": [
+              "libs/osu/pp/*.md"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "osu-skin": {
       "root": "libs/osu/skin",
       "sourceRoot": "libs/osu/skin/src",
@@ -705,7 +746,9 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/osu/skin/**/*.ts"]
+            "lintFilePatterns": [
+              "libs/osu/skin/**/*.ts"
+            ]
           },
           "outputs": [
             "{options.outputFile}"

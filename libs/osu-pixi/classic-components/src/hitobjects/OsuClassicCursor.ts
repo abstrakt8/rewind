@@ -3,7 +3,7 @@ import { Texture } from "pixi.js";
 import { Container } from "@pixi/display";
 import { Sprite } from "@pixi/sprite";
 import { createCenteredSprite } from "../utils/Pixi";
-import { Position } from "@rewind/osu/math";
+import { Position } from "@osujs/math";
 
 const MAX_CURSOR_TRAILS = 8;
 

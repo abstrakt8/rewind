@@ -4,7 +4,6 @@ import { HitCircleSettings, HitObjectSettings, SliderSettings, SpinnerSettings }
 import { ControlPointInfo } from "./ControlPoints/ControlPointInfo";
 import { HitCircle } from "../hitobjects/HitCircle";
 import { BeatmapDifficultyAdjuster, ModSettings, OsuClassicMod } from "../mods/Mods";
-import produce from "immer";
 import { modifyStackingPosition } from "../mods/StackingMod";
 import { generateSliderCheckpoints } from "../hitobjects/slider/SliderCheckPointGenerator";
 import { SliderCheckPointDescriptor } from "../hitobjects/slider/SliderCheckPointDescriptor";
@@ -14,8 +13,14 @@ import { Slider } from "../hitobjects/Slider";
 import { SliderCheckPoint } from "../hitobjects/SliderCheckPoint";
 import { Beatmap } from "./Beatmap";
 import { Spinner } from "../hitobjects/Spinner";
-import { approachRateToApproachDuration, circleSizeToScale } from "@rewind/osu/math";
+import { approachRateToApproachDuration, circleSizeToScale, Position } from "@osujs/math";
 import { OsuHitObject } from "../hitobjects/Types";
+import { HardRockMod } from "../mods/HardRockMod";
+import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
+
+function copyPosition({ x, y }: Position): Position {
+  return { x, y };
+}
 
 function createHitCircle(
   id: string,
@@ -25,7 +30,8 @@ function createHitCircle(
 ): HitCircle {
   const hitCircle = new HitCircle();
   hitCircle.id = id;
-  hitCircle.position = hitCircleSettings.position;
+  hitCircle.position = copyPosition(hitCircleSettings.position);
+  hitCircle.unstackedPosition = copyPosition(hitCircleSettings.position);
   hitCircle.hitTime = hitCircleSettings.time;
   hitCircle.scale = circleSizeToScale(beatmapDifficulty.circleSize);
   hitCircle.approachDuration = approachRateToApproachDuration(beatmapDifficulty.approachRate);
@@ -63,6 +69,13 @@ function createSliderCheckPoints(slider: Slider): SliderCheckPoint[] {
   return checkPoints;
 }
 
+function copyPathPoints(pathPoints: PathControlPoint[]) {
+  return pathPoints.map(({ type, offset }) => ({
+    type,
+    offset: copyPosition(offset),
+  }));
+}
+
 function createSlider(
   index: number,
   sliderSettings: SliderSettings,
@@ -79,7 +92,8 @@ function createSlider(
 
   const head = new HitCircle();
   head.id = `${index.toString()}/HEAD`;
-  head.position = sliderSettings.position;
+  head.unstackedPosition = copyPosition(sliderSettings.position);
+  head.position = copyPosition(sliderSettings.position);
   head.hitTime = sliderSettings.time;
   head.approachDuration = approachDuration;
   head.scale = scale;
@@ -91,7 +105,7 @@ function createSlider(
   slider.legacyLastTickOffset = sliderSettings.legacyLastTickOffset;
   slider.velocity = scoringDistance / timingPoint.beatLength;
   slider.tickDistance = (scoringDistance / difficulty.sliderTickRate) * sliderSettings.tickDistanceMultiplier;
-  slider.path = new SliderPath(sliderSettings.pathPoints, sliderSettings.length);
+  slider.path = new SliderPath(copyPathPoints(sliderSettings.pathPoints), sliderSettings.length);
   slider.checkPoints = createSliderCheckPoints(slider);
   return slider;
 }
@@ -131,44 +145,29 @@ function createStaticHitObject(
   throw new Error("Type not recognized...");
 }
 
-function assignComboIndex(bluePrintSettings: HitObjectSettings[], hitObjects: OsuHitObject[]): OsuHitObject[] {
-  if (bluePrintSettings.length !== hitObjects.length) {
-    throw Error("Lengths must match");
-  }
+// Mutates the hitObject combo index values
+function assignComboIndex(bluePrintSettings: HitObjectSettings[], hitObjects: OsuHitObject[]) {
+  let comboSetIndex = -1,
+    withinSetIndex = 0;
+  for (let i = 0; i < hitObjects.length; i++) {
+    const { newCombo, comboSkip, type } = bluePrintSettings[i];
+    const hitObject = hitObjects[i]; // change 'const' -> 'let' for better readability
 
-  return produce(hitObjects, (list) => {
-    let comboSetIndex = -1,
+    if (i === 0 || newCombo || type === "SPINNER") {
+      comboSetIndex += comboSkip + 1;
       withinSetIndex = 0;
-    for (let i = 0; i < list.length; i++) {
-      const { newCombo, comboSkip, type } = bluePrintSettings[i];
-      const hitObject = hitObjects[i]; // change 'const' -> 'let' for better readability
-
-      if (i === 0 || newCombo || type === "SPINNER") {
-        comboSetIndex += comboSkip + 1;
-        withinSetIndex = 0;
-      }
-
-      // Spinners do not have comboSetIndex or withinComboSetIndex
-      if (hitObject instanceof HitCircle) {
-        hitObject.comboSetIndex = comboSetIndex;
-        hitObject.withinComboSetIndex = withinSetIndex++;
-      } else if (hitObject instanceof Slider) {
-        hitObject.head.comboSetIndex = comboSetIndex;
-        hitObject.head.withinComboSetIndex = withinSetIndex++;
-      }
     }
-  });
-}
 
-interface BeatmapBuilderOptions {
-  addStacking: boolean;
-  mods: OsuClassicMod[];
+    // Spinners do not have comboSetIndex or withinComboSetIndex
+    if (hitObject instanceof HitCircle) {
+      hitObject.comboSetIndex = comboSetIndex;
+      hitObject.withinComboSetIndex = withinSetIndex++;
+    } else if (hitObject instanceof Slider) {
+      hitObject.head.comboSetIndex = comboSetIndex;
+      hitObject.head.withinComboSetIndex = withinSetIndex++;
+    }
+  }
 }
-
-const defaultBeatmapBuilderOptions: BeatmapBuilderOptions = {
-  addStacking: true,
-  mods: [],
-};
 
 // There should only be one, otherwise ...
 function findDifficultyApplier(mods: OsuClassicMod[]): BeatmapDifficultyAdjuster {
@@ -181,15 +180,25 @@ function findDifficultyApplier(mods: OsuClassicMod[]): BeatmapDifficultyAdjuster
   return (d: BeatmapDifficulty) => d; // The identity function
 }
 
+interface BeatmapBuilderOptions {
+  addStacking: boolean;
+  mods: OsuClassicMod[];
+}
+
+const defaultBeatmapBuilderOptions: BeatmapBuilderOptions = {
+  addStacking: true,
+  mods: [],
+};
+
 /**
- * Builds the beatmap from the given blue print and options.
+ * Builds the beatmap from the given blueprint and options.
  *
- * It DOES not perform a check on the given subset of mods. So if you enter half time and double time at the same time,
+ * It DOES not perform a check on the given subset of mods. So if you enter half-time and double time at the same time,
  * then this might return bad results.
  *
  * @param {Blueprint} bluePrint
  * @param {Object} options
- * @param {boolean} options.addStacking
+ * @param {boolean} options.addStacking whether to apply setting or not (by default true)
  */
 export function buildBeatmap(bluePrint: Blueprint, options?: Partial<BeatmapBuilderOptions>): Beatmap {
   const { beatmapVersion, stackLeniency } = bluePrint.blueprintInfo;
@@ -197,21 +206,19 @@ export function buildBeatmap(bluePrint: Blueprint, options?: Partial<BeatmapBuil
 
   const finalDifficulty = findDifficultyApplier(mods)(bluePrint.defaultDifficulty);
 
-  let hitObjects: OsuHitObject[] = bluePrint.hitObjectSettings.map((setting, index) =>
+  const hitObjects: OsuHitObject[] = bluePrint.hitObjectSettings.map((setting, index) =>
     createStaticHitObject(index, setting, bluePrint.controlPointInfo, finalDifficulty),
   );
 
-  hitObjects = assignComboIndex(bluePrint.hitObjectSettings, hitObjects);
+  assignComboIndex(bluePrint.hitObjectSettings, hitObjects);
 
-  // Adjusts hit objects such as flipping in the vertical direction in HardRock.
-  for (const mod of mods) {
-    const adjuster = ModSettings[mod].hitObjectsAdjuster;
-    if (adjuster !== undefined) hitObjects = adjuster(hitObjects);
+  if (mods.includes("HARD_ROCK")) {
+    HardRockMod.flipVertically(hitObjects);
   }
 
   if (addStacking) {
-    hitObjects = modifyStackingPosition(beatmapVersion, hitObjects, stackLeniency);
+    modifyStackingPosition(hitObjects, stackLeniency, beatmapVersion);
   }
 
-  return new Beatmap(hitObjects, finalDifficulty, mods);
+  return new Beatmap(hitObjects, finalDifficulty, mods, bluePrint.controlPointInfo);
 }

@@ -1,6 +1,6 @@
 // Functional programming is sometimes so neat.
 
-import { applyEasing, clamp, Easing } from "@rewind/osu/math";
+import { applyEasing, clamp, Easing } from "@osujs/math";
 
 export const easingFunction =
   (easing: Easing) =>

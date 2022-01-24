@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 import { injectable } from "inversify";
-import { HitCircle, isHitCircle, isSlider, Slider, Spinner } from "@rewind/osu/core";
+import { HitCircle, isHitCircle, isSlider, Slider, Spinner } from "@osujs/core";
 import { HitCircleFactory } from "./HitCircleFactory";
 import { SliderFactory } from "./SliderFactory";
 import { SpinnerFactory } from "./SpinnerFactory";

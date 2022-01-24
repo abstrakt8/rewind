@@ -7,7 +7,7 @@ import {
 import { AnimationTimeSetting, PositionSetting, ScaleSetting } from "../DrawableSettings";
 import { PrepareSetting } from "../utils/Preparable";
 import { fadeInT, fadeOutT, scaleToT, Transformation } from "../utils/Transformations";
-import { Easing } from "@rewind/osu/math";
+import { Easing } from "@osujs/math";
 
 interface OsuClassicSliderRepeatSettings extends PositionSetting, ScaleSetting, AnimationTimeSetting {
   time: number;

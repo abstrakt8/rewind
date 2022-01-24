@@ -1,4 +1,4 @@
-import { Position } from "@rewind/osu/math";
+import { Position } from "@osujs/math";
 
 export enum OsuAction {
   leftButton,

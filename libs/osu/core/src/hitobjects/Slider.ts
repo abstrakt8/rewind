@@ -1,5 +1,5 @@
 import { SliderPath } from "./slider/SliderPath";
-import { Position, Vec2 } from "@rewind/osu/math";
+import { Position, Vec2 } from "@osujs/math";
 import { HitCircle } from "./HitCircle";
 import { SliderCheckPoint } from "./SliderCheckPoint";
 import { HasId } from "./Properties";
@@ -70,6 +70,10 @@ export class Slider implements HasId {
   get endPosition(): Position {
     // TODO: Caching like in osu!lazer since this takes a lot of time
     return Vec2.add(this.head.position, this.ballOffsetAt(1.0));
+  }
+
+  get unstackedEndPosition(): Position {
+    return Vec2.add(this.head.unstackedPosition, this.ballOffsetAt(1.0));
   }
 
   /**

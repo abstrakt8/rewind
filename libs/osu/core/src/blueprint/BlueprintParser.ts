@@ -1,5 +1,5 @@
 import { Blueprint, BlueprintInfo } from "./Blueprint";
-import { clamp, floatEqual, Position, Vec2 } from "@rewind/osu/math";
+import { clamp, floatEqual, Position, Vec2 } from "@osujs/math";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";
 import { PathType } from "../hitobjects/slider/PathType";
 import { TimeSignatures } from "../beatmap/TimeSignatures";
@@ -71,9 +71,8 @@ function splitKeyVal(line: string, separator = ":"): [string, string] {
 }
 
 function convertPathType(value: string): PathType {
-  // we only check first character lol
   switch (value[0]) {
-    // what does this mean
+    // TODO: ???
     default:
     case "C":
       return PathType.Catmull;
@@ -177,6 +176,11 @@ function convertPoints(
   // this is just some logic to not have duplicated positions at the end
   while (++endIndex < vertices.length - endPointLength) {
     if (!Vec2.equal(vertices[endIndex].offset, vertices[endIndex - 1].offset)) {
+      continue;
+    }
+
+    // The last control point of each segment is not allowed to start a new implicit segment.
+    if (endIndex === vertices.length - endPointLength - 1) {
       continue;
     }
 
@@ -431,7 +435,7 @@ class BlueprintParser {
       case "SampleVolume":
         break;
       case "StackLeniency":
-        blueprintInfo.stackLeniency = parseFloat(value);
+        blueprintInfo.stackLeniency = Math.fround(parseFloat(value));
         break;
       case "Mode":
         break;
@@ -567,14 +571,15 @@ class BlueprintParser {
 
     if (timingChange) {
       const controlPoint = this.createTimingControlPoint();
-      controlPoint.beatLength = beatLength;
+      if (Number.isNaN(beatLength)) throw Error("NaN");
+      else controlPoint.beatLength = clamp(beatLength, MIN_BEAT_LENGTH, MAX_BEAT_LENGTH);
       controlPoint.timeSignature = timeSignature;
       this.addControlPoint(time, controlPoint, true);
     }
 
     {
       const p = new LegacyDifficultyControlPoint(beatLength);
-      p.speedMultiplier = speedMultiplier;
+      p.speedMultiplier = bindableNumberNew(speedMultiplier, { min: 0.1, max: 10, precision: 0.01 });
       this.addControlPoint(time, p, timingChange);
     }
     {
@@ -634,7 +639,11 @@ class BlueprintParser {
     if (!this.data) throw new Error("No data given");
     const lines = this.data.split("\n").map((v) => v.trim());
     for (const line of lines) {
-      this.parseLine(line);
+      try {
+        this.parseLine(line);
+      } catch (err) {
+        console.error(`Failed to parse line ${line} due to: `, err);
+      }
       if (this.isFinishedReading()) {
         break;
       }
@@ -652,6 +661,17 @@ class BlueprintParser {
       controlPointInfo: this.controlPointInfo,
     };
   }
+}
+
+const MIN_BEAT_LENGTH = 6;
+const MAX_BEAT_LENGTH = 60000;
+const DEFAULT_BEAT_LENGTH = 1000;
+
+// So precision is only used when not initializing?
+// The BindableNumber has a precision value but is not used when initialized
+function bindableNumberNew(val: number, { min, max, precision }: { min: number, max: number, precision: number }) {
+  return clamp(val, min, max);
+  // return Math.round(val / precision) * precision;
 }
 
 export const BlueprintSections = [

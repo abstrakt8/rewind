@@ -1,5 +1,5 @@
 import { Skin } from "../../../model/Skin";
-import { Slider, SliderCheckPoint } from "@rewind/osu/core";
+import { Slider, SliderCheckPoint } from "@osujs/core";
 import { Container, DisplayObject, Graphics, Sprite, Texture } from "pixi.js";
 import {
   OsuClassicSliderBall,
@@ -8,7 +8,7 @@ import {
   OsuClassicSliderTick,
   SliderBodySettings,
 } from "@rewind/osu-pixi/classic-components";
-import { RGB, sliderRepeatAngle, Vec2 } from "@rewind/osu/math";
+import { RGB, sliderRepeatAngle, Vec2 } from "@osujs/math";
 import { GameplayClock } from "../../../core/game/GameplayClock";
 import { SkinHolder } from "../../../core/skins/SkinHolder";
 import { injectable } from "inversify";

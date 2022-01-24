@@ -2,8 +2,10 @@
  * Converts the circle size to a normalized scaling value.
  * @param CS the circle size value
  */
+import { float32 } from "./float32";
+
 export function circleSizeToScale(CS: number) {
-  return (1.0 - (0.7 * (CS - 5)) / 5) / 2;
+  return float32((1.0 - (0.7 * (CS - 5)) / 5) / 2);
 }
 
 // Just a helper function that is commonly used for OD, AR calculation
@@ -23,8 +25,16 @@ export function approachRateToApproachDuration(AR: number) {
   return difficultyRange(AR, 1800, 1200, PREEMPT_MIN);
 }
 
-function difficultyRangeForOd(difficulty: number, range: { od0: number; od5: number; od10: number }): number {
+export function approachDurationToApproachRate(approachDurationInMs: number) {
+  return approachDurationInMs > 1200 ? (1800 - approachDurationInMs) / 120 : (1200 - approachDurationInMs) / 150 + 5;
+}
+
+export function difficultyRangeForOd(difficulty: number, range: { od0: number; od5: number; od10: number }): number {
   return difficultyRange(difficulty, range.od0, range.od5, range.od10);
+}
+
+export function hitWindowGreatToOD(hitWindowGreat: number) {
+  return (80 - hitWindowGreat) / 6;
 }
 
 // HitWindows is just an array of four numbers, for example [5, 10, 15, 100] means:
@@ -41,7 +51,7 @@ const OSU_STD_HIT_WINDOW_RANGES: [number, number, number][] = [
 
 /**
  * Returns the hit windows in the following order:
- * Hit300, Hit100, Hit50, HitMiss
+ * [Hit300, Hit100, Hit50, HitMiss]
  * @param overallDifficulty
  * @param lazerStyle
  */
@@ -50,11 +60,17 @@ export function hitWindowsForOD(overallDifficulty: number, lazerStyle?: boolean)
     return OSU_STD_HIT_WINDOW_RANGES.map(([od0, od5, od10]) => difficultyRange(od, od0, od5, od10));
   }
 
-  // Short explanation: currently in lazer the hit windows are actually +1ms bigger due to them using <= instead of
-  // < check.
+  // Short explanation: currently in lazer the hit windows are actually +1ms bigger due to them using the LTE <=
+  // operator instead of LT <  <= instead of < check.
   if (lazerStyle) {
     return lazerHitWindowsForOD(overallDifficulty);
   }
   // https://github.com/ppy/osu/issues/11311
   return lazerHitWindowsForOD(overallDifficulty).map((w) => w - 1);
+}
+
+// Lazer style
+export function overallDifficultyToHitWindowGreat(od: number) {
+  const [od0, od5, od10] = OSU_STD_HIT_WINDOW_RANGES[0];
+  return difficultyRange(od, od0, od5, od10);
 }
