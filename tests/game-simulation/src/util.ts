@@ -2,13 +2,22 @@ import { join } from "path";
 import { OsuClassicMod, parseBlueprint } from "@osujs/core";
 import { readFileSync } from "fs";
 
-export function blueprintPath(file: string) {
+function getRewindTestDir() {
   const rewindTestDir = process.env.REWIND_TEST_DIR;
   if (!rewindTestDir) {
-    throw Error("This function is used with a properly set REWIND_TEST_DIR environment variable!");
+    throw Error(`This function only works with a properly set REWIND_TEST_DIR environment variable! Current value of REWIND_TEST_DIR=${rewindTestDir}`);
   }
-  return join(rewindTestDir ?? "", "osu!", "Songs", file);
+  return rewindTestDir;
 }
+
+export function blueprintPath(file: string) {
+  return join(getRewindTestDir(), "osu!", "Songs", file);
+}
+
+export function resourcesPath(file: string) {
+  return join(getRewindTestDir(), "osujs", file);
+}
+
 
 // Move to osu core
 export function translateModAcronym(acronym: string): OsuClassicMod {

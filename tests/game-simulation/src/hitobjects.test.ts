@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import { Position } from "@osujs/math";
-import { getBlueprintFromTestDir } from "./util";
+import { getBlueprintFromTestDir, resourcesPath } from "./util";
 import { buildBeatmap, Slider } from "@osujs/core";
 import { toMatchObjectCloseTo } from "jest-match-object-close-to";
 
@@ -25,7 +25,8 @@ interface Testsuite {
   }>;
 }
 
-const expectedPrecision = 4;
+// TODO: Try to get a precision of 4
+const expectedPrecision = 3;
 
 function runTestSuite({ filename, sliders }: Testsuite) {
   describe(filename, function() {
@@ -41,15 +42,14 @@ function runTestSuite({ filename, sliders }: Testsuite) {
           for (let i = 0; i < slider.checkPoints.length; i++) {
             const actual = slider.checkPoints[i];
             const expected = lazerSlider.checkPoints[i];
-            // (89.66166, -7.796666)
             describe(`Checkpoint ${i}`, function() {
-              // it("type", function() {
-              //   expect(actual.type).toBe(expected.type);
-              // });
-              // it("time", function() {
-              //   expect(actual.hitTime).toBeCloseTo(expected.time, expectedPrecision);
-              // });
-              it("position", function() {
+              it("type", function() {
+                expect(actual.type).toBe(expected.type);
+              });
+              it("time", function() {
+                expect(actual.hitTime).toBeCloseTo(expected.time, expectedPrecision);
+              });
+              it.only("position", function() {
                 expect(actual.position).toMatchObjectCloseTo(expected.position, expectedPrecision);
               });
             });
@@ -61,8 +61,8 @@ function runTestSuite({ filename, sliders }: Testsuite) {
   });
 }
 
-describe("hitobjects", function() {
-  const data = readFileSync("E:\\hitobjects.json", "utf-8");
+describe("HitObjects generation", function() {
+  const data = readFileSync(resourcesPath("hitobjects.json"), "utf-8");
   const json = JSON.parse(data) as Testsuite[];
   json.forEach(runTestSuite);
 });

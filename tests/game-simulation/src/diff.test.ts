@@ -1,11 +1,15 @@
 import { Blueprint, buildBeatmap, OsuClassicMod } from "@osujs/core";
-import { readFileSync } from "fs";
-import { getBlueprintFromTestDir, translateModAcronym } from "./util";
 import { calculateDifficultyAttributes } from "@osujs/pp";
+import { getBlueprintFromTestDir, resourcesPath, translateModAcronym } from "./util";
 
 import { toMatchObjectCloseTo } from "jest-match-object-close-to";
+import { readFileSync } from "fs";
 
 expect.extend({ toMatchObjectCloseTo });
+
+/**
+ * Tests the SR calculations against the ones generated from the osu!lazer source code (2021-11-14 version).
+ */
 
 // n digits after floating point
 const SR_EXPECTED_PRECISION = 3;
@@ -24,9 +28,6 @@ interface TestSuite {
   cases: Array<TestCase>;
 }
 
-// Mods that actually change the hit objects in some way
-// * HR, EZ
-
 function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
   const beatmap = buildBeatmap(blueprint, { mods });
   const [lastAttributes] = calculateDifficultyAttributes(beatmap, true);
@@ -35,7 +36,6 @@ function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
 
 function runTestSuite({ filename, cases }: TestSuite) {
   describe(filename, function() {
-    console.log(`Reading ${filename}`);
     let blueprint;
     beforeEach(() => {
       blueprint = getBlueprintFromTestDir(filename);
@@ -69,20 +69,25 @@ function runTestSuite({ filename, cases }: TestSuite) {
 }
 
 describe("Star rating calculation", function() {
-  const data = readFileSync("E:\\test.json", "utf-8");
+  const data = readFileSync(resourcesPath("star_ratings.json"), "utf-8");
   const suites: TestSuite[] = JSON.parse(data);
-  suites.forEach(runTestSuite);
+  suites.forEach(testCase => {
+    runTestSuite(testCase);
+  });
 });
 
-describe("Katagiri", function() {
-  const data = readFileSync("E:\\katagiri.json", "utf-8");
-  const suites: TestSuite[] = JSON.parse(data);
-  suites.forEach(runTestSuite);
+// Change `describe.skip` -> `describe.only` to test a specific one.
+describe.skip("SR a specific one", function() {
+  const testSuite: TestSuite = {
+    filename: "1357624 sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix)/sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) (Nathan) [KEMOMIMI EDM SQUAD].osu",
+    "cases": [
+      {
+        "mods": [],
+        "starRating": 7.585806851390463,
+        "aimRating": 3.962396149332689,
+        "speedRating": 3.2644585786342555,
+        "flashlightRating": 4.722278664838489,
+      }],
+  };
+  runTestSuite(testSuite);
 });
-
-describe("xnor", function() {
-  const data = readFileSync("E:\\xnor.json", "utf-8");
-  const suites: TestSuite[] = JSON.parse(data);
-  suites.forEach(runTestSuite);
-});
-
