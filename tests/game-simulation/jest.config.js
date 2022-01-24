@@ -1,6 +1,6 @@
 module.exports = {
   displayName: "integration-tests-game-simulation",
-  preset: "../../../jest.preset.js",
+  preset: "../../jest.preset.js",
   globals: {
     "ts-jest": {
       tsconfig: "<rootDir>/tsconfig.spec.json",
@@ -11,5 +11,5 @@ module.exports = {
     "^.+\\.[tj]s$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "js", "html"],
-  coverageDirectory: "../../../coverage/apps/integration-tests/game-simulation",
+  coverageDirectory: "../../coverage/apps/integration-tests/game-simulation",
 };

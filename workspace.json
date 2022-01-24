@@ -392,44 +392,11 @@
       },
       "tags": []
     },
-    "integration-tests-game-simulation": {
-      "root": "apps/integration-tests/game-simulation",
-      "sourceRoot": "apps/integration-tests/game-simulation/src",
+    "tests-game-simulation": {
+      "root": "tests/game-simulation",
+      "sourceRoot": "tests/game-simulation/src",
       "projectType": "application",
       "targets": {
-        "build": {
-          "executor": "@nrwl/node:build",
-          "outputs": [
-            "{options.outputPath}"
-          ],
-          "options": {
-            "outputPath": "dist/apps/integration-tests/game-simulation",
-            "main": "apps/integration-tests/game-simulation/src/main.ts",
-            "tsConfig": "apps/integration-tests/game-simulation/tsconfig.app.json",
-            "assets": [
-              "apps/integration-tests/game-simulation/src/assets"
-            ]
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/integration-tests/game-simulation/src/environments/environment.ts",
-                  "with": "apps/integration-tests/game-simulation/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "@nrwl/node:execute",
-          "options": {
-            "buildTarget": "integration-tests-game-simulation:build"
-          }
-        },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": [
@@ -437,17 +404,17 @@
           ],
           "options": {
             "lintFilePatterns": [
-              "apps/integration-tests/game-simulation/**/*.ts"
+              "tests/game-simulation/**/*.ts"
             ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": [
-            "coverage/apps/integration-tests/game-simulation"
+            "coverage/tests/game-simulation"
           ],
           "options": {
-            "jestConfig": "apps/integration-tests/game-simulation/jest.config.js",
+            "jestConfig": "tests/game-simulation/jest.config.js",
             "passWithNoTests": true
           }
         }

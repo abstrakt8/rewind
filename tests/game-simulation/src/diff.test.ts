@@ -1,6 +1,6 @@
 import { Blueprint, buildBeatmap, OsuClassicMod } from "@osujs/core";
 import { readFileSync } from "fs";
-import { getBlueprintFromTestDir, translateModAcronym } from "../src/app/util";
+import { getBlueprintFromTestDir, translateModAcronym } from "./util";
 import { calculateDifficultyAttributes } from "@osujs/pp";
 
 import { toMatchObjectCloseTo } from "jest-match-object-close-to";

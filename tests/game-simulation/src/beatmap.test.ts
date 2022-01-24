@@ -1,10 +1,10 @@
-import { getBlueprintFromTestDir } from "../src/app/util";
+import { getBlueprintFromTestDir } from "./util";
 import { buildBeatmap, mostCommonBeatLength } from "@osujs/core";
 import { beatLengthToBPM } from "@osujs/math";
 
 const EXPECTED_PRECISION = 3;
 
-describe("Most common beatLength", function() {
+describe("Most common BPM", function() {
   it("Akatsuki Zukuyo 180BPM", function() {
     const blueprint = getBlueprintFromTestDir("351280 HoneyWorks - Akatsuki Zukuyo/HoneyWorks - Akatsuki Zukuyo ([C u r i]) [Taeyang's Extra].osu");
     const beatmap = buildBeatmap(blueprint);

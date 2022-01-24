@@ -5,7 +5,7 @@ import { readFileSync } from "fs";
 export function blueprintPath(file: string) {
   const rewindTestDir = process.env.REWIND_TEST_DIR;
   if (!rewindTestDir) {
-    console.warn("This function is used with a properly set REWIND_TEST_DIR environment variable!");
+    throw Error("This function is used with a properly set REWIND_TEST_DIR environment variable!");
   }
   return join(rewindTestDir ?? "", "osu!", "Songs", file);
 }
