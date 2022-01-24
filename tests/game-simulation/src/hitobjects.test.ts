@@ -18,7 +18,7 @@ interface Testsuite {
     index: number;
     duration: number;
     checkPoints: Array<{
-      type: "TICK" | "REPEAT" | "LAST_LEGACY_TIC",
+      type: "TICK" | "REPEAT" | "LAST_LEGACY_TICK",
       time: number;
       position: Position;
     }>;
