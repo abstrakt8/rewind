@@ -20,14 +20,10 @@ Setup
 Basics
 ---
 
-You will need the following:
+Install the following:
 
 * Node.js v16.4.2 (e.g. with `nvm`)
-
-Test data
----
-
-Download the test data and set the `REWIND_TEST_DIR` environment variable. (TODO: Link)
+* [`git-lfs`](https://git-lfs.github.com/) for the test data in `testdata/`
 
 TODO
 ---
