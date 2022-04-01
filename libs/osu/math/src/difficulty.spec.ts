@@ -7,5 +7,5 @@ test("approachRateToApproachDuration", function () {
 });
 
 test("circleSizeToScale", function () {
-  expect(circleSizeToScale(4)).toEqual(0.57);
+  expect(circleSizeToScale(4)).toBeCloseTo(0.57, 5);
 });

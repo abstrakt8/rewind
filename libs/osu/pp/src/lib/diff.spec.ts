@@ -17,7 +17,6 @@ function starRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
   return lastAttributes.starRating;
 }
 
-
 // TODO: Make it more dynamic
 // Once a rework hits, we need to adjust the test cases again, but I think then you want to generate those SR
 // with the official osu! lazer code instead -> output it into a json file or something
@@ -52,57 +51,58 @@ const timeFreeze = testBlueprintPath(
   "158023 UNDEAD CORPORATION - Everything will freeze\\UNDEAD CORPORATION - Everything will freeze (Ekoro) [Time Freeze].osu",
 );
 
-describe("SR calculation", function() {
+// TODO: Delete this
+describe("SR calculation", function () {
   // Only has hit circles
-  describe("Violet Perfume", function() {
+  describe("Violet Perfume", function () {
     // https://osu.ppy.sh/beatmapsets/1010865#osu/2115970
     const blueprint = getBlueprint(violetPerfume);
-    it("NM", function() {
+    it("NM", function () {
       const expectedStarRating = 4.6626936826380652;
       expect(starRating(blueprint, [])).toBeCloseTo(expectedStarRating, 2);
     });
-    it("DT", function() {
+    it("DT", function () {
       expect(starRating(blueprint, ["DOUBLE_TIME"])).toBeCloseTo(6.5984001716972429, 2);
     });
   });
 
   // Has some sliders and hit circles
-  describe("Lonely Go! Fiery's Extreme", function() {
+  describe("Lonely Go! Fiery's Extreme", function () {
     const blueprint = getBlueprint(lonelyGo);
 
-    it("NM/HD", function() {
+    it("NM/HD", function () {
       // The only that is calculated from lazer directly
       const expectedStarRating = 6.3331461484197025;
       expect(starRating(blueprint, [])).toBeCloseTo(expectedStarRating, 5);
       expect(starRating(blueprint, ["HIDDEN"])).toBeCloseTo(expectedStarRating, 5);
     });
-    it("DT/NC", function() {
+    it("DT/NC", function () {
       const expectedStarRating = 8.7425958639117809;
       expect(starRating(blueprint, ["DOUBLE_TIME"])).toBeCloseTo(expectedStarRating, 5);
       expect(starRating(blueprint, ["NIGHT_CORE"])).toBeCloseTo(expectedStarRating, 5);
     });
-    it("HR", function() {
+    it("HR", function () {
       expect(starRating(blueprint, ["HARD_ROCK"])).toBeCloseTo(6.82, 2);
     });
     // TODO
     // it("FL", function() {
     //   expect(starRating(blueprint, ["FLASH_LIGHT"])).toBeCloseTo(6.94, 2);
     // })
-    it("DTHR", function() {
+    it("DTHR", function () {
       expect(starRating(blueprint, ["HARD_ROCK", "DOUBLE_TIME"])).toBeCloseTo(9.43, 2);
     });
   });
 
-  describe("Hidamari no Uta", function() {
+  describe("Hidamari no Uta", function () {
     const blueprint = getBlueprint(hidamariNoUta);
-    it("HDDT", function() {
+    it("HDDT", function () {
       expect(starRating(blueprint, ["HIDDEN", "DOUBLE_TIME"])).toBeCloseTo(8.34, 1);
     });
   });
 
-  describe("Everything will freeze (Time Freeze)", function() {
+  describe("Everything will freeze (Time Freeze)", function () {
     const blueprint = getBlueprint(timeFreeze);
-    it("NM -> HR -> NM", function() {
+    it("NM -> HR -> NM", function () {
       const nmStarRating = 8.05;
       expect(starRating(blueprint, [])).toBeCloseTo(nmStarRating, 2);
       expect(starRating(blueprint, ["HARD_ROCK"])).toBeCloseTo(9.0, 2);
@@ -111,11 +111,11 @@ describe("SR calculation", function() {
   });
 });
 
-describe("PP calculation", function() {
-  describe("Lonely Go!", function() {
+describe("PP calculation", function () {
+  describe("Lonely Go!", function () {
     const blueprint = getBlueprint(lonelyGo);
     // https://osu.ppy.sh/scores/osu/3160935737/
-    it("Scores", function() {
+    it("Scores", function () {
       expect(
         calculatePP(blueprint, {
           mods: ["HARD_ROCK", "HIDDEN"],
@@ -128,10 +128,10 @@ describe("PP calculation", function() {
       ).toBeCloseTo(435.22938962417305, 3);
     });
   });
-  describe("Hidamari no Uta", function() {
+  describe("Hidamari no Uta", function () {
     const blueprint = getBlueprint(hidamariNoUta);
     // https://osu.ppy.sh/scores/osu/2863181831/
-    it("double tapping punishment", function() {
+    it("double tapping punishment", function () {
       const counts = [908, 46, 40, 0];
       const [countGreat, countOk, countMeh, countMiss] = counts;
       expect(
