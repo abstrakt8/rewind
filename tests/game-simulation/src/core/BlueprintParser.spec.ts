@@ -1,12 +1,11 @@
-import { parseBlueprintFromFS } from "./utils/others";
-import { TEST_MAPS } from "./utils/testBlueprintPath";
-import { SliderSettings } from "../src/blueprint/HitObjectSettings";
+import { parseBlueprintFromFS } from "../others";
+import { SliderSettings } from "@osujs/core";
+import { TEST_MAPS } from "../util";
 
 describe("Parsing one slider", function () {
   it("should parse the one slider correctly", function () {
     const bluePrint = parseBlueprintFromFS(TEST_MAPS.ONE_SLIDER);
     expect(bluePrint.hitObjectSettings.length).toBe(1);
-    console.log(bluePrint.hitObjectSettings[0]);
   });
 });
 
@@ -24,7 +23,6 @@ describe("Parsing kick slider", function () {
   const bluePrint = parseBlueprintFromFS(TEST_MAPS.SHORT_KICK_SLIDER);
   // TODO: Make a better version of this test because previously there was no flush pending points
   it("should parse the control points correctly", function () {
-    console.log(bluePrint.controlPointInfo.timingPoints);
     expect(bluePrint.controlPointInfo.timingPoints.length).toBe(1);
   });
 });

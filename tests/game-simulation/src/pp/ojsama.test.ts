@@ -1,6 +1,6 @@
 import { parser, std_diff } from "ojsama";
 import { readFile } from "fs/promises";
-import { TEST_MAPS } from "./util";
+import { TEST_MAPS } from "../util";
 
 test("Performance of ojsama", async () => {
   const data = await readFile(TEST_MAPS.SUN_MOON_STAR, "utf-8");

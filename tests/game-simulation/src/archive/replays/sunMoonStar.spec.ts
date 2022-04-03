@@ -3,11 +3,17 @@ import {
   defaultStableSettings,
   osuClassicScoreScreenJudgementCount,
   parseReplayFramesFromFS,
-} from "../utils/others";
+} from "../../others";
 
 import { readSync } from "node-osr";
-import { BucketedGameStateTimeMachine, isSlider, osuStableAccuracy, parseReplayFramesFromRaw, Slider } from "../../src";
-import { TEST_MAPS, TEST_REPLAYS } from "../utils/testBlueprintPath";
+import {
+  BucketedGameStateTimeMachine,
+  isSlider,
+  osuStableAccuracy,
+  parseReplayFramesFromRaw,
+  Slider,
+} from "@osujs/core";
+import { TEST_MAPS, TEST_REPLAYS } from "../../util";
 
 describe("Parsing SunMoonStar", function () {
   const r = parseReplayFramesFromFS(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
@@ -27,7 +33,7 @@ describe("Parsing SunMoonStar", function () {
   });
 });
 
-test("Testing frame times", function () {
+test.skip("Testing frame times", function () {
   const { timeMachine, beatmap, replay } = createTestTimeMachine(
     TEST_MAPS.SUN_MOON_STAR,
     TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN,
@@ -35,15 +41,12 @@ test("Testing frame times", function () {
 
   const i = beatmap.hitObjects.findIndex((o) => isSlider(o) && o.startTime === 876199);
   const slider = beatmap.hitObjects[i] as Slider;
-  console.log(slider);
 
   // commonStats(replay.frames, 36);
-
   // 876399
-  console.log("wait");
 });
 
-test("FromRawToReplay Speed test", function () {
+test.skip("FromRawToReplay Speed test", function () {
   console.time("readSync");
   const a = readSync(TEST_REPLAYS.SUN_MOON_STAR_VARVALIAN);
   console.timeEnd("readSync");

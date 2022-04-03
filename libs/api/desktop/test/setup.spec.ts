@@ -7,12 +7,14 @@ const applicationDataPath = "C:\\Users\\me\\AppData\\Roaming\\rewind";
 const rewindCfgPath = join(applicationDataPath, "rewind-test.cfg");
 
 // https://docs.nestjs.com/fundamentals/testing
-describe("DesktopConfigService", () => {
+// TODO: Delete or refactor this test
+describe.skip("DesktopConfigService", () => {
   const desktopConfigService = new DesktopConfigService(rewindCfgPath);
   it("save", async () => await desktopConfigService.saveOsuStablePath("E:\\osu!"));
 });
 
-describe("Setup E2E", () => {
+// TODO: Delete or refactor this test
+describe.skip("Setup E2E", () => {
   let app: INestApplication;
 
   beforeAll(async () => {

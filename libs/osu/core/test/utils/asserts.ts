@@ -1,5 +1,6 @@
 import { Position } from "@osujs/math";
 
+// TODO: Move this to a common lib/package
 export function assertPositionEqual(actual: Position, expected: Position, numDigits?: number) {
   expect(actual.x).toBeCloseTo(expected.x, numDigits);
   expect(actual.y).toBeCloseTo(expected.y, numDigits);

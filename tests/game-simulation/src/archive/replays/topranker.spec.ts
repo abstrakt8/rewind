@@ -1,8 +1,9 @@
-import { commonStats, createTestTimeMachine } from "../utils/others";
-import { retrieveEvents } from "../../src";
-import { TEST_MAPS, TEST_REPLAYS } from "../utils/testBlueprintPath";
+import { commonStats, createTestTimeMachine } from "../../others";
+import { retrieveEvents } from "@osujs/core";
+import { TEST_MAPS, TEST_REPLAYS } from "../../util";
 
-test("abstrakt - Top Ranker", () => {
+// TODO: Delete or refactor this test
+test.skip("abstrakt - Top Ranker", () => {
   // md5 3be542cdcfbad11d922f05f1a7df8463
   // This replay is a bit bugged:
   // t=229528

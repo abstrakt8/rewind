@@ -1,8 +1,5 @@
 import * as fs from "fs";
 import { readSync } from "node-osr";
-import { normalizeHitObjects } from "../../src/utils";
-import { formatGameTime, hitWindowsForOD } from "@osujs/math";
-import { average, max, median, min } from "simple-statistics";
 import {
   Blueprint,
   BucketedGameStateTimeMachine,
@@ -12,15 +9,23 @@ import {
   GameStateEvaluator,
   GameStateEvaluatorOptions,
   modsFromBitmask,
+  normalizeHitObjects,
   OsuClassicMod,
   OsuHitObject,
   parseBlueprint,
   parseReplayFramesFromRaw,
   ReplayFrame,
   Slider,
-} from "../../src/";
+} from "@osujs/core";
+import { formatGameTime, hitWindowsForOD, Position } from "@osujs/math";
+import { average, max, median, min } from "simple-statistics";
 
 // This makes the whole testing module node.js only
+
+export function assertPositionEqual(actual: Position, expected: Position, numDigits?: number) {
+  expect(actual.x).toBeCloseTo(expected.x, numDigits);
+  expect(actual.y).toBeCloseTo(expected.y, numDigits);
+}
 
 export function parseBlueprintFromFS(name: string): Blueprint {
   const data = fs.readFileSync(name);

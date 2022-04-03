@@ -3,11 +3,9 @@ import {
   evaluateWholeReplay,
   osuClassicScoreScreenJudgementCount,
   parseReplayFramesFromFS,
-} from "./utils/others";
-import { GameState, HitCircleVerdict } from "../src/gameplay/GameState";
-import { BucketedGameStateTimeMachine } from "../src/gameplay/GameStateTimeMachine";
-import { Slider } from "../src/hitobjects/Slider";
-import { TEST_MAPS, testReplayPath } from "./utils/testBlueprintPath";
+} from "../others";
+import { BucketedGameStateTimeMachine, GameState, HitCircleVerdict, Slider } from "@osujs/core";
+import { TEST_MAPS, testReplayPath } from "../util";
 
 /**
  * Info on [Slider 1]

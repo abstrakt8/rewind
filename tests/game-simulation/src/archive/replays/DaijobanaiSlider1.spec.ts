@@ -1,15 +1,15 @@
-import { defaultStableSettings, evaluateWholeReplay, parseReplayFramesFromFS } from "../utils/others";
+import { defaultStableSettings, evaluateWholeReplay, parseReplayFramesFromFS } from "../../others";
 import {
   CheckPointState,
   GameState,
+  GameStateEvaluator,
   HitCircleVerdict,
   MainHitObjectVerdict,
   OsuHitObject,
   ReplayFrame,
   Slider,
-} from "../../src";
-import { GameStateEvaluator } from "../../src/gameplay/GameStateEvaluator";
-import { TEST_MAPS, testReplayPath } from "../utils/testBlueprintPath";
+} from "@osujs/core";
+import { TEST_MAPS, testReplayPath } from "../../util";
 
 function expectHitCircleToBeNotAMiss(hitCircleState?: HitCircleVerdict) {
   expect(hitCircleState).toBeDefined();
