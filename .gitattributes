@@ -1,1 +1,17 @@
-testdata/** filter=lfs diff=lfs merge=lfs -text
+# Often used LFS tracks
+# https://gist.github.com/ma-al/019f7f76498c55f0061120a5b13c6d88
+# ------------------------------------------------
+# Usual image types
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.bmp filter=lfs diff=lfs merge=lfs -text
+*.svg filter=lfs diff=lfs merge=lfs -text
+*.sketch filter=lfs diff=lfs merge=lfs -text
+
+
+# osu! related files
+*.osr filter=lfs diff=lfs merge=lfs -text
+*.db filter=lfs diff=lfs merge=lfs -text
+*.osu filter=lfs diff=lfs merge=lfs -text
+
