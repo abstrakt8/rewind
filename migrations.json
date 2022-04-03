@@ -1,60 +1,76 @@
 {
   "migrations": [
     {
-      "version": "13.2.0",
-      "description": "Set --parallel=1 for existing repos to preserve the existing behavior",
+      "version": "13.6.0-beta.0",
+      "description": "Remove old options that are no longer used",
       "cli": "nx",
-      "implementation": "./src/migrations/update-13-2-0/set-parallel-default",
+      "implementation": "./src/migrations/update-13-6-0/remove-old-task-runner-options",
       "package": "@nrwl/workspace",
-      "name": "set-parallel-default"
+      "name": "13-6-0-remove-old-task-runner-options"
     },
     {
-      "version": "13.3.0-beta.0",
-      "description": "@nrwl/workspace:tsc is now @nrwl/js:tsc",
+      "version": "13.9.0-beta.0",
+      "description": "Update the decorate-angular-cli script to require nx instead of @nrwl/cli",
       "cli": "nx",
-      "implementation": "./src/migrations/update-13-3-0/update-tsc-executor-location",
+      "implementation": "./src/migrations/update-13-9-0/update-decorate-cli",
       "package": "@nrwl/workspace",
-      "name": "13-3-0-tsc-location"
+      "name": "13-9-0-update-decorate-cli"
     },
     {
-      "version": "13.1.2-beta.0",
+      "version": "13.9.0-beta.0",
+      "description": "Replace @nrwl/tao with nx",
       "cli": "nx",
-      "description": "Support .test. file names in tsconfigs",
-      "factory": "./src/migrations/update-13-1-2/update-tsconfigs-for-tests",
+      "implementation": "./src/migrations/update-13-9-0/replace-tao-with-nx",
+      "package": "@nrwl/workspace",
+      "name": "13-9-0-replace-tao-with-nx"
+    },
+    {
+      "version": "13.4.4-beta.0",
+      "cli": "nx",
+      "description": "Create a root babel config file if it doesn't exist and using babel-jest in jest.config.js and add @nrwl/web as needed",
+      "factory": "./src/migrations/update-13-4-4/add-missing-root-babel-config",
       "package": "@nrwl/jest",
-      "name": "update-ts-config-for-test-filenames"
+      "name": "add-missing-root-babel-config"
     },
     {
       "cli": "nx",
-      "version": "13.3.0-beta.0",
-      "description": "Update eslint-rules jest.config.js in order to support ESLint v8 exports mapping, remove category field",
-      "factory": "./src/migrations/update-13-3-0/eslint-8-updates",
-      "package": "@nrwl/linter",
-      "name": "eslint-8-updates"
-    },
-    {
-      "cli": "nx",
-      "version": "13.2.0-beta.0",
-      "description": "Update Nest.js libraries",
-      "factory": "./src/migrations/update-13-2-0/update-to-nest-8",
-      "package": "@nrwl/nest",
-      "name": "update-to-nest-8"
-    },
-    {
-      "cli": "nx",
-      "version": "13.3.0-beta.1",
-      "description": "Rename the 'build' executor to 'webpack'",
-      "factory": "./src/migrations/update-13-3-0/rename-build-to-webpack",
-      "package": "@nrwl/web",
+      "version": "13.8.5-beta.1",
+      "description": "Renames @nrwl/node:build to @nrwl/node:webpack",
+      "factory": "./src/migrations/update-13-8-5/rename-build-to-webpack",
+      "package": "@nrwl/node",
       "name": "rename-build-to-webpack"
     },
     {
       "cli": "nx",
-      "version": "13.3.0-beta.1",
-      "description": "Rename the 'package' executor to 'rollup'",
-      "factory": "./src/migrations/update-13-3-0/rename-package-to-rollup",
+      "version": "13.8.5-beta.1",
+      "description": "Renames @nrwl/node:execute to @nrwl/node:node",
+      "factory": "./src/migrations/update-13-8-5/rename-execute-to-node",
+      "package": "@nrwl/node",
+      "name": "rename-execute-to-node"
+    },
+    {
+      "cli": "nx",
+      "version": "13.8.5-beta.1",
+      "description": "Renames @nrwl/node:package to @nrwl/js:tsc",
+      "factory": "./src/migrations/update-13-8-5/update-package-to-tsc",
+      "package": "@nrwl/node",
+      "name": "update-package-to-tsc"
+    },
+    {
+      "version": "13.4.6-beta.1",
+      "cli": "nx",
+      "description": "Add projectBuildConfig option to project's Storybook config.",
+      "factory": "./src/migrations/update-13-4-6/set-project-build-config",
+      "package": "@nrwl/storybook",
+      "name": "update-13.4.6"
+    },
+    {
+      "cli": "nx",
+      "version": "13.8.0-beta.1",
+      "description": "Add a postcss config option to apps to load a single config file for all libs",
+      "factory": "./src/migrations/update-13-8-0/add-postcss-config-option",
       "package": "@nrwl/web",
-      "name": "rename-package-to-rollup"
+      "name": "add-postcss-config-option"
     }
   ]
 }
