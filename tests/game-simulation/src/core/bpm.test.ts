@@ -1,4 +1,4 @@
-import { getBlueprintFromTestDir } from "./util";
+import { getBlueprintFromTestDir } from "../util";
 import { buildBeatmap, mostCommonBeatLength } from "@osujs/core";
 import { beatLengthToBPM } from "@osujs/math";
 

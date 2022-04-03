@@ -1,4 +1,4 @@
-import { defaultStableSettings, evaluateWholeReplay, parseReplayFramesFromFS } from "../../others";
+import { defaultStableSettings, evaluateWholeReplay, parseReplayFramesFromFS } from "../../../others";
 import {
   CheckPointState,
   GameState,
@@ -9,7 +9,7 @@ import {
   ReplayFrame,
   Slider,
 } from "@osujs/core";
-import { TEST_MAPS, testReplayPath } from "../../util";
+import { TEST_MAPS, testReplayPath } from "../../../util";
 
 function expectHitCircleToBeNotAMiss(hitCircleState?: HitCircleVerdict) {
   expect(hitCircleState).toBeDefined();
@@ -28,7 +28,7 @@ describe("Daijobanai [Slider 1]", function () {
     const s = defaultStableSettings(TEST_MAPS.ONE_SLIDER);
     hitObjects = s.hitObjects;
     evaluator = s.evaluator;
-    console.log("Read stable settings ");
+    // console.log("Read stable settings ");
   });
 
   // console.log(hitObjects[0]);
@@ -37,15 +37,12 @@ describe("Daijobanai [Slider 1]", function () {
     before(function () {
       replay = parseReplayFramesFromFS(testReplayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) Perfect.osr"));
       state = evaluateWholeReplay(evaluator, replay);
-      console.log("Read and evaluated perfect", replay.length);
     });
     it("hit circle must be hit correctly", function () {
-      console.log("it hitcircle must be hit correctly perfect");
       const hitCircleState = state.hitCircleVerdict["0/HEAD"] as HitCircleVerdict;
       // hitTime is 1684 and offset was -14, so 1684-14=1670
       const expectedState: HitCircleVerdict = { type: "GREAT", judgementTime: 1670 };
       expect(hitCircleState).toEqual(expectedState);
-      console.log(hitCircleState);
     });
     it("legacy slider tick must be hit", function () {
       const sliderTickState = state.checkPointVerdict["0/0"] as CheckPointState;
@@ -63,10 +60,8 @@ describe("Daijobanai [Slider 1]", function () {
         testReplayPath("- Perfume - Daijobanai [Slider 1] (2021-07-07) SliderHeadMissedButTrackingWtf.osr"),
       );
       state = evaluateWholeReplay(evaluator, replay);
-      console.log("Read and evaluated SliderHeadMissedBut", replay.length);
     });
     it("hit circle missed", function () {
-      console.log("Hit circle missed");
       const hitCircleState = state.hitCircleVerdict["0/HEAD"];
       const expectedState: HitCircleVerdict = {
         judgementTime: 1804, // 1803 or 1804 TODO: ???
@@ -135,7 +130,6 @@ describe("Daijobanai [Slider 1]", function () {
 
     it("legacy slider tick missed", function () {
       const sliderTickState = state.checkPointVerdict["0/0"];
-      console.log(hitObjects[0] as Slider);
       expect(sliderTickState.hit).toBe(false);
     });
 

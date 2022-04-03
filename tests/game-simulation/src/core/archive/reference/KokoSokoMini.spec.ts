@@ -1,7 +1,7 @@
 // abstrakt - Smile.dk - Koko Soko (AKIBA KOUBOU Eurobeat Remix) [Couch Mini2a] (2021-04-09) Osu.json
 
-import { testBlueprintPath, testReferencePath, testReplayPath } from "../../util";
-import { compareTimeMachineWithReference } from "../../reference";
+import { testBlueprintPath, testReferencePath, testReplayPath } from "../../../util";
+import { compareTimeMachineWithReference } from "../../../reference";
 
 const blueprintFile = testBlueprintPath(
   "1302792 Smiledk - Koko Soko (AKIBA KOUBOU Eurobeat Remix)/Smile.dk - Koko Soko (AKIBA KOUBOU Eurobeat Remix) ([ Couch ] Mini) [Couch Mini2a].osu",

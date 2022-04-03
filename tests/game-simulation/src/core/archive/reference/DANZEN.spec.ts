@@ -1,7 +1,7 @@
 // abstrakt - Smile.dk - Koko Soko (AKIBA KOUBOU Eurobeat Remix) [Couch Mini2a] (2021-04-09) Osu.json
 
 // import { compareTimeMachineWithReference } from "../../../../../libs/osu/core/test/utils/reference";
-import { testBlueprintPath, testReferencePath, testReplayPath } from "../../util";
+import { testBlueprintPath, testReferencePath, testReplayPath } from "../../../util";
 
 const blueprintFile = testBlueprintPath(
   "840260 Gojou Mayumi - DANZEN! Futari wa PreCure Ver MaxHeart (TV Size)/Gojou Mayumi - DANZEN! Futari wa PreCure Ver. MaxHeart (TV Size) (Sotarks) [Insane].osu",

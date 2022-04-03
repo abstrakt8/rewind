@@ -15,7 +15,7 @@ import { TEST_MAPS, testReplayPath } from "../util";
 
 describe("Daijobanai [Slider (Repeat = 1)]", function () {
   const { evaluator, hitObjects } = defaultStableSettings(TEST_MAPS.SLIDER_WITH_ONE_REPEAT);
-  console.log("Slider with repeat = 1", hitObjects[0]);
+  // console.log("Slider with repeat = 1", hitObjects[0]);
   const sliderHeadId = "0/HEAD",
     repeatId = "0/0",
     lastTickId = "0/1";
@@ -45,7 +45,7 @@ describe("Daijobanai [Short kick slider]", function () {
   const { evaluator, hitObjects } = defaultStableSettings(TEST_MAPS.SHORT_KICK_SLIDER);
   const slider = hitObjects[0] as Slider;
 
-  console.log("Short kick slider", slider.id, slider.head.hitTime, slider.endTime, slider.endPosition);
+  // console.log("Short kick slider", slider.id, slider.head.hitTime, slider.endTime, slider.endPosition);
   const sliderHeadId = "0/HEAD",
     lastTickId = "0/0";
 
@@ -87,7 +87,7 @@ describe("OsuStd! ReplayState - Violet Perfume (no sliders/spinners)", function 
   const replay = parseReplayFramesFromFS(
     testReplayPath("abstrakt - SHK - Violet Perfume [Insane] (2021-03-27) Osu.osr"),
   );
-  console.log(hitWindows);
+  // console.log(hitWindows);
 
   const finalState = evaluateWholeReplay(evaluator, replay);
 

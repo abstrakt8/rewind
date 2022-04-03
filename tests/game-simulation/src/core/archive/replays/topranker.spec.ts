@@ -1,6 +1,6 @@
-import { commonStats, createTestTimeMachine } from "../../others";
+import { commonStats, createTestTimeMachine } from "../../../others";
 import { retrieveEvents } from "@osujs/core";
-import { TEST_MAPS, TEST_REPLAYS } from "../../util";
+import { TEST_MAPS, TEST_REPLAYS } from "../../../util";
 
 // TODO: Delete or refactor this test
 test.skip("abstrakt - Top Ranker", () => {

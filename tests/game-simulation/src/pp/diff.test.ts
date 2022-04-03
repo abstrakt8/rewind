@@ -1,6 +1,6 @@
 import { Blueprint, buildBeatmap, OsuClassicMod } from "@osujs/core";
 import { calculateDifficultyAttributes } from "@osujs/pp";
-import { getBlueprintFromTestDir, resourcesPath, translateModAcronym } from "./util";
+import { getBlueprintFromTestDir, resourcesPath, translateModAcronym } from "../util";
 
 import { toMatchObjectCloseTo } from "jest-match-object-close-to";
 import { readFileSync } from "fs";
@@ -35,21 +35,15 @@ function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
 }
 
 function runTestSuite({ filename, cases }: TestSuite) {
-  describe(filename, function() {
+  describe(filename, function () {
     let blueprint;
     beforeEach(() => {
       blueprint = getBlueprintFromTestDir(filename);
     });
-    cases.forEach(({
-                     mods: modAcronyms,
-                     starRating,
-                     speedRating,
-                     aimRating,
-                     flashlightRating,
-                   }) => {
+    cases.forEach(({ mods: modAcronyms, starRating, speedRating, aimRating, flashlightRating }) => {
       const testCaseName = modAcronyms.length === 0 ? "NM" : modAcronyms.join(",");
       const mods = modAcronyms.map(translateModAcronym);
-      it(testCaseName, function() {
+      it(testCaseName, function () {
         const actual = calculateStarRating(blueprint, mods);
         expect({
           aimRating: actual.aimDifficulty,
@@ -57,37 +51,42 @@ function runTestSuite({ filename, cases }: TestSuite) {
           // Test FL with different delta
           flashlightRating: actual.flashlightDifficulty,
           starRating: actual.starRating,
-        }).toMatchObjectCloseTo({
-          aimRating,
-          flashlightRating,
-          speedRating,
-          starRating,
-        }, SR_EXPECTED_PRECISION);
+        }).toMatchObjectCloseTo(
+          {
+            aimRating,
+            flashlightRating,
+            speedRating,
+            starRating,
+          },
+          SR_EXPECTED_PRECISION,
+        );
       });
     });
   });
 }
 
-describe("Star rating calculation", function() {
+describe("Star rating calculation", function () {
   const data = readFileSync(resourcesPath("star_ratings.json"), "utf-8");
   const suites: TestSuite[] = JSON.parse(data);
-  suites.forEach(testCase => {
+  suites.forEach((testCase) => {
     runTestSuite(testCase);
   });
 });
 
 // Change `describe.skip` -> `describe.only` to test a specific one.
-describe.skip("SR a specific one", function() {
+describe.skip("SR a specific one", function () {
   const testSuite: TestSuite = {
-    filename: "1357624 sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix)/sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) (Nathan) [KEMOMIMI EDM SQUAD].osu",
-    "cases": [
+    filename:
+      "1357624 sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix)/sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) (Nathan) [KEMOMIMI EDM SQUAD].osu",
+    cases: [
       {
-        "mods": [],
-        "starRating": 7.585806851390463,
-        "aimRating": 3.962396149332689,
-        "speedRating": 3.2644585786342555,
-        "flashlightRating": 4.722278664838489,
-      }],
+        mods: [],
+        starRating: 7.585806851390463,
+        aimRating: 3.962396149332689,
+        speedRating: 3.2644585786342555,
+        flashlightRating: 4.722278664838489,
+      },
+    ],
   };
   runTestSuite(testSuite);
 });
