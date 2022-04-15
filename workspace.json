@@ -61,7 +61,7 @@
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:build",
+          "executor": "@nrwl/node:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/desktop-backend",
@@ -84,7 +84,7 @@
           }
         },
         "serve": {
-          "executor": "@nrwl/node:execute",
+          "executor": "@nrwl/node:node",
           "options": {
             "buildTarget": "desktop-backend:build"
           }
@@ -117,7 +117,7 @@
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:build",
+          "executor": "@nrwl/node:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/desktop-backend-preload",
@@ -140,7 +140,7 @@
           }
         },
         "serve": {
-          "executor": "@nrwl/node:execute",
+          "executor": "@nrwl/node:node",
           "options": {
             "buildTarget": "desktop-backend-preload:build"
           }
@@ -261,7 +261,7 @@
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:build",
+          "executor": "@nrwl/node:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/desktop-frontend-preload",
@@ -284,7 +284,7 @@
           }
         },
         "serve": {
-          "executor": "@nrwl/node:execute",
+          "executor": "@nrwl/node:node",
           "options": {
             "buildTarget": "desktop-frontend-preload:build"
           }
@@ -448,7 +448,7 @@
           }
         },
         "build": {
-          "executor": "@nrwl/node:package",
+          "executor": "@nrwl/node:webpack",
           "outputs": [
             "{options.outputPath}"
           ],
@@ -458,7 +458,6 @@
             "packageJson": "libs/osu/core/package.json",
             "main": "libs/osu/core/src/index.ts",
             "assets": [
-              "libs/osu/core/*.md"
             ]
           }
         }
@@ -625,7 +624,7 @@
           }
         },
         "build": {
-          "executor": "@nrwl/node:package",
+          "executor": "@nrwl/node:webpack",
           "outputs": [
             "{options.outputPath}"
           ],
@@ -634,9 +633,7 @@
             "tsConfig": "libs/osu/math/tsconfig.lib.json",
             "packageJson": "libs/osu/math/package.json",
             "main": "libs/osu/math/src/index.ts",
-            "assets": [
-              "libs/osu/math/*.md"
-            ]
+            "assets": [ ]
           }
         }
       },
@@ -721,7 +718,7 @@
           }
         },
         "build": {
-          "executor": "@nrwl/node:package",
+          "executor": "@nrwl/node:webpack",
           "outputs": [
             "{options.outputPath}"
           ],
@@ -730,9 +727,7 @@
             "tsConfig": "libs/osu/pp/tsconfig.lib.json",
             "packageJson": "libs/osu/pp/package.json",
             "main": "libs/osu/pp/src/index.ts",
-            "assets": [
-              "libs/osu/pp/*.md"
-            ]
+            "assets": [ ]
           }
         }
       },
@@ -768,18 +763,18 @@
       "tags": []
     },
     "osu-stable-test-generator": {
-      "root": "apps/osu-stable-test-generator",
-      "sourceRoot": "apps/osu-stable-test-generator/src",
+      "root": "tests/osu-stable-test-generator",
+      "sourceRoot": "tests/osu-stable-test-generator/src",
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:build",
+          "executor": "@nrwl/node:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/apps/osu-stable-test-generator",
-            "main": "apps/osu-stable-test-generator/src/main.ts",
-            "tsConfig": "apps/osu-stable-test-generator/tsconfig.app.json",
-            "assets": ["apps/osu-stable-test-generator/src/assets"]
+            "outputPath": "dist/tests/osu-stable-test-generator",
+            "main": "tests/osu-stable-test-generator/src/main.ts",
+            "tsConfig": "tests/osu-stable-test-generator/tsconfig.app.json",
+            "assets": ["tests/osu-stable-test-generator/src/assets"]
           },
           "configurations": {
             "production": {
@@ -788,15 +783,15 @@
               "inspect": false,
               "fileReplacements": [
                 {
-                  "replace": "apps/osu-stable-test-generator/src/environments/environment.ts",
-                  "with": "apps/osu-stable-test-generator/src/environments/environment.prod.ts"
+                  "replace": "tests/osu-stable-test-generator/src/environments/environment.ts",
+                  "with": "tests/osu-stable-test-generator/src/environments/environment.prod.ts"
                 }
               ]
             }
           }
         },
         "serve": {
-          "executor": "@nrwl/node:execute",
+          "executor": "@nrwl/node:node",
           "options": {
             "buildTarget": "osu-stable-test-generator:build"
           }
@@ -804,7 +799,7 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/osu-stable-test-generator/**/*.ts"]
+            "lintFilePatterns": ["tests/osu-stable-test-generator/**/*.ts"]
           },
           "outputs": [
             "{options.outputFile}"
@@ -813,10 +808,10 @@
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": [
-            "coverage/apps/osu-stable-test-generator"
+            "coverage/tests/osu-stable-test-generator"
           ],
           "options": {
-            "jestConfig": "apps/osu-stable-test-generator/jest.config.js",
+            "jestConfig": "tests/osu-stable-test-generator/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -829,7 +824,7 @@
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:build",
+          "executor": "@nrwl/node:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/rewind-electron",
@@ -852,7 +847,7 @@
           }
         },
         "serve": {
-          "executor": "@nrwl/node:execute",
+          "executor": "@nrwl/node:node",
           "options": {
             "buildTarget": "rewind-electron:build"
           }
