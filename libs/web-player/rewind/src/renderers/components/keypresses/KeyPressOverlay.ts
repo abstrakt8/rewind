@@ -54,7 +54,7 @@ class NonIntersectingTimeIntervalsTracker {
 
 const WIDTH = 800;
 const HEIGHT = 100;
-const KEY_HEIGHT = 25;
+const KEY_HEIGHT = 35;
 
 function positionInTimeline(currentTime: number, windowDuration: number, x: number) {
   return (
@@ -199,9 +199,9 @@ export class KeyPressOverlay {
       this.hitObjectContainer,
       this.rulerTicksContainer,
     );
-    const margin = 10;
-    this.key1.container.position.set(0, margin);
-    this.key2.container.position.set(0, HEIGHT - KEY_HEIGHT - margin);
+    // const margin = 10;
+    this.key1.container.position.set(0, HEIGHT / 2 - KEY_HEIGHT);
+    this.key2.container.position.set(0, HEIGHT / 2);
 
     {
       const middleLine = new Sprite(Texture.WHITE);
@@ -340,7 +340,8 @@ export class KeyPressOverlay {
     for (let i = indices.length - 1; i >= 0; i--) {
       const hitObject = this.hitObjects[indices[i]];
 
-      const aHeight = HEIGHT * 0.5;
+      // He
+      const aHeight = HEIGHT * 0.35;
       let sprite;
       if (isHitCircle(hitObject)) {
         [sprite] = this.spritePool.allocate("hitCircle" + indices[i]);
