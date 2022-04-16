@@ -11,15 +11,11 @@
           "options": {
             "lintFilePatterns": ["libs/api/common/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/api/common"
-          ],
+          "outputs": ["coverage/libs/api/common"],
           "options": {
             "jestConfig": "libs/api/common/jest.config.js",
             "passWithNoTests": true
@@ -38,15 +34,11 @@
           "options": {
             "lintFilePatterns": ["libs/api/desktop/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/api/desktop"
-          ],
+          "outputs": ["coverage/libs/api/desktop"],
           "options": {
             "jestConfig": "libs/api/desktop/jest.config.js",
             "passWithNoTests": true
@@ -64,7 +56,7 @@
           "executor": "@nrwl/node:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/apps/desktop-backend",
+            "outputPath": "dist/apps/desktop/backend",
             "main": "apps/desktop/backend/src/main.ts",
             "tsConfig": "apps/desktop/backend/tsconfig.app.json",
             "assets": ["apps/desktop/backend/src/assets"]
@@ -94,15 +86,11 @@
           "options": {
             "lintFilePatterns": ["apps/desktop/backend/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/desktop-backend"
-          ],
+          "outputs": ["coverage/apps/desktop/backend"],
           "options": {
             "jestConfig": "apps/desktop/backend/jest.config.js",
             "passWithNoTests": true
@@ -121,7 +109,7 @@
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputFileName": "preload.js",
-            "outputPath": "dist/apps/desktop-backend",
+            "outputPath": "dist/apps/desktop/backend",
             "main": "apps/desktop/backend/src/preload.ts",
             "tsConfig": "apps/desktop/backend/tsconfig.app.json"
           },
@@ -138,9 +126,7 @@
           "options": {
             "lintFilePatterns": ["apps/desktop/backend/src/preload.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         }
       },
       "tags": []
@@ -152,22 +138,15 @@
       "targets": {
         "build": {
           "executor": "@nrwl/web:webpack",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/apps/desktop-frontend",
+            "outputPath": "dist/apps/desktop/frontend",
             "index": "apps/desktop/frontend/src/index.html",
             "main": "apps/desktop/frontend/src/main.tsx",
             "polyfills": "apps/desktop/frontend/src/polyfills.ts",
             "tsConfig": "apps/desktop/frontend/tsconfig.app.json",
-            "assets": [
-              "apps/desktop/frontend/src/favicon.ico",
-              "apps/desktop/frontend/src/assets"
-            ],
-            "styles": [
-              "apps/desktop/frontend/src/styles.css"
-            ],
+            "assets": ["apps/desktop/frontend/src/favicon.ico", "apps/desktop/frontend/src/assets"],
+            "styles": ["apps/desktop/frontend/src/styles.css"],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
           },
@@ -216,15 +195,11 @@
           "options": {
             "lintFilePatterns": ["apps/desktop/frontend/**/*.{ts,tsx,js,jsx}"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/desktop-frontend"
-          ],
+          "outputs": ["coverage/apps/desktop/frontend"],
           "options": {
             "jestConfig": "apps/desktop/frontend/jest.config.js",
             "passWithNoTests": true
@@ -243,7 +218,7 @@
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputFileName": "preload.js",
-            "outputPath": "dist/apps/desktop-frontend",
+            "outputPath": "dist/apps/desktop/frontend",
             "main": "apps/desktop/frontend/src/preload.ts",
             "tsConfig": "apps/desktop/frontend/tsconfig.app.json"
           },
@@ -260,9 +235,7 @@
           "options": {
             "lintFilePatterns": ["apps/desktop/frontend/**/preload.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         }
       },
       "tags": []
@@ -276,8 +249,9 @@
           "executor": "@nrwl/node:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/apps/desktop-main",
-            "main": "apps/desktop/main/src/main.ts",
+            "outputFileName": "index.js",
+            "outputPath": "dist/apps/desktop",
+            "main": "apps/desktop/main/src/index.ts",
             "tsConfig": "apps/desktop/main/tsconfig.app.json",
             "assets": ["apps/desktop/main/src/assets"]
           },
@@ -306,15 +280,11 @@
           "options": {
             "lintFilePatterns": ["apps/desktop/main/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/desktop-main"
-          ],
+          "outputs": ["coverage/apps/desktop-main"],
           "options": {
             "jestConfig": "apps/desktop/main/jest.config.js",
             "passWithNoTests": true
@@ -333,15 +303,11 @@
           "options": {
             "lintFilePatterns": ["libs/electron/api/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/electron/api"
-          ],
+          "outputs": ["coverage/libs/electron/api"],
           "options": {
             "jestConfig": "libs/electron/api/jest.config.js",
             "passWithNoTests": true
@@ -404,35 +370,6 @@
       },
       "tags": []
     },
-    "tests-game-simulation": {
-      "root": "tests/game-simulation",
-      "sourceRoot": "tests/game-simulation/src",
-      "projectType": "application",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": [
-            "{options.outputFile}"
-          ],
-          "options": {
-            "lintFilePatterns": [
-              "tests/game-simulation/**/*.ts"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/tests/game-simulation"
-          ],
-          "options": {
-            "jestConfig": "tests/game-simulation/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
     "osu-core": {
       "root": "libs/osu/core",
       "sourceRoot": "libs/osu/core/src",
@@ -441,19 +378,13 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "libs/osu/core/**/*.ts"
-            ]
+            "lintFilePatterns": ["libs/osu/core/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu/core"
-          ],
+          "outputs": ["coverage/libs/osu/core"],
           "options": {
             "jestConfig": "libs/osu/core/jest.config.js",
             "passWithNoTests": true
@@ -461,16 +392,13 @@
         },
         "build": {
           "executor": "@nrwl/node:webpack",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/osu/core",
             "tsConfig": "libs/osu/core/tsconfig.lib.json",
             "packageJson": "libs/osu/core/package.json",
             "main": "libs/osu/core/src/index.ts",
-            "assets": [
-            ]
+            "assets": []
           }
         }
       },
@@ -486,15 +414,11 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/db-reader/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu-local/db-reader"
-          ],
+          "outputs": ["coverage/libs/osu-local/db-reader"],
           "options": {
             "jestConfig": "libs/osu-local/db-reader/jest.config.js",
             "passWithNoTests": true
@@ -513,15 +437,11 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/gosumemory/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu-local/gosumemory"
-          ],
+          "outputs": ["coverage/libs/osu-local/gosumemory"],
           "options": {
             "jestConfig": "libs/osu-local/gosumemory/jest.config.js",
             "passWithNoTests": true
@@ -540,15 +460,11 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/osr-reader/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu-local/osr-reader"
-          ],
+          "outputs": ["coverage/libs/osu-local/osr-reader"],
           "options": {
             "jestConfig": "libs/osu-local/osr-reader/jest.config.js",
             "passWithNoTests": true
@@ -567,15 +483,11 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/skin-reader/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu-local/skin-reader"
-          ],
+          "outputs": ["coverage/libs/osu-local/skin-reader"],
           "options": {
             "jestConfig": "libs/osu-local/skin-reader/jest.config.js",
             "passWithNoTests": true
@@ -594,15 +506,11 @@
           "options": {
             "lintFilePatterns": ["libs/osu-local/utils/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu-local/utils"
-          ],
+          "outputs": ["coverage/libs/osu-local/utils"],
           "options": {
             "jestConfig": "libs/osu-local/utils/jest.config.js",
             "passWithNoTests": true
@@ -621,15 +529,11 @@
           "options": {
             "lintFilePatterns": ["libs/osu/math/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu/math"
-          ],
+          "outputs": ["coverage/libs/osu/math"],
           "options": {
             "jestConfig": "libs/osu/math/jest.config.js",
             "passWithNoTests": true
@@ -637,15 +541,13 @@
         },
         "build": {
           "executor": "@nrwl/node:webpack",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/osu/math",
             "tsConfig": "libs/osu/math/tsconfig.lib.json",
             "packageJson": "libs/osu/math/package.json",
             "main": "libs/osu/math/src/index.ts",
-            "assets": [ ]
+            "assets": []
           }
         }
       },
@@ -661,15 +563,11 @@
           "options": {
             "lintFilePatterns": ["libs/osu-pixi/classic-components/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu-pixi/classic-components"
-          ],
+          "outputs": ["coverage/libs/osu-pixi/classic-components"],
           "options": {
             "jestConfig": "libs/osu-pixi/classic-components/jest.config.js",
             "passWithNoTests": true
@@ -692,9 +590,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu-pixi/rewind"
-          ],
+          "outputs": ["coverage/libs/osu-pixi/rewind"],
           "options": {
             "jestConfig": "libs/osu-pixi/rewind/jest.config.js",
             "passWithNoTests": true
@@ -710,20 +606,14 @@
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "outputs": [
-            "{options.outputFile}"
-          ],
+          "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": [
-              "libs/osu/pp/**/*.ts"
-            ]
+            "lintFilePatterns": ["libs/osu/pp/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu/pp"
-          ],
+          "outputs": ["coverage/libs/osu/pp"],
           "options": {
             "jestConfig": "libs/osu/pp/jest.config.js",
             "passWithNoTests": true
@@ -731,15 +621,13 @@
         },
         "build": {
           "executor": "@nrwl/node:webpack",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/osu/pp",
             "tsConfig": "libs/osu/pp/tsconfig.lib.json",
             "packageJson": "libs/osu/pp/package.json",
             "main": "libs/osu/pp/src/index.ts",
-            "assets": [ ]
+            "assets": []
           }
         }
       },
@@ -753,19 +641,13 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "libs/osu/skin/**/*.ts"
-            ]
+            "lintFilePatterns": ["libs/osu/skin/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/osu/skin"
-          ],
+          "outputs": ["coverage/libs/osu/skin"],
           "options": {
             "jestConfig": "libs/osu/skin/jest.config.js",
             "passWithNoTests": true
@@ -813,17 +695,36 @@
           "options": {
             "lintFilePatterns": ["tests/osu-stable-test-generator/**/*.ts"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/tests/osu-stable-test-generator"
-          ],
+          "outputs": ["coverage/tests/osu-stable-test-generator"],
           "options": {
             "jestConfig": "tests/osu-stable-test-generator/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "tests-game-simulation": {
+      "root": "tests/game-simulation",
+      "sourceRoot": "tests/game-simulation/src",
+      "projectType": "application",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["tests/game-simulation/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/tests/game-simulation"],
+          "options": {
+            "jestConfig": "tests/game-simulation/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -837,22 +738,15 @@
       "targets": {
         "build": {
           "executor": "@nrwl/web:webpack",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/web",
             "index": "apps/web/src/index.html",
             "main": "apps/web/src/main.tsx",
             "polyfills": "apps/web/src/polyfills.ts",
             "tsConfig": "apps/web/tsconfig.app.json",
-            "assets": [
-              "apps/web/src/favicon.ico",
-              "apps/web/src/assets"
-            ],
-            "styles": [
-              "apps/web/src/styles.css"
-            ],
+            "assets": ["apps/web/src/favicon.ico", "apps/web/src/assets"],
+            "styles": ["apps/web/src/styles.css"],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
           },
@@ -900,15 +794,11 @@
           "options": {
             "lintFilePatterns": ["apps/web/**/*.{ts,tsx,js,jsx}"]
           },
-          "outputs": [
-            "{options.outputFile}"
-          ]
+          "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/apps/web"
-          ],
+          "outputs": ["coverage/apps/web"],
           "options": {
             "jestConfig": "apps/web/jest.config.js",
             "passWithNoTests": true
@@ -931,9 +821,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": [
-            "coverage/libs/web-player/rewind"
-          ],
+          "outputs": ["coverage/libs/web-player/rewind"],
           "options": {
             "jestConfig": "libs/web-player/rewind/jest.config.js",
             "passWithNoTests": true

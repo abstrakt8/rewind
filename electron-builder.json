@@ -13,28 +13,19 @@
   },
   "files": [
     {
-      "from": "dist/apps/desktop-main",
-      "to": "main",
+      "from": "dist/apps/desktop",
       "filter": [
-        "main.js",
-        "preload.js",
+        "index.js",
         "assets"
       ]
     },
     {
-      "from": "dist/apps/desktop-frontend",
+      "from": "dist/apps/desktop/frontend",
       "to": "frontend"
     },
     {
-      "from": "dist/apps/desktop-backend",
+      "from": "dist/apps/desktop/backend",
       "to": "backend"
-    },
-    {
-      "from": "apps/desktop/main",
-      "to": "",
-      "filter": [
-        "index.js"
-      ]
     },
     "package.json"
   ],

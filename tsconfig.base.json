@@ -11,68 +11,29 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2017",
-      "dom"
-    ],
+    "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@osujs/pp": [
-        "libs/osu/pp/src/index.ts"
-      ],
-      "@rewind/api/common": [
-        "libs/api/common/src/index.ts"
-      ],
-      "@rewind/api/desktop": [
-        "libs/api/desktop/src/index.ts"
-      ],
-      "@rewind/desktop/api": [
-        "libs/desktop/api/src/index.ts"
-      ],
-      "@rewind/electron/api": [
-        "libs/electron/api/src/index.ts"
-      ],
-      "@rewind/feature-replay-viewer": [
-        "libs/feature-replay-viewer/src/index.ts"
-      ],
-      "@rewind/osu-local/db-reader": [
-        "libs/osu-local/db-reader/src/index.ts"
-      ],
-      "@rewind/osu-local/gosumemory": [
-        "libs/osu-local/gosumemory/src/index.ts"
-      ],
-      "@rewind/osu-local/osr-reader": [
-        "libs/osu-local/osr-reader/src/index.ts"
-      ],
-      "@rewind/osu-local/skin-reader": [
-        "libs/osu-local/skin-reader/src/index.ts"
-      ],
-      "@rewind/osu-local/utils": [
-        "libs/osu-local/utils/src/index.ts"
-      ],
-      "@rewind/osu-pixi/classic-components": [
-        "libs/osu-pixi/classic-components/src/index.ts"
-      ],
-      "@rewind/osu-pixi/rewind": [
-        "libs/osu-pixi/rewind/src/index.ts"
-      ],
-      "@osujs/core": [
-        "libs/osu/core/src/index.ts"
-      ],
-      "@osujs/math": [
-        "libs/osu/math/src/index.ts"
-      ],
-      "@rewind/osu/skin": [
-        "libs/osu/skin/src/index.ts"
-      ],
-      "@rewind/ui": [
-        "libs/ui/src/index.ts"
-      ],
-      "@rewind/web-player/rewind": [
-        "libs/web-player/rewind/src/index.ts"
-      ]
+      "@osujs/core": ["libs/osu/core/src/index.ts"],
+      "@osujs/math": ["libs/osu/math/src/index.ts"],
+      "@osujs/pp": ["libs/osu/pp/src/index.ts"],
+      "@rewind/api/common": ["libs/api/common/src/index.ts"],
+      "@rewind/api/desktop": ["libs/api/desktop/src/index.ts"],
+      "@rewind/desktop/api": ["libs/desktop/api/src/index.ts"],
+      "@rewind/electron/api": ["libs/electron/api/src/index.ts"],
+      "@rewind/feature-replay-viewer": ["libs/feature-replay-viewer/src/index.ts"],
+      "@rewind/osu-local/db-reader": ["libs/osu-local/db-reader/src/index.ts"],
+      "@rewind/osu-local/gosumemory": ["libs/osu-local/gosumemory/src/index.ts"],
+      "@rewind/osu-local/osr-reader": ["libs/osu-local/osr-reader/src/index.ts"],
+      "@rewind/osu-local/skin-reader": ["libs/osu-local/skin-reader/src/index.ts"],
+      "@rewind/osu-local/utils": ["libs/osu-local/utils/src/index.ts"],
+      "@rewind/osu-pixi/classic-components": ["libs/osu-pixi/classic-components/src/index.ts"],
+      "@rewind/osu-pixi/rewind": ["libs/osu-pixi/rewind/src/index.ts"],
+      "@rewind/osu/skin": ["libs/osu/skin/src/index.ts"],
+      "@rewind/ui": ["libs/ui/src/index.ts"],
+      "@rewind/web-player/rewind": ["libs/web-player/rewind/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

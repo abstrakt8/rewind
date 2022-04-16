@@ -25,14 +25,14 @@ const rendererAppDevPort = 4200;
 /**
  * The folder tree inside the Electron application will approximately look like as follows:
  *
- * ./main/main.js [THIS FILE]
- * ./frontend/(index.html|main.js)
+ * ./index.js [THIS FILE]
+ * ./frontend/(index.html|main.js|...)
  * ./frontend/preload.js
- * ./backend/(index.html|main.js)
+ * ./backend/assets/index.html
  * ./backend/preload.js
  */
-const desktopFrontendFile = (fileName: string) => join(__dirname, "..", "frontend", fileName);
-const desktopBackendFile = (fileName: string) => join(__dirname, "..", "backend", fileName);
+const desktopFrontendFile = (fileName: string) => join(__dirname, "frontend", fileName);
+const desktopBackendFile = (fileName: string) => join(__dirname, "backend", fileName);
 
 const desktopFrontendPreloadPath = desktopFrontendFile("preload.js");
 const desktopBackendPreloadPath = desktopBackendFile("preload.js");
