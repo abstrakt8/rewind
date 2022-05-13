@@ -6,6 +6,7 @@ interface Props {
   status: BackendState;
 }
 
+// TODO: Remove probably
 function text(status: BackendState) {
   switch (status) {
     case "LOADING":

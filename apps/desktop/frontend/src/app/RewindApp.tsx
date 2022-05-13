@@ -11,7 +11,11 @@ import { UpdateModal } from "./UpdateModal";
 import { useEffect } from "react";
 import { downloadFinished, downloadProgressed, newVersionAvailable } from "./update/slice";
 import { frontendAPI } from "./api";
-import { BackendState } from "./backend/slice";
+import { BackendState, stateChanged } from "./backend/slice";
+import { ipcRenderer } from "electron";
+
+// Currently, it's a feature that is hard to implement, enable it once ready
+const ELECTRON_UPDATE_FLAG = false;
 
 function ConnectedSplashScreen() {
   const status: BackendState = useAppSelector((state) => state.backend.status);
@@ -46,30 +50,57 @@ function NormalView() {
   );
 }
 
+// TODO: Create an app that also runs on 4200 and is used only for testing specific pages such as analyzer
+const DEBUG = true;
+
 export function RewindApp() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const theater = useTheaterContext();
 
   useEffect(() => {
-    frontendAPI.onManualReplayOpen((file) => {
+    // yield call(waitForBackendState, "READY");
+    // yield call(analyzer.startWatching.bind(analyzer));
+    void theater.common.initialize();
+
+    ipcRenderer.on("onManualReplayOpen", (event, file) => {
       navigate("/app/analyzer");
-      void theater.analyzer.loadReplay(`local:${file}`);
+      void theater.analyzer.loadReplay(file);
     });
-    frontendAPI.onUpdateAvailable((version) => {
-      dispatch(newVersionAvailable(version));
-    });
-    frontendAPI.onDownloadFinished(() => {
-      dispatch(downloadFinished());
-    });
-    frontendAPI.onUpdateDownloadProgress((updateInfo) => {
-      const { total, bytesPerSecond, transferred } = updateInfo;
-      dispatch(downloadProgressed({ downloadedBytes: transferred, totalBytes: total, bytesPerSecond }));
-    });
-    // We start checking for update on the front end, otherwise if we start it from the Electron main process, the
-    // notification might get lost (probably need a message queue if we want to start from the Electron main process)
-    frontendAPI.checkForUpdate();
-  }, [dispatch, navigate, theater.analyzer]);
+
+    if (DEBUG) {
+      navigate("/app/analyzer");
+      void theater.analyzer.loadReplay(
+        "/run/media/me/Games/osu!/Replays/abstrakt - Bliitzit - Team Magma & Aqua Leader Battle Theme (Unofficial) [SMOKELIND's Insane] (2022-03-15) Osu.osr",
+      );
+    }
+
+    if (!theater.analyzer.osuFolderService.getOsuFolder()) {
+      console.log("osu! folder was not set...");
+      dispatch(stateChanged("SETUP_MISSING"));
+    } else {
+      console.log(`osu! folder = ${theater.analyzer.osuFolderService.getOsuFolder()}`);
+      console.log(`osu!/Songs folder = ${theater.analyzer.osuFolderService.songsFolder$.getValue()}`);
+      console.log(`osu!/Replays folder = ${theater.analyzer.osuFolderService.replaysFolder$.getValue()}`);
+      dispatch(stateChanged("READY"));
+    }
+
+    if (ELECTRON_UPDATE_FLAG) {
+      frontendAPI.onUpdateAvailable((version) => {
+        dispatch(newVersionAvailable(version));
+      });
+      frontendAPI.onDownloadFinished(() => {
+        dispatch(downloadFinished());
+      });
+      frontendAPI.onUpdateDownloadProgress((updateInfo) => {
+        const { total, bytesPerSecond, transferred } = updateInfo;
+        dispatch(downloadProgressed({ downloadedBytes: transferred, totalBytes: total, bytesPerSecond }));
+      });
+      // We start checking for update on the front end, otherwise if we start it from the Electron main process, the
+      // notification might get lost (probably need a message queue if we want to start from the Electron main process)
+      frontendAPI.checkForUpdate();
+    }
+  }, []);
 
   return (
     <Routes>

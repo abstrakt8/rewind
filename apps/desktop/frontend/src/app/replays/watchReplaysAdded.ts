@@ -3,6 +3,7 @@ import { io, Socket } from "socket.io-client";
 import { eventChannel, SagaIterator } from "redux-saga";
 
 // import { theaterStageChangeRequested } from "./theater/slice";
+//TODO: Remove and just replace with file watcher
 
 function createWebSocketConnection(url: string) {
   const socket = io(url);

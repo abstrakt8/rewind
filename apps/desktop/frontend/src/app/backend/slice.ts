@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // Maybe NOT_STARTED and SETUP_MISSING are just "ERROR"
 export type BackendState = "NOT_STARTED" | "SETUP_MISSING" | "LOADING" | "READY";
 
+// TODO: Remove
 interface BackendStatus {
   status: BackendState;
 }

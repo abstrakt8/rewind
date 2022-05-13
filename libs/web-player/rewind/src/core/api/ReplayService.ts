@@ -1,28 +1,29 @@
-import axios from "axios";
-import { modsFromBitmask, parseReplayFramesFromRaw, RawReplayData } from "@osujs/core";
-import { inject, injectable } from "inversify";
-import { TYPES } from "../../types/types";
+import { modsFromBitmask, parseReplayFramesFromRaw } from "@osujs/core";
+import { injectable } from "inversify";
 import { OsuReplay } from "../../model/OsuReplay";
+import { OsuFolderService } from "./OsuFolderService";
+import { join } from "path";
+import { ipcRenderer } from "electron";
+import { REPLAY_SOURCES } from "./ReplaySources";
 
-/**
- * Currently this service retrieves the raw replay from the backend.
- *
- * In the future it is planned that the client retrieves the `.osr` file directly:
- * * Less data transferred since `.osr` is compressed
- * * Relieves the backend since it does not have to decode the `.osr` file
- */
 @injectable()
 export class ReplayService {
-  constructor(@inject(TYPES.API_URL) private apiUrl: string) {}
+  constructor(private readonly osuFolderService: OsuFolderService) {}
 
-  async retrieveReplay(replayId: string): Promise<OsuReplay> {
-    const url = [this.apiUrl, "api", "replays", encodeURIComponent(replayId)].join("/");
-    console.log(`Retrieving replay=${replayId} from ${url}`);
+  determinePath(file: string, source: REPLAY_SOURCES) {
+    switch (source) {
+      case "FILE":
+        return file;
+      case "OSU_REPLAYS_FOLDER":
+        return join(this.osuFolderService.getOsuFolder(), file);
+    }
+  }
 
-    const res = (await axios.get(url)).data as RawReplayData;
-
-    // TODO: Emit ...
-
+  async retrieveReplay(replayId: string, source: REPLAY_SOURCES = "FILE"): Promise<OsuReplay> {
+    const filePath = this.determinePath(replayId, source);
+    // const res = await readOsr(filePath);
+    // Currently using readOsr is bugged, so we need to use it from the main process
+    const res = await ipcRenderer.invoke("readOsr", filePath);
     return {
       gameVersion: res.gameVersion,
       frames: parseReplayFramesFromRaw(res.replay_data),

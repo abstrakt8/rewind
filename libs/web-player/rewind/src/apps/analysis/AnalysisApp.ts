@@ -1,4 +1,3 @@
-import { BlueprintService } from "../../core/api/BlueprintService";
 import { ReplayService } from "../../core/api/ReplayService";
 import { GameplayClock } from "../../core/game/GameplayClock";
 import { ModSettingsManager } from "./manager/ModSettingsManager";
@@ -12,6 +11,7 @@ import { ScenarioManager } from "./manager/ScenarioManager";
 import { ReplayWatcher } from "../../core/api/ReplayWatcher";
 import { ScreenshotTaker } from "./manager/ScreenshotTaker";
 import { ClipRecorder } from "./manager/ClipRecorder";
+import { OsuFolderService } from "../../core/api/OsuFolderService";
 
 /**
  * Usage:
@@ -42,7 +42,7 @@ export class AnalysisApp {
     public readonly replayWatcher: ReplayWatcher,
     public readonly screenshotTaker: ScreenshotTaker,
     public readonly clipRecorder: ClipRecorder,
-    private readonly blueprintService: BlueprintService,
+    public readonly osuFolderService: OsuFolderService,
     private readonly replayService: ReplayService,
     private readonly gameLoop: GameLoop,
     private readonly beatmapManager: BeatmapManager,

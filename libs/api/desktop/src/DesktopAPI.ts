@@ -18,7 +18,7 @@ import {
 } from "@rewind/api/common";
 import { join } from "path";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
-import { determineSongsFolder, osuFolderSanityCheck } from "./config/utils";
+import { osuFolderSanityCheck } from "./config/utils";
 import { DesktopConfigService, REWIND_CFG_PATH } from "./config/DesktopConfigService";
 import { DesktopConfigController } from "./config/DesktopConfigController";
 import { NormalStatusController, SetupStatusController } from "./status/SetupStatusController";
@@ -27,6 +27,7 @@ import { WinstonModule } from "nest-winston";
 import * as winston from "winston";
 import { format } from "winston";
 import username = require("username");
+import { determineSongsFolder } from "@rewind/osu-local/utils";
 
 const globalPrefix = "/api";
 const REWIND_CFG_NAME = "rewind.cfg";

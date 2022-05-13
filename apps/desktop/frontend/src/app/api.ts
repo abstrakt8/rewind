@@ -1,5 +1,5 @@
 import { FrontendPreloadAPI } from "@rewind/electron/api";
-import { environment } from "../environments/environment";
+import { ipcRenderer } from "electron";
 
 /**
  * If the frontend gets started with the `preload.js` (within Electron), then the API should be initialized correctly,
@@ -8,24 +8,23 @@ import { environment } from "../environments/environment";
  * Otherwise, we are using a mocked version that returns some dummy data or outputs something to the console.
  */
 export const frontendAPI: FrontendPreloadAPI = (function (): FrontendPreloadAPI {
-  if (window.api) {
-    return window.api;
-  } else {
-    return {
-      getAppVersion: () => Promise.resolve(environment.appVersion),
-      getPlatform: () => Promise.resolve(environment.platform),
-      reboot: () => console.log("Rebooting ..."),
-      selectDirectory: () => Promise.resolve("C:\\Mocked\\Path"),
-      selectFile: () => Promise.resolve("C:\\Mocked\\File.osr"),
-      onManualReplayOpen: (listener) => console.log(`Registered a listener for opening replay files manually`),
-      quitAndInstall: () => console.log("Sent QuitAndInstall to the main process"),
-
-      // Updates
-      onUpdateAvailable: (listener) => console.log(`Registered a listener for receiving a manual update`),
-      startDownloadingUpdate: () => console.log("Starting the update..."),
-      onUpdateDownloadProgress: (listener) => console.log(`Registered a listener for receiving a download progress`),
-      onDownloadFinished: (listener) => console.log(`Registered a listener for onDowlnoadFinished`),
-      checkForUpdate: () => console.log(`Checking for updates`),
-    };
-  }
+  // if (!window.api) {
+  //   throw Error("No API ");
+  // }
+  // return window.api;
+  const frontendAPI: FrontendPreloadAPI = {
+    selectDirectory: (defaultPath) => ipcRenderer.invoke("selectDirectory", defaultPath),
+    selectFile: (defaultPath) => ipcRenderer.invoke("selectFile", defaultPath),
+    reboot: () => ipcRenderer.invoke("reboot"),
+    getAppVersion: () => ipcRenderer.invoke("getAppVersion"),
+    getPlatform: () => ipcRenderer.invoke("getPlatform"),
+    onManualReplayOpen: (listener) => ipcRenderer.on("onManualReplayOpen", (event, file) => listener(file)),
+    onUpdateAvailable: (listener) => ipcRenderer.on("onUpdateAvailable", (event, version) => listener(version)),
+    onUpdateDownloadProgress: (listener) => ipcRenderer.on("onUpdateDownloadProgress", (event, info) => listener(info)),
+    startDownloadingUpdate: () => ipcRenderer.invoke("startDownloadingUpdate"),
+    onDownloadFinished: (listener) => ipcRenderer.on("onDownloadFinished", (event) => listener()),
+    checkForUpdate: () => ipcRenderer.invoke("checkForUpdate"),
+    quitAndInstall: () => ipcRenderer.invoke("quitAndInstall"),
+  };
+  return frontendAPI;
 })();

@@ -26,9 +26,10 @@ export class SkinManager {
 
   async loadPreferredSkin() {
     const { preferredSkinId } = this.skinSettingsStore.settings;
-    const skinId = stringToSkinId(preferredSkinId);
 
     try {
+      console.log(`Loading preferred skin from preferences: ${preferredSkinId}`);
+      const skinId = stringToSkinId(preferredSkinId);
       await this.loadSkin(skinId);
     } catch (e) {
       console.error(`Could not load preferred skin '${preferredSkinId}' so falling back to default`);

@@ -4,6 +4,10 @@ interface UpdateInfo {
   bytesPerSecond: number;
 }
 
+/**
+ * TODO: Delete
+ * @deprecated use IPC instead
+ */
 export interface FrontendPreloadAPI {
   // Renderer -> Main process
   getAppVersion: () => Promise<string>;

@@ -1,12 +1,13 @@
 // Asks for the user
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useUpdateOsuDirectoryMutation } from "../backend/api";
 import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "@mui/material";
 import { RewindLogo } from "../RewindLogo";
 import { Help, Loop } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
 import { frontendAPI } from "../api";
+import { useAnalysisApp } from "@rewind/feature-replay-viewer";
+import { useNavigate } from "react-router-dom";
 
 interface DirectorySelectionProps {
   value: string | null;
@@ -52,23 +53,23 @@ export function SetupScreen() {
   // TODO: Add a guess for directory path
   const [directoryPath, setDirectoryPath] = useState<string | null>(null);
   const [saveEnabled, setSaveEnabled] = useState(false);
-
-  const [updateOsuDirectory, updateState] = useUpdateOsuDirectoryMutation();
+  const navigate = useNavigate();
+  const analyzer = useAnalysisApp();
+  // const [updateOsuDirectory, updateState] = useUpdateOsuDirectoryMutation();
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
-  const handleConfirmClick = useCallback(() => {
-    if (directoryPath) {
-      updateOsuDirectory({ osuStablePath: directoryPath });
+  const handleConfirmClick = useCallback(async () => {
+    if (!directoryPath) {
+      return;
     }
-  }, [updateOsuDirectory, directoryPath]);
-
-  useEffect(() => {
-    if (updateState.isSuccess) {
-      frontendAPI.reboot();
-    } else if (updateState.isError) {
+    const isValid = await analyzer.osuFolderService.isValidOsuFolder(directoryPath);
+    if (isValid) {
+      analyzer.osuFolderService.setOsuFolder(directoryPath);
+      navigate("/app/analyzer");
+    } else {
       setShowErrorMessage(true);
     }
-  }, [updateState, setShowErrorMessage]);
+  }, [navigate, analyzer.osuFolderService, directoryPath]);
 
   const handleOnDirectoryChange = useCallback(
     (path: string | null) => {
@@ -80,8 +81,8 @@ export function SetupScreen() {
 
   // Makes sure that the button is only clickable when it's allowed.
   useEffect(() => {
-    setSaveEnabled(directoryPath !== null && !updateState.isLoading);
-  }, [directoryPath, updateState.isLoading]);
+    setSaveEnabled(directoryPath !== null);
+  }, [directoryPath]);
 
   return (
     <Box

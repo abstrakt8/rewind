@@ -1,5 +1,4 @@
-import { inject, injectable } from "inversify";
-import { TYPES } from "../../types/types";
+import { injectable } from "inversify";
 
 /**
  * Only one AudioService?
@@ -11,12 +10,12 @@ export class AudioService {
 
   audios: Record<string, HTMLAudioElement> = {};
 
-  constructor(@inject(TYPES.API_URL) private readonly apiUrl: string) {
+  constructor() {
     this.audioContext = new AudioContext();
   }
 
-  async loadAudio(blueprintId: string) {
-    const songUrl = `${this.apiUrl}/api/blueprints/${blueprintId}/audio`;
+  async loadAudio(filePath: string) {
+    const songUrl = filePath;
     const audio = new Audio();
     audio.crossOrigin = "anonymous";
     audio.src = songUrl;

@@ -1,5 +1,6 @@
 import { app, dialog, ipcMain } from "electron";
 import { BackendPreloadAPI } from "@rewind/electron/api";
+import { read } from "node-osr";
 
 async function userSelectDirectory(defaultPath: string) {
   const { canceled, filePaths } = await dialog.showOpenDialog({ defaultPath, properties: ["openDirectory"] });
@@ -54,5 +55,9 @@ export function setupEventListeners() {
   ipcMain.handle("reboot", () => {
     app.relaunch();
     app.quit();
+  });
+
+  ipcMain.handle("readOsr", async (event, filePath) => {
+    return await read(filePath);
   });
 }

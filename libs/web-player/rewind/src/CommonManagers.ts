@@ -1,9 +1,7 @@
 import { Container, injectable } from "inversify";
-import { BlueprintService } from "./core/api/BlueprintService";
 import { ReplayService } from "./core/api/ReplayService";
 import { SkinLoader } from "./core/api/SkinLoader";
 import { AudioService } from "./core/audio/AudioService";
-import { TYPES } from "./types/types";
 import { createRewindAnalysisApp } from "./creators/createRewindAnalysisApp";
 import { SkinHolder } from "./core/skins/SkinHolder";
 import { AudioSettingsStore } from "./services/AudioSettingsStore";
@@ -18,6 +16,10 @@ import { SkinManager } from "./services/SkinManager";
 import { SkinSettingsStore } from "./services/SkinSettingsStore";
 import { HitErrorBarSettingsStore } from "./services/HitErrorBarSettingsStore";
 import { PlaybarSettingsStore } from "./services/PlaybarSettingsStore";
+import { OsuFolderService } from "./core/api/OsuFolderService";
+import { OsuDBDao } from "./core/api/OsuDBDao";
+import { BlueprintLocatorService } from "./core/api/BlueprintLocatorService";
+import ElectronStore from "electron-store";
 
 /**
  * Creates the Rewind app that serves multiple useful osu! tools.
@@ -49,16 +51,19 @@ export class CommonManagers {
 }
 
 interface Settings {
-  apiUrl: string;
+  // apiUrl: string;
+  rewindSkinsFolder: string;
 }
 
-export function createRewindTheater({ apiUrl }: Settings) {
+export function createRewindTheater({ rewindSkinsFolder }: Settings) {
   // Regarding `skipBaseClassChecks`: https://github.com/inversify/InversifyJS/issues/522#issuecomment-682246076
   const container = new Container({ defaultScope: "Singleton", skipBaseClassChecks: true });
-  container.bind(TYPES.API_URL).toConstantValue(apiUrl);
-  container.bind(TYPES.WS_URL).toConstantValue(apiUrl); // Might change in the future
+  container.bind(STAGE_TYPES.ELECTRON_STORE).toConstantValue(new ElectronStore());
   container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
-  container.bind(BlueprintService).toSelf();
+  container.bind(STAGE_TYPES.REWIND_SKINS_FOLDER).toConstantValue(rewindSkinsFolder);
+  container.bind(OsuFolderService).toSelf();
+  container.bind(OsuDBDao).toSelf();
+  container.bind(BlueprintLocatorService).toSelf();
   container.bind(ReplayService).toSelf();
   container.bind(SkinLoader).toSelf();
   container.bind(SkinHolder).toSelf();

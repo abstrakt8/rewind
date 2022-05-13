@@ -1,11 +1,13 @@
 import { Loader } from "@pixi/loaders";
 import { Texture } from "pixi.js";
-import axios from "axios";
-import { OsuSkinTextures, SkinConfig } from "@rewind/osu/skin";
+import { DEFAULT_SKIN_TEXTURE_CONFIG, OsuSkinTextures } from "@rewind/osu/skin";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../../types/types";
 import { Skin, SkinTexturesByKey } from "../../model/Skin";
 import { SkinId } from "../../model/SkinId";
+import { OsuFolderService } from "./OsuFolderService";
+import { GetTextureFileOption, OsuSkinTextureResolver, SkinFolderReader } from "@rewind/osu-local/skin-reader";
+import { join } from "path";
+import { STAGE_TYPES } from "../../types/STAGE_TYPES";
 
 export type SkinTextureLocation = { key: OsuSkinTextures; paths: string[] };
 
@@ -27,7 +29,7 @@ async function startLoading(loader: Loader, skinName: string): Promise<boolean> 
   });
 }
 
-const urljoin = (...s: string[]) => s.join("/");
+const OSU_DEFAULT_SKIN_ID: SkinId = { source: "rewind", name: "OsuDefaultSkin" };
 
 @injectable()
 export class SkinLoader {
@@ -36,35 +38,88 @@ export class SkinLoader {
 
   // Maybe generalize it to skinSource or something
   // TODO: Maybe just load into TextureManager
-  constructor(@inject(TYPES.API_URL) private readonly apiUrl: string) {
+  constructor(
+    private osuFolderService: OsuFolderService,
+    @inject(STAGE_TYPES.REWIND_SKINS_FOLDER) private rewindSkinsFolder: string,
+  ) {
     this.skins = {};
   }
 
+  // TODO: AppResourcesPath and get the included Rewind Skins
+
   async loadSkinList() {
-    const url = urljoin(this.apiUrl, "api", "skins", "list");
-    const res = (await axios.get(url)).data;
-    return res as string[];
+    return SkinFolderReader.listSkinsInFolder(join(this.osuFolderService.osuFolder$.getValue(), "Skins"), {
+      skinIniRequired: false,
+    });
+  }
+
+  sourcePath(source: string) {
+    switch (source) {
+      case "rewind":
+        return this.rewindSkinsFolder;
+      case "osu":
+        return join(this.osuFolderService.getOsuFolder(), "Skins");
+    }
+    return "";
+  }
+
+  resolveToPath({ source, name }: SkinId) {
+    return join(this.sourcePath(source), name);
+  }
+
+  /**
+   * In the future we also want to get the skin info with the beatmap as the parameters in order to retrieve
+   * beatmap related skin files as well.
+   */
+  async resolve(
+    osuSkinTexture: OsuSkinTextures,
+    options: GetTextureFileOption,
+    list: { prefix: string; resolver: OsuSkinTextureResolver }[],
+  ) {
+    for (const { prefix, resolver } of list) {
+      const filePaths = await resolver.resolve(osuSkinTexture, options);
+      if (filePaths.length === 0) {
+        continue;
+      }
+      return filePaths.map((path) => `${prefix}/${path}`);
+    }
+    console.debug(`No skin has the skin texture ${osuSkinTexture}`);
+    return [];
   }
 
   // force such like reloading
   async loadSkin(skinId: SkinId, forceReload?: boolean): Promise<Skin> {
-    const id = `${skinId.source}/${encodeURIComponent(skinId.name)}`;
+    const id = `${skinId.source}/${skinId.name}`;
     if (this.skins[id] && !forceReload) {
       console.info(`Skin ${id} is already loaded, using the one in cache`);
       return this.skins[id];
     }
+    console.log(`Loading skin with name: ${skinId.name} with source ${skinId.source}`);
     const loader = new Loader();
 
-    const skinInfoUrl = urljoin(this.apiUrl, "api", "skins");
+    const osuDefaultSkinResolver = await SkinFolderReader.getSkinResolver(this.resolveToPath(OSU_DEFAULT_SKIN_ID));
+    const skinResolver = await SkinFolderReader.getSkinResolver(this.resolveToPath(skinId));
 
-    // We could also put some GET parameters
-    const res = await axios
-      .get(skinInfoUrl, { params: { animatedIfExists: 1, hdIfExists: 1, name: id } })
-      .then((value) => value.data);
+    const { config } = skinResolver;
 
-    // Yeah ...
-    const config = res.config as SkinConfig;
-    const files = res.files as SkinTextureLocation[];
+    const skinTextureKeys = Object.keys(DEFAULT_SKIN_TEXTURE_CONFIG);
+    const files = await Promise.all(
+      skinTextureKeys.map(async (key) => ({
+        key,
+        paths: await this.resolve(key as OsuSkinTextures, { animatedIfExists: true, hdIfExists: true }, [
+          // In the future beatmap stuff can be listed here as well
+          {
+            prefix: join("file://", this.resolveToPath(skinId)),
+            resolver: skinResolver,
+          },
+          {
+            prefix: join("file://", this.resolveToPath(OSU_DEFAULT_SKIN_ID)),
+            resolver: osuDefaultSkinResolver,
+          },
+        ]),
+      })),
+    );
+
     const textures: SkinTexturesByKey = {};
     const skinName = config.general.name;
 
@@ -77,9 +132,8 @@ export class SkinLoader {
         // `Loader` will die if the same `name` gets used twice therefore the unique skinElementCounter
         // Maybe even use a timestamp
         const name = `${this.skinElementCounter++}/${skinName}/${stl.key}-${index}`;
-        const url = urljoin(this.apiUrl, path);
-        loader.add(name, url);
-        queueFiles.push({ key: stl.key, name });
+        loader.add(name, path);
+        queueFiles.push({ key: stl.key as OsuSkinTextures, name });
       });
     });
 
