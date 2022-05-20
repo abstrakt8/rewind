@@ -5,5 +5,3 @@ export interface AnalysisModSettings {
   hidden: boolean;
   flashlight: boolean;
 }
-
-export class AnalysisModSettingService {}

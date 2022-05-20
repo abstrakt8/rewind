@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "@mui/material";
-import { RewindLogo } from "../../components/RewindLogo";
+import { RewindLogo } from "../../components/logo/RewindLogo";
 import { Help, Loop } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
 import { frontendAPI } from "../../api";

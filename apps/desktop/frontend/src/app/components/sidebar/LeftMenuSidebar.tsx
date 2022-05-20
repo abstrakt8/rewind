@@ -1,4 +1,4 @@
-import { RewindLogo } from "../RewindLogo";
+import { RewindLogo } from "../logo/RewindLogo";
 import { Badge, Box, Divider, IconButton, Stack, Tooltip } from "@mui/material";
 import { Home } from "@mui/icons-material";
 import { FaMicroscope } from "react-icons/fa";
