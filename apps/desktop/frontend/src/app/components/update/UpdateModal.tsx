@@ -1,10 +1,10 @@
 import { Box, Button, Divider, IconButton, LinearProgress, Link, Modal, Paper, Stack, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "./hooks/hooks";
-import { setUpdateModalOpen } from "./update/slice";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { setUpdateModalOpen } from "../../store/update/slice";
 import { Close } from "@mui/icons-material";
 import React from "react";
 import { useAppInfo } from "@rewind/feature-replay-viewer";
-import { frontendAPI } from "./api";
+import { frontendAPI } from "../../api";
 
 const units = ["bytes", "KB", "MB", "GB", "TB", "PB"];
 

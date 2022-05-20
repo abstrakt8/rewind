@@ -2,10 +2,10 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "@mui/material";
-import { RewindLogo } from "../RewindLogo";
+import { RewindLogo } from "../../components/RewindLogo";
 import { Help, Loop } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
-import { frontendAPI } from "../api";
+import { frontendAPI } from "../../api";
 import { useAnalysisApp } from "@rewind/feature-replay-viewer";
 import { useNavigate } from "react-router-dom";
 

@@ -1,4 +1,4 @@
-import { BackendState } from "../backend/slice";
+import { BackendState } from "../../store/backend/slice";
 import { HashLoader } from "react-spinners";
 import { Stack } from "@mui/material";
 

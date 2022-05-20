@@ -1,11 +1,11 @@
-import { RewindLogo } from "./RewindLogo";
+import { RewindLogo } from "../RewindLogo";
 import { Badge, Box, Divider, IconButton, Stack, Tooltip } from "@mui/material";
 import { Home } from "@mui/icons-material";
 import { FaMicroscope } from "react-icons/fa";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "./hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import UpdateIcon from "@mui/icons-material/Update";
-import { setUpdateModalOpen } from "./update/slice";
+import { setUpdateModalOpen } from "../../store/update/slice";
 import { useLocation } from "react-router";
 import { Link, useNavigate } from "react-router-dom";
 

@@ -1,17 +1,17 @@
-import { useAppDispatch, useAppSelector } from "./hooks/hooks";
+import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { Routes } from "react-router";
 import { Navigate, Outlet, Route, useNavigate } from "react-router-dom";
-import { LeftMenuSidebar } from "./LeftMenuSidebar";
-import { SplashScreen } from "./splash/SplashScreen";
-import { SetupScreen } from "./setup/SetupScreen";
-import { HomeScreen } from "./home/HomeScreen";
+import { LeftMenuSidebar } from "./components/sidebar/LeftMenuSidebar";
+import { SplashScreen } from "./screens/splash/SplashScreen";
+import { SetupScreen } from "./screens/setup/SetupScreen";
+import { HomeScreen } from "./screens/home/HomeScreen";
 import { Box, Divider, Stack } from "@mui/material";
 import { Analyzer, useTheaterContext } from "@rewind/feature-replay-viewer";
-import { UpdateModal } from "./UpdateModal";
+import { UpdateModal } from "./components/update/UpdateModal";
 import { useEffect } from "react";
-import { downloadFinished, downloadProgressed, newVersionAvailable } from "./update/slice";
+import { downloadFinished, downloadProgressed, newVersionAvailable } from "./store/update/slice";
 import { frontendAPI } from "./api";
-import { BackendState, stateChanged } from "./backend/slice";
+import { BackendState, stateChanged } from "./store/backend/slice";
 import { ipcRenderer } from "electron";
 
 // Currently, it's a feature that is hard to implement, enable it once ready
