@@ -1,21 +1,5 @@
 import { ModuleRef, NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import {
-  EventsGateway,
-  LocalBlueprintController,
-  LocalBlueprintService,
-  LocalReplayController,
-  LocalReplayService,
-  OSU_FOLDER,
-  OSU_SONGS_FOLDER,
-  OsuDBDao,
-  ReplayWatcher,
-  SKIN_NAME_RESOLVER_CONFIG,
-  SkinController,
-  SkinNameResolver,
-  SkinNameResolverConfig,
-  SkinService,
-} from "@rewind/api/common";
 import { join } from "path";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
 import { osuFolderSanityCheck } from "./config/utils";
@@ -28,6 +12,17 @@ import * as winston from "winston";
 import { format } from "winston";
 import username = require("username");
 import { determineSongsFolder } from "@rewind/osu-local/utils";
+import { SkinNameResolver, SkinNameResolverConfig, SKIN_NAME_RESOLVER_CONFIG } from "./skins/SkinNameResolver";
+import { LocalReplayController } from "./replays/LocalReplayController";
+import { LocalBlueprintController } from "./blueprints/LocalBlueprintController";
+import { SkinController } from "./skins/SkinController";
+import { OSU_FOLDER, OSU_SONGS_FOLDER } from "./constants";
+import { SkinService } from "./skins/SkinService";
+import { LocalReplayService } from "./replays/LocalReplayService";
+import { ReplayWatcher } from "./replays/ReplayWatcher";
+import { LocalBlueprintService } from "./blueprints/LocalBlueprintService";
+import { OsuDBDao } from "./blueprints/OsuDBDao";
+import { EventsGateway } from "./events/EventsGateway";
 
 const globalPrefix = "/api";
 const REWIND_CFG_NAME = "rewind.cfg";

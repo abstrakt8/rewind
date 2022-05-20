@@ -1,5 +1,4 @@
 import { app, dialog, ipcMain } from "electron";
-import { BackendPreloadAPI } from "@rewind/electron/api";
 import { read } from "node-osr";
 
 async function userSelectDirectory(defaultPath: string) {
@@ -20,34 +19,22 @@ async function userSelectFile(defaultPath: string) {
   }
 }
 
-const backendPreloadAPI: BackendPreloadAPI = {
-  getPath(type) {
-    const result = (function () {
-      switch (type) {
-        case "appData":
-          return app.getPath("appData");
-        case "userData":
-          return app.getPath("userData");
-        case "logs":
-          return app.getPath("logs");
-        case "appResources":
-          return process.resourcesPath;
-      }
-    })();
-    return Promise.resolve(result);
-  },
-};
+function getPath(type: string) {
+  switch (type) {
+    case "appData":
+      return app.getPath("appData");
+    case "userData":
+      return app.getPath("userData");
+    case "logs":
+      return app.getPath("logs");
+    case "appResources":
+      return process.resourcesPath;
+  }
+  return "";
+}
 
 export function setupEventListeners() {
-  // BackendAPI
-  ipcMain.handle("getPath", (event, type) => backendPreloadAPI.getPath(type));
-
-  // Others
-
-  // Does not work
-  // for (const [key, handler] of Object.entries(frontendPreloadAPI)) {
-  //   ipcMain.handle(key, (event, args) => handler(...args));
-  // }
+  ipcMain.handle("getPath", (event, type) => getPath(type));
   ipcMain.handle("selectDirectory", (event, defaultPath) => userSelectDirectory(defaultPath));
   ipcMain.handle("selectFile", (event, defaultPath) => userSelectFile(defaultPath));
   ipcMain.handle("getPlatform", () => process.platform);

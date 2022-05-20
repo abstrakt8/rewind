@@ -1,65 +1,19 @@
 {
   "version": 2,
   "projects": {
-    "api-common": {
-      "root": "libs/api/common",
-      "sourceRoot": "libs/api/common/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/api/common/**/*.ts"]
-          },
-          "outputs": ["{options.outputFile}"]
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/api/common"],
-          "options": {
-            "jestConfig": "libs/api/common/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "api-desktop": {
-      "root": "libs/api/desktop",
-      "sourceRoot": "libs/api/desktop/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/api/desktop/**/*.ts"]
-          },
-          "outputs": ["{options.outputFile}"]
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/api/desktop"],
-          "options": {
-            "jestConfig": "libs/api/desktop/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "desktop-backend": {
-      "root": "apps/desktop/backend",
-      "sourceRoot": "apps/desktop/backend/src",
+    "web-backend": {
+      "root": "apps/web/backend",
+      "sourceRoot": "apps/web/backend/src",
       "projectType": "application",
       "targets": {
         "build": {
           "executor": "@nrwl/node:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/apps/desktop/backend",
-            "main": "apps/desktop/backend/src/main.ts",
-            "tsConfig": "apps/desktop/backend/tsconfig.app.json",
-            "assets": ["apps/desktop/backend/src/assets"]
+            "outputPath": "dist/apps/web/backend",
+            "main": "apps/web/backend/src/main.ts",
+            "tsConfig": "apps/web/backend/tsconfig.app.json",
+            "assets": ["apps/web/backend/src/assets"]
           },
           "configurations": {
             "production": {
@@ -78,55 +32,23 @@
         "serve": {
           "executor": "@nrwl/node:node",
           "options": {
-            "buildTarget": "desktop-backend:build"
+            "buildTarget": "web-backend:build"
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/desktop/backend/**/*.ts"]
+            "lintFilePatterns": ["apps/web/backend/**/*.ts"]
           },
           "outputs": ["{options.outputFile}"]
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/desktop/backend"],
+          "outputs": ["coverage/apps/web/backend"],
           "options": {
-            "jestConfig": "apps/desktop/backend/jest.config.js",
+            "jestConfig": "apps/web/backend/jest.config.js",
             "passWithNoTests": true
           }
-        }
-      },
-      "tags": []
-    },
-    "desktop-backend-preload": {
-      "root": "apps/desktop/backend",
-      "sourceRoot": "apps/desktop/backend/src",
-      "projectType": "application",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/node:webpack",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputFileName": "preload.js",
-            "outputPath": "dist/apps/desktop/backend",
-            "main": "apps/desktop/backend/src/preload.ts",
-            "tsConfig": "apps/desktop/backend/tsconfig.app.json"
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/desktop/backend/src/preload.ts"]
-          },
-          "outputs": ["{options.outputFile}"]
         }
       },
       "tags": []
@@ -208,38 +130,6 @@
       },
       "tags": []
     },
-    "desktop-frontend-preload": {
-      "root": "apps/desktop/frontend",
-      "sourceRoot": "apps/desktop/frontend/src",
-      "projectType": "application",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/node:webpack",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputFileName": "preload.js",
-            "outputPath": "dist/apps/desktop/frontend",
-            "main": "apps/desktop/frontend/src/preload.ts",
-            "tsConfig": "apps/desktop/frontend/tsconfig.app.json"
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/desktop/frontend/**/preload.ts"]
-          },
-          "outputs": ["{options.outputFile}"]
-        }
-      },
-      "tags": []
-    },
     "desktop-main": {
       "root": "apps/desktop/main",
       "sourceRoot": "apps/desktop/main/src",
@@ -287,29 +177,6 @@
           "outputs": ["coverage/apps/desktop-main"],
           "options": {
             "jestConfig": "apps/desktop/main/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "electron-api": {
-      "root": "libs/electron/api",
-      "sourceRoot": "libs/electron/api/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/electron/api/**/*.ts"]
-          },
-          "outputs": ["{options.outputFile}"]
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/electron/api"],
-          "options": {
-            "jestConfig": "libs/electron/api/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -725,82 +592,6 @@
           "outputs": ["coverage/tests/game-simulation"],
           "options": {
             "jestConfig": "tests/game-simulation/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "web": {
-      "root": "apps/web",
-      "sourceRoot": "apps/web/src",
-      "projectType": "application",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:webpack",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/apps/web",
-            "index": "apps/web/src/index.html",
-            "main": "apps/web/src/main.tsx",
-            "polyfills": "apps/web/src/polyfills.ts",
-            "tsConfig": "apps/web/tsconfig.app.json",
-            "assets": ["apps/web/src/favicon.ico", "apps/web/src/assets"],
-            "styles": ["apps/web/src/styles.css"],
-            "scripts": [],
-            "webpackConfig": "@nrwl/react/plugins/webpack"
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/web/src/environments/environment.ts",
-                  "with": "apps/web/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "15mb",
-                  "maximumError": "20mb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "@nrwl/web:dev-server",
-          "options": {
-            "buildTarget": "web:build",
-            "hmr": true,
-            "proxyConfig": "apps/web/proxy.conf.json"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "web:build:production",
-              "hmr": false
-            }
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/web/**/*.{ts,tsx,js,jsx}"]
-          },
-          "outputs": ["{options.outputFile}"]
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/web"],
-          "options": {
-            "jestConfig": "apps/web/jest.config.js",
             "passWithNoTests": true
           }
         }
