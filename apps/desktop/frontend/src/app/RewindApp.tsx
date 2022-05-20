@@ -13,9 +13,7 @@ import { downloadFinished, downloadProgressed, newVersionAvailable } from "./sto
 import { frontendAPI } from "./api";
 import { BackendState, stateChanged } from "./store/backend/slice";
 import { ipcRenderer } from "electron";
-
-// Currently, it's a feature that is hard to implement, enable it once ready
-const ELECTRON_UPDATE_FLAG = false;
+import { ELECTRON_UPDATE_FLAG } from "./constants";
 
 function ConnectedSplashScreen() {
   const status: BackendState = useAppSelector((state) => state.backend.status);
