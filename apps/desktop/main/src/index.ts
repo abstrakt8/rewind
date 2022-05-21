@@ -69,8 +69,6 @@ function createFrontendWindow(settings: RewindElectronSettings) {
   frontend.on("closed", () => {
     windows.frontend = null;
     app.quit();
-    // Otherwise we won't trigger all windows closed
-    windows.backend?.close();
   });
   // Open external links such as socials in the default browser.
   frontend.webContents.setWindowOpenHandler((details) => {
@@ -219,13 +217,7 @@ function createMenu(osuFolder: string | null) {
     },
     {
       label: "View",
-      submenu: [
-        { role: "reload" },
-        { role: "forceReload" },
-        { type: "separator" },
-        { role: "toggleDevTools" },
-        { label: "Open Backend", click: () => windows.backend?.show() },
-      ],
+      submenu: [{ role: "reload" }, { role: "forceReload" }, { type: "separator" }, { role: "toggleDevTools" }],
     },
     {
       label: "Help",
