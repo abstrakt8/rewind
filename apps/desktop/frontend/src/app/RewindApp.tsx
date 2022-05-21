@@ -6,14 +6,15 @@ import { SplashScreen } from "./screens/splash/SplashScreen";
 import { SetupScreen } from "./screens/setup/SetupScreen";
 import { HomeScreen } from "./screens/home/HomeScreen";
 import { Box, Divider, Stack } from "@mui/material";
-import { Analyzer, useTheaterContext } from "@rewind/feature-replay-viewer";
 import { UpdateModal } from "./components/update/UpdateModal";
 import { useEffect } from "react";
 import { downloadFinished, downloadProgressed, newVersionAvailable } from "./store/update/slice";
 import { frontendAPI } from "./api";
 import { BackendState, stateChanged } from "./store/backend/slice";
 import { ipcRenderer } from "electron";
-import { ELECTRON_UPDATE_FLAG } from "./constants";
+import { useTheaterContext } from "./providers/TheaterProvider";
+import { ELECTRON_UPDATE_FLAG } from "./utils/constants";
+import { Analyzer } from "./screens/analyzer/Analyzer";
 
 function ConnectedSplashScreen() {
   const status: BackendState = useAppSelector((state) => state.backend.status);

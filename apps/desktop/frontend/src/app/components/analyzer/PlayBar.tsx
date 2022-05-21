@@ -26,20 +26,22 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
-import { useGameClockControls, useGameClockTime } from "../hooks/gameClock";
+import { useGameClockControls, useGameClockTime } from "../../hooks/gameClock";
 import { formatGameTime } from "@osujs/math";
-import { useAudioSettings, useAudioSettingsService } from "../hooks/audio";
-import { useModControls } from "../hooks/mods";
-import modHiddenImg from "../../assets/mod_hidden.cfc32448.png";
-import { ALLOWED_SPEEDS } from "../utils/Constants";
-import { BaseCurrentTime, GameCurrentTimeHandle, ignoreFocus, useAnalysisApp, useCommonManagers } from "..";
-import { useSettingsModalContext } from "../providers/SettingsProvider";
-import { PlaybarColors } from "../utils/PlaybarColors";
+import { useAudioSettings, useAudioSettingsService } from "../../hooks/audio";
+import { useModControls } from "../../hooks/mods";
+import modHiddenImg from "../../../assets/mod_hidden.png";
+import { ALLOWED_SPEEDS, PlaybarColors } from "../../utils/constants";
+
+import { useSettingsModalContext } from "../../providers/SettingsProvider";
 import { ReplayAnalysisEvent } from "@osujs/core";
 import { useObservable } from "rxjs-hooks";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { HelpModalDialog } from "./HelpModal";
-import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/PlaybarSettings";
+import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../../../../../libs/web-player/rewind/src/settings/PlaybarSettings";
+import { BaseCurrentTime, GameCurrentTimeHandle } from "./BaseCurrentTime";
+import { ignoreFocus } from "../../utils/focus";
+import { useAnalysisApp, useCommonManagers } from "../../providers/TheaterProvider";
 
 const centerUp = {
   anchorOrigin: {

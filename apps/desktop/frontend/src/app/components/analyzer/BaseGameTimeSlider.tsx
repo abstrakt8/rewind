@@ -1,6 +1,6 @@
 import { Box, Slider, styled } from "@mui/material";
 import { formatGameTime, rgbToInt } from "@osujs/math";
-import { ignoreFocus } from "../utils/IgnoreFocus";
+import { ignoreFocus } from "../../utils/focus";
 import { useEffect, useRef } from "react";
 import { Renderer, Sprite, Texture } from "pixi.js";
 import { AdjustmentFilter } from "@pixi/filter-adjustment";

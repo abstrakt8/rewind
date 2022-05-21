@@ -4,11 +4,13 @@ import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 
-import { AppInfoProvider, rewindTheme, TheaterProvider } from "@rewind/feature-replay-viewer";
 import { RewindApp } from "./app/RewindApp";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { HashRouter } from "react-router-dom";
 import { createRewindTheater } from "@rewind/web-player/rewind";
+import { rewindTheme } from "./app/styles/theme";
+import { AppInfoProvider } from "./app/providers/AppInfoProvider";
+import { TheaterProvider } from "./app/providers/TheaterProvider";
 
 (async function () {
   // TODO: Set console.log to electron-logger
@@ -39,7 +41,4 @@ import { createRewindTheater } from "@rewind/web-player/rewind";
     </StrictMode>,
     document.getElementById("root"),
   );
-
-  // This starts off with /splash -> Maybe do it somewhere else?
-  // store.dispatch(push("/splash"));
 })();

@@ -1,8 +1,8 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../../../libs/feature-replay-viewer/tsconfig.json",
   "compilerOptions": {
     "emitDecoratorMetadata": true,
-    "outDir": ""
+    "outDir": "tsconfig"
   },
   "files": [
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",

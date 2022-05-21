@@ -3,8 +3,8 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { setUpdateModalOpen } from "../../store/update/slice";
 import { Close } from "@mui/icons-material";
 import React from "react";
-import { useAppInfo } from "@rewind/feature-replay-viewer";
 import { frontendAPI } from "../../api";
+import { useAppInfo } from "../../providers/AppInfoProvider";
 
 const units = ["bytes", "KB", "MB", "GB", "TB", "PB"];
 

@@ -1,4 +1,4 @@
-import { useSettingsModalContext } from "../providers/SettingsProvider";
+import { useSettingsModalContext } from "../../providers/SettingsProvider";
 import {
   Autocomplete,
   Box,
@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { BaseSettingsModal } from "./BaseSettingsModal";
-import { useCommonManagers } from "../providers/TheaterProvider";
+import { useCommonManagers } from "../../providers/TheaterProvider";
 import { useCallback, useEffect, useMemo } from "react";
 import {
   DEFAULT_ANALYSIS_CURSOR_SETTINGS,
@@ -27,8 +27,8 @@ import {
   stringToSkinId,
 } from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks";
-import { DEFAULT_HIT_ERROR_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/HitErrorBarSettings";
-import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../web-player/rewind/src/settings/PlaybarSettings";
+import { DEFAULT_HIT_ERROR_BAR_SETTINGS } from "../../../../../../../libs/web-player/rewind/src/settings/HitErrorBarSettings";
+import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../../../../../libs/web-player/rewind/src/settings/PlaybarSettings";
 
 const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",

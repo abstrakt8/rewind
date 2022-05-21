@@ -35,9 +35,6 @@ const store = new Store();
 
 const OSU_PATH_KEY = "OsuPath";
 
-// Probably this should work differently
-let frontendIsQuitting = false;
-
 function createFrontendWindow(settings: RewindElectronSettings) {
   const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
   const width = Math.min(DEFAULT_WIDTH, workAreaSize.width || DEFAULT_WIDTH);
@@ -131,14 +128,9 @@ function handleActivate() {
   }
 }
 
-function handleBeforeQuit() {
-  // TODO:
-  frontendIsQuitting = true;
-}
-
 (function main() {
   // Make sure that it's only started once for now. In the future we might allow multiple instances to run at the
-  // same time. Current problem is that the backend would also start twice...
+  // same time.
   const isLocked = app.requestSingleInstanceLock();
   if (!isLocked) app.quit();
 
@@ -148,13 +140,13 @@ function handleBeforeQuit() {
   // So that the audio can't be stopped with media keys
   app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling");
 
-  initializeAutoUpdater();
+  // TODO: Enable this once it's implemented properly
+  // initializeAutoUpdater();
   setupEventListeners();
 
   app.on("window-all-closed", handleAllWindowClosed);
   app.on("ready", handleReady);
   app.on("activate", handleActivate);
-  app.on("before-quit", handleBeforeQuit);
 })();
 
 // This is only good for Windows/Linux

@@ -1,9 +1,9 @@
 import { Paper, Stack } from "@mui/material";
-import { PlayBar } from "./components/PlayBar";
-import { useShortcuts } from "./hooks/useShortcuts";
-import { GameCanvas } from "./components/GameCanvas";
-import { SettingsModal } from "./components/SettingsModal";
-import { SettingsModalProvider } from "./providers/SettingsProvider";
+import { PlayBar } from "../../components/analyzer/PlayBar";
+import { useShortcuts } from "../../hooks/useShortcuts";
+import { GameCanvas } from "../../components/analyzer/GameCanvas";
+import { SettingsModal } from "../../components/analyzer/SettingsModal";
+import { SettingsModalProvider } from "../../providers/SettingsProvider";
 
 export function Analyzer() {
   // Shortcuts will then only be available when this page is <Analyzer/> is open

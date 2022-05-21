@@ -8,8 +8,8 @@ import UpdateIcon from "@mui/icons-material/Update";
 import { setUpdateModalOpen } from "../../store/update/slice";
 import { useLocation } from "react-router";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppInfo } from "@rewind/feature-replay-viewer";
-import { ELECTRON_UPDATE_FLAG } from "../../constants";
+import { useAppInfo } from "../../providers/AppInfoProvider";
+import { ELECTRON_UPDATE_FLAG } from "../../utils/constants";
 
 const tooltipPosition = {
   anchorOrigin: {

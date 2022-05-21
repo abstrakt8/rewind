@@ -1,8 +1,8 @@
 import { IconButton, Link, Typography } from "@mui/material";
 import { FaDiscord } from "react-icons/fa";
 import React from "react";
-import { RewindLinks } from "../utils/Constants";
-import { useAppInfo } from "../providers/AppInfoProvider";
+import { RewindLinks } from "../../utils/constants";
+import { useAppInfo } from "../../providers/AppInfoProvider";
 
 export function PromotionFooter() {
   const { appVersion } = useAppInfo();

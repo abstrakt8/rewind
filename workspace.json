@@ -1,58 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "web-backend": {
-      "root": "apps/web/backend",
-      "sourceRoot": "apps/web/backend/src",
-      "projectType": "application",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/node:webpack",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/apps/web/backend",
-            "main": "apps/web/backend/src/main.ts",
-            "tsConfig": "apps/web/backend/tsconfig.app.json",
-            "assets": ["apps/web/backend/src/assets"]
-          },
-          "configurations": {
-            "production": {
-              "optimization": true,
-              "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/desktop/backend/src/environments/environment.ts",
-                  "with": "apps/desktop/backend/src/environments/environment.prod.ts"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "executor": "@nrwl/node:node",
-          "options": {
-            "buildTarget": "web-backend:build"
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/web/backend/**/*.ts"]
-          },
-          "outputs": ["{options.outputFile}"]
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/web/backend"],
-          "options": {
-            "jestConfig": "apps/web/backend/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
     "desktop-frontend": {
       "root": "apps/desktop/frontend",
       "sourceRoot": "apps/desktop/frontend/src",
@@ -178,60 +126,6 @@
           "options": {
             "jestConfig": "apps/desktop/main/jest.config.js",
             "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "feature-replay-viewer": {
-      "root": "libs/feature-replay-viewer",
-      "sourceRoot": "libs/feature-replay-viewer/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/feature-replay-viewer/**/*.{ts,tsx,js,jsx}"]
-          },
-          "outputs": ["{options.outputFile}"]
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/feature-replay-viewer"],
-          "options": {
-            "jestConfig": "libs/feature-replay-viewer/jest.config.js",
-            "passWithNoTests": true
-          }
-        },
-        "storybook": {
-          "executor": "@nrwl/storybook:storybook",
-          "options": {
-            "uiFramework": "@storybook/react",
-            "port": 4400,
-            "config": {
-              "configFolder": "libs/feature-replay-viewer/.storybook"
-            }
-          },
-          "configurations": {
-            "ci": {
-              "quiet": true
-            }
-          }
-        },
-        "build-storybook": {
-          "executor": "@nrwl/storybook:build",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "uiFramework": "@storybook/react",
-            "outputPath": "dist/storybook/feature-replay-viewer",
-            "config": {
-              "configFolder": "libs/feature-replay-viewer/.storybook"
-            }
-          },
-          "configurations": {
-            "ci": {
-              "quiet": true
-            }
           }
         }
       },
@@ -592,6 +486,58 @@
           "outputs": ["coverage/tests/game-simulation"],
           "options": {
             "jestConfig": "tests/game-simulation/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "web-backend": {
+      "root": "apps/web/backend",
+      "sourceRoot": "apps/web/backend/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:webpack",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/web/backend",
+            "main": "apps/web/backend/src/main.ts",
+            "tsConfig": "apps/web/backend/tsconfig.app.json",
+            "assets": ["apps/web/backend/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/desktop/backend/src/environments/environment.ts",
+                  "with": "apps/desktop/backend/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:node",
+          "options": {
+            "buildTarget": "web-backend:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/web/backend/**/*.ts"]
+          },
+          "outputs": ["{options.outputFile}"]
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/web/backend"],
+          "options": {
+            "jestConfig": "apps/web/backend/jest.config.js",
             "passWithNoTests": true
           }
         }

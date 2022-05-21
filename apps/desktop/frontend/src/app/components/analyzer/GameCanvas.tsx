@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { useAnalysisApp } from "../providers/TheaterProvider";
+import { useAnalysisApp } from "../../providers/TheaterProvider";
 import { Box, CircularProgress, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { useObservable } from "rxjs-hooks";
 import { LightningBoltIcon } from "@heroicons/react/solid";
 import InfoIcon from "@mui/icons-material/Info";
-import { ignoreFocus } from "../utils/IgnoreFocus";
+import { ignoreFocus } from "../../utils/focus";
 import CloseIcon from "@mui/icons-material/Close";
 
 function EmptyState() {

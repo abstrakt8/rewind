@@ -6,8 +6,8 @@ import { RewindLogo } from "../../components/logo/RewindLogo";
 import { Help, Loop } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
 import { frontendAPI } from "../../api";
-import { useAnalysisApp } from "@rewind/feature-replay-viewer";
 import { useNavigate } from "react-router-dom";
+import { useAnalysisApp } from "../../providers/TheaterProvider";
 
 interface DirectorySelectionProps {
   value: string | null;
