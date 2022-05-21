@@ -38,10 +38,10 @@ import { ReplayAnalysisEvent } from "@osujs/core";
 import { useObservable } from "rxjs-hooks";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { HelpModalDialog } from "./HelpModal";
-import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../../../../../libs/web-player/rewind/src/settings/PlaybarSettings";
 import { BaseCurrentTime, GameCurrentTimeHandle } from "./BaseCurrentTime";
 import { ignoreFocus } from "../../utils/focus";
 import { useAnalysisApp, useCommonManagers } from "../../providers/TheaterProvider";
+import { DEFAULT_PLAY_BAR_SETTINGS } from "../../services/common/playbar";
 
 const centerUp = {
   anchorOrigin: {

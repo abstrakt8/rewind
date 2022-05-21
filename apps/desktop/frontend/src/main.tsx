@@ -7,10 +7,10 @@ import { store } from "./app/store";
 import { RewindApp } from "./app/RewindApp";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { HashRouter } from "react-router-dom";
-import { createRewindTheater } from "@rewind/web-player/rewind";
 import { rewindTheme } from "./app/styles/theme";
 import { AppInfoProvider } from "./app/providers/AppInfoProvider";
 import { TheaterProvider } from "./app/providers/TheaterProvider";
+import { createRewindTheater } from "./app/utils/creators/CommonManagers";
 
 (async function () {
   // TODO: Set console.log to electron-logger

@@ -31,8 +31,7 @@
       "@rewind/osu-pixi/classic-components": ["libs/osu-pixi/classic-components/src/index.ts"],
       "@rewind/osu-pixi/rewind": ["libs/osu-pixi/rewind/src/index.ts"],
       "@rewind/osu/skin": ["libs/osu/skin/src/index.ts"],
-      "@rewind/ui": ["libs/ui/src/index.ts"],
-      "@rewind/web-player/rewind": ["libs/web-player/rewind/src/index.ts"]
+      "@rewind/ui": ["libs/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

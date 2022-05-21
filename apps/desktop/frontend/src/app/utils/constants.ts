@@ -1,4 +1,7 @@
 const osuUniDiscord = "https://discord.gg/QubdHdnBVg";
+export const discordUrl = osuUniDiscord;
+export const twitterUrl = "https://twitter.com/osuuniversity";
+export const youtubeUrl = "https://www.youtube.com/channel/UCzW2Z--fEw0LWKgVTmO-b6w";
 export const RewindLinks = {
   OsuPpyShAbstrakt: "https://osu.ppy.sh/users/5773957",
   OsuUniDiscord: osuUniDiscord,

@@ -15,20 +15,14 @@ import {
 import { BaseSettingsModal } from "./BaseSettingsModal";
 import { useCommonManagers } from "../../providers/TheaterProvider";
 import { useCallback, useEffect, useMemo } from "react";
-import {
-  DEFAULT_ANALYSIS_CURSOR_SETTINGS,
-  DEFAULT_BEATMAP_RENDER_SETTINGS,
-  DEFAULT_OSU_SKIN_ID,
-  DEFAULT_REPLAY_CURSOR_SETTINGS,
-  DEFAULT_REWIND_SKIN_ID,
-  DEFAULT_SKIN_SETTINGS,
-  SkinId,
-  SkinSource,
-  stringToSkinId,
-} from "@rewind/web-player/rewind";
 import { useObservable } from "rxjs-hooks";
-import { DEFAULT_HIT_ERROR_BAR_SETTINGS } from "../../../../../../../libs/web-player/rewind/src/settings/HitErrorBarSettings";
-import { DEFAULT_PLAY_BAR_SETTINGS } from "../../../../../../../libs/web-player/rewind/src/settings/PlaybarSettings";
+import { DEFAULT_HIT_ERROR_BAR_SETTINGS } from "../../services/common/hit-error-bar";
+import { DEFAULT_PLAY_BAR_SETTINGS } from "../../services/common/playbar";
+import { DEFAULT_OSU_SKIN_ID, DEFAULT_REWIND_SKIN_ID, SkinId, SkinSource, stringToSkinId } from "../../model/SkinId";
+import { DEFAULT_BEATMAP_RENDER_SETTINGS } from "../../services/common/beatmap-render";
+import { DEFAULT_SKIN_SETTINGS } from "../../services/common/skin";
+import { DEFAULT_REPLAY_CURSOR_SETTINGS } from "../../services/common/replay-cursor";
+import { DEFAULT_ANALYSIS_CURSOR_SETTINGS } from "../../services/analysis/analysis-cursor";
 
 const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",

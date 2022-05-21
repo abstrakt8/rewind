@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { RewindTheater } from "@rewind/web-player/rewind";
+import { RewindTheater } from "../utils/creators/CommonManagers";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const TheaterContext = createContext<RewindTheater>(null!);

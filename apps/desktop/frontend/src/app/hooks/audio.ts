@@ -1,6 +1,6 @@
 import { useCommonManagers } from "../providers/TheaterProvider";
 import { useObservable } from "rxjs-hooks";
-import { AudioSettings } from "@rewind/web-player/rewind";
+import { AudioSettings } from "../services/common/AudioSettingsStore";
 
 export function useAudioSettingsService() {
   const theater = useCommonManagers();
