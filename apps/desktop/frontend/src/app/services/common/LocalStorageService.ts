@@ -16,7 +16,8 @@ interface LocalStorageSubscriber<T> {
 }
 
 /**
- * This helper makes sure that the settings that we observe here will be stored into the LocalStorage with a specific debounce time.
+ * This helper makes sure that the settings that we observe here will be stored into the LocalStorage with a specific
+ * debounce time.
  */
 export class LocalStorageHelper {
   subscribers: LocalStorageSubscriber<unknown>[] = [];
@@ -36,7 +37,7 @@ export class LocalStorageHelper {
 
   private registerStorage<T>(localStorageKey: string, observable: Observable<T>) {
     observable.pipe(debounceTime(DEBOUNCE_TIME)).subscribe((s) => {
-      // Store the serialized version into
+      // Store the serialized version into the LocalStorage
       storage.setItem(localStorageKey, JSON.stringify(s));
     });
   }

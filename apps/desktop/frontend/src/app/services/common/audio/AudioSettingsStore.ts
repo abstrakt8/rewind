@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { AbstractSettingsStore } from "./AbstractSettingsStore";
+import { AbstractSettingsStore } from "../AbstractSettingsStore";
 import { JSONSchemaType } from "ajv";
 
 export interface AudioSettings {

@@ -4,7 +4,7 @@ import { SkinLoader } from "../../services/common/api/SkinLoader";
 import { AudioService } from "../../services/common/audio/AudioService";
 import { createRewindAnalysisApp } from "./createRewindAnalysisApp";
 import { SkinHolder } from "../../services/common/skins/SkinHolder";
-import { AudioSettingsStore } from "../../services/common/AudioSettingsStore";
+import { AudioSettingsStore } from "../../services/common/audio/AudioSettingsStore";
 import { STAGE_TYPES } from "../../types/STAGE_TYPES";
 import { BeatmapBackgroundSettingsStore } from "../../services/common/beatmap-background";
 import { PlayfieldBorderSettingsStore } from "../../services/common/playfield-border";

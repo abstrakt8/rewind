@@ -49,8 +49,7 @@ function NormalView() {
   );
 }
 
-// TODO: Create an app that also runs on 4200 and is used only for testing specific pages such as analyzer
-const DEBUG = true;
+const DEBUG_ANALYZER = true;
 
 export function RewindApp() {
   const navigate = useNavigate();
@@ -58,7 +57,6 @@ export function RewindApp() {
   const theater = useTheaterContext();
 
   useEffect(() => {
-    // yield call(waitForBackendState, "READY");
     // yield call(analyzer.startWatching.bind(analyzer));
     void theater.common.initialize();
 
@@ -67,10 +65,12 @@ export function RewindApp() {
       void theater.analyzer.loadReplay(file);
     });
 
-    if (DEBUG) {
+    if (DEBUG_ANALYZER) {
       navigate("/app/analyzer");
       void theater.analyzer.loadReplay(
         "/run/media/me/Games/osu!/Replays/abstrakt - Bliitzit - Team Magma & Aqua Leader Battle Theme (Unofficial) [SMOKELIND's Insane] (2022-03-15) Osu.osr",
+        // "D:/osu!/Replays/abstrakt - Bliitzit - Team Magma & Aqua Leader Battle Theme (Unofficial) [SMOKELIND's
+        // Insane] (2022-03-15) Osu.osr",
       );
     }
 

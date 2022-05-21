@@ -1,13 +1,12 @@
 import { inject, injectable } from "inversify";
-import Store from "electron-store";
+import ElectronStore from "electron-store";
 import { access } from "fs/promises";
 import { join } from "path";
 import { constants } from "fs";
-import username from "username";
 import { BehaviorSubject } from "rxjs";
 import { determineSongsFolder } from "@rewind/osu-local/utils";
-import ElectronStore from "electron-store";
 import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
+import username from "username";
 
 const CONFIG = "OsuPath";
 

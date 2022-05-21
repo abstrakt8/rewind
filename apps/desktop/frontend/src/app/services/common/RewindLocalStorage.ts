@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { DEFAULT_SKIN_SETTINGS, SkinSettingsSchema, SkinSettingsStore } from "./skin";
 import { LocalStorageHelper } from "./LocalStorageService";
-import { AudioSettingsSchema, AudioSettingsStore, DEFAULT_AUDIO_SETTINGS } from "./AudioSettingsStore";
+import { AudioSettingsSchema, AudioSettingsStore, DEFAULT_AUDIO_SETTINGS } from "./audio/AudioSettingsStore";
 import {
   AnalysisCursorSettingsSchema,
   AnalysisCursorSettingsStore,
