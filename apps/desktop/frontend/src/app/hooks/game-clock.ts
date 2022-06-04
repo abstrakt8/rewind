@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useObservable } from "rxjs-hooks";
 import { useAnalysisApp } from "../providers/TheaterProvider";
 import { ALLOWED_SPEEDS } from "../utils/constants";
-import { useInterval } from "./useInterval";
+import { useInterval } from "./interval";
 
 export function useGameClock() {
   const analyzer = useAnalysisApp();

@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { usePageVisibility } from "react-page-visibility";
 // import { useStageContext } from "../components/StageProvider/StageProvider";
 
 // export function useEnergySaver(enabled = true) {

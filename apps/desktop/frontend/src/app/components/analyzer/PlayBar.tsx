@@ -26,7 +26,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BaseAudioSettingsPanel } from "./BaseAudioSettingsPanel";
 import { BaseGameTimeSlider } from "./BaseGameTimeSlider";
-import { useGameClockControls, useGameClockTime } from "../../hooks/gameClock";
+import { useGameClockControls, useGameClockTime } from "../../hooks/game-clock";
 import { formatGameTime } from "@osujs/math";
 import { useAudioSettings, useAudioSettingsService } from "../../hooks/audio";
 import { useModControls } from "../../hooks/mods";

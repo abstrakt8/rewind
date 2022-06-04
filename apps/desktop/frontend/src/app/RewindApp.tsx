@@ -68,9 +68,9 @@ export function RewindApp() {
     if (DEBUG_ANALYZER) {
       navigate("/app/analyzer");
       void theater.analyzer.loadReplay(
-        "/run/media/me/Games/osu!/Replays/abstrakt - Bliitzit - Team Magma & Aqua Leader Battle Theme (Unofficial) [SMOKELIND's Insane] (2022-03-15) Osu.osr",
-        // "D:/osu!/Replays/abstrakt - Bliitzit - Team Magma & Aqua Leader Battle Theme (Unofficial) [SMOKELIND's
-        // Insane] (2022-03-15) Osu.osr",
+        // "/run/media/me/Games/osu!/Replays/abstrakt - Bliitzit - Team Magma & Aqua Leader Battle Theme (Unofficial)
+        // [SMOKELIND's Insane] (2022-03-15) Osu.osr",
+        "D:/osu!/Replays/abstrakt - Bliitzit - Team Magma & Aqua Leader Battle Theme (Unofficial) [SMOKELIND's Insane] (2022-03-15) Osu.osr",
       );
     }
 

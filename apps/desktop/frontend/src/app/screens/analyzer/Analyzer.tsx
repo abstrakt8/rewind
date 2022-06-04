@@ -1,6 +1,6 @@
 import { Paper, Stack } from "@mui/material";
 import { PlayBar } from "../../components/analyzer/PlayBar";
-import { useShortcuts } from "../../hooks/useShortcuts";
+import { useShortcuts } from "../../hooks/shortcuts";
 import { GameCanvas } from "../../components/analyzer/GameCanvas";
 import { SettingsModal } from "../../components/analyzer/SettingsModal";
 import { SettingsModalProvider } from "../../providers/SettingsProvider";

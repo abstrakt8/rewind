@@ -1,5 +1,5 @@
 import { useHotkeys } from "react-hotkeys-hook";
-import { useGameClockControls } from "./gameClock";
+import { useGameClockControls } from "./game-clock";
 import { useModControls } from "./mods";
 
 // TODO: Configurable
