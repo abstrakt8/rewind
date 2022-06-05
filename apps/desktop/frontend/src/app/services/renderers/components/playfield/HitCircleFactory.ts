@@ -11,8 +11,8 @@ import {
 import type { ISkin } from "../../../../model/Skin";
 import { GameSimulator } from "../../../common/game/GameSimulator";
 import { SkinHolder } from "../../../common/skins/SkinHolder";
-import { ModSettingsManager } from "../../../manager/ModSettingsManager";
 import { TemporaryObjectPool } from "../../../../utils/pooling/TemporaryObjectPool";
+import { ModSettingsService } from "../../../analysis/mod-settings";
 
 // TODO: Maybe it's even dynamic
 const HIT_CIRCLE_FADE_OUT_DURATION = 300;
@@ -28,7 +28,7 @@ export class HitCircleFactory {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
-    private readonly modSettingsManager: ModSettingsManager,
+    private readonly modSettingsService: ModSettingsService,
     private readonly stageSkinService: SkinHolder,
   ) {
     this.hitAreaPool = new TemporaryObjectPool<OsuClassicHitCircleArea>(
@@ -53,7 +53,7 @@ export class HitCircleFactory {
 
   createHitCircle(hitCircle: HitCircle) {
     const time = this.gameClock.timeElapsedInMs;
-    const modSettings = this.modSettingsManager.modSettings;
+    const modSettings = this.modSettingsService.modSettings;
     const skin = this.stageSkinService.getSkin();
 
     const modHidden = modSettings.hidden;

@@ -7,7 +7,7 @@ interface AnalysisModSettings {
 }
 
 @injectable()
-export class ModSettingsManager {
+export class ModSettingsService {
   modSettings$: BehaviorSubject<AnalysisModSettings>;
 
   constructor() {

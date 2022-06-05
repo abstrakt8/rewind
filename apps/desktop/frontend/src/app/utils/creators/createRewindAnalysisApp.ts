@@ -4,7 +4,6 @@ import { PixiRendererManager } from "../../services/renderers/PixiRendererManage
 import { GameplayClock } from "../../services/common/game/GameplayClock";
 import { STAGE_TYPES } from "../../services/types/STAGE_TYPES";
 import { EventEmitter2 } from "eventemitter2";
-import { ModSettingsManager } from "../../services/manager/ModSettingsManager";
 import { BeatmapManager } from "../../services/manager/BeatmapManager";
 import { ReplayManager } from "../../services/manager/ReplayManager";
 import { GameSimulator } from "../../services/common/game/GameSimulator";
@@ -32,6 +31,7 @@ import { ReplayWatcher } from "../../services/common/api/ReplayWatcher";
 import { ClipRecorder } from "../../services/manager/ClipRecorder";
 import { IdleScene } from "../../services/analysis/scenes/IdleScene";
 import { KeyPressWithNoteSheetPreparer } from "../../services/renderers/components/keypresses/KeyPressOverlay";
+import { ModSettingsService } from "../../services/analysis/mod-settings";
 
 /**
  * This is a Rewind specific constructor of the "Analysis" tool (not to be used outside of Rewind).
@@ -51,7 +51,7 @@ export function createRewindAnalysisApp(commonContainer: Container) {
   container.bind(BeatmapManager).toSelf();
   container.bind(GameplayClock).toSelf();
   container.bind(ScenarioManager).toSelf();
-  container.bind(ModSettingsManager).toSelf();
+  container.bind(ModSettingsService).toSelf();
   container.bind(GameSimulator).toSelf();
   container.bind(PixiRendererManager).toSelf();
 

@@ -1,6 +1,5 @@
 import { ReplayService } from "../common/api/ReplayService";
 import { GameplayClock } from "../common/game/GameplayClock";
-import { ModSettingsManager } from "../manager/ModSettingsManager";
 import { BeatmapManager } from "../manager/BeatmapManager";
 import { GameSimulator } from "../common/game/GameSimulator";
 import { injectable } from "inversify";
@@ -12,6 +11,7 @@ import { ReplayWatcher } from "../common/api/ReplayWatcher";
 import { ScreenshotTaker } from "../manager/ScreenshotTaker";
 import { ClipRecorder } from "../manager/ClipRecorder";
 import { OsuFolderService } from "../common/api/OsuFolderService";
+import { ModSettingsService } from "./mod-settings";
 
 @injectable()
 export class AnalysisApp {
@@ -19,7 +19,7 @@ export class AnalysisApp {
     public readonly gameClock: GameplayClock,
     public readonly gameSimulator: GameSimulator,
     public readonly scenarioManager: ScenarioManager,
-    public readonly modSettingsManager: ModSettingsManager,
+    public readonly modSettingsService: ModSettingsService,
     public readonly replayWatcher: ReplayWatcher,
     public readonly screenshotTaker: ScreenshotTaker,
     public readonly clipRecorder: ClipRecorder,

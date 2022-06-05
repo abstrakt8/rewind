@@ -3,10 +3,10 @@ import { useObservable } from "rxjs-hooks";
 import { useCallback } from "react";
 
 export function useModControls() {
-  const { modSettingsManager } = useAnalysisApp();
+  const { modSettingsService } = useAnalysisApp();
 
-  const modSettings = useObservable(() => modSettingsManager.modSettings$, { flashlight: false, hidden: false });
-  const setHidden = useCallback((value) => modSettingsManager.setHidden(value), [modSettingsManager]);
+  const modSettings = useObservable(() => modSettingsService.modSettings$, { flashlight: false, hidden: false });
+  const setHidden = useCallback((value) => modSettingsService.setHidden(value), [modSettingsService]);
 
   return { ...modSettings, setHidden };
 }

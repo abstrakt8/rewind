@@ -14,9 +14,9 @@ import { SkinHolder } from "../../../common/skins/SkinHolder";
 import { injectable } from "inversify";
 import { TemporaryObjectPool } from "../../../../utils/pooling/TemporaryObjectPool";
 import { SliderTextureManager } from "../../managers/SliderTextureManager";
-import { ModSettingsManager } from "../../../manager/ModSettingsManager";
 import { GameSimulator } from "../../../common/game/GameSimulator";
 import { BeatmapRenderSettingsStore } from "../../../common/beatmap-render";
+import { ModSettingsService } from "../../../analysis/mod-settings";
 
 const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;
 const DEBUG_PIXEL_BALL_COLOR = 0x00ff00;
@@ -30,7 +30,7 @@ export class SliderFactory {
   constructor(
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
-    private readonly modSettingsManager: ModSettingsManager,
+    private readonly modSettingsService: ModSettingsService,
     private readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
     private readonly stageSkinService: SkinHolder,
     private readonly sliderTextureService: SliderTextureManager,
@@ -48,7 +48,7 @@ export class SliderFactory {
   }
 
   private get modHidden() {
-    return this.modSettingsManager.modSettings.hidden;
+    return this.modSettingsService.modSettings.hidden;
   }
 
   private prepareSliderBody(slider: Slider) {

@@ -2,7 +2,6 @@ import { injectable } from "inversify";
 import { BehaviorSubject } from "rxjs";
 import { Beatmap, buildBeatmap, modsToBitmask, parseBlueprint } from "@osujs/core";
 import { GameSimulator } from "../common/game/GameSimulator";
-import { ModSettingsManager } from "./ModSettingsManager";
 import { AudioService } from "../common/audio/AudioService";
 import { ReplayService } from "../common/api/ReplayService";
 import { BeatmapManager } from "./BeatmapManager";
@@ -19,6 +18,7 @@ import { OsuFolderService } from "../common/api/OsuFolderService";
 import { BeatmapBackgroundSettingsStore } from "../common/beatmap-background";
 import { TextureManager } from "../textures/TextureManager";
 import { ReplayWatcher } from "../common/api/ReplayWatcher";
+import { ModSettingsService } from "../analysis/mod-settings";
 
 interface Scenario {
   status: "LOADING" | "ERROR" | "DONE" | "INIT";
@@ -37,7 +37,7 @@ export class ScenarioManager {
     private readonly renderer: PixiRendererManager,
     private readonly gameLoop: GameLoop,
     private readonly gameSimulator: GameSimulator,
-    private readonly modSettingsManager: ModSettingsManager,
+    private readonly modSettingsService: ModSettingsService,
     private readonly blueprintLocatorService: BlueprintLocatorService,
     private readonly osuFolderService: OsuFolderService,
     private readonly audioService: AudioService,
@@ -113,9 +113,9 @@ export class ScenarioManager {
     const modHidden = replay.mods.includes("HIDDEN");
     const initialSpeed = beatmap.gameClockRate;
 
-    this.modSettingsManager.setHidden(modHidden);
+    this.modSettingsService.setHidden(modHidden);
     // Not supported yet
-    this.modSettingsManager.setFlashlight(false);
+    this.modSettingsService.setFlashlight(false);
 
     this.gameClock.pause();
     this.gameClock.setSpeed(initialSpeed);
@@ -135,7 +135,7 @@ export class ScenarioManager {
     // Set speed to 1.0
     this.gameClock.setSpeed(1.0);
     this.gameClock.seekTo(0);
-    this.modSettingsManager.setHidden(false);
+    this.modSettingsService.setHidden(false);
     this.replayManager.setMainReplay(null);
   }
 
