@@ -1,6 +1,10 @@
-import { AnalysisModSettings } from "../analysis/settings/AnalysisModSettings";
 import { injectable } from "inversify";
 import { BehaviorSubject } from "rxjs";
+
+interface AnalysisModSettings {
+  hidden: boolean;
+  flashlight: boolean;
+}
 
 @injectable()
 export class ModSettingsManager {

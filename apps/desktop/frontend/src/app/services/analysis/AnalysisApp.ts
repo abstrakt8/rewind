@@ -37,7 +37,6 @@ export class AnalysisApp {
 
   initialize() {
     console.log("AnalysisApp: Initialize");
-    // Do not @postConstruct or the startWatching happens twice ... (???)
     this.replayWatcher.startWatching();
     this.scenarioManager.initialize();
   }
@@ -53,7 +52,6 @@ export class AnalysisApp {
     // this.gameLoop.stopTicker();
   }
 
-  // If no replay is loaded, then an empty "perfect" replay is used as simulation
 
   /**
    * Loads the replay and the corresponding beatmap and makes the application ready to visualize the replay.

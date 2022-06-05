@@ -6,6 +6,8 @@ import { SettingsModal } from "../../components/analyzer/SettingsModal";
 import { SettingsModalProvider } from "../../providers/SettingsProvider";
 
 export function Analyzer() {
+  // TODO: Initialize AnalysisApp here...
+
   // Shortcuts will then only be available when this page is <Analyzer/> is open
   useShortcuts();
 

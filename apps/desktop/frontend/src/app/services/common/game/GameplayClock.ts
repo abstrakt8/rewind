@@ -1,7 +1,7 @@
 import { EventEmitter, GameClockEvents } from "../../../utils/events";
 import { ListenerFn } from "eventemitter2";
 import { inject, injectable } from "inversify";
-import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
+import { STAGE_TYPES } from "../../types/STAGE_TYPES";
 import { BehaviorSubject } from "rxjs";
 
 const getNowInMs = () => performance.now();

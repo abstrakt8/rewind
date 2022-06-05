@@ -1,6 +1,6 @@
 import { inject, injectable, postConstruct } from "inversify";
 import { EventEmitter, GameClockEvents } from "../../../utils/events";
-import { STAGE_TYPES } from "../../../types/STAGE_TYPES";
+import { STAGE_TYPES } from "../../types/STAGE_TYPES";
 import { AudioSettings, AudioSettingsStore } from "./AudioSettingsStore";
 
 // HTML5 Audio supports time stretching without pitch changing (otherwise sounds like night core)

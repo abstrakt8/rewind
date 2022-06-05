@@ -1,4 +1,3 @@
-// Asks for the user
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "@mui/material";

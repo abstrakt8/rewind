@@ -2,7 +2,7 @@ import { Container } from "inversify";
 import { AnalysisApp } from "../../services/analysis/AnalysisApp";
 import { PixiRendererManager } from "../../services/renderers/PixiRendererManager";
 import { GameplayClock } from "../../services/common/game/GameplayClock";
-import { STAGE_TYPES } from "../../types/STAGE_TYPES";
+import { STAGE_TYPES } from "../../services/types/STAGE_TYPES";
 import { EventEmitter2 } from "eventemitter2";
 import { ModSettingsManager } from "../../services/manager/ModSettingsManager";
 import { BeatmapManager } from "../../services/manager/BeatmapManager";
