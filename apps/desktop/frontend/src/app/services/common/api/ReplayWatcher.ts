@@ -8,9 +8,6 @@ export class ReplayWatcher {
   public readonly newReplays$: Subject<string>;
   private watcher?: chokidar.FSWatcher;
 
-  // TODO:
-  private readonly replaysFolder: string = "D:\\osu!\\Replays";
-
   constructor(private readonly osuFolderService: OsuFolderService) {
     this.newReplays$ = new Subject<string>();
   }
@@ -29,7 +26,7 @@ export class ReplayWatcher {
     }
 
     const globPattern = folder;
-    console.log(`Watching for replays (.osr) in folder: ${this.replaysFolder} with pattern: ${globPattern}`);
+    console.log(`Watching for replays (.osr) in folder: ${folder} with pattern: ${globPattern}`);
     this.watcher = chokidar.watch(globPattern, {
       // ignoreInitial must be true otherwise addDir will be triggered for every folder initially.
       ignoreInitial: true,
