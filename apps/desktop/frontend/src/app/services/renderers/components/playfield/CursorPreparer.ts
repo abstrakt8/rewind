@@ -5,11 +5,11 @@ import { AnalysisCursor, AnalysisPoint } from "@rewind/osu-pixi/rewind";
 import { OsuAction } from "@osujs/core";
 import { injectable } from "inversify";
 import { GameplayClock } from "../../../common/game/GameplayClock";
-import { SkinHolder } from "../../../common/skins/SkinHolder";
 import { ReplayManager } from "../../../manager/ReplayManager";
 import { AnalysisCursorSettingsStore } from "../../../analysis/analysis-cursor";
 import { ReplayCursorSettingsStore } from "../../../common/replay-cursor";
 import { Position } from "@osujs/math";
+import { SkinHolder } from "../../../common/skin";
 
 @injectable()
 export class CursorPreparer {

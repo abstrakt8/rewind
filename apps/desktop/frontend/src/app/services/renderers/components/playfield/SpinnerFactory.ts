@@ -1,10 +1,10 @@
 import { injectable } from "inversify";
 import { Spinner } from "@osujs/core";
 import { GameplayClock } from "../../../common/game/GameplayClock";
-import { SkinHolder } from "../../../common/skins/SkinHolder";
 import { OsuClassicSpinner } from "@rewind/osu-pixi/classic-components";
 import { GameSimulator } from "../../../common/game/GameSimulator";
 import { ModSettingsService } from "../../../analysis/mod-settings";
+import { SkinHolder } from "../../../common/skin";
 
 // TODO: Maybe it's even dynamic
 const SPINNER_FADE_OUT_DURATION = 300;

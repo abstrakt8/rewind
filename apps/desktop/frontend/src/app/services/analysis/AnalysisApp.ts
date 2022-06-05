@@ -1,4 +1,4 @@
-import { ReplayService } from "../common/api/ReplayService";
+import { ReplayService } from "../common/local/ReplayService";
 import { GameplayClock } from "../common/game/GameplayClock";
 import { BeatmapManager } from "../manager/BeatmapManager";
 import { GameSimulator } from "../common/game/GameSimulator";
@@ -7,11 +7,11 @@ import { PixiRendererManager } from "../renderers/PixiRendererManager";
 import { AnalysisSceneManager } from "../manager/AnalysisSceneManager";
 import { GameLoop } from "../common/game/GameLoop";
 import { ScenarioManager } from "../manager/ScenarioManager";
-import { ReplayWatcher } from "../common/api/ReplayWatcher";
-import { ScreenshotTaker } from "../manager/ScreenshotTaker";
+import { ReplayWatcher } from "../common/local/ReplayWatcher";
+import { OsuFolderService } from "../common/local/OsuFolderService";
 import { ClipRecorder } from "../manager/ClipRecorder";
-import { OsuFolderService } from "../common/api/OsuFolderService";
 import { ModSettingsService } from "./mod-settings";
+import { ScreenshotTaker } from "./screenshot";
 
 @injectable()
 export class AnalysisApp {

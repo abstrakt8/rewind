@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { PixiRendererManager } from "../PixiRendererManager";
+import { PixiRendererManager } from "../../PixiRendererManager";
 import { Position, RGB } from "@osujs/math";
 import { BasicSliderTextureRenderer } from "@rewind/osu-pixi/classic-components";
 import { Texture } from "pixi.js";

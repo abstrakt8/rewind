@@ -7,7 +7,7 @@ import { SkinId } from "../../../model/SkinId";
 import { OsuFolderService } from "./OsuFolderService";
 import { GetTextureFileOption, OsuSkinTextureResolver, SkinFolderReader } from "@rewind/osu-local/skin-reader";
 import { join } from "path";
-import { STAGE_TYPES } from "../../types/STAGE_TYPES";
+import { STAGE_TYPES } from "../../types";
 
 export type SkinTextureLocation = { key: OsuSkinTextures; paths: string[] };
 

@@ -10,9 +10,9 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import type { ISkin } from "../../../../model/Skin";
 import { GameSimulator } from "../../../common/game/GameSimulator";
-import { SkinHolder } from "../../../common/skins/SkinHolder";
 import { TemporaryObjectPool } from "../../../../utils/pooling/TemporaryObjectPool";
 import { ModSettingsService } from "../../../analysis/mod-settings";
+import { SkinHolder } from "../../../common/skin";
 
 // TODO: Maybe it's even dynamic
 const HIT_CIRCLE_FADE_OUT_DURATION = 300;

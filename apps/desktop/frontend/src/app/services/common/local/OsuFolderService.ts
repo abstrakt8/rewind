@@ -5,8 +5,8 @@ import { join } from "path";
 import { constants } from "fs";
 import { BehaviorSubject } from "rxjs";
 import { determineSongsFolder } from "@rewind/osu-local/utils";
-import { STAGE_TYPES } from "../../types/STAGE_TYPES";
 import username from "username";
+import { STAGE_TYPES } from "../../types";
 
 const CONFIG = "OsuPath";
 

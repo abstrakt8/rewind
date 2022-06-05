@@ -2,7 +2,6 @@ import { Container } from "inversify";
 import { AnalysisApp } from "../../services/analysis/AnalysisApp";
 import { PixiRendererManager } from "../../services/renderers/PixiRendererManager";
 import { GameplayClock } from "../../services/common/game/GameplayClock";
-import { STAGE_TYPES } from "../../services/types/STAGE_TYPES";
 import { EventEmitter2 } from "eventemitter2";
 import { BeatmapManager } from "../../services/manager/BeatmapManager";
 import { ReplayManager } from "../../services/manager/ReplayManager";
@@ -21,17 +20,18 @@ import { HitObjectsContainerFactory } from "../../services/renderers/components/
 import { HitCircleFactory } from "../../services/renderers/components/playfield/HitCircleFactory";
 import { SliderFactory } from "../../services/renderers/components/playfield/SliderFactory";
 import { SpinnerFactory } from "../../services/renderers/components/playfield/SpinnerFactory";
-import { SliderTextureManager } from "../../services/renderers/managers/SliderTextureManager";
+import { SliderTextureManager } from "../../services/renderers/components/sliders/SliderTextureManager";
 import { CursorPreparer } from "../../services/renderers/components/playfield/CursorPreparer";
 import { JudgementPreparer } from "../../services/renderers/components/playfield/JudgementPreparer";
 import { AudioEngine } from "../../services/common/audio/AudioEngine";
 import { ScenarioManager } from "../../services/manager/ScenarioManager";
-import { ScreenshotTaker } from "../../services/manager/ScreenshotTaker";
-import { ReplayWatcher } from "../../services/common/api/ReplayWatcher";
+import { ReplayWatcher } from "../../services/common/local/ReplayWatcher";
 import { ClipRecorder } from "../../services/manager/ClipRecorder";
 import { IdleScene } from "../../services/analysis/scenes/IdleScene";
 import { KeyPressWithNoteSheetPreparer } from "../../services/renderers/components/keypresses/KeyPressOverlay";
 import { ModSettingsService } from "../../services/analysis/mod-settings";
+import { ScreenshotTaker } from "../../services/analysis/screenshot";
+import { STAGE_TYPES } from "../../services/types";
 
 /**
  * This is a Rewind specific constructor of the "Analysis" tool (not to be used outside of Rewind).

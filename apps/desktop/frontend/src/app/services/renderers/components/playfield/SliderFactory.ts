@@ -10,13 +10,13 @@ import {
 } from "@rewind/osu-pixi/classic-components";
 import { RGB, sliderRepeatAngle, Vec2 } from "@osujs/math";
 import { GameplayClock } from "../../../common/game/GameplayClock";
-import { SkinHolder } from "../../../common/skins/SkinHolder";
 import { injectable } from "inversify";
 import { TemporaryObjectPool } from "../../../../utils/pooling/TemporaryObjectPool";
-import { SliderTextureManager } from "../../managers/SliderTextureManager";
+import { SliderTextureManager } from "../sliders/SliderTextureManager";
 import { GameSimulator } from "../../../common/game/GameSimulator";
 import { BeatmapRenderSettingsStore } from "../../../common/beatmap-render";
 import { ModSettingsService } from "../../../analysis/mod-settings";
+import { SkinHolder } from "../../../common/skin";
 
 const DEBUG_FOLLOW_CIRCLE_COLOR = 0xff0000;
 const DEBUG_PIXEL_BALL_COLOR = 0x00ff00;

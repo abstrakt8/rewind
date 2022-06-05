@@ -1,10 +1,11 @@
 import { injectable } from "inversify";
-import { AnalysisScene } from "../analysis/scenes/AnalysisScene";
+import { AnalysisScene } from "./scenes/AnalysisScene";
 import { PixiRendererManager } from "../renderers/PixiRendererManager";
 
 @injectable()
 export class ScreenshotTaker {
-  constructor(private readonly analysisScene: AnalysisScene, private readonly pixiRenderer: PixiRendererManager) {}
+  constructor(private readonly analysisScene: AnalysisScene, private readonly pixiRenderer: PixiRendererManager) {
+  }
 
   takeScreenshot() {
     const renderer = this.pixiRenderer.getRenderer();

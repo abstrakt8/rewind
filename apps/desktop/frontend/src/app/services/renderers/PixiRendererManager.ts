@@ -1,9 +1,6 @@
 import * as PIXI from "pixi.js";
 import { injectable } from "inversify";
 
-/**
- * Because we will use the canvas that is initialized at a later point of time we need need a "service".
- */
 @injectable()
 export class PixiRendererManager {
   // RendererPreferenceSettingsService to get preferences

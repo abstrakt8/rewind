@@ -3,7 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import { Beatmap, buildBeatmap, modsToBitmask, parseBlueprint } from "@osujs/core";
 import { GameSimulator } from "../common/game/GameSimulator";
 import { AudioService } from "../common/audio/AudioService";
-import { ReplayService } from "../common/api/ReplayService";
+import { ReplayService } from "../common/local/ReplayService";
 import { BeatmapManager } from "./BeatmapManager";
 import { ReplayManager } from "./ReplayManager";
 import { AnalysisSceneKeys, AnalysisSceneManager } from "./AnalysisSceneManager";
@@ -13,11 +13,11 @@ import { GameLoop } from "../common/game/GameLoop";
 import { PixiRendererManager } from "../renderers/PixiRendererManager";
 import { join } from "path";
 import { readFile } from "fs/promises";
-import { BlueprintLocatorService } from "../common/api/BlueprintLocatorService";
-import { OsuFolderService } from "../common/api/OsuFolderService";
+import { BlueprintLocatorService } from "../common/local/BlueprintLocatorService";
+import { OsuFolderService } from "../common/local/OsuFolderService";
 import { BeatmapBackgroundSettingsStore } from "../common/beatmap-background";
 import { TextureManager } from "../textures/TextureManager";
-import { ReplayWatcher } from "../common/api/ReplayWatcher";
+import { ReplayWatcher } from "../common/local/ReplayWatcher";
 import { ModSettingsService } from "../analysis/mod-settings";
 
 interface Scenario {

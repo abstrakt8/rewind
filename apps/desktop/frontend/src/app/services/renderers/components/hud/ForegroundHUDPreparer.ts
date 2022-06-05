@@ -7,13 +7,13 @@ import {
   OsuClassicHitErrorBar,
   OsuClassicNumber,
 } from "@rewind/osu-pixi/classic-components";
-import { SkinHolder } from "../../../common/skins/SkinHolder";
 import { STAGE_HEIGHT, STAGE_WIDTH } from "../../constants";
 import { formatGameTime, hitWindowsForOD } from "@osujs/math";
 import { GameplayClock } from "../../../common/game/GameplayClock";
 import { BeatmapManager } from "../../../manager/BeatmapManager";
 import { mean, standardDeviation } from "simple-statistics";
 import { HitErrorBarSettingsStore } from "../../../common/hit-error-bar";
+import { SkinHolder } from "../../../common/skin";
 
 function calculateUnstableRate(x: number[]) {
   return x.length === 0 ? 0 : standardDeviation(x) * 10;

@@ -4,9 +4,9 @@ import { OsuClassicJudgement } from "@rewind/osu-pixi/classic-components";
 import { circleSizeToScale } from "@osujs/math";
 import { MainHitObjectVerdict } from "@osujs/core";
 import { GameplayClock } from "../../../common/game/GameplayClock";
-import { SkinHolder } from "../../../common/skins/SkinHolder";
 import { GameSimulator } from "../../../common/game/GameSimulator";
 import { BeatmapManager } from "../../../manager/BeatmapManager";
+import { SkinHolder } from "../../../common/skin";
 
 function texturesForJudgement(t: MainHitObjectVerdict, lastInComboSet?: boolean) {
   switch (t) {

@@ -1,25 +1,23 @@
 import { Container, injectable } from "inversify";
-import { ReplayService } from "../../services/common/api/ReplayService";
-import { SkinLoader } from "../../services/common/api/SkinLoader";
+import { ReplayService } from "../../services/common/local/ReplayService";
+import { SkinLoader } from "../../services/common/local/SkinLoader";
 import { AudioService } from "../../services/common/audio/AudioService";
 import { createRewindAnalysisApp } from "./createRewindAnalysisApp";
-import { SkinHolder } from "../../services/common/skins/SkinHolder";
 import { AudioSettingsStore } from "../../services/common/audio/AudioSettingsStore";
-import { STAGE_TYPES } from "../../services/types/STAGE_TYPES";
 import { BeatmapBackgroundSettingsStore } from "../../services/common/beatmap-background";
 import { PlayfieldBorderSettingsStore } from "../../services/common/playfield-border";
 import { AnalysisCursorSettingsStore } from "../../services/analysis/analysis-cursor";
 import { ReplayCursorSettingsStore } from "../../services/common/replay-cursor";
 import { RewindLocalStorage } from "../../services/common/RewindLocalStorage";
-import { SkinManager } from "../../services/common/SkinManager";
-import { SkinSettingsStore } from "../../services/common/skin";
+import { SkinHolder, SkinManager, SkinSettingsStore } from "../../services/common/skin";
 import { HitErrorBarSettingsStore } from "../../services/common/hit-error-bar";
 import { PlaybarSettingsStore } from "../../services/common/playbar";
-import { OsuFolderService } from "../../services/common/api/OsuFolderService";
-import { OsuDBDao } from "../../services/common/api/OsuDBDao";
-import { BlueprintLocatorService } from "../../services/common/api/BlueprintLocatorService";
+import { OsuFolderService } from "../../services/common/local/OsuFolderService";
+import { OsuDBDao } from "../../services/common/local/OsuDBDao";
+import { BlueprintLocatorService } from "../../services/common/local/BlueprintLocatorService";
 import ElectronStore from "electron-store";
 import { BeatmapRenderSettingsStore } from "../../services/common/beatmap-render";
+import { STAGE_TYPES } from "../../services/types";
 
 /**
  * Creates the Rewind app that serves multiple useful osu! tools.
