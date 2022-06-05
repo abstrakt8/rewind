@@ -18,6 +18,7 @@ import { BlueprintLocatorService } from "../common/api/BlueprintLocatorService";
 import { OsuFolderService } from "../common/api/OsuFolderService";
 import { BeatmapBackgroundSettingsStore } from "../common/beatmap-background";
 import { TextureManager } from "../textures/TextureManager";
+import { ReplayWatcher } from "../common/api/ReplayWatcher";
 
 interface Scenario {
   status: "LOADING" | "ERROR" | "DONE" | "INIT";
@@ -46,9 +47,16 @@ export class ScenarioManager {
     private readonly beatmapManager: BeatmapManager,
     private readonly replayManager: ReplayManager,
     private readonly sceneManager: AnalysisSceneManager,
+    private readonly replayWatcher: ReplayWatcher,
     private readonly audioEngine: AudioEngine,
   ) {
     this.scenario$ = new BehaviorSubject<Scenario>({ status: "INIT" });
+  }
+
+  public initialize() {
+    this.replayWatcher.newReplays$.subscribe((replayId) => {
+      void this.loadReplay(replayId);
+    });
   }
 
   // This is a temporary solution to

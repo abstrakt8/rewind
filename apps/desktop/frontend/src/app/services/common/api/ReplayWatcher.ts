@@ -1,53 +1,52 @@
-import { injectable, postConstruct } from "inversify";
+import { injectable } from "inversify";
 import { Subject } from "rxjs";
-import { ScenarioManager } from "../../manager/ScenarioManager";
+import * as chokidar from "chokidar";
+import { OsuFolderService } from "./OsuFolderService";
 
-// interface Payload {
-//   replay: { filename: string };
-//   beatmapMetaData: { md5Hash: string };
-// }
-type Payload = {
-  blueprintId: string;
-  replayId: string;
-};
-
-// TODO: Replace with chokidar watcher
 @injectable()
 export class ReplayWatcher {
   public readonly newReplays$: Subject<string>;
+  private watcher?: chokidar.FSWatcher;
 
-  constructor(private readonly scenarioManager: ScenarioManager) {
+  // TODO:
+  private readonly replaysFolder: string = "D:\\osu!\\Replays";
+
+  constructor(private readonly osuFolderService: OsuFolderService) {
     this.newReplays$ = new Subject<string>();
   }
 
-  @postConstruct()
-  initialize() {
-    // Probably this should be somewhere else...
-    this.newReplays$.subscribe((replayId) => {
-      // TODO: if settings also true
-      this.scenarioManager.loadReplay(replayId);
+  public startWatching() {
+    this.osuFolderService.replaysFolder$.subscribe(this.onNewReplayFolder.bind(this));
+  }
+
+  // Unsubscribes from the old replay folder and starts listening on the new folder that was given
+  // TODO: In the future we might want to watch on a list of folders and not just the osu! folder
+  private onNewReplayFolder(folder: string) {
+    // For now, we just use .close()
+    // We could make it cleaner by using .unwatch() and adding new files to watch
+    if (this.watcher) {
+      void this.watcher.close();
+    }
+
+    const globPattern = folder;
+    console.log(`Watching for replays (.osr) in folder: ${this.replaysFolder} with pattern: ${globPattern}`);
+    this.watcher = chokidar.watch(globPattern, {
+      // ignoreInitial must be true otherwise addDir will be triggered for every folder initially.
+      ignoreInitial: true,
+      persistent: true,
+      depth: 0, // if somehow osu! is trolling, this will prevent it
     });
+    this.watcher.on("ready", () => {
+      console.log("");
+    });
+    this.watcher.on("add", (path) => {
+      if (!path.endsWith(".osr")) {
+        return;
+      }
+      console.log(`Detected new file at: ${path}`);
+      this.newReplays$.next(path);
+    });
+
   }
 
-  replayAddedHandler(replay: { filename: string }, beatmapMetaData: { md5Hash: string }) {
-    const { md5Hash } = beatmapMetaData;
-
-    console.log(`WebSocket: Replay added: ${replay.filename}, ${md5Hash}`);
-
-    const replayId = "exported:" + replay.filename;
-    this.newReplays$.next(replayId);
-  }
-
-  startWatching() {
-    // const socket = io(this.wsUrl, {});
-    // // https://github.com/socketio/socket.io/issues/474#issuecomment-289316361 Why though?
-    // socket.on("connect", () => {
-    //   console.log(`ReplayWatcher: Connected to WebSocket with id = ${socket.id}`);
-    // });
-    // socket.on("disconnect", () => {
-    //   console.log("ReplayWatcher: Disconnected from WebSocket");
-    // });
-    // // const listener = this.replayAddedHandler.bind(this);
-    // socket.on("replayAdded", this.replayAddedHandler.bind(this));
-  }
 }

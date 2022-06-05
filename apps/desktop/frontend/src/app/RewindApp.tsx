@@ -57,8 +57,8 @@ export function RewindApp() {
   const theater = useTheaterContext();
 
   useEffect(() => {
-    // yield call(analyzer.startWatching.bind(analyzer));
     void theater.common.initialize();
+    void theater.analyzer.initialize();
 
     ipcRenderer.on("onManualReplayOpen", (event, file) => {
       navigate("/app/analyzer");

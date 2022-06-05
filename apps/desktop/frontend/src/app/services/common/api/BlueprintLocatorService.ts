@@ -32,25 +32,37 @@ function mapToLocalBlueprint(
   };
 }
 
+// Basically just the identifier of the blueprint
+type BlueprintMD5 = string;
+
+/**
+ * Service responsible for locating the blueprints.
+ *
+ * It mainly uses the `osu!.db` to get the majority of the blueprints. However, once the user imports new beatmaps,
+ * the `osu!.db` doesn't get immediately updated (no flushing), thus we have to find out which ones were added by
+ * manually looking for new files.
+ */
 @injectable()
 export class BlueprintLocatorService {
-  blueprints: Record<string, BlueprintInfo> = {};
+  private blueprints: Record<BlueprintMD5, BlueprintInfo> = {};
 
-  constructor(private readonly osuDbDao: OsuDBDao, private readonly osuFolderService: OsuFolderService) {}
+  constructor(private readonly osuDbDao: OsuDBDao, private readonly osuFolderService: OsuFolderService) {
+  }
 
-  get songsFolder() {
+  private get songsFolder() {
     return this.osuFolderService.songsFolder$.getValue();
   }
 
-  async completeRead() {
+  private async completeRead() {
     const freshBlueprints = await this.osuDbDao.getAllBlueprints();
     const lastModifiedTime = await this.osuDbDao.getOsuDbLastModifiedTime();
 
-    console.log("Reading the osu!/Songs folder");
+    console.log(`Reading the osu!/Songs folder: ${this.songsFolder}`);
     const candidates = await getNewFolderCandidates(this.songsFolder, new Date(lastModifiedTime));
     if (candidates.length > 0) {
-      console.log(`Candidates: ${candidates.length} : ${candidates.join(",")}`);
+      console.log(`New blueprint candidates (${candidates.length}) : ${candidates.join(",")}`);
     }
+
     for (const songFolder of candidates) {
       const osuFiles = await listOsuFiles(join(this.songsFolder, songFolder));
       for (const osuFile of osuFiles) {
@@ -71,7 +83,7 @@ export class BlueprintLocatorService {
   }
 
   // Usually for watchers
-  addNewBlueprint(blueprint: BlueprintInfo) {
+  private addNewBlueprint(blueprint: BlueprintInfo) {
     this.blueprints[blueprint.md5Hash] = blueprint;
   }
 
@@ -99,8 +111,7 @@ export class BlueprintLocatorService {
     return maps[md5];
   }
 
-  // xd
-  async blueprintBg(md5: string): Promise<string | undefined> {
+  public async blueprintBg(md5: string): Promise<string | undefined> {
     const blueprintMetaData = await this.getBlueprintByMD5(md5);
     if (!blueprintMetaData) return undefined;
     const { osuFileName, folderName } = blueprintMetaData;
