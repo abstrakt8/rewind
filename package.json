@@ -59,7 +59,6 @@
     "electron-log": "^4.4.1",
     "electron-store": "^8.0.1",
     "electron-updater": "^4.6.1",
-    "eventemitter2": "^6.4.4",
     "history": "^5.2.0",
     "immer": "^9.0.6",
     "inversify": "^5.1.1",

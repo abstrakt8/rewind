@@ -9425,7 +9425,7 @@ event-stream@~0.9.8:
   dependencies:
     optimist "0.2"
 
-eventemitter2@6.4.5, eventemitter2@^6.4.3, eventemitter2@^6.4.4:
+eventemitter2@6.4.5, eventemitter2@^6.4.3:
   version "6.4.5"
   resolved "https://registry.yarnpkg.com/eventemitter2/-/eventemitter2-6.4.5.tgz#97380f758ae24ac15df8353e0cc27f8b95644655"
   integrity sha512-bXE7Dyc1i6oQElDG0jMRZJrRAn9QR2xyyFGmBdZleNmyQX0FqGYmhZIrIrpPfm/w//LTo4tVQGOGQcGCb5q9uw==

@@ -1,8 +1,5 @@
-import { EventEmitter, GameClockEvents } from "../../../utils/events";
-import { ListenerFn } from "eventemitter2";
-import { inject, injectable } from "inversify";
-import { BehaviorSubject } from "rxjs";
-import { STAGE_TYPES } from "../../types";
+import { injectable } from "inversify";
+import { BehaviorSubject, Subject } from "rxjs";
 
 const getNowInMs = () => performance.now();
 
@@ -12,17 +9,19 @@ export class GameplayClock {
   public durationInMs$: BehaviorSubject<number>;
   public speed$: BehaviorSubject<number>;
 
+  public seeked$: Subject<number>;
+
   // Things that get updated very often should not be Subjects due to performance issues
   public timeElapsedInMs = 0;
   private lastUpdateTimeInMs = 0;
 
   // private eventEmitter: EventEmitter;
 
-  constructor(@inject(STAGE_TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter) {
-    // this.eventEmitter = new EventEmitter();
+  constructor() {
     this.isPlaying$ = new BehaviorSubject<boolean>(false);
     this.durationInMs$ = new BehaviorSubject<number>(0);
     this.speed$ = new BehaviorSubject<number>(1);
+    this.seeked$ = new Subject<number>();
   }
 
   /**
@@ -86,45 +85,29 @@ export class GameplayClock {
     }
     this.isPlaying = true;
     this.lastUpdateTimeInMs = getNowInMs();
-    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_STARTED);
   }
 
   pause() {
     if (!this.isPlaying) return;
     this.updateTimeElapsed();
     this.isPlaying = false;
-    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_PAUSED);
   }
 
   setSpeed(speed: number) {
     this.updateTimeElapsed();
     this.speed = speed;
-    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_SPEED_CHANGED, speed);
   }
 
   setDuration(durationInMs: number) {
-    console.log(`GameClock duration has been set to ${durationInMs}ms`);
+    console.debug(`GameClock duration has been set to ${durationInMs}ms`);
     this.durationInMs = durationInMs;
-    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_DURATION_CHANGED, durationInMs);
   }
 
   seekTo(timeInMs: number) {
     timeInMs = Math.min(this.durationInMs, Math.max(0, timeInMs));
     this.timeElapsedInMs = timeInMs;
     this.lastUpdateTimeInMs = getNowInMs();
-    this.eventEmitter.emit(GameClockEvents.GAME_CLOCK_SEEK, timeInMs);
-  }
-
-  onStarted(fn: ListenerFn) {
-    this.eventEmitter.on(GameClockEvents.GAME_CLOCK_STARTED, fn);
-  }
-
-  onSpeedChange(fn: ListenerFn) {
-    this.eventEmitter.on(GameClockEvents.GAME_CLOCK_SPEED_CHANGED, fn);
-  }
-
-  onPaused(fn: ListenerFn) {
-    this.eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, fn);
+    this.seeked$.next(timeInMs);
   }
 
   clear() {

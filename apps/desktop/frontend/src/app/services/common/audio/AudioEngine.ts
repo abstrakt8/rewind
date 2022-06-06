@@ -1,7 +1,7 @@
 import { inject, injectable, postConstruct } from "inversify";
-import { EventEmitter, GameClockEvents } from "../../../utils/events";
 import { AudioSettings, AudioSettingsStore } from "./AudioSettingsStore";
 import { STAGE_TYPES } from "../../types";
+import { GameplayClock } from "../game/GameplayClock";
 
 // HTML5 Audio supports time stretching without pitch changing (otherwise sounds like night core)
 // Chromium's implementation of <audio> is the best.
@@ -27,7 +27,7 @@ export class AudioEngine {
   constructor(
     private readonly audioSettingService: AudioSettingsStore,
     @inject(STAGE_TYPES.AUDIO_CONTEXT) private readonly audioContext: AudioContext,
-    @inject(STAGE_TYPES.EVENT_EMITTER) private readonly eventEmitter: EventEmitter,
+    private readonly gameClock: GameplayClock,
   ) {
     this.masterGain = this.audioContext.createGain();
     this.musicGain = this.audioContext.createGain();
@@ -41,7 +41,8 @@ export class AudioEngine {
 
   @postConstruct()
   postConstruct() {
-    this.setupListeners(this.eventEmitter);
+    console.log("Initializing AudioEngine");
+    this.setupListeners();
   }
 
   // async loadSong(songUrl: string) {
@@ -58,11 +59,13 @@ export class AudioEngine {
     this.song.connect(this.musicGain);
   }
 
-  setupListeners(eventEmitter: EventEmitter) {
-    eventEmitter.on(GameClockEvents.GAME_CLOCK_SEEK, (timeInMs) => this.seekTo(timeInMs));
-    eventEmitter.on(GameClockEvents.GAME_CLOCK_PAUSED, () => this.pause());
-    eventEmitter.on(GameClockEvents.GAME_CLOCK_STARTED, () => this.start());
-    eventEmitter.on(GameClockEvents.GAME_CLOCK_SPEED_CHANGED, (speed) => this.changePlaybackRate(speed));
+  setupListeners() {
+    this.gameClock.seeked$.subscribe(this.seekTo.bind(this));
+    this.gameClock.isPlaying$.subscribe((isPlaying: boolean) => {
+      if (isPlaying) this.start();
+      else this.pause();
+    });
+    this.gameClock.speed$.subscribe(this.changePlaybackRate.bind(this));
 
     this.audioSettingService.settings$.subscribe((value) => this.handleAudioSettingsChanged(value));
   }
