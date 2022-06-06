@@ -37,7 +37,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-/resources/Skins/
 
 # Custom
 /logs/

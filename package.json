@@ -25,7 +25,6 @@
     "desktop:dev": "concurrently \"yarn run desktop-frontend:dev\" \"yarn run desktop-backend:dev\" \"yarn desktop:serve:dev\"",
     "desktop:serve": "electron dist/apps/desktop/index.js",
     "desktop:serve:dev": "nx run desktop-main:build && yarn run desktop:serve",
-    "downloadDefaultSkins": "node tools/downloadDefaultSkin.js",
     "e2e": "nx e2e",
     "electron:build": "electron-builder",
     "format": "nx format:write",
