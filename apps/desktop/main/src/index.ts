@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu, screen, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, screen, shell } from "electron";
 import { setupEventListeners } from "./app/events";
 import { RewindElectronSettings } from "./app/config";
 import { windows } from "./app/windows";
@@ -73,8 +73,13 @@ function createFrontendWindow(settings: RewindElectronSettings) {
     return { action: "deny" };
   });
   frontend.setMenu(createMenu(settings.osuPath));
+
   store.onDidChange(OSU_PATH_KEY, (value) => {
     frontend.setMenu(createMenu(value as string));
+  });
+
+  ipcMain.on("osuFolderChanged", (event, folder: string) => {
+    frontend.setMenu(createMenu(folder));
   });
 
   // In DEV mode we want to utilize hot reloading, therefore we are going to connect to the development server.
@@ -127,7 +132,6 @@ function handleActivate() {
     handleReady();
   }
 }
-
 
 (function main() {
   // Recommended way to use electron-log whenever we write console.log

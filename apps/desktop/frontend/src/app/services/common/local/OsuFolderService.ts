@@ -7,6 +7,7 @@ import { BehaviorSubject } from "rxjs";
 import { determineSongsFolder } from "@rewind/osu-local/utils";
 import username from "username";
 import { STAGE_TYPES } from "../../types";
+import { ipcRenderer } from "electron";
 
 const CONFIG = "OsuPath";
 
@@ -35,6 +36,7 @@ export class OsuFolderService {
   constructor(@inject(STAGE_TYPES.ELECTRON_STORE) private readonly store: ElectronStore) {
     this.osuFolder$ = new BehaviorSubject<string>("");
     this.osuFolder$.asObservable().subscribe(async (newSongsFolder) => {
+      ipcRenderer.send("osuFolderChanged", newSongsFolder);
       this.replaysFolder$.next(join(newSongsFolder, "Replays"));
       const userId = await username();
       this.songsFolder$.next((await determineSongsFolder(newSongsFolder, userId as string)) as string);
