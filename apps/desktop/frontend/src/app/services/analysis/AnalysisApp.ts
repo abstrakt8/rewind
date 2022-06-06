@@ -41,6 +41,8 @@ export class AnalysisApp {
     this.scenarioManager.initialize();
   }
 
+  close() {}
+
   onEnter(canvas: HTMLCanvasElement) {
     this.pixiRenderer.initializeRenderer(canvas);
     // this.gameLoop.startTicker();
@@ -51,7 +53,6 @@ export class AnalysisApp {
     this.pixiRenderer.destroy();
     // this.gameLoop.stopTicker();
   }
-
 
   /**
    * Loads the replay and the corresponding beatmap and makes the application ready to visualize the replay.

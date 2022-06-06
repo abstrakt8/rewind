@@ -2,7 +2,7 @@ import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Badge, Box, Button, IconButton, InputBase, Paper, Stack } from "@mui/material";
 import { RewindLogo } from "../../components/logo/RewindLogo";
-import { Help, Loop } from "@mui/icons-material";
+import { Help, RocketLaunch } from "@mui/icons-material";
 import FolderIcon from "@mui/icons-material/Folder";
 import { frontendAPI } from "../../api";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +35,13 @@ function DirectorySelection({ value, onChange, placeHolder, badgeOnEmpty }: Dire
   return (
     <Paper sx={{ px: 2, py: 1, display: "flex", alignItems: "center", width: 400 }} elevation={2}>
       {/*<span className={"text-gray-400 select-none w-96"}>{value ?? placeHolder}</span>*/}
-      <InputBase sx={{ flex: 1 }} placeholder={placeHolder} value={value} onChange={onInputChange} disabled={true} />
+      <InputBase
+        sx={{ flex: 1 }}
+        placeholder={placeHolder}
+        value={value ?? ""}
+        onChange={onInputChange}
+        disabled={true}
+      />
       <IconButton onClick={handleSelectFolderClick}>
         <Badge invisible={invisibleBadge} color={"primary"} variant={"dot"}>
           <FolderIcon />
@@ -73,6 +79,7 @@ export function SetupScreen() {
   const handleOnDirectoryChange = useCallback(
     (path: string | null) => {
       setDirectoryPath(path);
+      // TODO: Just directly validate since it's so fast
       setShowErrorMessage(false);
     },
     [setShowErrorMessage],
@@ -97,7 +104,7 @@ export function SetupScreen() {
           <RewindLogo />
           {showErrorMessage && (
             <>
-              <Alert severity="error">
+              <Alert severity="error" variant="filled">
                 <div>Does not look a valid osu! directory!</div>
               </Alert>
             </>
@@ -109,8 +116,13 @@ export function SetupScreen() {
             badgeOnEmpty={true}
           />
           <Stack direction={"row-reverse"} gap={2}>
-            <Button variant={"contained"} startIcon={<Loop />} disabled={!saveEnabled} onClick={handleConfirmClick}>
-              Save & Restart
+            <Button
+              variant={"contained"}
+              startIcon={<RocketLaunch />}
+              disabled={!saveEnabled}
+              onClick={handleConfirmClick}
+            >
+              Save & Continue
             </Button>
             <Button variant={"text"} onClick={() => window.open(setupWikiUrl)} startIcon={<Help />}>
               Help

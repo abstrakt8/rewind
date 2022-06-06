@@ -48,7 +48,9 @@ export class OsuFolderService {
   }
 
   setOsuFolder(path: string) {
+    console.log(`osu! folder was set to '${path}'`);
     this.store.set(CONFIG, path);
+    this.osuFolder$.next(path);
   }
 
   async isValidOsuFolder(directoryPath: string) {

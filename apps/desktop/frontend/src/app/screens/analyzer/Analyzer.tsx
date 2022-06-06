@@ -4,12 +4,21 @@ import { useShortcuts } from "../../hooks/shortcuts";
 import { GameCanvas } from "../../components/analyzer/GameCanvas";
 import { SettingsModal } from "../../components/analyzer/SettingsModal";
 import { SettingsModalProvider } from "../../providers/SettingsProvider";
+import { useEffect } from "react";
+import { environment } from "../../../environments/environment";
+import { useAnalysisApp } from "../../providers/TheaterProvider";
 
 export function Analyzer() {
-  // TODO: Initialize AnalysisApp here...
-
+  const analyzer = useAnalysisApp();
   // Shortcuts will then only be available when this page is <Analyzer/> is open
   useShortcuts();
+
+  useEffect(() => {
+    void analyzer.initialize();
+    if (environment.debugAnalyzer) {
+      void analyzer.loadReplay(environment.debugAnalyzer.replayPath);
+    }
+  }, [analyzer]);
 
   return (
     <SettingsModalProvider>

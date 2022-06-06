@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import backendReducer from "./backend/slice";
 import settingsReducer from "./settings/slice";
 import updaterReducer from "./update/slice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
+// TODO: Maybe remove and just use RXJS only
+
 const reducer = {
-  backend: backendReducer,
   settings: settingsReducer,
   updater: updaterReducer,
 };
