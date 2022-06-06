@@ -10,6 +10,7 @@ interface UpdateInfo {
 }
 
 export const frontendAPI = {
+  getPath: (type: string) => ipcRenderer.invoke("getPath", type),
   selectDirectory: (defaultPath: string) => ipcRenderer.invoke("selectDirectory", defaultPath),
   selectFile: (defaultPath: string) => ipcRenderer.invoke("selectFile", defaultPath),
   reboot: () => ipcRenderer.invoke("reboot"),

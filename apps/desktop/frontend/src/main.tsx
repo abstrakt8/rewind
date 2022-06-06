@@ -12,17 +12,18 @@ import { TheaterProvider } from "./app/providers/TheaterProvider";
 import { createRewindTheater } from "./app/services/common/CommonManagers";
 import { frontendAPI } from "./app/api";
 import log from "electron-log";
+import { join } from "path";
 
-(async function() {
-  // TODO: Initialize it within the <RewindApp/>?
-  // TODO: Set rewindSkinsFolder to the one given by the app
-
+(async function () {
   // Recommended way to use electron-log whenever we write console.log
   Object.assign(console, log.functions);
 
-  const [appVersion, appPlatform, rewindSkinsFolder] = await Promise.all([frontendAPI.getAppVersion(), frontendAPI.getPlatform(),
-    "",
+  const [appVersion, appPlatform, appResourcesPath] = await Promise.all([
+    frontendAPI.getAppVersion(),
+    frontendAPI.getPlatform(),
+    frontendAPI.getPath("appResources"),
   ]);
+  const rewindSkinsFolder = join(appResourcesPath, "Skins");
 
   console.log(`Booting Rewind application with ${JSON.stringify({ appVersion, appPlatform, rewindSkinsFolder })}`);
 
@@ -31,7 +32,6 @@ import log from "electron-log";
     appPlatform,
     rewindSkinsFolder,
   });
-
 
   ReactDOM.render(
     <StrictMode>
