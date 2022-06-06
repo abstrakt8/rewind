@@ -19,7 +19,6 @@
     "dep-graph": "nx dep-graph",
     "desktop-backend:dev": "nx run desktop-backend:serve",
     "desktop-frontend:dev": "nx run desktop-frontend:serve",
-    "desktop:build": "nx run-many --target=build --projects=desktop-frontend,desktop --parallel",
     "desktop:build-package:prod": "yarn run desktop:build:prod && yarn run electron:build",
     "desktop:build:dev": "nx run-many --target=build --projects=desktop-frontend,desktop-main --parallel",
     "desktop:build:prod": "nx run-many --skip-nx-cache --target=build --projects=desktop-frontend,desktop-main --prod",
@@ -53,12 +52,6 @@
     ]
   },
   "dependencies": {
-    "@nestjs/common": "^8.0.0",
-    "@nestjs/core": "^8.0.0",
-    "@nestjs/event-emitter": "^1.0.0",
-    "@nestjs/platform-express": "^8.0.0",
-    "@nestjs/platform-socket.io": "^8.0.6",
-    "@nestjs/websockets": "^8.0.6",
     "ajv": "^8.6.3",
     "chart.js": "^3.5.1",
     "chokidar": "^3.5.2",
@@ -71,7 +64,6 @@
     "history": "^5.2.0",
     "immer": "^9.0.6",
     "inversify": "^5.1.1",
-    "nest-winston": "^1.6.0",
     "node-osr": "^1.2.1",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "0.13.9",
@@ -79,15 +71,12 @@
     "rxjs-hooks": "^0.7.0",
     "semver": "^7.3.5",
     "simple-statistics": "^7.7.0",
-    "socket.io": "^4.2.0",
-    "socket.io-client": "^4.2.0",
     "stats.js": "^0.17.0",
     "tslib": "^2.0.0",
     "typescript-collections": "^1.3.3",
     "username": "5.1.0",
     "utility-types": "^3.10.0",
-    "walk": "^2.3.15",
-    "winston": "^3.3.3"
+    "walk": "^2.3.15"
   },
   "devDependencies": {
     "@babel/core": "7.15.4",
@@ -101,6 +90,12 @@
     "@mui/material": "^5.0.2",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
+    "@nestjs/common": "^8.0.0",
+    "@nestjs/core": "^8.0.0",
+    "@nestjs/event-emitter": "^1.0.0",
+    "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/platform-socket.io": "^8.0.6",
+    "@nestjs/websockets": "^8.0.6",
     "@nrwl/cli": "13.9.6",
     "@nrwl/cypress": "13.9.6",
     "@nrwl/eslint-plugin-nx": "13.9.6",
@@ -147,7 +142,7 @@
     "copy-webpack-plugin": "^10.2.4",
     "cypress": "^8.3.1",
     "dotenv": "^16.0.0",
-    "electron": "^15.3.0",
+    "electron": "^19.0.3",
     "electron-builder": "^22.14.5",
     "eslint": "8.7.0",
     "eslint-config-prettier": "8.3.0",
@@ -163,6 +158,7 @@
     "jest-match-object-close-to": "^1.0.2",
     "json-log-viewer": "^0.1.2",
     "lint-staged": "^11.1.2",
+    "nest-winston": "^1.6.0",
     "ojsama": "^2.2.0",
     "pixi.js": "^6.1.2",
     "prettier": "2.6.2",
@@ -175,6 +171,8 @@
     "react-router-dom": "^6.2.1",
     "react-spinners": "^0.11.0",
     "redux-saga": "^1.1.3",
+    "socket.io": "^4.2.0",
+    "socket.io-client": "^4.2.0",
     "storybook-css-modules-preset": "^1.1.1",
     "styled-components": "5.3.3",
     "superagent": "^6.1.0",
@@ -183,6 +181,7 @@
     "ts-node": "~10.2.1",
     "tsconfig-paths": "^3.12.0",
     "typescript": "~4.4.2",
-    "url-loader": "^4.1.1"
+    "url-loader": "^4.1.1",
+    "winston": "^3.3.3"
   }
 }
