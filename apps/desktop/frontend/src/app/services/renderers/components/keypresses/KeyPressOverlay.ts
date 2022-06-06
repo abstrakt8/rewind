@@ -382,11 +382,11 @@ export class KeyPressWithNoteSheetPreparer {
 
     this.replayManager.mainReplay$.subscribe((replay) => {
       if (replay === null) {
-        console.log("Key presses have been reset");
+        console.debug("Key presses have been reset");
         this.keyPressOverlay.onKeyPressesChange([[], []]);
       } else {
         const clicks = calculateReplayClicks(replay.frames);
-        console.log(`Calculated clicks: [${clicks[0].length}, ${clicks[1].length}]`);
+        console.debug(`KeyPressOverlay: Calculated clicks: [${clicks[0].length}, ${clicks[1].length}]`);
         this.keyPressOverlay.onKeyPressesChange(clicks);
       }
     });

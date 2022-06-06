@@ -58,7 +58,7 @@ export function createRewindAnalysisApp(commonContainer: Container) {
   // Plugins ?
   container.bind(ScreenshotTaker).toSelf();
   container.bind(ClipRecorder).toSelf();
-  container.bind(ReplayWatcher).toSelf(); // Listens to WebSocket
+  container.bind(ReplayWatcher).toSelf();
 
   // Assets
   container.bind(TextureManager).toSelf();

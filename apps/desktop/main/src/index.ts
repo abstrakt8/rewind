@@ -1,12 +1,12 @@
 import { app, BrowserWindow, dialog, Menu, screen, shell } from "electron";
 import { setupEventListeners } from "./app/events";
 import { RewindElectronSettings } from "./app/config";
-import { initializeAutoUpdater } from "./app/updater";
 import { windows } from "./app/windows";
 import { join } from "path";
 import { format } from "url";
 import { environment } from "./environments/environment";
 import * as Store from "electron-store";
+import log from "electron-log";
 
 const { ELECTRON_IS_DEV } = process.env;
 
@@ -128,9 +128,12 @@ function handleActivate() {
   }
 }
 
+
 (function main() {
-  // Make sure that it's only started once for now. In the future we might allow multiple instances to run at the
-  // same time.
+  // Recommended way to use electron-log whenever we write console.log
+  Object.assign(console, log.functions);
+
+  // Make sure that it's only started once
   const isLocked = app.requestSingleInstanceLock();
   if (!isLocked) app.quit();
 

@@ -46,8 +46,6 @@ export class GameSimulator {
     let i = 0;
     let sum = 0;
     const res: number[] = [];
-    console.log(d.objects);
-    console.log(map);
 
     // O(n + m)
     for (let t = 0; t < durationInMs; t += TIME_STEP) {
@@ -95,7 +93,6 @@ export class GameSimulator {
     // this.currentState = finalState...
     this.replayEvents$.next(retrieveEvents(this.lastState, beatmap.hitObjects));
     this.judgements = this.replayEvents$.getValue().filter(isHitObjectJudgement);
-    console.log("Judgements ", this.judgements.length);
 
     this.hits = [];
     if (!this.lastState) return;
