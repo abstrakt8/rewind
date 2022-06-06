@@ -2,10 +2,10 @@ import { IconButton, Link, Typography } from "@mui/material";
 import { FaDiscord } from "react-icons/fa";
 import React from "react";
 import { RewindLinks } from "../../utils/constants";
-import { useAppInfo } from "../../providers/AppInfoProvider";
+import { useCommonManagers } from "../../providers/TheaterProvider";
 
 export function PromotionFooter() {
-  const { appVersion } = useAppInfo();
+  const appVersion = useCommonManagers().appInfoService.version;
   return (
     <Typography fontSize={"caption.fontSize"} color={"text.secondary"}>
       Rewind {appVersion} by{" "}

@@ -4,7 +4,7 @@ import { setUpdateModalOpen } from "../../store/update/slice";
 import { Close } from "@mui/icons-material";
 import React from "react";
 import { frontendAPI } from "../../api";
-import { useAppInfo } from "../../providers/AppInfoProvider";
+import { useAppInfo } from "../../hooks/app-info";
 
 const units = ["bytes", "KB", "MB", "GB", "TB", "PB"];
 

@@ -1,29 +1,28 @@
 import { Container, injectable } from "inversify";
-import { ReplayService } from "../../services/common/local/ReplayService";
-import { SkinLoader } from "../../services/common/local/SkinLoader";
-import { AudioService } from "../../services/common/audio/AudioService";
-import { createRewindAnalysisApp } from "./createRewindAnalysisApp";
-import { AudioSettingsStore } from "../../services/common/audio/AudioSettingsStore";
-import { BeatmapBackgroundSettingsStore } from "../../services/common/beatmap-background";
-import { PlayfieldBorderSettingsStore } from "../../services/common/playfield-border";
-import { AnalysisCursorSettingsStore } from "../../services/analysis/analysis-cursor";
-import { ReplayCursorSettingsStore } from "../../services/common/replay-cursor";
-import { RewindLocalStorage } from "../../services/common/RewindLocalStorage";
-import { SkinHolder, SkinManager, SkinSettingsStore } from "../../services/common/skin";
-import { HitErrorBarSettingsStore } from "../../services/common/hit-error-bar";
-import { PlaybarSettingsStore } from "../../services/common/playbar";
-import { OsuFolderService } from "../../services/common/local/OsuFolderService";
-import { OsuDBDao } from "../../services/common/local/OsuDBDao";
-import { BlueprintLocatorService } from "../../services/common/local/BlueprintLocatorService";
+import { ReplayService } from "./local/ReplayService";
+import { SkinLoader } from "./local/SkinLoader";
+import { AudioService } from "./audio/AudioService";
+import { createRewindAnalysisApp } from "../analysis/createRewindAnalysisApp";
+import { AudioSettingsStore } from "./audio/AudioSettingsStore";
+import { BeatmapBackgroundSettingsStore } from "./beatmap-background";
+import { PlayfieldBorderSettingsStore } from "./playfield-border";
+import { AnalysisCursorSettingsStore } from "../analysis/analysis-cursor";
+import { ReplayCursorSettingsStore } from "./replay-cursor";
+import { RewindLocalStorage } from "./RewindLocalStorage";
+import { SkinHolder, SkinManager, SkinSettingsStore } from "./skin";
+import { HitErrorBarSettingsStore } from "./hit-error-bar";
+import { PlaybarSettingsStore } from "./playbar";
+import { OsuFolderService } from "./local/OsuFolderService";
+import { OsuDBDao } from "./local/OsuDBDao";
+import { BlueprintLocatorService } from "./local/BlueprintLocatorService";
 import ElectronStore from "electron-store";
-import { BeatmapRenderSettingsStore } from "../../services/common/beatmap-render";
-import { STAGE_TYPES } from "../../services/types";
+import { BeatmapRenderSettingsStore } from "./beatmap-render";
+import { STAGE_TYPES } from "../types";
+import { AppInfoService } from "./app-info";
 
 /**
- * Creates the Rewind app that serves multiple useful osu! tools.
- *
+ * Creates the services that support all the osu! tools such as the Analyzer.
  * Common settings are set here so that they can be shared with other tools.
- *
  * Example: Preferred skin can be set at only one place and is shared among all tools.
  */
 @injectable()
@@ -38,10 +37,11 @@ export class CommonManagers {
     public readonly analysisCursorSettingsStore: AnalysisCursorSettingsStore,
     public readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
     public readonly playbarSettingsStore: PlaybarSettingsStore,
+    public readonly appInfoService: AppInfoService,
     private readonly rewindLocalStorage: RewindLocalStorage,
-  ) {}
+  ) {
+  }
 
-  // This should only be called after there is a connection to the backend.
   async initialize() {
     this.rewindLocalStorage.initialize();
     await this.skinManager.loadPreferredSkin();
@@ -49,16 +49,19 @@ export class CommonManagers {
 }
 
 interface Settings {
-  // apiUrl: string;
   rewindSkinsFolder: string;
+  appVersion: string;
+  appPlatform: string;
 }
 
-export function createRewindTheater({ rewindSkinsFolder }: Settings) {
+export function createRewindTheater({ rewindSkinsFolder, appPlatform, appVersion }: Settings) {
   // Regarding `skipBaseClassChecks`: https://github.com/inversify/InversifyJS/issues/522#issuecomment-682246076
   const container = new Container({ defaultScope: "Singleton", skipBaseClassChecks: true });
   container.bind(STAGE_TYPES.ELECTRON_STORE).toConstantValue(new ElectronStore());
   container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
   container.bind(STAGE_TYPES.REWIND_SKINS_FOLDER).toConstantValue(rewindSkinsFolder);
+  container.bind(STAGE_TYPES.APP_PLATFORM).toConstantValue(appPlatform);
+  container.bind(STAGE_TYPES.APP_VERSION).toConstantValue(appVersion);
   container.bind(OsuFolderService).toSelf();
   container.bind(OsuDBDao).toSelf();
   container.bind(BlueprintLocatorService).toSelf();
@@ -67,6 +70,8 @@ export function createRewindTheater({ rewindSkinsFolder }: Settings) {
   container.bind(SkinHolder).toSelf();
   container.bind(AudioService).toSelf();
   container.bind(SkinManager).toSelf();
+  container.bind(AppInfoService).toSelf();
+
   // General settings stores
   container.bind(AudioSettingsStore).toSelf();
   container.bind(AnalysisCursorSettingsStore).toSelf();

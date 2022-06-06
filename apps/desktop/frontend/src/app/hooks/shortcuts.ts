@@ -19,6 +19,7 @@ const downKeys = ["s", "down"];
 const generateKeyComboSimple = (keys: string[]) => keys.join(", ");
 const generateKeyCombo = (modifier = "", keys: string[]) => keys.map((k) => `${modifier}+${k}`).join(", ");
 
+// TODO: Get platform from AppInfo, so that we can also support MacOS (currently they are hardcoded for Windows/Linux)
 export function useShortcuts() {
   const { toggleClock, seekBackward, seekForward, increaseSpeed, decreaseSpeed } = useGameClockControls();
   const { setHidden, hidden } = useModControls();

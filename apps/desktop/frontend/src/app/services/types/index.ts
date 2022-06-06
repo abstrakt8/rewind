@@ -3,4 +3,6 @@ export const STAGE_TYPES = {
   EVENT_EMITTER: Symbol.for("EVENT_EMITTER"),
   ELECTRON_STORE: Symbol.for("ELECTRON_STORE"),
   REWIND_SKINS_FOLDER: Symbol.for("REWIND_SKINS_FOLDER"),
+  APP_VERSION: Symbol.for("APP_VERSION"),
+  APP_PLATFORM: Symbol.for("APP_PLATFORM"),
 };

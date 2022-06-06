@@ -2,7 +2,7 @@ import React from "react";
 import { FaDiscord, FaTwitter, FaYoutube } from "react-icons/fa";
 import { IconButton, Link, Stack, Typography } from "@mui/material";
 import { FastRewind } from "@mui/icons-material";
-import { useAppInfo } from "../../providers/AppInfoProvider";
+import { useAppInfo } from "../../hooks/app-info";
 import { discordUrl, RewindLinks, twitterUrl, youtubeUrl } from "../../utils/constants";
 
 // This page is actually just a placeholder for an overview page that can show things such as "Recently Played", etc.
