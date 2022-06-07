@@ -24,7 +24,13 @@ export class OsuDBDao {
   private lastMtime = -1;
   private blueprints: BlueprintInfo[] = [];
 
-  constructor(private readonly osuFolderService: OsuFolderService) {}
+  constructor(private readonly osuFolderService: OsuFolderService) {
+    // We just assume that we need to read it again
+    this.osuFolderService.osuFolder$.subscribe(() => {
+      this.lastMtime = -1;
+      this.blueprints = [];
+    });
+  }
 
   private get osuDbPath() {
     return join(this.osuFolderService.osuFolder$.getValue(), "osu!.db");
@@ -52,6 +58,7 @@ export class OsuDBDao {
     if (lastModified === this.lastMtime) {
       return this.blueprints;
     }
+    console.log(`Reading the osu!.db with lastModifiedTime=${lastModified}`);
 
     this.lastMtime = lastModified;
     const reader = await this.createReader();

@@ -17,7 +17,7 @@ import { BlueprintLocatorService } from "../common/local/BlueprintLocatorService
 import { OsuFolderService } from "../common/local/OsuFolderService";
 import { BeatmapBackgroundSettingsStore } from "../common/beatmap-background";
 import { TextureManager } from "../textures/TextureManager";
-import { ReplayWatcher } from "../common/local/ReplayWatcher";
+import { ReplayFileWatcher } from "../common/local/ReplayFileWatcher";
 import { ModSettingsService } from "../analysis/mod-settings";
 
 interface Scenario {
@@ -47,7 +47,7 @@ export class ScenarioManager {
     private readonly beatmapManager: BeatmapManager,
     private readonly replayManager: ReplayManager,
     private readonly sceneManager: AnalysisSceneManager,
-    private readonly replayWatcher: ReplayWatcher,
+    private readonly replayWatcher: ReplayFileWatcher,
     private readonly audioEngine: AudioEngine,
   ) {
     this.scenario$ = new BehaviorSubject<Scenario>({ status: "INIT" });
@@ -73,6 +73,7 @@ export class ScenarioManager {
   }
 
   async loadReplay(replayId: string) {
+    console.log(`ScenarioManager loading replay with id = ${replayId}`);
     // TODO: Clean this up
     this.audioEngine.destroy();
 

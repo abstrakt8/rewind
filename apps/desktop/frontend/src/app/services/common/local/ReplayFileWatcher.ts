@@ -4,7 +4,7 @@ import * as chokidar from "chokidar";
 import { OsuFolderService } from "./OsuFolderService";
 
 @injectable()
-export class ReplayWatcher {
+export class ReplayFileWatcher {
   public readonly newReplays$: Subject<string>;
   private watcher?: chokidar.FSWatcher;
 
@@ -43,7 +43,5 @@ export class ReplayWatcher {
       console.log(`Detected new file at: ${path}`);
       this.newReplays$.next(path);
     });
-
   }
-
 }

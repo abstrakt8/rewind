@@ -7,7 +7,7 @@ import { PixiRendererManager } from "../renderers/PixiRendererManager";
 import { AnalysisSceneManager } from "../manager/AnalysisSceneManager";
 import { GameLoop } from "../common/game/GameLoop";
 import { ScenarioManager } from "../manager/ScenarioManager";
-import { ReplayWatcher } from "../common/local/ReplayWatcher";
+import { ReplayFileWatcher } from "../common/local/ReplayFileWatcher";
 import { OsuFolderService } from "../common/local/OsuFolderService";
 import { ClipRecorder } from "../manager/ClipRecorder";
 import { ModSettingsService } from "./mod-settings";
@@ -20,7 +20,7 @@ export class AnalysisApp {
     public readonly gameSimulator: GameSimulator,
     public readonly scenarioManager: ScenarioManager,
     public readonly modSettingsService: ModSettingsService,
-    public readonly replayWatcher: ReplayWatcher,
+    public readonly replayWatcher: ReplayFileWatcher,
     public readonly screenshotTaker: ScreenshotTaker,
     public readonly clipRecorder: ClipRecorder,
     public readonly osuFolderService: OsuFolderService,

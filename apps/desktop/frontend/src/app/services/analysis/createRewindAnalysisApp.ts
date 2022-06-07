@@ -25,7 +25,7 @@ import { CursorPreparer } from "../renderers/components/playfield/CursorPreparer
 import { JudgementPreparer } from "../renderers/components/playfield/JudgementPreparer";
 import { AudioEngine } from "../common/audio/AudioEngine";
 import { ScenarioManager } from "../manager/ScenarioManager";
-import { ReplayWatcher } from "../common/local/ReplayWatcher";
+import { ReplayFileWatcher } from "../common/local/ReplayFileWatcher";
 import { ClipRecorder } from "../manager/ClipRecorder";
 import { IdleScene } from "./scenes/IdleScene";
 import { KeyPressWithNoteSheetPreparer } from "../renderers/components/keypresses/KeyPressOverlay";
@@ -58,7 +58,7 @@ export function createRewindAnalysisApp(commonContainer: Container) {
   // Plugins ?
   container.bind(ScreenshotTaker).toSelf();
   container.bind(ClipRecorder).toSelf();
-  container.bind(ReplayWatcher).toSelf();
+  container.bind(ReplayFileWatcher).toSelf();
 
   // Assets
   container.bind(TextureManager).toSelf();
