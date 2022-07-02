@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { BehaviorSubject } from "rxjs";
 import { Texture } from "pixi.js";
-import { AbstractSettingsStore } from "./AbstractSettingsStore";
+import { PersistentService } from "../core/service";
 import { JSONSchemaType } from "ajv";
 
 export interface BeatmapBackgroundSettings {
@@ -30,17 +30,13 @@ export const BeatmapBackgroundSettingsSchema: JSONSchemaType<BeatmapBackgroundSe
 };
 
 @injectable()
-export class BeatmapBackgroundSettingsStore extends AbstractSettingsStore<BeatmapBackgroundSettings> {
-  texture$: BehaviorSubject<Texture>;
+export class BeatmapBackgroundSettingsStore extends PersistentService<BeatmapBackgroundSettings> {
+  defaultValue = DEFAULT_BEATMAP_BACKGROUND_SETTINGS;
+  key = "beatmap-background";
+  schema = BeatmapBackgroundSettingsSchema;
 
-  constructor() {
-    super(DEFAULT_BEATMAP_BACKGROUND_SETTINGS);
-    this.texture$ = new BehaviorSubject<Texture>(Texture.EMPTY);
-  }
-
-  get settings() {
-    return this.settings$.getValue();
-  }
+  // TODO: Move?
+  texture$ = new BehaviorSubject<Texture>(Texture.EMPTY);
 
   get texture() {
     return this.texture$.getValue();

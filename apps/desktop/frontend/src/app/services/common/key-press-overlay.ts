@@ -1,5 +1,3 @@
-import { AbstractSettingsStore } from "./AbstractSettingsStore";
-
 export interface KeyPressOverlaySettings {
   // The key presses that are relative to [-timeWindow+currentTime, currentTime+timeWindow] will be shown
   timeWindow: number;
@@ -8,4 +6,4 @@ export interface KeyPressOverlaySettings {
   futureOpacity: number;
 }
 
-export class KeyPressOverlaySettingsStore extends AbstractSettingsStore<KeyPressOverlaySettings> {}
+// export class KeyPressOverlaySettingsStore extends AbstractSettingsStore<KeyPressOverlaySettings> {}

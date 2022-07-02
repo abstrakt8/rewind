@@ -48,7 +48,7 @@ export class SkinLoader {
   // TODO: AppResourcesPath and get the included Rewind Skins
 
   async loadSkinList() {
-    return SkinFolderReader.listSkinsInFolder(join(this.osuFolderService.osuFolder$.getValue(), "Skins"), {
+    return SkinFolderReader.listSkinsInFolder(join(this.osuFolderService.getOsuFolder(), "Skins"), {
       skinIniRequired: false,
     });
   }

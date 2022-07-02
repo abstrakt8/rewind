@@ -1,4 +1,4 @@
-import { AbstractSettingsStore } from "./AbstractSettingsStore";
+import { PersistentService } from "../core/service";
 import { injectable } from "inversify";
 import { JSONSchemaType } from "ajv";
 
@@ -19,8 +19,8 @@ export const PlaybarSettingsSchema: JSONSchemaType<PlaybarSettings> = {
 };
 
 @injectable()
-export class PlaybarSettingsStore extends AbstractSettingsStore<PlaybarSettings> {
-  constructor() {
-    super(DEFAULT_PLAY_BAR_SETTINGS);
-  }
+export class PlaybarSettingsStore extends PersistentService<PlaybarSettings> {
+  defaultValue = DEFAULT_PLAY_BAR_SETTINGS;
+  key = "playbar";
+  schema = PlaybarSettingsSchema;
 }

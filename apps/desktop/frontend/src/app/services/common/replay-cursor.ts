@@ -1,6 +1,7 @@
-import { AbstractSettingsStore } from "./AbstractSettingsStore";
+import { PersistentService } from "../core/service";
 import { JSONSchemaType } from "ajv";
 import { CursorSettings } from "./cursor";
+import { injectable } from "inversify";
 
 export interface ReplayCursorSettings extends CursorSettings {
   showTrail: boolean;
@@ -26,8 +27,9 @@ export const ReplayCursorSettingsSchema: JSONSchemaType<ReplayCursorSettings> = 
   required: [],
 };
 
-export class ReplayCursorSettingsStore extends AbstractSettingsStore<ReplayCursorSettings> {
-  constructor() {
-    super(DEFAULT_REPLAY_CURSOR_SETTINGS);
-  }
+@injectable()
+export class ReplayCursorSettingsStore extends PersistentService<ReplayCursorSettings> {
+  defaultValue = DEFAULT_REPLAY_CURSOR_SETTINGS;
+  key = "replay-cursor";
+  schema = ReplayCursorSettingsSchema;
 }

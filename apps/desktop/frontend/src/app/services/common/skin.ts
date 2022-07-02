@@ -1,4 +1,4 @@
-import { AbstractSettingsStore } from "./AbstractSettingsStore";
+import { PersistentService } from "../core/service";
 import { injectable } from "inversify";
 import { JSONSchemaType } from "ajv";
 import { BehaviorSubject } from "rxjs";
@@ -23,14 +23,10 @@ export const SkinSettingsSchema: JSONSchemaType<SkinSettings> = {
 };
 
 @injectable()
-export class SkinSettingsStore extends AbstractSettingsStore<SkinSettings> {
-  constructor() {
-    super(DEFAULT_SKIN_SETTINGS);
-  }
-
-  get skinSettings() {
-    return this.settings$.getValue();
-  }
+export class SkinSettingsStore extends PersistentService<SkinSettings> {
+  key = "Skin";
+  schema = SkinSettingsSchema;
+  defaultValue = DEFAULT_SKIN_SETTINGS;
 
   setPreferredSkinId(preferredSkinId: string) {
     this.changeSettings((s) => (s.preferredSkinId = preferredSkinId));

@@ -1,13 +1,13 @@
-import { inject, injectable } from "inversify";
-import ElectronStore from "electron-store";
+import { injectable } from "inversify";
 import { access } from "fs/promises";
 import { join } from "path";
 import { constants } from "fs";
 import { BehaviorSubject } from "rxjs";
 import { determineSongsFolder } from "@rewind/osu-local/utils";
 import username from "username";
-import { STAGE_TYPES } from "../../types";
 import { ipcRenderer } from "electron";
+import { PersistentService } from "../../core/service";
+import { JSONSchemaType } from "ajv";
 
 const CONFIG = "OsuPath";
 
@@ -27,32 +27,48 @@ export async function osuFolderSanityCheck(osuFolderPath: string) {
   return true;
 }
 
+interface OsuSettings {
+  osuStablePath: string;
+}
+
+export const DEFAULT_OSU_SETTINGS: OsuSettings = Object.freeze({
+  osuStablePath: "",
+});
+export const OsuSettingsSchema: JSONSchemaType<OsuSettings> = {
+  type: "object",
+  properties: {
+    osuStablePath: { type: "string", default: DEFAULT_OSU_SETTINGS.osuStablePath },
+  },
+  required: [],
+};
+
 @injectable()
-export class OsuFolderService {
-  public readonly osuFolder$: BehaviorSubject<string>;
+export class OsuFolderService extends PersistentService<OsuSettings> {
   public replaysFolder$ = new BehaviorSubject<string>("");
   public songsFolder$ = new BehaviorSubject<string>("");
 
-  constructor(@inject(STAGE_TYPES.ELECTRON_STORE) private readonly store: ElectronStore) {
-    this.osuFolder$ = new BehaviorSubject<string>("");
-    this.osuFolder$.asObservable().subscribe(async (newSongsFolder) => {
-      ipcRenderer.send("osuFolderChanged", newSongsFolder);
-      this.replaysFolder$.next(join(newSongsFolder, "Replays"));
+  defaultValue = DEFAULT_OSU_SETTINGS;
+  key = "osu-settings";
+  schema = OsuSettingsSchema;
+
+  constructor() {
+    super();
+    this.settings$.subscribe(async ({ osuStablePath }: OsuSettings) => {
+      console.log("Osu Folder Changed: Subscription");
+      ipcRenderer.send("osuFolderChanged", osuStablePath);
+      this.replaysFolder$.next(join(osuStablePath, "Replays"));
       const userId = await username();
-      this.songsFolder$.next((await determineSongsFolder(newSongsFolder, userId as string)) as string);
+      this.songsFolder$.next((await determineSongsFolder(osuStablePath, userId as string)) as string);
     });
-    const osuFolderInitially = this.getOsuFolder();
-    if (osuFolderInitially) this.osuFolder$.next(osuFolderInitially);
   }
 
   getOsuFolder(): string {
-    return this.store.get(CONFIG, "") as string;
+    return this.settings.osuStablePath;
   }
 
   setOsuFolder(path: string) {
     console.log(`osu! folder was set to '${path}'`);
-    this.store.set(CONFIG, path);
-    this.osuFolder$.next(path);
+    this.changeSettings((draft) => (draft.osuStablePath = path));
   }
 
   async isValidOsuFolder(directoryPath: string) {

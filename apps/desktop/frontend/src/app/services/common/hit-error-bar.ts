@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { AbstractSettingsStore } from "./AbstractSettingsStore";
+import { PersistentService } from "../core/service";
 import { JSONSchemaType } from "ajv";
 
 export interface HitErrorBarSettings {
@@ -22,8 +22,8 @@ export const HitErrorBarSettingsSchema: JSONSchemaType<HitErrorBarSettings> = {
 };
 
 @injectable()
-export class HitErrorBarSettingsStore extends AbstractSettingsStore<HitErrorBarSettings> {
-  constructor() {
-    super(DEFAULT_HIT_ERROR_BAR_SETTINGS);
-  }
+export class HitErrorBarSettingsStore extends PersistentService<HitErrorBarSettings> {
+  key = "hit-error";
+  schema = HitErrorBarSettingsSchema;
+  defaultValue = DEFAULT_HIT_ERROR_BAR_SETTINGS;
 }

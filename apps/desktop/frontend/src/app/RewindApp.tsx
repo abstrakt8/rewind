@@ -35,7 +35,6 @@ export function RewindApp() {
 
   useEffect(() => {
     void theater.common.initialize();
-    void theater.analyzer.initialize();
 
     // For now, we will just navigate to the analyzer app since we only have one tool
     ipcRenderer.on("onManualReplayOpen", (event, file) => {

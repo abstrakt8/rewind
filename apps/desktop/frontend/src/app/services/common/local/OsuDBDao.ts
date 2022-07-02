@@ -26,14 +26,14 @@ export class OsuDBDao {
 
   constructor(private readonly osuFolderService: OsuFolderService) {
     // We just assume that we need to read it again
-    this.osuFolderService.osuFolder$.subscribe(() => {
+    this.osuFolderService.settings$.subscribe(() => {
       this.lastMtime = -1;
       this.blueprints = [];
     });
   }
 
   private get osuDbPath() {
-    return join(this.osuFolderService.osuFolder$.getValue(), "osu!.db");
+    return join(this.osuFolderService.getOsuFolder(), "osu!.db");
   }
 
   private async createReader() {

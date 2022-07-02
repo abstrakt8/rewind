@@ -1,4 +1,4 @@
-import { AbstractSettingsStore } from "../common/AbstractSettingsStore";
+import { PersistentService } from "../core/service";
 import { injectable } from "inversify";
 import { JSONSchemaType } from "ajv";
 import { CursorSettings } from "../common/cursor";
@@ -35,10 +35,10 @@ export const AnalysisCursorSettingsSchema: JSONSchemaType<AnalysisCursorSettings
 };
 
 @injectable()
-export class AnalysisCursorSettingsStore extends AbstractSettingsStore<AnalysisCursorSettings> {
-  constructor() {
-    super(DEFAULT_ANALYSIS_CURSOR_SETTINGS);
-  }
+export class AnalysisCursorSettingsStore extends PersistentService<AnalysisCursorSettings> {
+  key = "analysis-cursor";
+  schema: JSONSchemaType<AnalysisCursorSettings> = AnalysisCursorSettingsSchema;
+  defaultValue: AnalysisCursorSettings = DEFAULT_ANALYSIS_CURSOR_SETTINGS;
 
   setEnabled(enabled: boolean) {
     this.changeSettings((s) => (s.enabled = enabled));

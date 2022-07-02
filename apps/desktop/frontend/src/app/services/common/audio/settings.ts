@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { AbstractSettingsStore } from "../AbstractSettingsStore";
+import { PersistentService } from "../../core/service";
 import { JSONSchemaType } from "ajv";
 
 export interface AudioSettings {
@@ -38,10 +38,10 @@ export const AudioSettingsSchema: JSONSchemaType<AudioSettings> = {
 };
 
 @injectable()
-export class AudioSettingsStore extends AbstractSettingsStore<AudioSettings> {
-  constructor() {
-    super(DEFAULT_AUDIO_SETTINGS);
-  }
+export class AudioSettingsStore extends PersistentService<AudioSettings> {
+  defaultValue = DEFAULT_AUDIO_SETTINGS;
+  key = "audio-settings";
+  schema = AudioSettingsSchema;
 
   toggleMuted() {
     this.changeSettings((d) => (d.muted = !d.muted));

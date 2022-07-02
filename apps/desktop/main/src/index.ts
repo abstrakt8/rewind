@@ -1,11 +1,9 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, screen, shell } from "electron";
 import { setupEventListeners } from "./app/events";
-import { RewindElectronSettings } from "./app/config";
 import { windows } from "./app/windows";
 import { join } from "path";
 import { format } from "url";
 import { environment } from "./environments/environment";
-import * as Store from "electron-store";
 import log from "electron-log";
 
 const { ELECTRON_IS_DEV } = process.env;
@@ -31,11 +29,7 @@ const rendererAppDevPort = 4200;
  */
 const desktopFrontendFile = (fileName: string) => join(__dirname, "frontend", fileName);
 
-const store = new Store();
-
-const OSU_PATH_KEY = "OsuPath";
-
-function createFrontendWindow(settings: RewindElectronSettings) {
+function createFrontendWindow() {
   const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
   const width = Math.min(DEFAULT_WIDTH, workAreaSize.width || DEFAULT_WIDTH);
   const height = Math.min(DEFAULT_HEIGHT, workAreaSize.height || DEFAULT_HEIGHT);
@@ -72,11 +66,6 @@ function createFrontendWindow(settings: RewindElectronSettings) {
     void shell.openExternal(details.url);
     return { action: "deny" };
   });
-  frontend.setMenu(createMenu(settings.osuPath));
-
-  store.onDidChange(OSU_PATH_KEY, (value) => {
-    frontend.setMenu(createMenu(value as string));
-  });
 
   ipcMain.on("osuFolderChanged", (event, folder: string) => {
     frontend.setMenu(createMenu(folder));
@@ -107,22 +96,17 @@ function handleAllWindowClosed() {
 }
 
 function handleReady() {
-  const settings: RewindElectronSettings = {
-    osuPath: store.get(OSU_PATH_KEY) as string,
-  };
-
   const isDev = isDevelopmentMode();
 
   console.log(
     "Booting Electron application with settings: ",
     JSON.stringify({
-      settings,
       isDev,
       appDataPath: app.getPath("appData"),
     }),
   );
 
-  createFrontendWindow(settings);
+  createFrontendWindow();
 }
 
 function handleActivate() {

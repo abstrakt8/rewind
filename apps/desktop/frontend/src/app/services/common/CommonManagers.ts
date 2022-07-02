@@ -3,19 +3,17 @@ import { ReplayService } from "./local/ReplayService";
 import { SkinLoader } from "./local/SkinLoader";
 import { AudioService } from "./audio/AudioService";
 import { createRewindAnalysisApp } from "../analysis/createRewindAnalysisApp";
-import { AudioSettingsStore } from "./audio/AudioSettingsStore";
+import { AudioSettingsStore } from "./audio/settings";
 import { BeatmapBackgroundSettingsStore } from "./beatmap-background";
 import { PlayfieldBorderSettingsStore } from "./playfield-border";
 import { AnalysisCursorSettingsStore } from "../analysis/analysis-cursor";
 import { ReplayCursorSettingsStore } from "./replay-cursor";
-import { RewindLocalStorage } from "./RewindLocalStorage";
 import { SkinHolder, SkinManager, SkinSettingsStore } from "./skin";
 import { HitErrorBarSettingsStore } from "./hit-error-bar";
 import { PlaybarSettingsStore } from "./playbar";
 import { OsuFolderService } from "./local/OsuFolderService";
 import { OsuDBDao } from "./local/OsuDBDao";
 import { BlueprintLocatorService } from "./local/BlueprintLocatorService";
-import ElectronStore from "electron-store";
 import { BeatmapRenderSettingsStore } from "./beatmap-render";
 import { STAGE_TYPES } from "../types";
 import { AppInfoService } from "./app-info";
@@ -38,12 +36,9 @@ export class CommonManagers {
     public readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
     public readonly playbarSettingsStore: PlaybarSettingsStore,
     public readonly appInfoService: AppInfoService,
-    private readonly rewindLocalStorage: RewindLocalStorage,
-  ) {
-  }
+  ) {}
 
   async initialize() {
-    this.rewindLocalStorage.initialize();
     await this.skinManager.loadPreferredSkin();
   }
 }
@@ -56,8 +51,7 @@ interface Settings {
 
 export function createRewindTheater({ rewindSkinsFolder, appPlatform, appVersion }: Settings) {
   // Regarding `skipBaseClassChecks`: https://github.com/inversify/InversifyJS/issues/522#issuecomment-682246076
-  const container = new Container({ defaultScope: "Singleton", skipBaseClassChecks: true });
-  container.bind(STAGE_TYPES.ELECTRON_STORE).toConstantValue(new ElectronStore());
+  const container = new Container({ defaultScope: "Singleton" });
   container.bind(STAGE_TYPES.AUDIO_CONTEXT).toConstantValue(new AudioContext());
   container.bind(STAGE_TYPES.REWIND_SKINS_FOLDER).toConstantValue(rewindSkinsFolder);
   container.bind(STAGE_TYPES.APP_PLATFORM).toConstantValue(appPlatform);
@@ -82,8 +76,6 @@ export function createRewindTheater({ rewindSkinsFolder, appPlatform, appVersion
   container.bind(ReplayCursorSettingsStore).toSelf();
   container.bind(SkinSettingsStore).toSelf();
   container.bind(PlaybarSettingsStore).toSelf();
-
-  container.bind(RewindLocalStorage).toSelf();
 
   // Theater facade
   container.bind(CommonManagers).toSelf();

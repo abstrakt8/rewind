@@ -1,5 +1,5 @@
 import { inject, injectable, postConstruct } from "inversify";
-import { AudioSettings, AudioSettingsStore } from "./AudioSettingsStore";
+import { AudioSettings, AudioSettingsStore } from "./settings";
 import { STAGE_TYPES } from "../../types";
 import { GameplayClock } from "../game/GameplayClock";
 
