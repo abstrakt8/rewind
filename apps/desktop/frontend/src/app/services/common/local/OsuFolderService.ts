@@ -9,8 +9,6 @@ import { ipcRenderer } from "electron";
 import { PersistentService } from "../../core/service";
 import { JSONSchemaType } from "ajv";
 
-const CONFIG = "OsuPath";
-
 const filesToCheck = ["osu!.db", "scores.db", "Skins"];
 
 /**
@@ -53,13 +51,14 @@ export class OsuFolderService extends PersistentService<OsuSettings> {
 
   constructor() {
     super();
-    this.settings$.subscribe(async ({ osuStablePath }: OsuSettings) => {
-      console.log("Osu Folder Changed: Subscription");
-      ipcRenderer.send("osuFolderChanged", osuStablePath);
-      this.replaysFolder$.next(join(osuStablePath, "Replays"));
-      const userId = await username();
-      this.songsFolder$.next((await determineSongsFolder(osuStablePath, userId as string)) as string);
-    });
+    this.settings$.subscribe(this.onFolderChange.bind(this));
+  }
+
+  async onFolderChange({ osuStablePath }: OsuSettings) {
+    ipcRenderer.send("osuFolderChanged", osuStablePath);
+    this.replaysFolder$.next(join(osuStablePath, "Replays"));
+    const userId = await username();
+    this.songsFolder$.next((await determineSongsFolder(osuStablePath, userId as string)) as string);
   }
 
   getOsuFolder(): string {
