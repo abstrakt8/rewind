@@ -14,7 +14,7 @@ import { PlaybarSettingsStore } from "./playbar";
 import { OsuFolderService } from "./local/OsuFolderService";
 import { OsuDBDao } from "./local/OsuDBDao";
 import { BlueprintLocatorService } from "./local/BlueprintLocatorService";
-import { BeatmapRenderSettingsStore } from "./beatmap-render";
+import { BeatmapRenderService } from "./beatmap-render";
 import { STAGE_TYPES } from "../types";
 import { AppInfoService } from "./app-info";
 
@@ -30,7 +30,7 @@ export class CommonManagers {
     public readonly skinSettingsStore: SkinSettingsStore,
     public readonly audioSettingsService: AudioSettingsStore,
     public readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
-    public readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
+    public readonly beatmapRenderSettingsStore: BeatmapRenderService,
     public readonly hitErrorBarSettingsStore: HitErrorBarSettingsStore,
     public readonly analysisCursorSettingsStore: AnalysisCursorSettingsStore,
     public readonly replayCursorSettingsStore: ReplayCursorSettingsStore,
@@ -70,7 +70,7 @@ export function createRewindTheater({ rewindSkinsFolder, appPlatform, appVersion
   container.bind(AudioSettingsStore).toSelf();
   container.bind(AnalysisCursorSettingsStore).toSelf();
   container.bind(BeatmapBackgroundSettingsStore).toSelf();
-  container.bind(BeatmapRenderSettingsStore).toSelf();
+  container.bind(BeatmapRenderService).toSelf();
   container.bind(HitErrorBarSettingsStore).toSelf();
   container.bind(PlayfieldBorderSettingsStore).toSelf();
   container.bind(ReplayCursorSettingsStore).toSelf();

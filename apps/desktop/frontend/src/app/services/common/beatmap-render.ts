@@ -1,9 +1,10 @@
 import { JSONSchemaType } from "ajv";
 import { injectable } from "inversify";
-import { BehaviorSubject } from "rxjs";
+import { PersistentService } from "../core/service";
 
 export interface BeatmapRenderSettings {
   sliderDevMode: boolean;
+  // By default, osu! will ALWAYS draw slider ends, but most skins have an invisible slider end texture.
   drawSliderEnds: boolean;
 }
 
@@ -11,6 +12,7 @@ export const DEFAULT_BEATMAP_RENDER_SETTINGS: BeatmapRenderSettings = Object.fre
   sliderDevMode: false,
   drawSliderEnds: false,
 });
+
 export const BeatmapRenderSettingsSchema: JSONSchemaType<BeatmapRenderSettings> = {
   type: "object",
   properties: {
@@ -21,26 +23,16 @@ export const BeatmapRenderSettingsSchema: JSONSchemaType<BeatmapRenderSettings> 
 };
 
 @injectable()
-export class BeatmapRenderSettingsStore {
-  settings$: BehaviorSubject<BeatmapRenderSettings>;
-
-  constructor() {
-    this.settings$ = new BehaviorSubject<BeatmapRenderSettings>(DEFAULT_BEATMAP_RENDER_SETTINGS);
-  }
-
-  get settings() {
-    return this.settings$.getValue();
-  }
-
-  set settings(s: BeatmapRenderSettings) {
-    this.settings$.next(s);
-  }
+export class BeatmapRenderService extends PersistentService<BeatmapRenderSettings> {
+  key = "beatmap-render";
+  defaultValue = DEFAULT_BEATMAP_RENDER_SETTINGS;
+  schema = BeatmapRenderSettingsSchema;
 
   setSliderDevMode(sliderDevMode: boolean) {
-    this.settings = { ...this.settings, sliderDevMode };
+    this.changeSettings((draft) => (draft.sliderDevMode = sliderDevMode));
   }
 
   setDrawSliderEnds(drawSliderEnds: boolean) {
-    this.settings = { ...this.settings, drawSliderEnds };
+    this.changeSettings((draft) => (draft.drawSliderEnds = drawSliderEnds));
   }
 }

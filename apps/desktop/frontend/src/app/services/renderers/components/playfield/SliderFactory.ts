@@ -14,7 +14,7 @@ import { injectable } from "inversify";
 import { TemporaryObjectPool } from "../../../../utils/pooling/TemporaryObjectPool";
 import { SliderTextureManager } from "../sliders/SliderTextureManager";
 import { GameSimulator } from "../../../common/game/GameSimulator";
-import { BeatmapRenderSettingsStore } from "../../../common/beatmap-render";
+import { BeatmapRenderService } from "../../../common/beatmap-render";
 import { ModSettingsService } from "../../../analysis/mod-settings";
 import { SkinHolder } from "../../../common/skin";
 
@@ -31,7 +31,7 @@ export class SliderFactory {
     private readonly gameClock: GameplayClock,
     private readonly gameSimulator: GameSimulator,
     private readonly modSettingsService: ModSettingsService,
-    private readonly beatmapRenderSettingsStore: BeatmapRenderSettingsStore,
+    private readonly beatmapRenderSettingsStore: BeatmapRenderService,
     private readonly stageSkinService: SkinHolder,
     private readonly sliderTextureService: SliderTextureManager,
   ) {
