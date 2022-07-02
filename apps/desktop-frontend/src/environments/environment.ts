@@ -1,9 +1,0 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// When building for production, this file is replaced with `environment.prod.ts`.
-
-export const environment = {
-  production: false,
-  url: "http://localhost:7271",
-  platform: "Win32",
-  appVersion: "DEV",
-};
