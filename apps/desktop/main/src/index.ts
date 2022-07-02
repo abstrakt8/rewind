@@ -128,8 +128,14 @@ function handleActivate() {
   // Required for `electron.Notification` to work
   app.setAppUserModelId("sh.abstrakt.rewind");
 
+  // https://peter.sh/experiments/chromium-command-line-switches/
   // So that the audio can't be stopped with media keys
   app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling");
+
+  // Even though some GPUs might be "crashy" (see
+  // https://chromium.googlesource.com/chromium/src/gpu/+/master/config/software_rendering_list.json), we still want to
+  // use it instead of rendering a power-point presentation.
+  app.commandLine.appendSwitch("ignore-gpu-blocklist");
 
   // TODO: Enable this once it's implemented properly
   // initializeAutoUpdater();
