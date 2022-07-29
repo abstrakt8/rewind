@@ -16,7 +16,7 @@ export class ScreenshotTaker {
       (blob) => {
         const a = document.createElement("a");
         a.download = `Rewind Screenshot ${new Date().toISOString()}.jpg`;
-        a.href = URL.createObjectURL(blob);
+        a.href = URL.createObjectURL(blob!);
         a.click();
         a.remove();
       },

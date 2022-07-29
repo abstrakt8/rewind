@@ -1,6 +1,6 @@
 # osu-pp
 
-Calculates the difficulty values / pp.
+Calculates the difficulty values / pp for the osu! std game mode.
 
 Versioning
 

@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import { Provider } from "react-redux";
 import { store } from "./app/store";
@@ -14,7 +14,7 @@ import { frontendAPI } from "./app/api";
 import log from "electron-log";
 import { join } from "path";
 
-(async function () {
+(async function() {
   // Recommended way to use electron-log whenever we write console.log
   Object.assign(console, log.functions);
 
@@ -33,7 +33,9 @@ import { join } from "path";
     rewindSkinsFolder,
   });
 
-  ReactDOM.render(
+  const container = document.getElementById("root") as HTMLElement;
+  const root = createRoot(container);
+  root.render(
     <StrictMode>
       <Provider store={store}>
         {/* Using `HashRouter` due to Electron https://github.com/remix-run/history/blob/dev/docs/api-reference.md#createhashhistory */}
@@ -47,6 +49,5 @@ import { join } from "path";
         </HashRouter>
       </Provider>
     </StrictMode>,
-    document.getElementById("root"),
   );
 })();

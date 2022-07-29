@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: "osu-math",
+/* eslint-disable */
+export default {
+  displayName: "osu-pixi-rewind",
   preset: "../../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -10,5 +11,5 @@ module.exports = {
     "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../../coverage/libs/osu/math",
+  coverageDirectory: "../../../coverage/libs/osu-pixi/rewind",
 };

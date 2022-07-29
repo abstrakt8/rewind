@@ -14,7 +14,8 @@
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/*.spec.tsx",
-    "**/*.test.tsx"
+    "**/*.test.tsx",
+    "jest.config.ts"
   ],
   "include": [
     "**/*.js",

@@ -8,6 +8,7 @@
   "include": [
     "**/*.spec.ts",
     "**/*.test.ts",
-    "**/*.d.ts"
+    "**/*.d.ts",
+    "jest.config.ts"
   ]
 }

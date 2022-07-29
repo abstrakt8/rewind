@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: "integration-tests-game-simulation",
   preset: "../../jest.preset.js",
   globals: {

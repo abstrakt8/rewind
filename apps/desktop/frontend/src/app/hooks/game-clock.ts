@@ -28,8 +28,8 @@ export function useGameClockControls() {
   const increaseSpeed = useCallback(() => clock.setSpeed(nextSpeed(clock.speed)), [clock]);
   const decreaseSpeed = useCallback(() => clock.setSpeed(prevSpeed(clock.speed)), [clock]);
 
-  const seekForward = useCallback((timeInMs) => clock.seekTo(clock.timeElapsedInMs + timeInMs), [clock]);
-  const seekBackward = useCallback((timeInMs) => clock.seekTo(clock.timeElapsedInMs - timeInMs), [clock]);
+  const seekForward = useCallback((timeInMs: number) => clock.seekTo(clock.timeElapsedInMs + timeInMs), [clock]);
+  const seekBackward = useCallback((timeInMs: number) => clock.seekTo(clock.timeElapsedInMs - timeInMs), [clock]);
 
   return {
     isPlaying,

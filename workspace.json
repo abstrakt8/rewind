@@ -43,8 +43,15 @@
                   "maximumError": "10mb"
                 }
               ]
+            },
+            "development": {
+              "extractLicenses": false,
+              "optimization": false,
+              "sourceMap": true,
+              "vendorChunk": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "executor": "@nrwl/web:dev-server",
@@ -57,8 +64,12 @@
             "production": {
               "buildTarget": "desktop-frontend:build:production",
               "hmr": false
+            },
+            "development": {
+              "buildTarget": "desktop-frontend:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
@@ -71,7 +82,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/desktop/frontend"],
           "options": {
-            "jestConfig": "apps/desktop/frontend/jest.config.js",
+            "jestConfig": "apps/desktop/frontend/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -124,7 +135,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/desktop-main"],
           "options": {
-            "jestConfig": "apps/desktop/main/jest.config.js",
+            "jestConfig": "apps/desktop/main/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -147,19 +158,23 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu/core"],
           "options": {
-            "jestConfig": "libs/osu/core/jest.config.js",
+            "jestConfig": "libs/osu/core/jest.config.ts",
             "passWithNoTests": true
           }
         },
         "build": {
-          "executor": "@nrwl/node:webpack",
-          "outputs": ["{options.outputPath}"],
+          "executor": "@nrwl/js:tsc",
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
             "outputPath": "dist/libs/osu/core",
             "tsConfig": "libs/osu/core/tsconfig.lib.json",
             "packageJson": "libs/osu/core/package.json",
             "main": "libs/osu/core/src/index.ts",
-            "assets": []
+            "assets": [
+              "libs/osu/core/*.md"
+            ]
           }
         }
       },
@@ -181,7 +196,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu-local/db-reader"],
           "options": {
-            "jestConfig": "libs/osu-local/db-reader/jest.config.js",
+            "jestConfig": "libs/osu-local/db-reader/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -204,7 +219,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu-local/gosumemory"],
           "options": {
-            "jestConfig": "libs/osu-local/gosumemory/jest.config.js",
+            "jestConfig": "libs/osu-local/gosumemory/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -227,7 +242,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu-local/osr-reader"],
           "options": {
-            "jestConfig": "libs/osu-local/osr-reader/jest.config.js",
+            "jestConfig": "libs/osu-local/osr-reader/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -250,7 +265,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu-local/skin-reader"],
           "options": {
-            "jestConfig": "libs/osu-local/skin-reader/jest.config.js",
+            "jestConfig": "libs/osu-local/skin-reader/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -273,7 +288,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu-local/utils"],
           "options": {
-            "jestConfig": "libs/osu-local/utils/jest.config.js",
+            "jestConfig": "libs/osu-local/utils/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -296,13 +311,15 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu/math"],
           "options": {
-            "jestConfig": "libs/osu/math/jest.config.js",
+            "jestConfig": "libs/osu/math/jest.config.ts",
             "passWithNoTests": true
           }
         },
         "build": {
-          "executor": "@nrwl/node:webpack",
-          "outputs": ["{options.outputPath}"],
+          "executor": "@nrwl/js:tsc",
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
             "outputPath": "dist/libs/osu/math",
             "tsConfig": "libs/osu/math/tsconfig.lib.json",
@@ -330,7 +347,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu-pixi/classic-components"],
           "options": {
-            "jestConfig": "libs/osu-pixi/classic-components/jest.config.js",
+            "jestConfig": "libs/osu-pixi/classic-components/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -353,7 +370,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu-pixi/rewind"],
           "options": {
-            "jestConfig": "libs/osu-pixi/rewind/jest.config.js",
+            "jestConfig": "libs/osu-pixi/rewind/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -376,18 +393,37 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu/pp"],
           "options": {
-            "jestConfig": "libs/osu/pp/jest.config.js",
+            "jestConfig": "libs/osu/pp/jest.config.ts",
             "passWithNoTests": true
           }
         },
         "build": {
-          "executor": "@nrwl/node:webpack",
-          "outputs": ["{options.outputPath}"],
+          "executor": "@nrwl/js:tsc",
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
             "outputPath": "dist/libs/osu/pp",
             "tsConfig": "libs/osu/pp/tsconfig.lib.json",
             "packageJson": "libs/osu/pp/package.json",
             "main": "libs/osu/pp/src/index.ts",
+            "assets": []
+          }
+        },
+        "build-web": {
+          "executor": "@nrwl/web:rollup",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "project": "libs/osu/pp/package.json",
+            "entryFile": "libs/osu/pp/src/index.ts",
+            "outputPath": "dist/libs/osu/pp/dist",
+            "deleteOutputPath": true,
+            "format": [
+              "esm"
+            ],
+            "tsConfig": "libs/osu/pp/tsconfig.lib.json",
             "assets": []
           }
         }
@@ -410,7 +446,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/osu/skin"],
           "options": {
-            "jestConfig": "libs/osu/skin/jest.config.js",
+            "jestConfig": "libs/osu/skin/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -462,7 +498,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/tests/osu-stable-test-generator"],
           "options": {
-            "jestConfig": "tests/osu-stable-test-generator/jest.config.js",
+            "jestConfig": "tests/osu-stable-test-generator/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -485,7 +521,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/tests/game-simulation"],
           "options": {
-            "jestConfig": "tests/game-simulation/jest.config.js",
+            "jestConfig": "tests/game-simulation/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -537,7 +573,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/web/backend"],
           "options": {
-            "jestConfig": "apps/web/backend/jest.config.js",
+            "jestConfig": "apps/web/backend/jest.config.ts",
             "passWithNoTests": true
           }
         }

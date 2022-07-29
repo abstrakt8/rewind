@@ -25,7 +25,7 @@ function DirectorySelection({ value, onChange, placeHolder, badgeOnEmpty }: Dire
   }, [onChange, value]);
 
   const onInputChange = useCallback(
-    (event) => {
+    (event: any) => {
       onChange(event.target.value);
     },
     [onChange],

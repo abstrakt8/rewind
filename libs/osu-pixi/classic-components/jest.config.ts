@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: "osu-pixi-classic-components",
   preset: "../../../jest.preset.js",
   globals: {

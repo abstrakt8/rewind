@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: "osu-local-osr-reader",
+/* eslint-disable */
+export default {
+  displayName: "osu-local-utils",
   preset: "../../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -11,5 +12,5 @@ module.exports = {
     "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../../coverage/libs/osu-local/osr-reader",
+  coverageDirectory: "../../../coverage/libs/osu-local/utils",
 };

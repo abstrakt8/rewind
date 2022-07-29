@@ -1,15 +1,15 @@
-module.exports = {
-  displayName: "osu-local-skin-reader",
+/* eslint-disable */
+export default {
+  displayName: "osu-math",
   preset: "../../../jest.preset.js",
   globals: {
     "ts-jest": {
       tsconfig: "<rootDir>/tsconfig.spec.json",
     },
   },
-  testEnvironment: "node",
   transform: {
     "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../../coverage/libs/osu-local/skin-reader",
+  coverageDirectory: "../../../coverage/libs/osu/math",
 };

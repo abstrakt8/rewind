@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: "osu-pp",
+/* eslint-disable */
+export default {
+  displayName: "osu-local-db-reader",
   preset: "../../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -11,5 +12,5 @@ module.exports = {
     "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../../coverage/libs/osu/pp",
+  coverageDirectory: "../../../coverage/libs/osu-local/db-reader",
 };

@@ -1,6 +1,7 @@
-module.exports = {
-  displayName: "osu-stable-test-generator",
-  preset: "../../jest.preset.js",
+/* eslint-disable */
+export default {
+  displayName: "main",
+  preset: "../../../jest.preset.js",
   globals: {
     "ts-jest": {
       tsconfig: "<rootDir>/tsconfig.spec.json",
@@ -11,5 +12,5 @@ module.exports = {
     "^.+\\.[tj]s$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "js", "html"],
-  coverageDirectory: "../../coverage/apps/osu-stable-test-generator",
+  coverageDirectory: "../../../coverage/apps/main",
 };

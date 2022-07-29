@@ -19,10 +19,6 @@
       "@osujs/core": ["libs/osu/core/src/index.ts"],
       "@osujs/math": ["libs/osu/math/src/index.ts"],
       "@osujs/pp": ["libs/osu/pp/src/index.ts"],
-      "@rewind/api/common": ["libs/api/common/src/index.ts"],
-      "@rewind/api/desktop": ["libs/api/desktop/src/index.ts"],
-      "@rewind/desktop/api": ["libs/desktop/api/src/index.ts"],
-      "@rewind/electron/api": ["libs/electron/api/src/index.ts"],
       "@rewind/osu-local/db-reader": ["libs/osu-local/db-reader/src/index.ts"],
       "@rewind/osu-local/gosumemory": ["libs/osu-local/gosumemory/src/index.ts"],
       "@rewind/osu-local/osr-reader": ["libs/osu-local/osr-reader/src/index.ts"],
@@ -30,8 +26,9 @@
       "@rewind/osu-local/utils": ["libs/osu-local/utils/src/index.ts"],
       "@rewind/osu-pixi/classic-components": ["libs/osu-pixi/classic-components/src/index.ts"],
       "@rewind/osu-pixi/rewind": ["libs/osu-pixi/rewind/src/index.ts"],
-      "@rewind/osu/skin": ["libs/osu/skin/src/index.ts"],
-      "@rewind/ui": ["libs/ui/src/index.ts"]
+      "@rewind/osu/skin": [
+        "libs/osu/skin/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

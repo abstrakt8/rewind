@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: "osu-pixi-rewind",
+/* eslint-disable */
+export default {
+  displayName: "osu-local-gosumemory",
   preset: "../../../jest.preset.js",
   globals: {
     "ts-jest": {
@@ -10,5 +11,5 @@ module.exports = {
     "^.+\\.[tj]sx?$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  coverageDirectory: "../../../coverage/libs/osu-pixi/rewind",
+  coverageDirectory: "../../../coverage/libs/osu-local/gosumemory",
 };
