@@ -68,7 +68,8 @@ function createFrontendWindow() {
   });
 
   ipcMain.on("osuFolderChanged", (event, folder: string) => {
-    frontend.setMenu(createMenu(folder));
+    // TODO: frontend.setMenu()
+    Menu.setApplicationMenu(createMenu(folder));
   });
 
   // In DEV mode we want to utilize hot reloading, therefore we are going to connect to the development server.
@@ -97,6 +98,8 @@ function handleAllWindowClosed() {
 
 function handleReady() {
   const isDev = isDevelopmentMode();
+
+  Menu.setApplicationMenu(createMenu(null));
 
   console.log(
     "Booting Electron application with settings: ",
@@ -146,11 +149,53 @@ function handleActivate() {
   app.on("activate", handleActivate);
 })();
 
-// This is only good for Windows/Linux
 function createMenu(osuFolder: string | null) {
   const osuFolderKnown = !!osuFolder as boolean;
+  const isMac = process.platform === "darwin";
 
-  return Menu.buildFromTemplate([
+  const template: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [];
+  if (isMac) {
+    template.push({
+      label: app.name,
+      submenu: [
+        {
+          role: "about",
+          label: "About",
+        },
+        {
+          type: "separator",
+        },
+        {
+          role: "services",
+          label: "Services",
+        },
+        {
+          type: "separator",
+        },
+        {
+          role: "hide",
+          label: "Hide",
+        },
+        {
+          role: "hideOthers",
+          label: "Hide Others",
+        },
+        {
+          role: "unhide",
+          label: "Unhide",
+        },
+        {
+          type: "separator",
+        },
+        {
+          role: "quit",
+          label: "Quit",
+        },
+      ],
+    });
+  }
+
+  template.push(
     {
       label: "File",
       submenu: [
@@ -238,5 +283,7 @@ function createMenu(osuFolder: string | null) {
         },
       ],
     },
-  ]);
+  );
+
+  return Menu.buildFromTemplate(template);
 }
