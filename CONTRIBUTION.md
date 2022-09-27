@@ -17,10 +17,6 @@ In `tests` you will find the integration tests that will test the correctness of
 tests that have some external dependencies (such as a beatmap or replay file) will belong here. Unit tests should be
 written in the corresponding library `src` folder with `*.spec.ts` filename extension.
 
-
-Rewind Desktop App
----
-
 > Familiarity with [Electron's process model](https://www.electronjs.org/docs/latest/tutorial/process-model) required.
  
 Setup
@@ -36,23 +32,24 @@ Install the following:
 Building
 ---
 
-```
+```bash
 yarn install
-yarn desktop:build-package:prod
+yarn desktop:build
 ```
 
 Developing
 ---
 
-Start the `frontend` first with Hot Reloading enabled:
+First start the `desktop-frontend` to expose the frontend on port 4200 with "Hot Reloading" enabled.
 
-```
-nx run desktop-frontend:serve
+```bash
+yarn desktop-frontend:dev
 ```
 
-Then start the Electron application (start a build, if you have changed something in the `desktop-main`):
+Then start the Electron application:
 
+```bash
+yarn desktop-main:dev
 ```
-nx run desktop-main:build 
-yarn run desktop:serve
-```
+
+If you make a change in the `desktop-main` package, you will need to rerun the command above again.
