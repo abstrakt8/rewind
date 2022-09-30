@@ -1,6 +1,6 @@
-import { Blueprint, buildBeatmap, OsuClassicMod } from "@osujs/core";
+import { Blueprint, buildBeatmap, OsuClassicMod, parseBlueprint } from "@osujs/core";
 import { calculateDifficultyAttributes } from "@osujs/pp";
-import { getBlueprintFromTestDir, resourcesPath, translateModAcronym } from "../util";
+import { getBlueprintFromTestDir, osuTestData, resourcesPath, translateModAcronym } from "../util";
 
 import { toMatchObjectCloseTo } from "jest-match-object-close-to";
 import { readFileSync } from "fs";
@@ -38,7 +38,8 @@ function runTestSuite({ filename, cases }: TestSuite) {
   describe(filename, function () {
     let blueprint;
     beforeEach(() => {
-      blueprint = getBlueprintFromTestDir(filename);
+      const data = readFileSync(osuTestData(`Songs/${filename}`), "utf-8");
+      blueprint = parseBlueprint(data);
     });
     cases.forEach(({ mods: modAcronyms, starRating, speedRating, aimRating, flashlightRating }) => {
       const testCaseName = modAcronyms.length === 0 ? "NM" : modAcronyms.join(",");
@@ -66,7 +67,7 @@ function runTestSuite({ filename, cases }: TestSuite) {
 }
 
 describe("Star rating calculation", function () {
-  const data = readFileSync(resourcesPath("star_ratings.json"), "utf-8");
+  const data = readFileSync(osuTestData("out/sr/20220928.json"), "utf-8");
   const suites: TestSuite[] = JSON.parse(data);
   suites.forEach((testCase) => {
     runTestSuite(testCase);

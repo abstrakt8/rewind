@@ -24,6 +24,10 @@ export function resourcesPath(file: string) {
   return join(getRewindTestDir(), "osujs", file);
 }
 
+export function osuTestData(file: string) {
+  return join(getRewindTestDir(), "osu-testdata", file);
+}
+
 // Move to osu core
 export function translateModAcronym(acronym: string): OsuClassicMod {
   switch (acronym) {
