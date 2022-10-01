@@ -79,6 +79,7 @@ export function calculateFlashlightDifficultyValues(
   function difficultyValueFromPeaks(peaks: number[]) {
     return sum(peaks) * 1.06;
   }
+
   return calculateDifficultyValues(diffs, strains, strainSkillParams, difficultyValueFromPeaks, onlyFinalValue);
 }
 
@@ -117,6 +118,7 @@ export function calculateOsuStrainDifficultyValues(
 ): number[] {
   // OsuStrainSkill#DifficultyValue()
   const descending = (a: number, b: number) => b - a;
+
   function difficultyValueFromPeaks(peaks: number[]) {
     // We do not push the currentSectionPeak to the peaks yet because currentSectionPeak is still in a jelly state and
     // can be improved by the future hit objects in the same section.

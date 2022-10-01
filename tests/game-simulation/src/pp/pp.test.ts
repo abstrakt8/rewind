@@ -26,30 +26,34 @@ function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
   return lastAttributes;
 }
 
+function testItMan(
+  blueprint: Blueprint,
+  { mods: modAcronyms, totalPP: expectedPP, countMeh, countGreat, countOk, countMiss, combo }: TestCase,
+) {
+  const modAcronymsName = modAcronyms.length === 0 ? "NM" : modAcronyms.join(",");
+  const testCaseName = `${modAcronymsName} ${combo}x ${[countGreat, countOk, countMeh, countMiss]} `;
+  const mods = modAcronyms.map(translateModAcronym);
+  it(testCaseName, function () {
+    const finalAttributes = calculateStarRating(blueprint, mods);
+    const { total } = calculatePerformanceAttributes(finalAttributes, {
+      mods,
+      countMeh,
+      countMiss,
+      countOk,
+      maxCombo: combo,
+      countGreat,
+    });
+    expect(total).toBeCloseTo(expectedPP, PP_EXPECTED_PRECISION);
+  });
+}
 function runTestSuite({ filename, cases }: TestSuite) {
   describe(filename, function () {
-    let blueprint;
-    beforeAll(() => {
-      const data = readFileSync(osuTestData(`Songs/${filename}`), "utf-8");
-      blueprint = parseBlueprint(data);
-    });
-    cases.forEach(({ mods: modAcronyms, totalPP: expectedPP, countMeh, countGreat, countOk, countMiss, combo }) => {
-      const modAcronymsName = modAcronyms.length === 0 ? "NM" : modAcronyms.join(",");
-      const testCaseName = `${modAcronymsName} ${combo}x ${[countGreat, countOk, countMeh, countMiss]} `;
-      const mods = modAcronyms.map(translateModAcronym);
-      it(testCaseName, function () {
-        const finalAttributes = calculateStarRating(blueprint, mods);
-        const { total } = calculatePerformanceAttributes(finalAttributes, {
-          mods,
-          countMeh,
-          countMiss,
-          countOk,
-          maxCombo: combo,
-          countGreat,
-        });
-        expect(total).toBeCloseTo(expectedPP, PP_EXPECTED_PRECISION);
-      });
-    });
+    const data = readFileSync(osuTestData(`Songs/${filename}`), "utf-8");
+    const blueprint = parseBlueprint(data);
+    // let blueprint;
+    // beforeAll(() => {
+    // });
+    cases.forEach((c) => testItMan(blueprint, c));
   });
 }
 
@@ -58,6 +62,22 @@ describe("PP calculation", function () {
   const suites: TestSuite[] = JSON.parse(data);
   suites.forEach((testCase) => {
     runTestSuite(testCase);
+  });
+});
+
+describe.skip("Just One", function () {
+  const filename = "Brian The Sun - Lonely Go! (TV Size) (Nevo) [Fiery's Extreme].osu";
+  const data = readFileSync(osuTestData(`Songs/${filename}`), "utf-8");
+  const blueprint = parseBlueprint(data);
+
+  testItMan(blueprint, {
+    mods: [],
+    combo: 455,
+    countGreat: 341,
+    countOk: 10,
+    countMeh: 0,
+    countMiss: 1,
+    totalPP: 211.23440779362528,
   });
 });
 

@@ -1,6 +1,6 @@
 import { OsuClassicMod, osuStableAccuracy } from "@osujs/core";
 import { clamp } from "@osujs/math";
-import { DifficultyAttributes } from "./diff";
+import { DifficultyAttributes, PERFORMANCE_BASE_MULTIPLIER } from "./diff";
 
 interface OsuPerformanceAttributes {
   // The "PP" value that is then displayed and used for calculations
@@ -38,6 +38,7 @@ export function calculatePerformanceAttributes(
     drainRate,
     overallDifficulty,
     sliderFactor,
+    speedNoteCount,
     maxCombo: beatmapMaxCombo,
   } = beatmapParams;
   const { mods, countMeh, countGreat, countMiss, countOk, maxCombo: scoreMaxCombo } = scoreParams;
@@ -53,26 +54,24 @@ export function calculatePerformanceAttributes(
       if (scoreMaxCombo < fullComboThreshold) comboBasedMissCount = fullComboThreshold / Math.max(1.0, scoreMaxCombo);
     }
     // Clamp misscount since it's derived from combo and can be higher than total hits and that breaks some calculations
-    comboBasedMissCount = Math.min(comboBasedMissCount, totalHits);
-    return Math.max(countMiss, Math.floor(comboBasedMissCount));
+    comboBasedMissCount = Math.min(comboBasedMissCount, countOk + countMiss + countMiss);
+    return Math.max(countMiss, comboBasedMissCount);
   })();
 
-  let multiplier = 1.12;
+  let multiplier = PERFORMANCE_BASE_MULTIPLIER;
   if (mods.includes("NO_FAIL")) multiplier *= Math.max(0.9, 1 - 0.02 * effectiveMissCount);
   if (mods.includes("SPUN_OUT")) multiplier *= 1.0 - Math.pow(spinnerCount / totalHits, 0.85);
   if (mods.includes("RELAX")) {
-    effectiveMissCount = Math.min(effectiveMissCount + countOk + countMeh, totalHits);
-    multiplier *= 0.6;
+    const okMultiplier = Math.max(0.0, overallDifficulty > 0 ? 1 - Math.pow(overallDifficulty / 13.33, 1.8) : 1.0);
+    const mehMultiplier = Math.max(0.0, overallDifficulty > 0 ? 1 - Math.pow(overallDifficulty / 13.33, 5.0) : 1.0);
+    effectiveMissCount = Math.min(effectiveMissCount + countOk * okMultiplier + countMeh * mehMultiplier, totalHits);
   }
 
   const comboScalingFactor =
     beatmapMaxCombo <= 0 ? 1.0 : Math.min(Math.pow(scoreMaxCombo, 0.8) / Math.pow(beatmapMaxCombo, 0.8), 1.0);
 
   const aimValue = (function computeAimValue() {
-    let rawAim = aimDifficulty;
-    if (mods.includes("TOUCH_DEVICE" as OsuClassicMod)) rawAim = Math.pow(rawAim, 0.8);
-
-    let aimValue = Math.pow(5.0 * Math.max(1.0, rawAim / 0.0675) - 4.0, 3.0) / 100000.0;
+    let aimValue = Math.pow(5.0 * Math.max(1.0, aimDifficulty / 0.0675) - 4.0, 3.0) / 100000.0;
 
     const lengthBonus =
       0.95 + 0.4 * Math.min(1.0, totalHits / 2000.0) + (totalHits > 2000 ? Math.log10(totalHits / 2000.0) * 0.5 : 0.0);
@@ -83,7 +82,9 @@ export function calculatePerformanceAttributes(
 
     let approachRateFactor = 0.0;
     if (approachRate > 10.33) approachRateFactor = 0.3 * (approachRate - 10.33);
-    else if (approachRate < 8) approachRateFactor = 0.1 * (8.0 - approachRate);
+    else if (approachRate < 8) approachRateFactor = 0.05 * (8.0 - approachRate);
+
+    if (mods.includes("RELAX")) approachRateFactor = 0.0;
 
     aimValue *= 1.0 + approachRateFactor * lengthBonus; // Buff for long maps with high AR
 
@@ -117,6 +118,9 @@ export function calculatePerformanceAttributes(
     return aimValue;
   })();
   const speedValue = (function computeSpeedValue() {
+    if (mods.includes("RELAX")) {
+      return 0.0;
+    }
     let speedValue = Math.pow(5.0 * Math.max(1.0, speedDifficulty / 0.0675) - 4.0, 3.0) / 100000.0;
     const lengthBonus =
       0.95 + 0.4 * Math.min(1.0, totalHits / 2000.0) + (totalHits > 2000 ? Math.log10(totalHits / 2000.0) * 0.5 : 0.0);
@@ -143,12 +147,23 @@ export function calculatePerformanceAttributes(
       speedValue *= 1.0 + 0.04 * (12.0 - approachRate);
     }
 
+    // Calculate accuracy assuming the worst case scenario
+    const relevantTotalDiff = totalHits - speedNoteCount;
+    const relevantCountGreat = Math.max(0, countGreat - relevantTotalDiff);
+    const relevantCountOk = Math.max(0, countOk - Math.max(0, relevantTotalDiff - countGreat));
+    const relevantCountMeh = Math.max(0, countMeh - Math.max(0, relevantTotalDiff - countGreat - countOk));
+    const relevantAccuracy =
+      speedNoteCount == 0
+        ? 0
+        : (relevantCountGreat * 6.0 + relevantCountOk * 2.0 + relevantCountMeh) / (speedNoteCount * 6.0);
+
     // Scale the speed value with accuracy and OD.
     speedValue *=
-      (0.95 + Math.pow(overallDifficulty, 2) / 750) * Math.pow(accuracy, (14.5 - Math.max(overallDifficulty, 8)) / 2);
+      (0.95 + Math.pow(overallDifficulty, 2) / 750) *
+      Math.pow((accuracy + relevantAccuracy) / 2, (14.5 - Math.max(overallDifficulty, 8)) / 2);
 
     // Scale the speed value with # of 50s to punish double-tapping.
-    speedValue *= Math.pow(0.98, countMeh < totalHits / 500.0 ? 0 : countMeh - totalHits / 500.0);
+    speedValue *= Math.pow(0.99, countMeh < totalHits / 500.0 ? 0 : countMeh - totalHits / 500.0);
 
     return speedValue;
   })();
@@ -188,13 +203,7 @@ export function calculatePerformanceAttributes(
   const flashlightValue = (function computeFlashLightValue() {
     if (!mods.includes("FLASH_LIGHT")) return 0.0;
 
-    let rawFlashlight = flashlightDifficulty;
-
-    if (mods.includes("TOUCH_DEVICE" as OsuClassicMod)) rawFlashlight = Math.pow(rawFlashlight, 0.8);
-
-    let flashlightValue = Math.pow(rawFlashlight, 2.0) * 25.0;
-
-    if (mods.includes("HIDDEN")) flashlightValue *= 1.3;
+    let flashlightValue = Math.pow(flashlightDifficulty, 2.0) * 25.0;
 
     // Penalize misses by assessing # of misses relative to the total # of objects. Default a 3% reduction for any # of
     // misses.
@@ -236,4 +245,3 @@ export function calculatePerformanceAttributes(
     total: totalValue,
   };
 }
-

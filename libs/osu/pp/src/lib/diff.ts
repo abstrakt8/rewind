@@ -308,8 +308,7 @@ export function calculateDifficultyAttributes(
 
   const aimValues = calculateAim(hitObjects, diffs, true, onlyFinalValue);
   const aimValuesNoSliders = calculateAim(hitObjects, diffs, false, onlyFinalValue);
-  const speedValues = calculateSpeed(hitObjects, diffs, onlyFinalValue);
-  const speedNotes = 0; // TODO
+  const { speedValues, relevantNoteCounts } = calculateSpeed(hitObjects, diffs, onlyFinalValue);
   const flashlightValues = calculateFlashlight(
     hitObjects,
     diffs,
@@ -332,6 +331,7 @@ export function calculateDifficultyAttributes(
     let aimRating = Math.sqrt(aimValues[i]) * DIFFICULTY_MULTIPLIER;
     const aimRatingNoSliders = Math.sqrt(aimValuesNoSliders[i]) * DIFFICULTY_MULTIPLIER;
     let speedRating = Math.sqrt(speedValues[i]) * DIFFICULTY_MULTIPLIER;
+    const speedNotes = relevantNoteCounts[i];
     let flashlightRating = Math.sqrt(flashlightValues[i]) * DIFFICULTY_MULTIPLIER;
 
     const sliderFactor = aimRating > 0 ? aimRatingNoSliders / aimRating : 1;

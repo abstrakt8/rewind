@@ -14,14 +14,28 @@ const strainDecayBase = 0.3;
 
 const strainDecay = (ms: number) => Math.pow(strainDecayBase, ms / 1000);
 
+interface SpeedInfo {
+  strains: number[];
+  relevantNoteCounts: number[];
+}
+
 /**
  * @param hitObjects
  * @param diffs
+ * @param onlyFinalRelevantCountValue
  * @returns `strains[i]` = speed strain value after the `i`th hitObject
  */
-export function calculateSpeedStrains(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[]): number[] {
+function calculateSpeedInfo(
+  hitObjects: OsuHitObject[],
+  diffs: OsuDifficultyHitObject[],
+  onlyFinalRelevantCountValue: boolean,
+): SpeedInfo {
   let currentStrain = 0;
   const strains = [0];
+
+  const relevantNoteCounts: number[] = [];
+  if (!onlyFinalRelevantCountValue) relevantNoteCounts.push(0);
+  let maxStrain = 0;
 
   for (let i = 1; i < hitObjects.length; i++) {
     const current = hitObjects[i];
@@ -177,25 +191,43 @@ export function calculateSpeedStrains(hitObjects: OsuHitObject[], diffs: OsuDiff
 
     currentStrain *= strainDecay(diffCurrent.strainTime);
     currentStrain += speedEvaluateDifficultyOf * skillMultiplier;
-
     const totalStrain = currentStrain * currentRhythm;
     strains.push(totalStrain);
+
+    maxStrain = Math.max(maxStrain, totalStrain);
+    // This is a pretty expensive operation, therefore we need to optimize a bit
+    if (!onlyFinalRelevantCountValue || i + 1 === hitObjects.length) {
+      if (maxStrain <= 0 || strains.length == 0) {
+        relevantNoteCounts.push(0);
+      } else {
+        let sum = 0;
+        // We don't count the first artificial one ...
+        for (let j = 1; j < strains.length; ++j) {
+          sum += 1 / (1 + Math.exp(-((strains[j] / maxStrain) * 12.0 - 6.0)));
+        }
+        relevantNoteCounts.push(sum);
+      }
+    }
   }
-  return strains;
+  return { strains, relevantNoteCounts };
 }
 
 export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], onlyFinalValue: boolean) {
-  const strains = calculateSpeedStrains(hitObjects, diffs);
-  return calculateOsuStrainDifficultyValues(
-    diffs,
-    strains,
-    {
-      decayWeight: 0.9,
-      difficultyMultiplier: 1.04,
-      sectionDuration: 400,
-      reducedSectionCount: 5,
-      strainDecay,
-    },
-    onlyFinalValue,
-  );
+  // eslint-disable-next-line prefer-const
+  let { strains, relevantNoteCounts } = calculateSpeedInfo(hitObjects, diffs, onlyFinalValue);
+  return {
+    speedValues: calculateOsuStrainDifficultyValues(
+      diffs,
+      strains,
+      {
+        decayWeight: 0.9,
+        difficultyMultiplier: 1.04,
+        sectionDuration: 400,
+        reducedSectionCount: 5,
+        strainDecay,
+      },
+      onlyFinalValue,
+    ),
+    relevantNoteCounts,
+  };
 }
