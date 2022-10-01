@@ -1,6 +1,6 @@
 import { Blueprint, buildBeatmap, OsuClassicMod, parseBlueprint } from "@osujs/core";
 import { calculateDifficultyAttributes } from "@osujs/pp";
-import { getBlueprintFromTestDir, osuTestData, resourcesPath, translateModAcronym } from "../util";
+import { osuTestData, translateModAcronym } from "../util";
 
 import { toMatchObjectCloseTo } from "jest-match-object-close-to";
 import { readFileSync } from "fs";
@@ -15,7 +15,7 @@ expect.extend({ toMatchObjectCloseTo });
 const SR_EXPECTED_PRECISION = 3;
 
 type TestCase = {
-  mods: OsuClassicMod[];
+  mods: string[];
   starRating: number;
 
   aimRating: number;
@@ -77,15 +77,14 @@ describe("Star rating calculation", function () {
 // Change `describe.skip` -> `describe.only` to test a specific one.
 describe.skip("SR a specific one", function () {
   const testSuite: TestSuite = {
-    filename:
-      "1357624 sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix)/sabi - true DJ MAG top ranker's song Zenpen (katagiri Remix) (Nathan) [KEMOMIMI EDM SQUAD].osu",
+    filename: "SHK - Violet Perfume (ktgster) [Insane].osu",
     cases: [
       {
-        mods: [],
-        starRating: 7.585806851390463,
-        aimRating: 3.962396149332689,
-        speedRating: 3.2644585786342555,
-        flashlightRating: 4.722278664838489,
+        mods: ["FL"],
+        starRating: 5.348894637413558,
+        aimRating: 2.285155242240623,
+        speedRating: 2.217866076410721,
+        flashlightRating: 1.3626073031248354,
       },
     ],
   };

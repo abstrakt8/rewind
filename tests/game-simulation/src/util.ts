@@ -47,6 +47,8 @@ export function translateModAcronym(acronym: string): OsuClassicMod {
       return "NO_FAIL";
     case "SO":
       return "SPUN_OUT";
+    case "RX":
+      return "RELAX";
   }
   throw Error(`Acronym ${acronym} not known`);
 }
