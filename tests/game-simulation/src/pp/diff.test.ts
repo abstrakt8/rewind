@@ -37,7 +37,7 @@ function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
 function runTestSuite({ filename, cases }: TestSuite) {
   describe(filename, function () {
     let blueprint;
-    beforeEach(() => {
+    beforeAll(() => {
       const data = readFileSync(osuTestData(`Songs/${filename}`), "utf-8");
       blueprint = parseBlueprint(data);
     });

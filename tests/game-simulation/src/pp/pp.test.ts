@@ -1,59 +1,102 @@
-import { Blueprint, buildBeatmap } from "@osujs/core";
-import { calculateDifficultyAttributes, calculatePerformanceAttributes, ScoreParams } from "@osujs/pp";
-import { getBlueprintFromTestDir } from "../util";
+import { Blueprint, buildBeatmap, OsuClassicMod, parseBlueprint } from "@osujs/core";
+import { calculateDifficultyAttributes, calculatePerformanceAttributes } from "@osujs/pp";
+import { osuTestData, translateModAcronym } from "../util";
+import { readFileSync } from "fs";
 
-function calculatePP(blueprint: Blueprint, scoreParams: ScoreParams) {
-  const mods = scoreParams.mods;
-  const beatmap = buildBeatmap(blueprint, { mods });
+const PP_EXPECTED_PRECISION = 3;
 
-  const [finalAttributes] = calculateDifficultyAttributes(beatmap, true);
-  const { total } = calculatePerformanceAttributes(finalAttributes, scoreParams);
-  return total;
+type TestCase = {
+  mods: string[];
+  combo: number;
+  countGreat: number;
+  countOk: number;
+  countMeh: number;
+  countMiss: number;
+  totalPP: number;
+};
+
+interface TestSuite {
+  filename: string;
+  cases: Array<TestCase>;
 }
 
-// TODO: Test it similarly as the SR calculation
-// 1. Generate test cases into a .json file with the abstrakt8/osu repository
-// 2. Parse those test cases and
+function calculateStarRating(blueprint: Blueprint, mods: OsuClassicMod[] = []) {
+  const beatmap = buildBeatmap(blueprint, { mods });
+  const [lastAttributes] = calculateDifficultyAttributes(beatmap, true);
+  return lastAttributes;
+}
 
-describe("PP calculation", function () {
-  describe("Lonely Go!", function () {
-    const blueprint = getBlueprintFromTestDir(
-      "863227 Brian The Sun - Lonely Go! (TV Size) [no video]/Brian The Sun - Lonely Go! (TV Size) (Nevo) [Fiery's Extreme].osu",
-    );
-    // https://osu.ppy.sh/scores/osu/3160935737/
-    it("Scores", function () {
-      expect(
-        calculatePP(blueprint, {
-          mods: ["HARD_ROCK", "HIDDEN"],
-          maxCombo: 569,
-          countGreat: 352,
-          countOk: 0,
-          countMeh: 0,
-          countMiss: 0,
-        }),
-      ).toBeCloseTo(435.556, 3);
+function runTestSuite({ filename, cases }: TestSuite) {
+  describe(filename, function () {
+    let blueprint;
+    beforeAll(() => {
+      const data = readFileSync(osuTestData(`Songs/${filename}`), "utf-8");
+      blueprint = parseBlueprint(data);
     });
-  });
-  describe("Hidamari no Uta", function () {
-    const blueprint = getBlueprintFromTestDir(
-      "931596 Apol - Hidamari no Uta/Apol - Hidamari no Uta (-Keitaro) [Expert].osu",
-    );
-    // https://osu.ppy.sh/scores/osu/2863181831/
-    it("double tapping punishment", function () {
-      const counts = [908, 46, 40, 0];
-      const [countGreat, countOk, countMeh, countMiss] = counts;
-      expect(
-        calculatePP(blueprint, {
-          mods: ["DOUBLE_TIME", "HIDDEN"],
-          maxCombo: 1484,
-          countGreat,
-          countOk,
+    cases.forEach(({ mods: modAcronyms, totalPP: expectedPP, countMeh, countGreat, countOk, countMiss, combo }) => {
+      const modAcronymsName = modAcronyms.length === 0 ? "NM" : modAcronyms.join(",");
+      const testCaseName = `${modAcronymsName} ${combo}x ${[countGreat, countOk, countMeh, countMiss]} `;
+      const mods = modAcronyms.map(translateModAcronym);
+      it(testCaseName, function () {
+        const finalAttributes = calculateStarRating(blueprint, mods);
+        const { total } = calculatePerformanceAttributes(finalAttributes, {
+          mods,
           countMeh,
           countMiss,
-        }),
-      ).toBeCloseTo(349.171, 2);
+          countOk,
+          maxCombo: combo,
+          countGreat,
+        });
+        expect(total).toBeCloseTo(expectedPP, PP_EXPECTED_PRECISION);
+      });
     });
+  });
+}
+
+describe("PP calculation", function () {
+  const data = readFileSync(osuTestData("out/pp/20220928.json"), "utf-8");
+  const suites: TestSuite[] = JSON.parse(data);
+  suites.forEach((testCase) => {
+    runTestSuite(testCase);
   });
 });
 
 // TODO: Use the ones from osu! Lazer testcases: one is called "diffcalc-test.osu"
+// describe("Lonely Go!", function () {
+//   const blueprint = getBlueprintFromTestDir(
+//     "863227 Brian The Sun - Lonely Go! (TV Size) [no video]/Brian The Sun - Lonely Go! (TV Size) (Nevo) [Fiery's Extreme].osu",
+//   );
+//   // https://osu.ppy.sh/scores/osu/3160935737/
+//   it("Scores", function () {
+//     expect(
+//       calculatePP(blueprint, {
+//         mods: ["HARD_ROCK", "HIDDEN"],
+//         maxCombo: 569,
+//         countGreat: 352,
+//         countOk: 0,
+//         countMeh: 0,
+//         countMiss: 0,
+//       }),
+//     ).toBeCloseTo(435.556, 3);
+//   });
+// });
+// describe("Hidamari no Uta", function () {
+//   const blueprint = getBlueprintFromTestDir(
+//     "931596 Apol - Hidamari no Uta/Apol - Hidamari no Uta (-Keitaro) [Expert].osu",
+//   );
+//   // https://osu.ppy.sh/scores/osu/2863181831/
+//   it("double tapping punishment", function () {
+//     const counts = [908, 46, 40, 0];
+//     const [countGreat, countOk, countMeh, countMiss] = counts;
+//     expect(
+//       calculatePP(blueprint, {
+//         mods: ["DOUBLE_TIME", "HIDDEN"],
+//         maxCombo: 1484,
+//         countGreat,
+//         countOk,
+//         countMeh,
+//         countMiss,
+//       }),
+//     ).toBeCloseTo(349.171, 2);
+//   });
+// });

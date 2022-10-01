@@ -29,6 +29,12 @@ Install the following:
 * Node.js v16.4.2 (e.g. with `nvm`)
 * [`git-lfs`](https://git-lfs.github.com/) for the test data in `testdata/`
 
+
+When changes have been done to some submodules, you need to merge them as follows:
+```
+git submodule update --remote --merge
+```
+
 Building
 ---
 
