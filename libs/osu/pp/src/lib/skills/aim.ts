@@ -1,7 +1,7 @@
 import { isSlider, isSpinner, OsuHitObject } from "@osujs/core";
 import { clamp } from "@osujs/math";
 import { OsuDifficultyHitObject } from "../diff";
-import { calculateDifficultyValues } from "./strain";
+import { calculateOsuStrainDifficultyValues } from "./strain";
 
 const wide_angle_multiplier = 1.5;
 const acute_angle_multiplier = 1.95;
@@ -160,7 +160,7 @@ export function calculateAim(
   onlyFinalValue: boolean,
 ) {
   const strains = calculateAimStrains(hitObjects, diffs, withSliders);
-  return calculateDifficultyValues(
+  return calculateOsuStrainDifficultyValues(
     diffs,
     strains,
     {

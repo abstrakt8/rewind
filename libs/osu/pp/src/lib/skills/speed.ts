@@ -1,7 +1,7 @@
 import { isSlider, isSpinner, OsuHitObject } from "@osujs/core";
 import { OsuDifficultyHitObject } from "../diff";
 import { clamp } from "@osujs/math";
-import { calculateDifficultyValues } from "./strain";
+import { calculateOsuStrainDifficultyValues } from "./strain";
 
 const single_spacing_threshold = 125;
 const rhythm_multiplier = 0.75;
@@ -186,7 +186,7 @@ export function calculateSpeedStrains(hitObjects: OsuHitObject[], diffs: OsuDiff
 
 export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], onlyFinalValue: boolean) {
   const strains = calculateSpeedStrains(hitObjects, diffs);
-  return calculateDifficultyValues(
+  return calculateOsuStrainDifficultyValues(
     diffs,
     strains,
     {

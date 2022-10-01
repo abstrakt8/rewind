@@ -1,11 +1,18 @@
 import { clamp, lerp } from "@osujs/math";
-import { isHitCircle, OsuHitObject } from "@osujs/core";
 import { OsuDifficultyHitObject } from "../diff";
+import { sum } from "simple-statistics";
 
-interface StrainDifficultyParams {
-  // Usually always 400ms except for in osu!catch with 700ms
+// Not overridden ... yet?
+const REDUCED_STRAIN_BASELINE = 0.75;
+
+// sectionDuration
+
+interface StrainSkillParams {
   sectionDuration: number;
+  strainDecay: (time: number) => number;
+}
 
+interface OsuStrainSkillParams extends StrainSkillParams {
   // 10 for aim and 5 in speed
   reducedSectionCount: number;
 
@@ -13,44 +20,13 @@ interface StrainDifficultyParams {
   decayWeight: number;
 
   difficultyMultiplier: number;
-  strainDecay: (time: number) => number;
 }
 
-const startTime = (o: OsuHitObject) => (isHitCircle(o) ? o.hitTime : o.startTime);
-
-// Not overridden ... yet?
-const REDUCED_STRAIN_BASELINE = 0.75;
-
-/**
- * Summary of how the strain skill works:
- * - Strain is a value that decays exponentially over time if there is no hit object present
- * - Let strain at time t be S(t)
- *
- * - First the whole beatmap is partitioned into multiple sections each of duration D (D=400ms in osu!std) e.g. [0,
- * 400], [400, 800], ...
- * - Now we only consider the highest strain of each section aka "section peak" i.e. P(i) = max(S(t)) where i*D <= t <=
- * i*(D+1)
- * Note: This can be easily calculated since we know that the peak can only happen after each hit object or at the
- * beginning of a section
- *
- * - Finally the difficulty value of a strain skill considers the largest K strain peaks (K=10 in osu!std) and
- * nerfs them so that the extremly unique difficulty spikes get nerfed.
- *
- * - Then it uses the weighted sum to calculate the difficultyValue.
- *
- * Performance notes:
- * 1. O(n + D + D * log D) if only calculating the last value
- * 2. If we want to calculate for every value:
- *   This is O(n * D * log D) but can be optimized to O(n) by having a precision breakpoint
- *   -> For example, if we now want to push a peak that'd be the 150th highest value, then best it could get in
- *    is to become the 140th highest value -> its value multiplied with the weight 0.9^140 should be
- *    greater than some precision (let's say 10^-6), otherwise we just don't push it to the peaks. In theory, we should
- *    just be maintaining about ~100-150 peak values depending on the required precision which is O(1) compared to O(D).
- */
-export function calculateDifficultyValues(
+function calculateDifficultyValues(
   diffs: OsuDifficultyHitObject[], // -> only startTime is used here
   strains: number[],
-  { sectionDuration, reducedSectionCount, difficultyMultiplier, strainDecay, decayWeight }: StrainDifficultyParams,
+  { sectionDuration, strainDecay }: StrainSkillParams,
+  difficultyValueFromPeaks: (peaks: number[]) => number,
   onlyFinalValue: boolean,
 ): number[] {
   if (diffs.length === 0) return [];
@@ -87,27 +63,82 @@ export function calculateDifficultyValues(
     }
     // We do not push the currentSectionPeak to the peaks yet because currentSectionPeak is still in a jelly state and
     // can be improved by the future hit objects in the same section.
-    let peaksWithCurrent = [...peaks, currentSectionPeak];
-    const descending = (a: number, b: number) => b - a;
+    const peaksWithCurrent = [...peaks, currentSectionPeak];
+    difficultyValues.push(difficultyValueFromPeaks(peaksWithCurrent));
+  }
+  return difficultyValues;
+}
 
-    peaksWithCurrent.sort(descending);
+export function calculateFlashlightDifficultyValues(
+  diffs: OsuDifficultyHitObject[],
+  strains: number[],
+  strainSkillParams: StrainSkillParams,
+  onlyFinalValue: boolean,
+): number[] {
+  // TODO: Dude this is making it n^2 ...
+  function difficultyValueFromPeaks(peaks: number[]) {
+    return sum(peaks) * 1.06;
+  }
+  return calculateDifficultyValues(diffs, strains, strainSkillParams, difficultyValueFromPeaks, onlyFinalValue);
+}
+
+/**
+ * OsuStrainSkill
+ * Summary of how the strain skill works:
+ * - Strain is a value that decays exponentially over time if there is no hit object present
+ * - Let strain at time t be S(t)
+ *
+ * - First the whole beatmap is partitioned into multiple sections each of duration D (D=400ms in osu!std) e.g. [0,
+ * 400], [400, 800], ...
+ * - Now we only consider the highest strain of each section aka "section peak" i.e. P(i) = max(S(t)) where i*D <= t <=
+ * i*(D+1)
+ * Note: This can be easily calculated since we know that the peak can only happen after each hit object or at the
+ * beginning of a section
+ *
+ * - Finally the difficulty value of a strain skill considers the largest K strain peaks (K=10 in osu!std) and
+ * nerfs them so that the extremly unique difficulty spikes get nerfed.
+ *
+ * - Then it uses the weighted sum to calculate the difficultyValue.
+ *
+ * Performance notes:
+ * 1. O(n + D + D * log D) if only calculating the last value
+ * 2. If we want to calculate for every value:
+ *   This is O(n * D * log D) but can be optimized to O(n) by having a precision breakpoint
+ *   -> For example, if we now want to push a peak that'd be the 150th highest value, then best it could get in
+ *    is to become the 140th highest value -> its value multiplied with the weight 0.9^140 should be
+ *    greater than some precision (let's say 10^-6), otherwise we just don't push it to the peaks. In theory, we should
+ *    just be maintaining about ~100-150 peak values depending on the required precision which is O(1) compared to O(D).
+ */
+export function calculateOsuStrainDifficultyValues(
+  diffs: OsuDifficultyHitObject[],
+  strains: number[],
+  { reducedSectionCount, difficultyMultiplier, decayWeight, ...strainParams }: OsuStrainSkillParams,
+  onlyFinalValue: boolean,
+): number[] {
+  // OsuStrainSkill#DifficultyValue()
+  const descending = (a: number, b: number) => b - a;
+  function difficultyValueFromPeaks(peaks: number[]) {
+    // We do not push the currentSectionPeak to the peaks yet because currentSectionPeak is still in a jelly state and
+    // can be improved by the future hit objects in the same section.
+    peaks.sort(descending);
     // This is now part of DifficultyValue()
-    for (let i = 0; i < Math.min(peaksWithCurrent.length, reducedSectionCount); i++) {
+    for (let i = 0; i < Math.min(peaks.length, reducedSectionCount); i++) {
       // Scale might be precalculated since it uses some expensive operation (log10)
       const scale = Math.log10(lerp(1, 10, clamp(i / reducedSectionCount, 0, 1)));
-      peaksWithCurrent[i] *= lerp(REDUCED_STRAIN_BASELINE, 1.0, scale);
+      peaks[i] *= lerp(REDUCED_STRAIN_BASELINE, 1.0, scale);
     }
     let weight = 1;
 
-    peaksWithCurrent = peaksWithCurrent.filter((p) => p > 0);
+    peaks = peaks.filter((p) => p > 0);
     // Decreasingly
-    peaksWithCurrent.sort(descending);
+    peaks.sort(descending);
     let difficultyValue = 0;
-    for (const peak of peaksWithCurrent) {
+    for (const peak of peaks) {
       difficultyValue += peak * weight;
       weight *= decayWeight;
     }
-    difficultyValues.push(difficultyValue * difficultyMultiplier);
+    return difficultyValue * difficultyMultiplier;
   }
-  return difficultyValues;
+
+  return calculateDifficultyValues(diffs, strains, strainParams, difficultyValueFromPeaks, onlyFinalValue);
 }

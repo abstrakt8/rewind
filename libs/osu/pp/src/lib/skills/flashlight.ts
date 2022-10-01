@@ -1,7 +1,7 @@
 import { HitCircle, isHitCircle, isSlider, isSpinner, ModHiddenConstants, OsuHitObject, Slider } from "@osujs/core";
 import { OsuDifficultyHitObject } from "../diff";
 import { approachRateToApproachDuration, clamp, PREEMPT_MIN, Vec2 } from "@osujs/math";
-import { calculateDifficultyValues } from "./strain";
+import { calculateFlashlightDifficultyValues } from "./strain";
 
 const skillMultiplier = 0.052;
 const strainDecayBase = 0.15;
@@ -136,16 +136,5 @@ export function calculateFlashlight(
   onlyFinalValue: boolean,
 ) {
   const strains = calculateFlashlightStrains(hitObjects, diffs, options);
-  return calculateDifficultyValues(
-    diffs,
-    strains,
-    {
-      decayWeight: 1.0, // Overridden
-      difficultyMultiplier: 1.06, // Default
-      sectionDuration: 400, // Default
-      reducedSectionCount: 10, // Default
-      strainDecay,
-    },
-    onlyFinalValue,
-  );
+  return calculateFlashlightDifficultyValues(diffs, strains, { strainDecay, sectionDuration: 400 }, onlyFinalValue);
 }
