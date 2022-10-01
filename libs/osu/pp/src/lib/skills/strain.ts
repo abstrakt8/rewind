@@ -87,7 +87,7 @@ export function calculateDifficultyValues(
     }
     // We do not push the currentSectionPeak to the peaks yet because currentSectionPeak is still in a jelly state and
     // can be improved by the future hit objects in the same section.
-    const peaksWithCurrent = [...peaks, currentSectionPeak];
+    let peaksWithCurrent = [...peaks, currentSectionPeak];
     const descending = (a: number, b: number) => b - a;
 
     peaksWithCurrent.sort(descending);
@@ -98,6 +98,8 @@ export function calculateDifficultyValues(
       peaksWithCurrent[i] *= lerp(REDUCED_STRAIN_BASELINE, 1.0, scale);
     }
     let weight = 1;
+
+    peaksWithCurrent = peaksWithCurrent.filter((p) => p > 0);
     // Decreasingly
     peaksWithCurrent.sort(descending);
     let difficultyValue = 0;

@@ -1,6 +1,6 @@
 import { isSlider, isSpinner, OsuHitObject } from "@osujs/core";
 import { OsuDifficultyHitObject } from "../diff";
-import { clamp, lerp } from "@osujs/math";
+import { clamp } from "@osujs/math";
 import { calculateDifficultyValues } from "./strain";
 
 const single_spacing_threshold = 125;
@@ -12,21 +12,14 @@ const speed_balancing_factor = 40;
 const skillMultiplier = 1375;
 const strainDecayBase = 0.3;
 
-const history_length = 32;
-
 const strainDecay = (ms: number) => Math.pow(strainDecayBase, ms / 1000);
 
 /**
  * @param hitObjects
  * @param diffs
- * @param greatWindow the clock rate adjusted hit window
  * @returns `strains[i]` = speed strain value after the `i`th hitObject
  */
-export function calculateSpeedStrains(
-  hitObjects: OsuHitObject[],
-  diffs: OsuDifficultyHitObject[],
-  greatWindow: number,
-): number[] {
+export function calculateSpeedStrains(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[]): number[] {
   let currentStrain = 0;
   const strains = [0];
 
@@ -35,31 +28,33 @@ export function calculateSpeedStrains(
 
     const diffCurrent = diffs[i];
     const diffPrev = diffs[i - 1];
+    const diffNext: OsuDifficultyHitObject | undefined = diffs[i + 1];
 
     // Helper function so that we don't have to use the ReversedQueue `Previous`
-    const previousCount = Math.min(history_length, i - 1);
     const previous = (j: number) => diffs[i - 1 - j];
     const previousHitObject = (j: number) => hitObjects[i - 1 - j];
 
-    const strainValueOf = (function () {
+    const speedEvaluateDifficultyOf = (function () {
       if (isSpinner(current)) return 0;
-
-      // Note: osuPrevObj != null is equivalent to i > 1 since it wants to look at one non-dummy diff object
-      const prevIsNonDummy = previousCount > 0;
 
       // derive strainTime for calculation
       let strainTime = diffCurrent.strainTime;
-      const greatWindowFull = greatWindow * 2;
-      const speedWindowRatio = strainTime / greatWindowFull;
+      let doubletapness = 1;
 
-      // Aim to nerf cheesy rhythms (Very fast consecutive doubles with large delta-times between)
-      if (prevIsNonDummy && strainTime < greatWindowFull && diffPrev.strainTime > strainTime)
-        strainTime = lerp(diffPrev.strainTime, strainTime, speedWindowRatio);
+      // Nerf doubletappable doubles
+      if (diffNext !== undefined) {
+        const currDeltaTime = Math.max(1, diffCurrent.deltaTime);
+        const nextDeltaTime = Math.max(1, diffNext.deltaTime);
+        const deltaDifference = Math.abs(nextDeltaTime - currDeltaTime);
+        const speedRatio = currDeltaTime / Math.max(currDeltaTime, deltaDifference);
+        const windowRatio = Math.pow(Math.min(1, currDeltaTime / diffCurrent.hitWindowGreat), 2);
+        doubletapness = Math.pow(speedRatio, 1 - windowRatio);
+      }
 
       // Cap deltatime to the OD 300 hitwindow.
       // 0.93 is derived from making sure 260bpm OD8 streams aren't nerfed harshly, whilst 0.92 limits the effect of
       // the cap.
-      strainTime /= clamp(strainTime / greatWindowFull / 0.93, 0.92, 1);
+      strainTime /= clamp(strainTime / diffCurrent.hitWindowGreat / 0.93, 0.92, 1);
 
       // derive speedBonus for calculation
       let speedBonus = 1.0;
@@ -67,9 +62,12 @@ export function calculateSpeedStrains(
       if (strainTime < min_speed_bonus)
         speedBonus = 1 + 0.75 * Math.pow((min_speed_bonus - strainTime) / speed_balancing_factor, 2);
 
-      const distance = Math.min(single_spacing_threshold, diffCurrent.travelDistance + diffCurrent.jumpDistance);
+      const travelDistance = diffPrev.travelDistance;
+      const distance = Math.min(single_spacing_threshold, travelDistance + diffCurrent.minimumJumpDistance);
 
-      return (speedBonus + speedBonus * Math.pow(distance / single_spacing_threshold, 3.5)) / strainTime;
+      return (
+        ((speedBonus + speedBonus * Math.pow(distance / single_spacing_threshold, 3.5)) * doubletapness) / strainTime
+      );
     })();
 
     const currentRhythm = (function () {
@@ -83,12 +81,14 @@ export function calculateSpeedStrains(
 
       let firstDeltaSwitch = false;
 
+      // TODO: i - 1 or i
+      const historicalNoteCount = Math.min(i - 1, 32);
       let rhythmStart = 0;
 
       // Optimization from a "future" commit
       // https://github.com/ppy/osu/commit/c87ff82c1cde3af45c173fcb264de999340b743c#diff-4ed7064eeb60b6f0a19dc16729cd6fc3c3ba9794962a7bcfc830bddbea781000
       while (
-        rhythmStart < previousCount - 2 &&
+        rhythmStart < historicalNoteCount - 2 &&
         diffCurrent.startTime - previous(rhythmStart).startTime < history_time_max
       )
         rhythmStart++;
@@ -99,7 +99,7 @@ export function calculateSpeedStrains(
         const lastObj = previous(j + 1);
 
         let currHistoricalDecay = (history_time_max - (diffCurrent.startTime - currObj.startTime)) / history_time_max;
-        currHistoricalDecay = Math.min((previousCount - j) / previousCount, currHistoricalDecay);
+        currHistoricalDecay = Math.min((historicalNoteCount - j) / historicalNoteCount, currHistoricalDecay);
 
         const currDelta = currObj.strainTime;
         const prevDelta = prevObj.strainTime;
@@ -114,7 +114,8 @@ export function calculateSpeedStrains(
 
         let windowPenalty = Math.min(
           1,
-          Math.max(0, Math.abs(prevDelta - currDelta) - greatWindow * 0.6) / (greatWindow * 0.6),
+          Math.max(0, Math.abs(prevDelta - currDelta) - diffCurrent.hitWindowGreat * 0.3) /
+            (diffCurrent.hitWindowGreat * 0.3),
         );
 
         windowPenalty = Math.min(1, windowPenalty);
@@ -174,21 +175,27 @@ export function calculateSpeedStrains(
       // though)
     })();
 
-    currentStrain *= strainDecay(diffCurrent.deltaTime);
-    currentStrain += strainValueOf * skillMultiplier;
+    currentStrain *= strainDecay(diffCurrent.strainTime);
+    currentStrain += speedEvaluateDifficultyOf * skillMultiplier;
 
-    strains.push(currentStrain * currentRhythm);
+    const totalStrain = currentStrain * currentRhythm;
+    strains.push(totalStrain);
   }
   return strains;
 }
 
-export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], hitWindowGreat: number, onlyFinalValue: boolean) {
-  const strains = calculateSpeedStrains(hitObjects, diffs, hitWindowGreat);
-  return calculateDifficultyValues(diffs, strains, {
-    decayWeight: 0.9,
-    difficultyMultiplier: 1.04,
-    sectionDuration: 400,
-    reducedSectionCount: 5,
-    strainDecay,
-  }, onlyFinalValue);
+export function calculateSpeed(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], onlyFinalValue: boolean) {
+  const strains = calculateSpeedStrains(hitObjects, diffs);
+  return calculateDifficultyValues(
+    diffs,
+    strains,
+    {
+      decayWeight: 0.9,
+      difficultyMultiplier: 1.04,
+      sectionDuration: 400,
+      reducedSectionCount: 5,
+      strainDecay,
+    },
+    onlyFinalValue,
+  );
 }

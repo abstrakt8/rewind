@@ -7,6 +7,7 @@ import {
   isSlider,
   isSpinner,
   mostCommonBeatLength,
+  OsuClassicMod,
   OsuHitObject,
   Slider,
 } from "@osujs/core";
@@ -35,22 +36,23 @@ export interface OsuDifficultyHitObject {
   endTime: number;
 
   strainTime: number;
-  jumpDistance: number;
-  movementDistance: number;
-  movementTime: number;
+  lazyJumpDistance: number;
+  minimumJumpTime: number;
+  minimumJumpDistance: number;
   travelDistance: number;
   travelTime: number;
   angle: number | null;
+  hitWindowGreat: number;
 }
 
-// TODO: Utilitiy functions?
+// TODO: Utility functions?
 const startTime = (o: OsuHitObject) => (isHitCircle(o) ? o.hitTime : o.startTime);
 const endTime = (o: OsuHitObject) => (isHitCircle(o) ? o.hitTime : o.endTime);
 const position = (o: HitCircle | Slider) => (isHitCircle(o) ? o.position : o.head.position);
 
-const normalised_radius = 50.0;
-const maximum_slider_radius = normalised_radius * 2.4;
-const assumed_slider_radius = normalised_radius * 1.8;
+const NORMALISED_RADIUS = 50.0;
+const maximum_slider_radius = NORMALISED_RADIUS * 2.4;
+const assumed_slider_radius = NORMALISED_RADIUS * 1.8;
 
 function computeSliderCursorPosition(slider: Slider) {
   const lazyTravelTime = slider.checkPoints[slider.checkPoints.length - 1].hitTime - slider.startTime;
@@ -58,13 +60,12 @@ function computeSliderCursorPosition(slider: Slider) {
   let lazyTravelDistance = 0;
 
   let endTimeMin = lazyTravelTime / slider.spanDuration;
-  // TODO: Control this code again
   if (endTimeMin % 2 >= 1) endTimeMin = 1 - (endTimeMin % 1);
   else endTimeMin %= 1;
   // temporary lazy end position until a real result can be derived.
   let lazyEndPosition = Vec2.add(slider.startPosition, slider.path.positionAt(endTimeMin)) as Position;
   let currCursorPosition = slider.startPosition;
-  const scalingFactor = normalised_radius / slider.radius; // lazySliderDistance is coded to be sensitive to scaling,
+  const scalingFactor = NORMALISED_RADIUS / slider.radius; // lazySliderDistance is coded to be sensitive to scaling,
   // this makes the maths easier with the thresholds being
   // used.
 
@@ -75,7 +76,8 @@ function computeSliderCursorPosition(slider: Slider) {
 
     // This is where we have to be very careful due to osu!lazer using their VISUAL RENDERING POSITION instead of
     // JUDGEMENT POSITION for their last tick. bruh
-    const currMovementObjPosition = currMovementObj.type === "LAST_LEGACY_TICK" ? slider.endPosition : currMovementObj.position;
+    const currMovementObjPosition =
+      currMovementObj.type === "LAST_LEGACY_TICK" ? slider.endPosition : currMovementObj.position;
 
     let currMovement = Vec2.sub(currMovementObjPosition, currCursorPosition);
     let currMovementLength = scalingFactor * currMovement.length();
@@ -85,7 +87,7 @@ function computeSliderCursorPosition(slider: Slider) {
 
     if (i === numCheckPoints - 1) {
       // The end of a slider has special aim rules due to the relaxed time constraint on position.
-      // There is both a lazy end position as well as the actual end slider position. We assume the player takes the
+      // There is both a lazy end position and the actual end slider position. We assume the player takes the
       // simpler movement. For sliders that are circular, the lazy end position may actually be farther away than the
       // sliders true end. This code is designed to prevent buffing situations where lazy end is actually a less
       // efficient movement.
@@ -96,7 +98,7 @@ function computeSliderCursorPosition(slider: Slider) {
       currMovementLength = scalingFactor * currMovement.length();
     } else if (currMovementObj.type === "REPEAT") {
       // For a slider repeat, assume a tighter movement threshold to better assess repeat sliders.
-      requiredMovement = normalised_radius;
+      requiredMovement = NORMALISED_RADIUS;
     }
 
     if (currMovementLength > requiredMovement) {
@@ -104,7 +106,7 @@ function computeSliderCursorPosition(slider: Slider) {
       // currCursorPosition accordingly, as well as rewarding distance.
       currCursorPosition = Vec2.add(
         currCursorPosition,
-        Vec2.scale(currMovement, float32_div((currMovementLength - requiredMovement), currMovementLength)),
+        Vec2.scale(currMovement, float32_div(currMovementLength - requiredMovement, currMovementLength)),
       );
       currMovementLength *= (currMovementLength - requiredMovement) / currMovementLength;
       lazyTravelDistance = float32_add(lazyTravelDistance, currMovementLength);
@@ -113,24 +115,17 @@ function computeSliderCursorPosition(slider: Slider) {
     if (i === numCheckPoints - 1) lazyEndPosition = currCursorPosition;
   }
 
-  lazyTravelDistance = float32_mul(lazyTravelDistance, Math.pow(1 + slider.repeatCount / 2.5, 1.0 / 2.5)); // Bonus for
-                                                                                                           // repeat
-                                                                                                           // sliders
-                                                                                                           // until a
-                                                                                                           // better
-  // per nested object strain system can be
-  // achieved.
-
   return { lazyTravelTime, lazyTravelDistance, lazyEndPosition };
 }
 
 const defaultOsuDifficultyHitObject = (): OsuDifficultyHitObject => ({
+  hitWindowGreat: 0,
   deltaTime: 0,
   travelTime: 0,
   travelDistance: 0,
-  jumpDistance: 0,
-  movementDistance: 0,
-  movementTime: 0,
+  minimumJumpDistance: 0,
+  minimumJumpTime: 0,
+  lazyJumpDistance: 0,
   strainTime: 0,
   endTime: 0,
   startTime: 0,
@@ -140,12 +135,16 @@ const defaultOsuDifficultyHitObject = (): OsuDifficultyHitObject => ({
 /**
  * Returns n OsuDifficultyHitObjects where the first one is a dummy value
  */
-function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: number): OsuDifficultyHitObject[] {
+function preprocessDifficultyHitObject(
+  hitObjects: OsuHitObject[],
+  { clockRate, overallDifficulty }: { clockRate: number; overallDifficulty: number },
+): OsuDifficultyHitObject[] {
   const difficultyHitObjects: OsuDifficultyHitObject[] = [defaultOsuDifficultyHitObject()];
   const min_delta_time = 25;
 
   const clockAdjusted = (x: number) => x / clockRate;
-
+  // The full hit window for "Great"
+  const hitWindowGreat = clockAdjusted(2 * overallDifficultyToHitWindowGreat(overallDifficulty));
   // Caching for the sliders
   const sliderCursorPosition: Record<string, ReturnType<typeof computeSliderCursorPosition>> = {};
 
@@ -162,6 +161,7 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
     const current = hitObjects[i];
 
     const difficultyHitObject = (function calculateDifficultyHitObject() {
+      // OsuDifficultyHitObject#Constructor
       const result = defaultOsuDifficultyHitObject();
       result.startTime = clockAdjusted(startTime(current));
       result.endTime = clockAdjusted(endTime(current));
@@ -169,11 +169,19 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
 
       const strainTime = Math.max(result.deltaTime, min_delta_time);
       result.strainTime = strainTime;
+      result.hitWindowGreat = hitWindowGreat;
 
+      // setDistances(clockRate)
+      if (isSlider(current)) {
+        const { lazyTravelDistance, lazyTravelTime } = computeSliderCursorPosition(current);
+        // Bonus for repeat sliders until a better per nested object strain system can be achieved.
+        result.travelDistance = lazyTravelDistance * Math.pow(1 + current.repeatCount / 2.5, 1.0 / 2.5);
+        result.travelTime = Math.max(lazyTravelTime / clockRate, min_delta_time);
+      }
       if (isSpinner(current) || isSpinner(last)) return result;
 
       // float
-      let scalingFactor = float32_div(normalised_radius, current.radius);
+      let scalingFactor = float32_div(NORMALISED_RADIUS, current.radius);
       // Now current is either HitCircle or Slider
 
       if (current.radius < 30) {
@@ -189,28 +197,27 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
 
       const lastCursorPosition = getEndCursorPosition(last);
       // sqrt((x1*c-x2*c)^2+(y1*c-y2*c)^2) = sqrt(c^2 (x1-x2)^2 + c^2 (y1-y2)^2) = c * dist((x1,y1),(x2,y2))
-      result.jumpDistance = Vec2.distance(Vec2.scale(position(current), scalingFactor), Vec2.scale(lastCursorPosition, scalingFactor));
+      result.lazyJumpDistance = Vec2.distance(
+        Vec2.scale(position(current), scalingFactor),
+        Vec2.scale(lastCursorPosition, scalingFactor),
+      );
+      result.minimumJumpTime = strainTime;
+      result.minimumJumpDistance = result.lazyJumpDistance;
 
       if (isSlider(last)) {
         // No need to store into the Slider object!
         const { lazyTravelTime: lastSliderLazyTravelTime, lazyTravelDistance: lastSliderLazyTravelDistance } =
           computeSliderCursorPositionIfNeeded(last);
-        result.travelDistance = lastSliderLazyTravelDistance;
-        result.travelTime = Math.max(lastSliderLazyTravelTime / clockRate, min_delta_time);
-        result.movementTime = Math.max(strainTime - result.travelTime, min_delta_time);
-
-        // tailCircle.StackedPosition
+        const lastTravelTime = Math.max(clockAdjusted(lastSliderLazyTravelTime), min_delta_time);
+        result.minimumJumpTime = Math.max(strainTime - lastTravelTime, min_delta_time);
         const tailJumpDistance = float32(Vec2.distance(last.endPosition, position(current)) * scalingFactor);
-        result.movementDistance = Math.max(
+        result.minimumJumpDistance = Math.max(
           0,
           Math.min(
-            result.jumpDistance - (maximum_slider_radius - assumed_slider_radius),
+            result.lazyJumpDistance - (maximum_slider_radius - assumed_slider_radius),
             tailJumpDistance - maximum_slider_radius,
           ),
         );
-      } else {
-        result.movementTime = strainTime;
-        result.movementDistance = result.jumpDistance;
       }
 
       if (lastLast !== undefined && !isSpinner(lastLast)) {
@@ -233,6 +240,7 @@ function preprocessDifficultyHitObject(hitObjects: OsuHitObject[], clockRate: nu
 export interface DifficultyAttributes {
   aimDifficulty: number;
   speedDifficulty: number;
+  speedNoteCount: number;
   flashlightDifficulty: number;
   sliderFactor: number;
 
@@ -271,6 +279,8 @@ function determineMaxCombo(hitObjects: OsuHitObject[]) {
   return { maxCombo, hitCircleCount, sliderCount, spinnerCount };
 }
 
+// This is being adjusted to keep the final pp value scaled around what it used to be when changing things.
+export const PERFORMANCE_BASE_MULTIPLIER = 1.14;
 const DIFFICULTY_MULTIPLIER = 0.0675;
 
 const speedAdjustedAR = (AR: number, clockRate: number) =>
@@ -284,14 +294,18 @@ export function calculateDifficultyAttributes(
   onlyFinalValue: boolean,
 ) {
   const clockRate = determineDefaultPlaybackSpeed(mods);
-  const diffs = preprocessDifficultyHitObject(hitObjects, clockRate);
+  const diffs = preprocessDifficultyHitObject(hitObjects, {
+    clockRate,
+    overallDifficulty: difficulty.overallDifficulty,
+  });
 
-  const hitWindowGreat = hitWindowsForOD(difficulty.overallDifficulty, true)[0] / clockRate;
+  const hasHiddenMod = mods.includes("HIDDEN");
 
   const aimValues = calculateAim(hitObjects, diffs, true, onlyFinalValue);
   const aimValuesNoSliders = calculateAim(hitObjects, diffs, false, onlyFinalValue);
-  const speedValues = calculateSpeed(hitObjects, diffs, hitWindowGreat, onlyFinalValue);
-  const flashlightValues = calculateFlashlight(hitObjects, diffs, onlyFinalValue);
+  const speedValues = calculateSpeed(hitObjects, diffs, onlyFinalValue);
+  const speedNotes = 0; // TODO
+  const flashlightValues = calculateFlashlight(hitObjects, diffs, { hasHiddenMod }, onlyFinalValue);
 
   // Static values
   const { hitCircleCount, sliderCount, spinnerCount, maxCombo } = determineMaxCombo(hitObjects);
@@ -302,14 +316,23 @@ export function calculateDifficultyAttributes(
 
   const attributes: DifficultyAttributes[] = [];
   for (let i = 0; i < aimValues.length; i++) {
-    const aimRating = Math.sqrt(aimValues[i]) * DIFFICULTY_MULTIPLIER;
+    let aimRating = Math.sqrt(aimValues[i]) * DIFFICULTY_MULTIPLIER;
     const aimRatingNoSliders = Math.sqrt(aimValuesNoSliders[i]) * DIFFICULTY_MULTIPLIER;
     let speedRating = Math.sqrt(speedValues[i]) * DIFFICULTY_MULTIPLIER;
-    const flashlightRating = Math.sqrt(flashlightValues[i]) * DIFFICULTY_MULTIPLIER;
+    let flashlightRating = Math.sqrt(flashlightValues[i]) * DIFFICULTY_MULTIPLIER;
 
     const sliderFactor = aimRating > 0 ? aimRatingNoSliders / aimRating : 1;
+
+    // TODO: TouchDevice mod?
+    if (mods.includes("TOUCH_DEVICE" as OsuClassicMod)) {
+      aimRating = Math.pow(aimRating, 0.8);
+      flashlightRating = Math.pow(flashlightRating, 0.8);
+    }
+
     if (mods.includes("RELAX")) {
+      aimRating *= 0.9;
       speedRating = 0;
+      flashlightRating *= 0.7;
     }
     const baseAimPerformance = Math.pow(5 * Math.max(1, aimRating / 0.0675) - 4, 3) / 100000;
     const baseSpeedPerformance = Math.pow(5 * Math.max(1, speedRating / 0.0675) - 4, 3) / 100000;
@@ -319,24 +342,30 @@ export function calculateDifficultyAttributes(
 
     const basePerformance = Math.pow(
       Math.pow(baseAimPerformance, 1.1) +
-      Math.pow(baseSpeedPerformance, 1.1) +
-      Math.pow(baseFlashlightPerformance, 1.1),
+        Math.pow(baseSpeedPerformance, 1.1) +
+        Math.pow(baseFlashlightPerformance, 1.1),
       1.0 / 1.1,
     );
 
     const starRating =
       basePerformance > 0.00001
-        ? Math.cbrt(1.12) * 0.027 * (Math.cbrt((100000 / Math.pow(2, 1 / 1.1)) * basePerformance) + 4)
+        ? Math.cbrt(PERFORMANCE_BASE_MULTIPLIER) *
+          0.027 *
+          (Math.cbrt((100000 / Math.pow(2, 1 / 1.1)) * basePerformance) + 4)
         : 0;
 
     attributes.push({
       aimDifficulty: aimRating,
       speedDifficulty: speedRating,
+      speedNoteCount: speedNotes,
       flashlightDifficulty: flashlightRating,
       sliderFactor,
       starRating,
       // These are actually redundant but idc
-      hitCircleCount, sliderCount, spinnerCount, maxCombo,
+      hitCircleCount,
+      sliderCount,
+      spinnerCount,
+      maxCombo,
       overallDifficulty,
       approachRate,
       mostCommonBPM,

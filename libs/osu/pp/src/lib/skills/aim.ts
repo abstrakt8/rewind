@@ -4,11 +4,11 @@ import { OsuDifficultyHitObject } from "../diff";
 import { calculateDifficultyValues } from "./strain";
 
 const wide_angle_multiplier = 1.5;
-const acute_angle_multiplier = 2.0;
-const slider_multiplier = 1.5;
+const acute_angle_multiplier = 1.95;
+const slider_multiplier = 1.35;
 const velocity_change_multiplier = 0.75;
 
-const skillMultiplier = 23.25;
+const skillMultiplier = 23.55;
 
 const strainDecayBase = 0.15;
 const strainDecay = (ms: number) => Math.pow(strainDecayBase, ms / 1000);
@@ -44,18 +44,18 @@ function calculateAimStrains(
       // We need at least three non-dummy elements for this calculation
       if (i <= 2 || isSpinner(current) || isSpinner(last)) return 0;
 
-      let currVelocity = diffCurrent.jumpDistance / diffCurrent.strainTime;
+      let currVelocity = diffCurrent.lazyJumpDistance / diffCurrent.strainTime;
 
       if (isSlider(last) && withSliders) {
-        const movementVelocity = diffCurrent.movementDistance / diffCurrent.movementTime;
-        const travelVelocity = diffCurrent.travelDistance / diffCurrent.travelTime;
+        const travelVelocity = diffLast.travelDistance / diffLast.travelTime;
+        const movementVelocity = diffCurrent.minimumJumpDistance / diffCurrent.minimumJumpTime;
         currVelocity = Math.max(currVelocity, movementVelocity + travelVelocity);
       }
 
-      let prevVelocity = diffLast.jumpDistance / diffLast.strainTime;
+      let prevVelocity = diffLast.lazyJumpDistance / diffLast.strainTime;
       if (isSlider(lastLast) && withSliders) {
-        const movementVelocity = diffLast.movementDistance / diffLast.movementTime;
-        const travelVelocity = diffLast.travelDistance / diffLast.travelTime;
+        const travelVelocity = diffLastLast.travelDistance / diffLastLast.travelTime;
+        const movementVelocity = diffLast.minimumJumpDistance / diffLast.minimumJumpTime;
         prevVelocity = Math.max(prevVelocity, movementVelocity + travelVelocity);
       }
       let wideAngleBonus = 0;
@@ -89,7 +89,7 @@ function calculateAimStrains(
               calcAcuteAngleBonus(lastAngle) *
               Math.min(angleBonus, 125 / diffCurrent.strainTime) *
               Math.pow(Math.sin((Math.PI / 2) * Math.min(1, (100 - diffCurrent.strainTime) / 25)), 2) *
-              Math.pow(Math.sin(((Math.PI / 2) * (clamp(diffCurrent.jumpDistance, 50, 100) - 50)) / 50), 2);
+              Math.pow(Math.sin(((Math.PI / 2) * (clamp(diffCurrent.lazyJumpDistance, 50, 100) - 50)) / 50), 2);
           }
 
           // Penalize wide angles if they're repeated, reducing the penalty as the lastAngle gets more acute.
@@ -104,8 +104,8 @@ function calculateAimStrains(
       if (Math.max(prevVelocity, currVelocity) !== 0) {
         // We want to use the average velocity over the whole object when awarding differences, not the individual jump
         // and slider path velocities.
-        prevVelocity = (diffLast.jumpDistance + diffLast.travelDistance) / diffLast.strainTime;
-        currVelocity = (diffCurrent.jumpDistance + diffCurrent.travelDistance) / diffCurrent.strainTime;
+        prevVelocity = (diffLast.lazyJumpDistance + diffLastLast.travelDistance) / diffLast.strainTime;
+        currVelocity = (diffCurrent.lazyJumpDistance + diffLast.travelDistance) / diffCurrent.strainTime;
 
         // Scale with ratio of difference compared to 0.5 * max dist.
         const distRatio = Math.pow(
@@ -119,17 +119,8 @@ function calculateAimStrains(
           Math.abs(prevVelocity - currVelocity),
         );
 
-        // Reward for % distance slowed down compared to previous, paying attention to not award overlap
-        const nonOverlapVelocityBuff =
-          Math.abs(prevVelocity - currVelocity) *
-          // do not award overlap
-          Math.pow(
-            Math.sin((Math.PI / 2) * Math.min(1, Math.min(diffCurrent.jumpDistance, diffLast.jumpDistance) / 100)),
-            2,
-          );
-
         // Choose the largest bonus, multiplied by ratio.
-        velocityChangeBonus = Math.max(overlapVelocityBuff, nonOverlapVelocityBuff) * distRatio;
+        velocityChangeBonus = overlapVelocityBuff * distRatio;
 
         // Penalize for rhythm changes.
         velocityChangeBonus *= Math.pow(
@@ -138,9 +129,9 @@ function calculateAimStrains(
         );
       }
 
-      if (diffCurrent.travelTime !== 0) {
+      if (isSlider(last)) {
         // Reward sliders based on velocity.
-        sliderBonus = diffCurrent.travelDistance / diffCurrent.travelTime;
+        sliderBonus = diffLast.travelDistance / diffLast.travelTime;
       }
 
       // Add in acute angle bonus or wide angle bonus + velocity change bonus, whichever is larger.
@@ -162,13 +153,23 @@ function calculateAimStrains(
   return strains;
 }
 
-export function calculateAim(hitObjects: OsuHitObject[], diffs: OsuDifficultyHitObject[], withSliders: boolean, onlyFinalValue: boolean) {
+export function calculateAim(
+  hitObjects: OsuHitObject[],
+  diffs: OsuDifficultyHitObject[],
+  withSliders: boolean,
+  onlyFinalValue: boolean,
+) {
   const strains = calculateAimStrains(hitObjects, diffs, withSliders);
-  return calculateDifficultyValues(diffs, strains, {
-    decayWeight: 0.9,
-    difficultyMultiplier: 1.06,
-    sectionDuration: 400,
-    reducedSectionCount: 10,
-    strainDecay,
-  }, onlyFinalValue);
+  return calculateDifficultyValues(
+    diffs,
+    strains,
+    {
+      decayWeight: 0.9,
+      difficultyMultiplier: 1.06,
+      sectionDuration: 400,
+      reducedSectionCount: 10,
+      strainDecay,
+    },
+    onlyFinalValue,
+  );
 }
