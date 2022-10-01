@@ -119,7 +119,7 @@ function opacityAt(
 
   if (hidden) {
     const fadeOutStartTime = startTime(hitObject) - timePreempt + timeFadeIn;
-    const fadeOutDuration = timePreempt + ModHiddenConstants.FADE_OUT_DURATION_MULTIPLIER;
+    const fadeOutDuration = timePreempt * ModHiddenConstants.FADE_OUT_DURATION_MULTIPLIER;
     return Math.min(
       clamp((time - fadeInStartTime) / fadeInDuration, 0.0, 1.0),
       1.0 - clamp((time - fadeOutStartTime) / fadeOutDuration, 0.0, 1.0),
