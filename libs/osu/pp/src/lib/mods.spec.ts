@@ -1,6 +1,4 @@
-// import {normalizeModsForSRCalculation} from "../src/utils/calc";
-
-import { normalizeModsForSR } from "@osujs/pp";
+import { normalizeModsForSR } from "./mods";
 
 describe("Mods reduction", function () {
   it("FL,HD -> HD,FL", function () {
