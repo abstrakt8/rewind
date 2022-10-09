@@ -40,7 +40,7 @@ Building
 
 ```bash
 yarn install
-yarn desktop:build
+yarn run build
 ```
 
 Developing
@@ -49,13 +49,13 @@ Developing
 First start the `desktop-frontend` to expose the frontend on port 4200 with "Hot Reloading" enabled.
 
 ```bash
-yarn desktop-frontend:dev
+yarn run desktop-frontend:dev
 ```
 
 Then start the Electron application:
 
 ```bash
-yarn desktop-main:dev
+yarn run desktop-main:dev
 ```
 
 If you make a change in the `desktop-main` package, you will need to rerun the command above again.
