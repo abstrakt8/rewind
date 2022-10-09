@@ -15,7 +15,7 @@ export function difficultyRange(difficulty: number, min: number, mid: number, ma
 }
 
 // Minimum preempt time at AR=10
-const PREEMPT_MIN = 450;
+export const PREEMPT_MIN = 450;
 
 /**
  * Returns the approach duration depending on the abstract AR value.

@@ -24,6 +24,10 @@ export function resourcesPath(file: string) {
   return join(getRewindTestDir(), "osujs", file);
 }
 
+export function osuTestData(file: string) {
+  return join(getRewindTestDir(), "osu-testdata", file);
+}
+
 // Move to osu core
 export function translateModAcronym(acronym: string): OsuClassicMod {
   switch (acronym) {
@@ -43,6 +47,8 @@ export function translateModAcronym(acronym: string): OsuClassicMod {
       return "NO_FAIL";
     case "SO":
       return "SPUN_OUT";
+    case "RX":
+      return "RELAX";
   }
   throw Error(`Acronym ${acronym} not known`);
 }
