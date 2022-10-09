@@ -26,7 +26,7 @@ Basics
 
 Install the following:
 
-* Node.js v16.4.2 (e.g. with `nvm`)
+* Latest Node.js LTS version (e.g. `nvm install --lts`)
 * [`git-lfs`](https://git-lfs.github.com/) for the test data in `testdata/`
 
 
