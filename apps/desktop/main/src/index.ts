@@ -259,7 +259,7 @@ function createMenu(osuFolder: string | null) {
         {
           label: "Documentation",
           click: async () => {
-            await shell.openExternal("https://github.com/abstrakt8/rewind/wiki");
+            await shell.openExternal("https://rewind.abstrakt.sh/docs/intro");
           },
         },
         {
