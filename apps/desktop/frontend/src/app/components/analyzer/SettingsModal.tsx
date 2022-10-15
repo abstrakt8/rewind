@@ -2,6 +2,7 @@ import { useSettingsModalContext } from "../../providers/SettingsProvider";
 import {
   Autocomplete,
   Box,
+  Button,
   FormControlLabel,
   FormGroup,
   Modal,
@@ -23,6 +24,7 @@ import { DEFAULT_BEATMAP_RENDER_SETTINGS } from "../../services/common/beatmap-r
 import { DEFAULT_SKIN_SETTINGS } from "../../services/common/skin";
 import { DEFAULT_REPLAY_CURSOR_SETTINGS } from "../../services/common/replay-cursor";
 import { DEFAULT_ANALYSIS_CURSOR_SETTINGS } from "../../services/analysis/analysis-cursor";
+import { frontendAPI } from "../../api";
 
 const sourceName: Record<SkinSource, string> = {
   osu: "osu!/Skins Folder",
@@ -202,7 +204,27 @@ function PlaybarSettingsSection() {
   );
 }
 
-function GeneralSettings() {
+function ResetAllSettingsSection() {
+  const resetSettings = useCallback(() => {
+    localStorage.clear();
+    frontendAPI.reboot();
+  }, []);
+  return (
+    <Button variant={"contained"} onClick={resetSettings}>
+      Reset All Settings and Restart
+    </Button>
+  );
+}
+
+function OtherSettings() {
+  return (
+    <Stack p={2} gap={1}>
+      <ResetAllSettingsSection />
+    </Stack>
+  );
+}
+
+function GameplaySettings() {
   return (
     <Stack p={2} gap={1}>
       <ReplayCursorSettingsSection />
@@ -309,11 +331,12 @@ export function SettingsModal() {
           onOpacityChange={onOpacityChange}
           onClose={onClose}
           tabs={[
-            { label: "General", component: <GeneralSettings /> },
+            { label: "Game", component: <GameplaySettings /> },
             {
               label: "Skins",
               component: <SkinsSettings />,
             },
+            { label: "Other", component: <OtherSettings /> },
           ]}
         />
       </Box>

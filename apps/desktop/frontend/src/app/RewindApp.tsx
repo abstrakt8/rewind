@@ -42,15 +42,17 @@ export function RewindApp() {
       void theater.analyzer.loadReplay(file);
     });
 
-    if (!theater.analyzer.osuFolderService.getOsuFolder()) {
-      console.log("osu! folder was not set, redirecting to the setup screen.");
-      navigate("/setup");
-    } else {
-      console.log(`osu! folder = ${theater.analyzer.osuFolderService.getOsuFolder()}`);
-      console.log(`osu!/Songs folder = ${theater.analyzer.osuFolderService.songsFolder$.getValue()}`);
-      console.log(`osu!/Replays folder = ${theater.analyzer.osuFolderService.replaysFolder$.getValue()}`);
-      navigate("/app/analyzer");
-    }
+    (async function () {
+      if (!(await theater.analyzer.osuFolderService.hasValidOsuFolderSet())) {
+        console.log("osu! folder was not set, redirecting to the setup screen.");
+        navigate("/setup");
+      } else {
+        console.log(`osu! folder = ${theater.analyzer.osuFolderService.getOsuFolder()}`);
+        console.log(`osu!/Songs folder = ${theater.analyzer.osuFolderService.songsFolder$.getValue()}`);
+        console.log(`osu!/Replays folder = ${theater.analyzer.osuFolderService.replaysFolder$.getValue()}`);
+        navigate("/app/analyzer");
+      }
+    })();
 
     if (ELECTRON_UPDATE_FLAG) {
       frontendAPI.onUpdateAvailable((version) => {

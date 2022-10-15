@@ -64,6 +64,7 @@ export function BaseSettingsModal(props: SettingsProps) {
             <Tab label={label} key={index} tabIndex={index} sx={{ textTransform: "none" }} />
           ))}
         </Tabs>
+        {/*TODO: For example this should not (?) be hardcoded */}
         <Box sx={{ marginLeft: "90px" }}>{displayedTab}</Box>
       </Stack>
       <Divider />

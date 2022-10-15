@@ -73,4 +73,8 @@ export class OsuFolderService extends PersistentService<OsuSettings> {
   async isValidOsuFolder(directoryPath: string) {
     return osuFolderSanityCheck(directoryPath);
   }
+
+  async hasValidOsuFolderSet(): Promise<boolean> {
+    return this.isValidOsuFolder(this.getOsuFolder());
+  }
 }
