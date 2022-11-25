@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import { Position } from "@osujs/math";
-import { getBlueprintFromTestDir, resourcesPath } from "../util";
+import { getBlueprintFromTestDir, osuTestData } from "../util";
 import { buildBeatmap, Slider } from "@osujs/core";
 import { toMatchObjectCloseTo } from "jest-match-object-close-to";
 
@@ -61,7 +61,7 @@ function runTestSuite({ filename, sliders }: Testsuite) {
 }
 
 describe("HitObjects generation", function () {
-  const data = readFileSync(resourcesPath("hitobjects.json"), "utf-8");
+  const data = readFileSync(osuTestData("out/hitobjects.json"), "utf-8");
   const json = JSON.parse(data) as Testsuite[];
   json.forEach(runTestSuite);
 });

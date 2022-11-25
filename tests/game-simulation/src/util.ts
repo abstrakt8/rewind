@@ -20,10 +20,6 @@ export function blueprintPath(file: string) {
   return join(getRewindTestDir(), "osu!", "Songs", file);
 }
 
-export function resourcesPath(file: string) {
-  return join(getRewindTestDir(), "osujs", file);
-}
-
 export function osuTestData(file: string) {
   return join(getRewindTestDir(), "osu-testdata", file);
 }
