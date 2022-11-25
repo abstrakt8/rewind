@@ -39,9 +39,12 @@ export const AudioSettingsSchema: JSONSchemaType<AudioSettings> = {
 
 @injectable()
 export class AudioSettingsStore extends PersistentService<AudioSettings> {
-  defaultValue = DEFAULT_AUDIO_SETTINGS;
   key = "audio-settings";
   schema = AudioSettingsSchema;
+
+  getDefaultValue(): AudioSettings {
+    return DEFAULT_AUDIO_SETTINGS;
+  }
 
   toggleMuted() {
     this.changeSettings((d) => (d.muted = !d.muted));

@@ -29,7 +29,10 @@ export const ReplayCursorSettingsSchema: JSONSchemaType<ReplayCursorSettings> = 
 
 @injectable()
 export class ReplayCursorSettingsStore extends PersistentService<ReplayCursorSettings> {
-  defaultValue = DEFAULT_REPLAY_CURSOR_SETTINGS;
   key = "replay-cursor";
   schema = ReplayCursorSettingsSchema;
+
+  getDefaultValue(): ReplayCursorSettings {
+    return DEFAULT_REPLAY_CURSOR_SETTINGS;
+  }
 }

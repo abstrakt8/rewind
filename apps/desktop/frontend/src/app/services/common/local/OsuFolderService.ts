@@ -45,7 +45,6 @@ export class OsuFolderService extends PersistentService<OsuSettings> {
   public replaysFolder$ = new BehaviorSubject<string>("");
   public songsFolder$ = new BehaviorSubject<string>("");
 
-  defaultValue = DEFAULT_OSU_SETTINGS;
   key = "osu-settings";
   schema = OsuSettingsSchema;
 
@@ -54,7 +53,12 @@ export class OsuFolderService extends PersistentService<OsuSettings> {
     this.settings$.subscribe(this.onFolderChange.bind(this));
   }
 
-  async onFolderChange({ osuStablePath }: OsuSettings) {
+  getDefaultValue(): OsuSettings {
+    return DEFAULT_OSU_SETTINGS;
+  }
+
+  async onFolderChange(osuSettings: OsuSettings) {
+    const { osuStablePath } = osuSettings;
     ipcRenderer.send("osuFolderChanged", osuStablePath);
     this.replaysFolder$.next(join(osuStablePath, "Replays"));
     const userId = await username();

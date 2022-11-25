@@ -26,7 +26,10 @@ export const SkinSettingsSchema: JSONSchemaType<SkinSettings> = {
 export class SkinSettingsStore extends PersistentService<SkinSettings> {
   key = "Skin";
   schema = SkinSettingsSchema;
-  defaultValue = DEFAULT_SKIN_SETTINGS;
+
+  getDefaultValue(): SkinSettings {
+    return DEFAULT_SKIN_SETTINGS;
+  }
 
   setPreferredSkinId(preferredSkinId: string) {
     this.changeSettings((s) => (s.preferredSkinId = preferredSkinId));

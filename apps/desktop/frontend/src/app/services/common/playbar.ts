@@ -20,7 +20,10 @@ export const PlaybarSettingsSchema: JSONSchemaType<PlaybarSettings> = {
 
 @injectable()
 export class PlaybarSettingsStore extends PersistentService<PlaybarSettings> {
-  defaultValue = DEFAULT_PLAY_BAR_SETTINGS;
   key = "playbar";
   schema = PlaybarSettingsSchema;
+
+  getDefaultValue(): PlaybarSettings {
+    return DEFAULT_PLAY_BAR_SETTINGS;
+  }
 }

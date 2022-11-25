@@ -25,9 +25,11 @@ export const BeatmapRenderSettingsSchema: JSONSchemaType<BeatmapRenderSettings> 
 @injectable()
 export class BeatmapRenderService extends PersistentService<BeatmapRenderSettings> {
   key = "beatmap-render";
-  defaultValue = DEFAULT_BEATMAP_RENDER_SETTINGS;
   schema = BeatmapRenderSettingsSchema;
 
+  getDefaultValue(): BeatmapRenderSettings {
+    return DEFAULT_BEATMAP_RENDER_SETTINGS;
+  }
   setSliderDevMode(sliderDevMode: boolean) {
     this.changeSettings((draft) => (draft.sliderDevMode = sliderDevMode));
   }

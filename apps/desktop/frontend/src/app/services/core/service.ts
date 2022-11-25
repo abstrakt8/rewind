@@ -9,15 +9,12 @@ import { debounceTime } from "rxjs/operators";
 @injectable()
 export abstract class StatefulService<T> {
   settings$: BehaviorSubject<T>;
-  abstract defaultValue: T;
 
   constructor() {
     this.settings$ = new BehaviorSubject<T>(this.getDefaultValue());
   }
 
-  getDefaultValue(): T {
-    return this.defaultValue;
-  }
+  abstract getDefaultValue(): T;
 
   getSettings() {
     return this.settings;
@@ -53,7 +50,7 @@ export abstract class PersistentService<T> extends StatefulService<T> {
 
   @postConstruct()
   init() {
-    const localStorageLoader = new LocalStorageLoader<T>(this.key, this.schema, this.defaultValue);
+    const localStorageLoader = new LocalStorageLoader<T>(this.key, this.schema, this.getDefaultValue());
     this.settings$.next(localStorageLoader.loadFromLocalStorage());
     this.settings$.pipe(debounceTime(DEBOUNCE_TIME_IN_MS)).subscribe((s) => {
       // Store the serialized version into the LocalStorage

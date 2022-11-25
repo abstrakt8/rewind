@@ -38,7 +38,9 @@ export const AnalysisCursorSettingsSchema: JSONSchemaType<AnalysisCursorSettings
 export class AnalysisCursorSettingsStore extends PersistentService<AnalysisCursorSettings> {
   key = "analysis-cursor";
   schema: JSONSchemaType<AnalysisCursorSettings> = AnalysisCursorSettingsSchema;
-  defaultValue: AnalysisCursorSettings = DEFAULT_ANALYSIS_CURSOR_SETTINGS;
+  getDefaultValue(): AnalysisCursorSettings {
+    return DEFAULT_ANALYSIS_CURSOR_SETTINGS;
+  }
 
   setEnabled(enabled: boolean) {
     this.changeSettings((s) => (s.enabled = enabled));

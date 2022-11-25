@@ -25,5 +25,8 @@ export const HitErrorBarSettingsSchema: JSONSchemaType<HitErrorBarSettings> = {
 export class HitErrorBarSettingsStore extends PersistentService<HitErrorBarSettings> {
   key = "hit-error";
   schema = HitErrorBarSettingsSchema;
-  defaultValue = DEFAULT_HIT_ERROR_BAR_SETTINGS;
+
+  getDefaultValue() {
+    return DEFAULT_HIT_ERROR_BAR_SETTINGS;
+  }
 }

@@ -31,12 +31,15 @@ export const BeatmapBackgroundSettingsSchema: JSONSchemaType<BeatmapBackgroundSe
 
 @injectable()
 export class BeatmapBackgroundSettingsStore extends PersistentService<BeatmapBackgroundSettings> {
-  defaultValue = DEFAULT_BEATMAP_BACKGROUND_SETTINGS;
   key = "beatmap-background";
   schema = BeatmapBackgroundSettingsSchema;
 
   // TODO: Move?
   texture$ = new BehaviorSubject<Texture>(Texture.EMPTY);
+
+  getDefaultValue(): BeatmapBackgroundSettings {
+    return DEFAULT_BEATMAP_BACKGROUND_SETTINGS;
+  }
 
   get texture() {
     return this.texture$.getValue();
