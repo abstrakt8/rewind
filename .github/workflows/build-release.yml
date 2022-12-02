@@ -13,16 +13,17 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Checkout LFS objects
+        run: git lfs checkout
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
           node-version: 16.9.1
-
-      - run: yarn
-      - name: Downloading and unzipping the default Rewind skin
-        run: yarn run downloadDefaultSkins
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
