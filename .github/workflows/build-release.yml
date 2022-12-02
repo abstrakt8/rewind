@@ -12,13 +12,8 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
-        with:
-          lfs: true
-
-      - name: Checkout LFS objects
-        run: git lfs checkout
+      - name: Checkout code
+        uses: nschloe/action-cached-lfs-checkout@v1
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v3
