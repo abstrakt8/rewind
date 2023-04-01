@@ -1,0 +1,3 @@
+[submodule "testdata/osu-testdata"]
+	path = testdata/osu-testdata
+	url = https://github.com/abstrakt8/osu-testdata

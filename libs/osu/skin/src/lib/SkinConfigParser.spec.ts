@@ -178,7 +178,7 @@ ColumnWidth: 30,30,30,30,30,30,30,30
   `;
 
   const skinIni = parseSkinIni(data);
-  const { general, colors, fonts } = skinIni;
+  const { general, colors } = skinIni;
 
   expect(general.name).toEqual("Millhiore Lite");
 

@@ -5,6 +5,7 @@
     "oneClick": false,
     "allowToChangeInstallationDirectory": true
   },
+  "generateUpdatesFilesForAllChannels": true,
   "directories": {
     "output": "dist/electron",
     "buildResources": "tools/electron-builder/build-resources",
@@ -12,36 +13,19 @@
   },
   "files": [
     {
-      "from": "dist/apps/rewind-electron",
-      "to": "rewind-electron",
+      "from": "dist/apps/desktop",
       "filter": [
-        "main.js",
-        "preload.js",
+        "index.js",
         "assets"
       ]
     },
     {
-      "from": "dist/apps/desktop-frontend",
-      "to": "desktop-frontend"
+      "from": "dist/apps/desktop/frontend",
+      "to": "frontend"
     },
     {
-      "from": "dist/apps/desktop-backend",
-      "to": "desktop-backend"
-    },
-    {
-      "from": "dist/apps/desktop-backend-preload",
-      "to": "desktop-backend-preload"
-    },
-    {
-      "from": "dist/apps/desktop-frontend-preload",
-      "to": "desktop-frontend-preload"
-    },
-    {
-      "from": "tools/electron-builder",
-      "to": "",
-      "filter": [
-        "index.js"
-      ]
+      "from": "dist/apps/desktop/backend",
+      "to": "backend"
     },
     "package.json"
   ],

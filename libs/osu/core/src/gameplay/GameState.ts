@@ -1,4 +1,4 @@
-import { Position, Vec2 } from "@rewind/osu/math";
+import { Position, Vec2 } from "@osujs/math";
 import { MainHitObjectVerdict } from "./Verdicts";
 
 export const NOT_PRESSING = +727727727;

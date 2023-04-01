@@ -5,3 +5,4 @@ export * from "./time";
 export * from "./utils";
 export * from "./sliders";
 export * from "./Vec2";
+export * from "./float32";

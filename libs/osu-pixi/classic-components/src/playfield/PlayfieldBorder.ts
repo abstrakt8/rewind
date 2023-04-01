@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import { circleSizeToScale } from "@rewind/osu/math";
+import { circleSizeToScale } from "@osujs/math";
 import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "../utils/constants";
 
 export interface PlayfieldBorderSettings {

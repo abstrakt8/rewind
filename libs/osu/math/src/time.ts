@@ -38,3 +38,7 @@ export function formatGameTime(timeInMs: number, withMs?: boolean) {
   s = s + addZero(seconds);
   return withMs ? s + "." + addZero(milliseconds, 3) : s;
 }
+
+export function beatLengthToBPM(beatLength: number) {
+  return 60 * 1000 / beatLength;
+}

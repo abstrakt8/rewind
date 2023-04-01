@@ -1,4 +1,4 @@
-import { Position } from "@rewind/osu/math";
+import { Position } from "@osujs/math";
 import { parseBlueprint, parseOsuHitObjectSetting } from "./BlueprintParser";
 import { HitCircleSettings, HitObjectSettingsType, SliderSettings, SpinnerSettings } from "./HitObjectSettings";
 import { PathControlPoint } from "../hitobjects/slider/PathControlPoint";

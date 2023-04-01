@@ -1,4 +1,4 @@
-import { floatEqual } from "@rewind/osu/math";
+import { floatEqual } from "@osujs/math";
 
 export interface Comparable<T> {
   compareTo(t: T): number;

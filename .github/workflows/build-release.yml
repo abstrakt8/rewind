@@ -1,4 +1,4 @@
-name: Build & Release (Windows, Linux)
+name: Build & Release (Windows, Linux, macOS)
 
 on:
   workflow_dispatch
@@ -9,20 +9,17 @@ jobs:
 
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v1
+      - name: Checkout code
+        uses: nschloe/action-cached-lfs-checkout@v1
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
-          node-version: 16.9.1
-
-      - run: yarn
-      - name: Downloading and unzipping the default Rewind skin
-        run: yarn run downloadDefaultSkins
+          node-version: 16
+          cache: 'npm'
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1

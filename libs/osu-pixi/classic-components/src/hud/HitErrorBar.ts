@@ -1,5 +1,5 @@
 import { Container, Sprite, Texture } from "pixi.js";
-import { applyInterpolation, Easing, rgbToInt } from "@rewind/osu/math";
+import { applyInterpolation, Easing, rgbToInt } from "@osujs/math";
 
 type HitEvent = {
   offset: number;

@@ -1,60 +1,148 @@
 {
   "migrations": [
     {
-      "version": "13.0.0-beta.1",
-      "description": "Add default base to nx.json if its not currently set",
-      "factory": "./src/migrations/update-13-0-0/set-default-base-if-not-set",
+      "version": "13.10.0-beta.0",
+      "description": "Update the decorate-angular-cli script to require nx instead of @nrwl/cli",
       "cli": "nx",
+      "implementation": "./src/migrations/update-13-10-0/update-decorate-cli",
       "package": "@nrwl/workspace",
-      "name": "set-default-base-if-not-set"
+      "name": "13-10-0-update-decorate-cli"
     },
     {
-      "version": "13.0.0-beta.4",
-      "description": "Move global settings into nx.json, and project specific settings into workspace.json",
+      "version": "13.10.0-beta.0",
+      "description": "Update the tasks runner property to import it from the nx package instead of @nrwl/worksapce",
       "cli": "nx",
-      "implementation": "./src/migrations/update-13-0-0/config-locations/config-locations",
+      "implementation": "./src/migrations/update-13-10-0/update-tasks-runner",
       "package": "@nrwl/workspace",
-      "name": "13-0-0-config-locations"
+      "name": "13-10-0-update-tasks-runner"
+    },
+    {
+      "version": "14.0.0-beta.0",
+      "description": "Changes the presets in nx.json to come from the nx package",
+      "cli": "nx",
+      "implementation": "./src/migrations/update-14-0-0/change-nx-json-presets",
+      "package": "@nrwl/workspace",
+      "name": "14-0-0-change-nx-json-presets"
+    },
+    {
+      "version": "14.0.0-beta.0",
+      "description": "Migrates from @nrwl/workspace:run-script to nx:run-script",
+      "cli": "nx",
+      "implementation": "./src/migrations/update-14-0-0/change-npm-script-executor",
+      "package": "@nrwl/workspace",
+      "name": "14-0-0-change-npm-script-executor"
+    },
+    {
+      "version": "14.2.0",
+      "description": "Explicitly enable sourceAnalysis for all workspaces extending from npm.json or core.json (this was default behavior prior to 14.2)",
+      "cli": "nx",
+      "implementation": "./src/migrations/update-14-2-0/enable-source-analysis",
+      "package": "@nrwl/workspace",
+      "name": "14-2-0-enable-source-analysis"
+    },
+    {
+      "version": "14.0.0-beta.2",
+      "cli": "nx",
+      "description": "Update move jest config files to .ts files.",
+      "factory": "./src/migrations/update-14-0-0/update-jest-config-ext",
+      "package": "@nrwl/jest",
+      "name": "update-jest-config-extensions"
+    },
+    {
+      "version": "14.1.5-beta.0",
+      "cli": "nx",
+      "description": "Update to export default in jest config and revert jest.preset.ts to jest.preset.js",
+      "factory": "./src/migrations/update-14-1-5/update-exports-jest-config",
+      "package": "@nrwl/jest",
+      "name": "update-to-export-default"
     },
     {
       "cli": "nx",
-      "version": "13.0.0-beta.1",
-      "description": "Remove packages installed by Nx 12's `@nrwl/node:webpack5` generator.",
-      "factory": "./src/migrations/update-13-0-0/remove-webpack-5-packages-13-0-0",
-      "package": "@nrwl/node",
-      "name": "remove-webpack-5-packages"
+      "version": "14.1.9-beta.0",
+      "description": "Adds @swc/core and @swc-node as a dev dep if you are using them",
+      "factory": "./src/migrations/update-14-1-9/add-swc-deps-if-needed",
+      "package": "@nrwl/linter",
+      "name": "add-swc-deps"
     },
     {
       "cli": "nx",
-      "version": "13.0.0-beta.0",
-      "description": "Update tsconfig.json to use `jsxImportSource` to support css prop",
-      "factory": "./src/migrations/update-13-0-0/update-emotion-setup",
+      "version": "14.2.3-beta.0",
+      "description": "Adds @swc/core and @swc-node as a dev dep if you are using them (repeated due to prior mistake)",
+      "factory": "./src/migrations/update-14-1-9/add-swc-deps-if-needed",
+      "package": "@nrwl/linter",
+      "name": "add-swc-deps-again"
+    },
+    {
+      "cli": "nx",
+      "version": "14.4.4",
+      "description": "Adds @typescript-eslint/utils as a dev dep",
+      "factory": "./src/migrations/update-14-4-4/experimental-to-utils-deps",
+      "package": "@nrwl/linter",
+      "name": "experimental-to-utils-deps"
+    },
+    {
+      "cli": "nx",
+      "version": "14.4.4",
+      "description": "Switch from  @typescript-eslint/experimental-utils to @typescript-eslint/utils in all rules and rules.spec files",
+      "factory": "./src/migrations/update-14-4-4/experimental-to-utils-rules",
+      "package": "@nrwl/linter",
+      "name": "experimental-to-utils-rules"
+    },
+    {
+      "cli": "nx",
+      "version": "13.10.0-beta.0",
+      "description": "Update to React 18",
+      "factory": "./src/migrations/update-13-10-0/update-13-10-0",
       "package": "@nrwl/react",
-      "name": "update-emotion-setup-13.0.0"
+      "name": "update-react-18-13.10.0"
     },
     {
       "cli": "nx",
-      "version": "13.0.0-beta.0",
-      "description": "Migrate Storybook to use webpack 5",
-      "factory": "./src/migrations/update-13-0-0/migrate-storybook-to-webpack-5",
+      "version": "14.0.0-beta.0",
+      "description": "Update to React DOM render call to React 18 API.",
+      "factory": "./src/migrations/update-14-0-0/update-react-dom-render-for-v18",
       "package": "@nrwl/react",
-      "name": "migrate-storybook-to-webpack-5-13.0.0"
+      "name": "update-react-dom-render-14.0.0"
     },
     {
       "cli": "nx",
-      "version": "13.0.0-beta.1",
-      "description": "Removes deprecated node-sass package (sass is already a dependency of @nrwl/web).",
-      "factory": "./src/migrations/update-13-0-0/remove-node-sass-13-0-0",
-      "package": "@nrwl/web",
-      "name": "remove-node-sass-13-0-0"
+      "version": "14.0.0-beta.0",
+      "description": "Replace deprecated '@testing-library/react-hook' package with `renderHook` from '@testing-library/react'.",
+      "factory": "./src/migrations/update-14-0-0/replace-testing-library-react-hook",
+      "package": "@nrwl/react",
+      "name": "replace-testing-library-react-hook-14.0.0"
     },
     {
       "cli": "nx",
-      "version": "13.0.0-beta.1",
-      "description": "Remove packages installed by Nx 12's `@nrwl/web:webpack5` generator.",
-      "factory": "./src/migrations/update-13-0-0/remove-webpack-5-packages-13-0-0",
-      "package": "@nrwl/web",
-      "name": "remove-webpack-5-packages"
+      "version": "14.0.0-beta.0",
+      "description": "Add a default development configuration for build and serve targets.",
+      "factory": "./src/migrations/update-14-0-0/add-default-development-configurations",
+      "package": "@nrwl/react",
+      "name": "add-default-development-configurations-14.0.0"
+    },
+    {
+      "cli": "nx",
+      "version": "14.1.0-beta.0",
+      "description": "Update external option in projects for Emotion",
+      "factory": "./src/migrations/update-14-1-0/update-external-emotion-jsx-runtime",
+      "package": "@nrwl/react",
+      "name": "update-external-emotion-jsx-runtime-14.1.0"
+    },
+    {
+      "version": "14.0.0",
+      "cli": "nx",
+      "description": "Migrate Storybook to v6",
+      "factory": "./src/migrations/update-14-0-0/migrate-to-storybook-6",
+      "package": "@nrwl/storybook",
+      "name": "update-14.0.0"
+    },
+    {
+      "version": "14.1.8",
+      "cli": "nx",
+      "description": "Change storybook targets for Angular projects to use @storybook/angular executors",
+      "factory": "./src/migrations/update-14-1-8/change-storybook-targets",
+      "package": "@nrwl/storybook",
+      "name": "update-14.1.8"
     }
   ]
 }

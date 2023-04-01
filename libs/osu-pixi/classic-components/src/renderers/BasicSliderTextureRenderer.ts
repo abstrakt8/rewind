@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { MeshMaterial, RenderTexture, Shader } from "pixi.js";
 import { Bounds } from "@pixi/display";
-import { Position, Vec2 } from "@rewind/osu/math";
+import { Position, Vec2 } from "@osujs/math";
 
 // TODO: maybe change to -1 like in osu!lazer
 // McOsu uses 0.5

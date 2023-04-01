@@ -1,13 +1,12 @@
 import { Container, Sprite, Texture } from "pixi.js";
-import { clamp } from "@rewind/osu/math";
+import { clamp } from "@osujs/math";
 import {
   applyPropertiesToDisplayObject,
   DisplayObjectTransformationProcess,
   evaluateTransformationsToProperties,
 } from "../utils/Pixi";
-import { OsuClassicConstants } from "./OsuClassicConstants";
-import { fadeInT, fadeOutT, scaleToT } from "../utils/Transformations";
-import { OSU_PLAYFIELD_WIDTH, OSU_PLAYFIELD_HEIGHT } from "../utils/constants";
+import { scaleToT } from "../utils/Transformations";
+import { OSU_PLAYFIELD_HEIGHT, OSU_PLAYFIELD_WIDTH } from "../utils/constants";
 
 // New style
 
