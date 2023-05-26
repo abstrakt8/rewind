@@ -23,6 +23,18 @@ function calculateMean(x: number[]) {
   return x.length === 0 ? 0 : mean(x);
 }
 
+function calculateMedian(x: number[]) {
+  if (x.length === 0) {
+    return 0;
+  }
+  if (x.length === 1) {
+    return x[0];
+  }
+  const mid = Math.floor(x.length / 2),
+        nums = [...x].sort((a, b) => a - b);
+  return x.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+}
+
 @injectable()
 export class ForegroundHUDPreparer {
   container: Container;
@@ -155,9 +167,11 @@ export class ForegroundHUDPreparer {
       const digits = 2;
       const globalMean = calculateMean(this.allHits);
       const globalDeviation = calculateUnstableRate(this.allHits);
+      const globalMedian = calculateMedian(this.allHits);
 
       const localMean = calculateMean(this.recentHits);
       const localDeviation = calculateUnstableRate(this.recentHits);
+      const localMedian = calculateMedian(this.recentHits);
 
       this.stats.text = `Time: ${formatGameTime(time, true)}
 300: ${count[0]}
@@ -170,10 +184,12 @@ MaxCombo: ${maxCombo}
 Global
 UR: ${globalDeviation.toFixed(digits)}
 Mean: ${globalMean.toFixed(digits)}ms
+Median: ${globalMedian.toFixed(digits)}ms
 
 Local
 UR: ${localDeviation.toFixed(digits)}
 Mean: ${localMean.toFixed(digits)}ms
+Median: ${localMedian.toFixed(digits)}ms
 `;
 
       this.stats.position.set(25, 50);
