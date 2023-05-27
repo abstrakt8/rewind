@@ -16,6 +16,7 @@ import { readFile } from "fs/promises";
 import { BlueprintLocatorService } from "../common/local/BlueprintLocatorService";
 import { OsuFolderService } from "../common/local/OsuFolderService";
 import { BeatmapBackgroundSettingsStore } from "../common/beatmap-background";
+import { PlaybarSettingsStore } from "../common/playbar";
 import { TextureManager } from "../textures/TextureManager";
 import { ReplayFileWatcher } from "../common/local/ReplayFileWatcher";
 import { ModSettingsService } from "../analysis/mod-settings";
@@ -44,6 +45,7 @@ export class ScenarioManager {
     private readonly textureManager: TextureManager,
     private readonly replayService: ReplayService,
     private readonly beatmapBackgroundSettingsStore: BeatmapBackgroundSettingsStore,
+    private readonly playbarSettingsStore: PlaybarSettingsStore,
     private readonly beatmapManager: BeatmapManager,
     private readonly replayManager: ReplayManager,
     private readonly sceneManager: AnalysisSceneManager,
@@ -103,6 +105,9 @@ export class ScenarioManager {
       const duration = (this.audioEngine.song?.mediaElement.duration ?? 0) * 1000;
       this.gameClock.setDuration(duration);
       this.gameSimulator.calculateDifficulties(rawBlueprint, duration, modsToBitmask(replay.mods));
+      if (this.playbarSettingsStore.getSettings().jumpToEndOnLoad) {
+        this.gameClock.seekTo(duration);
+      }
     });
 
     // If the building is too slow or unbearable, we should push the building to a WebWorker, but right now it's ok
