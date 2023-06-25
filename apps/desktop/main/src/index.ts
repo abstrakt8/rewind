@@ -1,10 +1,11 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, screen, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, Rectangle, screen, shell } from "electron";
 import { setupEventListeners } from "./app/events";
 import { windows } from "./app/windows";
 import { join } from "path";
 import { format } from "url";
 import { environment } from "./environments/environment";
 import log from "electron-log";
+import * as Store from "electron-store";
 
 const { ELECTRON_IS_DEV } = process.env;
 
@@ -28,6 +29,8 @@ const rendererAppDevPort = 4200;
  * ./frontend/(index.html|main.js|...)
  */
 const desktopFrontendFile = (fileName: string) => join(__dirname, "frontend", fileName);
+
+const config = new Store();
 
 function createFrontendWindow() {
   const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
@@ -53,9 +56,17 @@ function createFrontendWindow() {
       contextIsolation: false,
     },
   });
-  frontend.center();
+  const bounds = config.get('frontendBounds') as Rectangle;
+  if (bounds) {
+    frontend.setBounds(bounds);
+  } else {
+    frontend.center();
+  }
   frontend.on("ready-to-show", () => {
     windows.frontend?.show();
+  });
+  frontend.on("close", () => {
+    config.set('frontendBounds', frontend.getBounds());
   });
   frontend.on("closed", () => {
     windows.frontend = null;
