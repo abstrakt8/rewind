@@ -14,7 +14,7 @@ type Single = number; // 32bit IEEE floating point value
 type Double = number; // 64bit IEEE floating point value
 
 // osu!.db specific
-type IntDoublePair = [Int, Double];
+type IntSinglePair = [Int, Single];
 export type TimingPoint = {
   bpm: Double;
   offset: Double;
@@ -53,7 +53,7 @@ enum GameplayMode {
 }
 
 // The first one will be the mods as a mask and the second one as the star rating
-export type StarRatings = IntDoublePair[];
+export type StarRatings = IntSinglePair[];
 
 export type Beatmap = {
   bytesOfBeatmapEntry: Int;
