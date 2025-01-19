@@ -13,8 +13,8 @@ export class OsuDBReader extends Reader {
     for (let i = 0; i < count; i++) {
       const b1 = this.readByte(); // === 0x08
       const mods = buffer.readInt32();
-      const b2 = buffer.readByte(); // === 0x0d
-      const stars = buffer.readDouble();
+      const b2 = buffer.readByte(); // === 0x0c
+      const stars = buffer.readFloat();
       if (mods !== undefined && stars !== undefined) list.push([mods, stars]);
     }
     return list;
