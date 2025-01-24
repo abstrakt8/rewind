@@ -186,7 +186,7 @@ const timeAnimateFPS = 30;
 
 function CurrentTime() {
   const analyzer = useAnalysisApp();
-  const requestRef = useRef<number>();
+  const requestRef = useRef<number>(0);
   const timeRef = useRef<GameCurrentTimeHandle>(null);
 
   // const animate = () => {};
