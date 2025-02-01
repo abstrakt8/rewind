@@ -1,6 +1,5 @@
 import { useAppDispatch } from "./hooks/redux";
-import { Routes } from "react-router";
-import { Outlet, Route, useNavigate } from "react-router-dom";
+import { Outlet, Routes, Route, useNavigate } from "react-router-dom";
 import { LeftMenuSidebar } from "./components/sidebar/LeftMenuSidebar";
 import { SplashScreen } from "./screens/splash/SplashScreen";
 import { HomeScreen } from "./screens/home/HomeScreen";
