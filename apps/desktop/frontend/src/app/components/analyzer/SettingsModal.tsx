@@ -198,6 +198,17 @@ function PlaybarSettingsSection() {
             }
             label={"Show difficulty graph"}
           />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={settings.jumpToEndOnLoad}
+                onChange={(event) =>
+                  playbarSettingsStore.changeSettings((s) => (s.jumpToEndOnLoad = event.target.checked))
+                }
+              />
+            }
+            label={"Jump to end of replay"}
+          />
         </FormGroup>
       </Stack>
     </Paper>
