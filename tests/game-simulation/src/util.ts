@@ -1,15 +1,10 @@
 import { join } from "path";
 import { OsuClassicMod, parseBlueprint } from "@osujs/core";
 import { readFileSync } from "fs";
+import * as path from "node:path";
 
 function getRewindTestDir() {
-  const rewindTestDir = process.env.REWIND_TEST_DIR;
-  if (!rewindTestDir) {
-    throw Error(
-      `This function only works with a properly set REWIND_TEST_DIR environment variable! Current value of REWIND_TEST_DIR=${rewindTestDir}`,
-    );
-  }
-  return rewindTestDir;
+  return path.resolve(__dirname, "../../../testdata");
 }
 
 export function getOsuGameDir() {
