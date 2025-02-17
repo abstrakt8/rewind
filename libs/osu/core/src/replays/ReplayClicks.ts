@@ -10,7 +10,7 @@ export function calculateReplayClicks(frames: ReplayFrame[]) {
     for (let i = 0; i < 2; i++) {
       // Enums are so bad in terms of type safety
       const isPressing = frame.actions.includes(i);
-      if (!isPressing && startTime[i]) {
+      if (!isPressing && startTime[i] !== null) {
         clicks[i].push([startTime[i] as number, frame.time]);
         startTime[i] = null;
       } else if (isPressing && startTime[i] === null) {
