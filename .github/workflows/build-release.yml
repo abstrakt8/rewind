@@ -1,7 +1,8 @@
-name: Build & Release (Windows, Linux, macOS)
+name: Build/release v2
 
 on:
-  workflow_dispatch
+  push:
+  workflow_dispatch:
 
 jobs:
   release:
@@ -22,13 +23,11 @@ jobs:
           cache: 'npm'
 
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+        uses: Yan-Jobs/action-electron-builder@v1.7.0
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
-
-#          release: true
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
