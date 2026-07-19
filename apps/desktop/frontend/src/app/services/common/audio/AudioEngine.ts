@@ -7,6 +7,19 @@ import { GameplayClock } from "../game/GameplayClock";
 // Chromium's implementation of <audio> is the best.
 // HTML5 Audio currentTime sucks though in terms of accuracy
 
+export interface HitSampleEvent {
+  // Game time in ms.
+  time: number;
+  // Sample keys to play, e.g. ["normal-hitnormal", "soft-hitclap3"].
+  names: string[];
+  // In [0, 1], applied on top of the global effects volume.
+  volume: number;
+}
+
+// Events that were crossed by more than this many game-time milliseconds are not played. This avoids a burst of
+// hit sounds after a lag spike or when the pointer wasn't reset (e.g. big forward jump).
+const MAX_SAMPLE_LAG_MS = 200;
+
 // "AudioEngine"
 @injectable()
 export class AudioEngine {
@@ -23,6 +36,14 @@ export class AudioEngine {
   // In seconds
   sampleWindow = 0.1;
   schedulePointer = 0;
+
+  // Decoded hit sound buffers keyed by sample key. Beatmap samples take precedence over skin samples when enabled.
+  private skinSampleBuffers: Record<string, AudioBuffer> = {};
+  private beatmapSampleBuffers: Record<string, AudioBuffer> = {};
+  private beatmapHitsoundsEnabled = true;
+  private sampleSchedule: HitSampleEvent[] = [];
+  // Index into `sampleSchedule` of the next event to play.
+  private samplePointer = 0;
 
   constructor(
     private readonly audioSettingService: AudioSettingsStore,
@@ -85,7 +106,82 @@ export class AudioEngine {
 
   changePlaybackRate(newPlaybackRate: number) {
     if (this.song) {
+      // The music time-stretches (pitch preserved) so that DT/HT doesn't sound like nightcore.
       this.song.mediaElement.playbackRate = newPlaybackRate;
+    }
+  }
+
+  private async decodeSamples(raw: Record<string, ArrayBuffer>): Promise<Record<string, AudioBuffer>> {
+    const buffers: Record<string, AudioBuffer> = {};
+    await Promise.all(
+      Object.entries(raw).map(async ([name, arrayBuffer]) => {
+        try {
+          // decodeAudioData detaches the ArrayBuffer, so give it a copy in case the caller reuses it.
+          buffers[name] = await this.audioContext.decodeAudioData(arrayBuffer.slice(0));
+        } catch (e) {
+          console.error(`Could not decode hit sound sample '${name}'`, e);
+        }
+      }),
+    );
+    return buffers;
+  }
+
+  async loadHitSoundSamples(skin: Record<string, ArrayBuffer>, beatmap: Record<string, ArrayBuffer>) {
+    const [skinBuffers, beatmapBuffers] = await Promise.all([this.decodeSamples(skin), this.decodeSamples(beatmap)]);
+    this.skinSampleBuffers = skinBuffers;
+    this.beatmapSampleBuffers = beatmapBuffers;
+  }
+
+  setSampleSchedule(schedule: HitSampleEvent[]) {
+    this.sampleSchedule = [...schedule].sort((a, b) => a.time - b.time);
+    this.resetSamplePointer(this.gameClock.timeElapsedInMs);
+  }
+
+  private clearSampleSchedule() {
+    this.sampleSchedule = [];
+    this.samplePointer = 0;
+  }
+
+  // Moves the pointer to the first event strictly after `timeInMs` without playing anything (used after seeking).
+  private resetSamplePointer(timeInMs: number) {
+    const schedule = this.sampleSchedule;
+    let lo = 0,
+      hi = schedule.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (schedule[mid].time <= timeInMs) lo = mid + 1;
+      else hi = mid;
+    }
+    this.samplePointer = lo;
+  }
+
+  private playSample(name: string, volume: number) {
+    const buffer =
+      (this.beatmapHitsoundsEnabled ? this.beatmapSampleBuffers[name] : undefined) ?? this.skinSampleBuffers[name];
+    if (!buffer) return;
+    const source = this.audioContext.createBufferSource();
+    source.buffer = buffer;
+    // Natural pitch regardless of game speed: a source's playbackRate would resample and shift pitch, unlike the
+    // pitch-preserving HTML5 music element.
+    const gain = this.audioContext.createGain();
+    gain.gain.value = volume;
+    source.connect(gain);
+    gain.connect(this.samplesGain);
+    source.start();
+  }
+
+  /**
+   * Plays every scheduled hit sound that the game clock has crossed since the last call. Should be called once per
+   * frame with the current game time. Does nothing while the clock is paused.
+   */
+  playSamplesUpTo(nowInMs: number) {
+    if (!this.gameClock.isPlaying) return;
+    const schedule = this.sampleSchedule;
+    while (this.samplePointer < schedule.length && schedule[this.samplePointer].time <= nowInMs) {
+      const entry = schedule[this.samplePointer];
+      this.samplePointer++;
+      if (nowInMs - entry.time > MAX_SAMPLE_LAG_MS) continue;
+      for (const name of entry.names) this.playSample(name, entry.volume);
     }
   }
 
@@ -98,6 +194,7 @@ export class AudioEngine {
     if (this.song) {
       this.song.mediaElement.currentTime = toInMs / 1000;
     }
+    this.resetSamplePointer(toInMs);
   }
 
   get isPlaying() {
@@ -119,6 +216,7 @@ export class AudioEngine {
       this.song.disconnect();
       this.song = undefined;
     }
+    this.clearSampleSchedule();
     // this.pause();
     // this.audioContext.close().then(() => {
     //   console.log("Audio context closed.");
@@ -130,5 +228,6 @@ export class AudioEngine {
     this.masterGain.gain.value = muted ? 0 : volume.master;
     this.musicGain.gain.value = volume.music;
     this.samplesGain.gain.value = volume.effects;
+    this.beatmapHitsoundsEnabled = settings.beatmapHitsounds;
   }
 }

@@ -1,4 +1,4 @@
-import { Box, Slider, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, FormControlLabel, Slider, Stack, Switch, Typography } from "@mui/material";
 import { VolumeDown, VolumeUp } from "@mui/icons-material";
 
 type Change = (x: number) => void;
@@ -7,11 +7,13 @@ interface BaseAudioSettingsPanelProps {
   master: number;
   effects: number;
   music: number;
+  beatmapHitsounds: boolean;
 
   onMasterChange: Change;
   onEffectsChange: Change;
   onMusicChange: Change;
   onMutedChange: (muted: boolean) => unknown;
+  onBeatmapHitsoundsChange: (enabled: boolean) => unknown;
 }
 
 export function VolumeSlider({ disabled, onChange, value }: { disabled?: boolean; onChange: Change; value: number }) {
@@ -32,7 +34,16 @@ export function VolumeSlider({ disabled, onChange, value }: { disabled?: boolean
 }
 
 export function BaseAudioSettingsPanel(props: BaseAudioSettingsPanelProps) {
-  const { master, effects, music, onMasterChange, onEffectsChange, onMusicChange, onMutedChange } = props;
+  const {
+    master,
+    effects,
+    music,
+    beatmapHitsounds,
+    onMasterChange,
+    onEffectsChange,
+    onMusicChange,
+    onBeatmapHitsoundsChange,
+  } = props;
   return (
     <Stack
       sx={{
@@ -57,13 +68,18 @@ export function BaseAudioSettingsPanel(props: BaseAudioSettingsPanelProps) {
         <Typography id="input-slider" gutterBottom>
           Effects Volume
         </Typography>
-        <Tooltip title={"Hit sounds coming soon!"}>
-          {/*https://mui.com/components/tooltips/#disabled-elements*/}
-          <span>
-            <VolumeSlider disabled={true} onChange={onEffectsChange} value={effects} />
-          </span>
-        </Tooltip>
+        <VolumeSlider onChange={onEffectsChange} value={effects} />
       </Box>
+      <FormControlLabel
+        control={
+          <Switch
+            size="small"
+            checked={beatmapHitsounds}
+            onChange={(e) => onBeatmapHitsoundsChange(e.target.checked)}
+          />
+        }
+        label={<Typography variant="body2">Beatmap hitsounds</Typography>}
+      />
     </Stack>
   );
 }

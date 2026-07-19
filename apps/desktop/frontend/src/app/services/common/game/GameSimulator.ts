@@ -125,6 +125,11 @@ export class GameSimulator {
     return this.currentState;
   }
 
+  // The fully-simulated end state, containing every hit circle / slider / checkpoint verdict.
+  getFinalState() {
+    return this.lastState;
+  }
+
   getCurrentInfo() {
     return this.currentInfo;
   }

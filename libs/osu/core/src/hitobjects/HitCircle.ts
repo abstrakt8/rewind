@@ -1,6 +1,7 @@
 import { Position } from "@osujs/math";
 import { HitObjectType } from "./Types";
 import { HasHitTime, HasId, HasPosition, HasSpawnTime } from "./Properties";
+import { DEFAULT_HIT_SAMPLE_BANK_INFO, HitSampleBankInfo } from "../audio/HitSampleInfo";
 
 export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
   static OBJECT_RADIUS = 64;
@@ -8,6 +9,10 @@ export class HitCircle implements HasId, HasPosition, HasHitTime, HasSpawnTime {
   id = "";
   hitTime = 0;
   approachDuration = 0;
+
+  // Bitmask of the hit sounds to play when this circle (or slider head) is hit. See HitSoundType.
+  hitSound = 0;
+  sample: HitSampleBankInfo = DEFAULT_HIT_SAMPLE_BANK_INFO;
 
   comboSetIndex = 0;
   withinComboSetIndex = 0;

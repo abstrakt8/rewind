@@ -8,17 +8,24 @@ import { BeatmapManager } from "./BeatmapManager";
 import { ReplayManager } from "./ReplayManager";
 import { AnalysisSceneKeys, AnalysisSceneManager } from "./AnalysisSceneManager";
 import { AudioEngine } from "../common/audio/AudioEngine";
+import { buildHitSoundSchedule, SampleDescriptor } from "../common/audio/hitSoundSchedule";
 import { GameplayClock } from "../common/game/GameplayClock";
 import { GameLoop } from "../common/game/GameLoop";
 import { PixiRendererManager } from "../renderers/PixiRendererManager";
 import { join } from "path";
 import { readFile } from "fs/promises";
+import { existsSync } from "fs";
 import { BlueprintLocatorService } from "../common/local/BlueprintLocatorService";
 import { OsuFolderService } from "../common/local/OsuFolderService";
+import { SkinLoader } from "../common/local/SkinLoader";
+import { SkinSettingsStore } from "../common/skin";
+import { DEFAULT_OSU_SKIN_ID, stringToSkinId } from "../../model/SkinId";
 import { BeatmapBackgroundSettingsStore } from "../common/beatmap-background";
 import { TextureManager } from "../textures/TextureManager";
 import { ReplayFileWatcher } from "../common/local/ReplayFileWatcher";
 import { ModSettingsService } from "../analysis/mod-settings";
+
+const HIT_SOUND_EXTENSIONS = [".wav", ".ogg", ".mp3"];
 
 interface Scenario {
   status: "LOADING" | "ERROR" | "DONE" | "INIT";
@@ -40,6 +47,8 @@ export class ScenarioManager {
     private readonly modSettingsService: ModSettingsService,
     private readonly blueprintLocatorService: BlueprintLocatorService,
     private readonly osuFolderService: OsuFolderService,
+    private readonly skinLoader: SkinLoader,
+    private readonly skinSettingsStore: SkinSettingsStore,
     private readonly audioService: AudioService,
     private readonly textureManager: TextureManager,
     private readonly replayService: ReplayService,
@@ -125,10 +134,76 @@ export class ScenarioManager {
     this.replayManager.setMainReplay(replay);
 
     await this.gameSimulator.simulateReplay(beatmap, replay);
+
+    // Build the schedule first, then load only the samples it actually references (from the beatmap folder and skin).
+    const finalState = this.gameSimulator.getFinalState();
+    const { schedule, samples } = finalState
+      ? buildHitSoundSchedule(beatmap, finalState)
+      : { schedule: [], samples: [] };
+    await this.loadHitSounds(absoluteFolderPath, samples);
+    this.audioEngine.setSampleSchedule(schedule);
+
     await this.sceneManager.changeToScene(AnalysisSceneKeys.ANALYSIS);
 
     this.gameLoop.startTicker();
     this.scenario$.next({ status: "DONE" });
+  }
+
+  // Reads and decodes every referenced sample from the beatmap folder (preferred) and the skin (fallback). Both sets
+  // are handed to the audio engine, which picks between them at play time depending on the "beatmap hit sounds" option.
+  private async loadHitSounds(beatmapFolder: string, samples: SampleDescriptor[]) {
+    let preferredSkinFolder: string;
+    try {
+      preferredSkinFolder = this.skinLoader.resolveToPath(
+        stringToSkinId(this.skinSettingsStore.settings.preferredSkinId),
+      );
+    } catch {
+      preferredSkinFolder = this.skinLoader.resolveToPath(DEFAULT_OSU_SKIN_ID);
+    }
+    const defaultSkinFolder = this.skinLoader.resolveToPath(DEFAULT_OSU_SKIN_ID);
+
+    const [skin, beatmap] = await Promise.all([
+      this.readSamples(samples, (s) => s.skinCandidates, [preferredSkinFolder, defaultSkinFolder]),
+      this.readSamples(samples, (s) => s.beatmapCandidates, [beatmapFolder]),
+    ]);
+    await this.audioEngine.loadHitSoundSamples(skin, beatmap);
+  }
+
+  private async readSamples(
+    samples: SampleDescriptor[],
+    candidatesOf: (sample: SampleDescriptor) => string[],
+    folders: string[],
+  ): Promise<Record<string, ArrayBuffer>> {
+    const result: Record<string, ArrayBuffer> = {};
+    await Promise.all(
+      samples.map(async (sample) => {
+        const filePath = this.resolveSampleFile(candidatesOf(sample), folders);
+        if (!filePath) return;
+        try {
+          const buffer = await readFile(filePath);
+          result[sample.key] = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+        } catch (e) {
+          console.error(`Could not read hit sound '${sample.key}' from ${filePath}`, e);
+        }
+      }),
+    );
+    return result;
+  }
+
+  // Finds the first existing file across the given folders, trying each candidate as-is (custom files include their
+  // extension) and then with each known audio extension appended (bank samples).
+  private resolveSampleFile(candidates: string[], folders: string[]): string | undefined {
+    for (const folder of folders) {
+      for (const candidate of candidates) {
+        const exact = join(folder, candidate);
+        if (existsSync(exact)) return exact;
+        for (const ext of HIT_SOUND_EXTENSIONS) {
+          const filePath = join(folder, `${candidate}${ext}`);
+          if (existsSync(filePath)) return filePath;
+        }
+      }
+    }
+    return undefined;
   }
 
   // This is just the NM view of a beatmap

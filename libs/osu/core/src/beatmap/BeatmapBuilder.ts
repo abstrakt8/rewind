@@ -35,6 +35,8 @@ function createHitCircle(
   hitCircle.hitTime = hitCircleSettings.time;
   hitCircle.scale = circleSizeToScale(beatmapDifficulty.circleSize);
   hitCircle.approachDuration = approachRateToApproachDuration(beatmapDifficulty.approachRate);
+  hitCircle.hitSound = hitCircleSettings.hitSound;
+  hitCircle.sample = hitCircleSettings.sample;
   return hitCircle;
 }
 
@@ -98,9 +100,14 @@ function createSlider(
   head.approachDuration = approachDuration;
   head.scale = scale;
   head.sliderId = sliderId;
+  // The head uses the first edge (node 0) hit sound/sample.
+  const headEdge = sliderSettings.edges[0];
+  head.hitSound = headEdge?.hitSound ?? sliderSettings.hitSound;
+  head.sample = headEdge?.sample ?? sliderSettings.sample;
 
   const slider = new Slider(head);
   slider.id = sliderId;
+  slider.edges = sliderSettings.edges;
   slider.repeatCount = sliderSettings.repeatCount;
   slider.legacyLastTickOffset = sliderSettings.legacyLastTickOffset;
   slider.velocity = scoringDistance / timingPoint.beatLength;

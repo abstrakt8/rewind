@@ -4,6 +4,8 @@ import { JSONSchemaType } from "ajv";
 
 export interface AudioSettings {
   muted: boolean;
+  // Prefer hit sounds shipped with the beatmap over the skin's ones.
+  beatmapHitsounds: boolean;
   volume: {
     master: number;
     music: number;
@@ -13,6 +15,7 @@ export interface AudioSettings {
 
 export const DEFAULT_AUDIO_SETTINGS: AudioSettings = Object.freeze({
   muted: false,
+  beatmapHitsounds: true,
   volume: {
     // Make it intentionally low, but not muted.
     master: 0.1,
@@ -24,6 +27,7 @@ export const AudioSettingsSchema: JSONSchemaType<AudioSettings> = {
   type: "object",
   properties: {
     muted: { type: "boolean", default: DEFAULT_AUDIO_SETTINGS.muted },
+    beatmapHitsounds: { type: "boolean", default: DEFAULT_AUDIO_SETTINGS.beatmapHitsounds },
     volume: {
       type: "object",
       properties: {
@@ -64,5 +68,9 @@ export class AudioSettingsStore extends PersistentService<AudioSettings> {
 
   setMuted(muted: boolean) {
     this.changeSettings((d) => (d.muted = muted));
+  }
+
+  setBeatmapHitsounds(enabled: boolean) {
+    this.changeSettings((d) => (d.beatmapHitsounds = enabled));
   }
 }

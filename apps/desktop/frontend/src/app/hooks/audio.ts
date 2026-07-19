@@ -7,7 +7,11 @@ export function useAudioSettingsService() {
   return theater.audioSettingsService;
 }
 
-const defaultSettings: AudioSettings = { volume: { effects: 0, master: 0, music: 0 }, muted: true };
+const defaultSettings: AudioSettings = {
+  volume: { effects: 0, master: 0, music: 0 },
+  muted: true,
+  beatmapHitsounds: true,
+};
 
 export function useAudioSettings() {
   const audioSettingsService = useAudioSettingsService();

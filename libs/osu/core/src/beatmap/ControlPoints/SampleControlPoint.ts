@@ -7,11 +7,12 @@ export class SampleControlPoint extends ControlPoint {
 
   sampleBank = SampleControlPoint.DEFAULT_BANK;
   sampleVolume = 100;
+  sampleIndex = 0;
 
   isRedundant(existing: ControlPoint): boolean {
     if (existing.type !== SampleControlPoint.TYPE) return false;
     const e = existing as SampleControlPoint;
-    return this.sampleBank === e.sampleBank && this.sampleVolume === e.sampleVolume;
+    return this.sampleBank === e.sampleBank && this.sampleVolume === e.sampleVolume && this.sampleIndex === e.sampleIndex;
   }
 
   get type(): string {

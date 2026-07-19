@@ -4,7 +4,9 @@ export * from "./audio/HitSampleInfo";
 // beatmap
 export * from "./beatmap/ControlPoints/ControlPoint";
 export * from "./beatmap/ControlPoints/ControlPointGroup";
+export * from "./beatmap/ControlPoints/ControlPointInfo";
 export * from "./beatmap/ControlPoints/DifficultyControlPoint";
+export * from "./beatmap/ControlPoints/SampleControlPoint";
 export * from "./beatmap/ControlPoints/TimingControlPoint";
 export * from "./mods/HardRockMod";
 export * from "./mods/HiddenMod";

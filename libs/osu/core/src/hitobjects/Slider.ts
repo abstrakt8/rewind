@@ -4,6 +4,7 @@ import { HitCircle } from "./HitCircle";
 import { SliderCheckPoint } from "./SliderCheckPoint";
 import { HasId } from "./Properties";
 import { HitObjectType } from "./Types";
+import { SliderEdgeSample } from "../audio/HitSampleInfo";
 
 export class Slider implements HasId {
   // scoring distance with a speed-adjusted beat length of 1 second (i.e. the speed slider balls
@@ -21,6 +22,9 @@ export class Slider implements HasId {
   tickDistanceMultiplier = 1;
   legacyLastTickOffset?: number;
   repeatCount = 0;
+
+  // Per-node hit sounds/samples: head, repeats, tail.
+  edges: SliderEdgeSample[] = [];
 
   constructor(hitCircle: HitCircle) {
     this.head = hitCircle;
